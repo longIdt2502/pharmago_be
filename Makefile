@@ -30,9 +30,17 @@ server:
 
 proto:
 	rm -f pb/*.go
-	protoc --proto_path=proto --go_out=pb --go_opt=paths=source_relative \
-	--go-grpc_out=pb --go-grpc_opt=paths=source_relative \
-	proto/*.proto
+	rm -f docs/swagger/*.swagger.json
+	protoc --proto_path=proto --proto_path=proto/entities --proto_path=proto/rpc --go_out=pb --go_opt=paths=source_relative \
+        --go-grpc_out=pb --go-grpc_opt=paths=source_relative \
+        --grpc-gateway_out=pb --grpc-gateway_opt=paths=source_relative \
+        --openapiv2_out=docs/swagger --openapiv2_opt=allow_merge=true,merge_file_name=pharmago \
+        proto/*.proto proto/entities/*.proto proto/rpc/*.proto
+	cp pb/entities/*pb.go pb
+	cp pb/rpc/*pb.go pb
+	rm -r pb/entities
+	rm -r pb/rpc
+	statik -src=./docs/swagger -dest=./docs
 
 evans:
 	evans --host localhost --port 9090 -r repl
