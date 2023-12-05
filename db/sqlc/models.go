@@ -7,18 +7,20 @@ package db
 import (
 	"database/sql"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type Account struct {
-	ID                int64          `json:"id"`
-	Username          sql.NullString `json:"username"`
-	HashedPassword    string         `json:"hashed_password"`
-	FullName          string         `json:"full_name"`
-	Email             string         `json:"email"`
-	Type              int64          `json:"type"`
-	Media             sql.NullInt64  `json:"media"`
-	PasswordChangedAt time.Time      `json:"password_changed_at"`
-	CreatedAt         time.Time      `json:"created_at"`
+	ID                int64         `json:"id"`
+	Username          string        `json:"username"`
+	HashedPassword    string        `json:"hashed_password"`
+	FullName          string        `json:"full_name"`
+	Email             string        `json:"email"`
+	Type              int64         `json:"type"`
+	Media             sql.NullInt64 `json:"media"`
+	PasswordChangedAt time.Time     `json:"password_changed_at"`
+	CreatedAt         time.Time     `json:"created_at"`
 }
 
 type AccountType struct {
@@ -128,6 +130,17 @@ type ProductMedium struct {
 type ProductType struct {
 	ID   int64  `json:"id"`
 	Name string `json:"name"`
+}
+
+type Session struct {
+	ID           uuid.UUID `json:"id"`
+	Username     string    `json:"username"`
+	RefreshToken string    `json:"refresh_token"`
+	UserAgent    string    `json:"user_agent"`
+	ClientIp     string    `json:"client_ip"`
+	IsBlocked    bool      `json:"is_blocked"`
+	ExpiresAt    time.Time `json:"expires_at"`
+	CreatedAt    time.Time `json:"created_at"`
 }
 
 type Ticket struct {

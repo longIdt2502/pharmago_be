@@ -16,12 +16,12 @@ VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, username, hashed_password, full_na
 `
 
 type CreateAccountParams struct {
-	Username       sql.NullString `json:"username"`
-	HashedPassword string         `json:"hashed_password"`
-	FullName       string         `json:"full_name"`
-	Email          string         `json:"email"`
-	Type           int64          `json:"type"`
-	Media          sql.NullInt64  `json:"media"`
+	Username       string        `json:"username"`
+	HashedPassword string        `json:"hashed_password"`
+	FullName       string        `json:"full_name"`
+	Email          string        `json:"email"`
+	Type           int64         `json:"type"`
+	Media          sql.NullInt64 `json:"media"`
 }
 
 func (q *Queries) CreateAccount(ctx context.Context, arg CreateAccountParams) (Account, error) {
@@ -55,6 +55,28 @@ WHERE id = $1 LIMIT 1
 
 func (q *Queries) GetAccount(ctx context.Context, id int64) (Account, error) {
 	row := q.db.QueryRowContext(ctx, getAccount, id)
+	var i Account
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.HashedPassword,
+		&i.FullName,
+		&i.Email,
+		&i.Type,
+		&i.Media,
+		&i.PasswordChangedAt,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const getAccountByUseName = `-- name: GetAccountByUseName :one
+SELECT id, username, hashed_password, full_name, email, type, media, password_changed_at, created_at FROM accounts
+WHERE username = $1 LIMIT 1
+`
+
+func (q *Queries) GetAccountByUseName(ctx context.Context, username string) (Account, error) {
+	row := q.db.QueryRowContext(ctx, getAccountByUseName, username)
 	var i Account
 	err := row.Scan(
 		&i.ID,

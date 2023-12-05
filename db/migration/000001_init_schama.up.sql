@@ -1,6 +1,6 @@
 CREATE TABLE "accounts" (
                             "id" bigserial PRIMARY KEY,
-                            "username" varchar UNIQUE,
+                            "username" varchar UNIQUE NOT NULL,
                             "hashed_password" varchar NOT NULL,
                             "full_name" varchar NOT NULL,
                             "email" varchar UNIQUE NOT NULL,
@@ -195,7 +195,10 @@ CREATE TABLE "medias" (
 
 ALTER TABLE "accounts" ADD FOREIGN KEY ("type") REFERENCES "account_type" ("id");
 
-ALTER TABLE "accounts" ADD FOREIGN KEY ("media") REFERENCES "medias" ("id");
+ALTER TABLE "accounts" ALTER COLUMN "media" DROP NOT NULL;
+ALTER TABLE "accounts" ADD FOREIGN KEY ("media") REFERENCES "medias" ("id") ON DELETE SET NULL ON UPDATE NO ACTION;
+
+-- ALTER TABLE "accounts" ADD CONSTRAINT "fk_media" FOREIGN KEY ("media") REFERENCES "medias" ("id") ON DELETE SET NULL ON UPDATE NO ACTION;
 
 ALTER TABLE "companies" ADD FOREIGN KEY ("owner") REFERENCES "accounts" ("id");
 
