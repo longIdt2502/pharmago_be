@@ -1,13 +1,13 @@
 CREATE TABLE "accounts" (
-                            "id" bigserial PRIMARY KEY,
-                            "username" varchar UNIQUE NOT NULL,
-                            "hashed_password" varchar NOT NULL,
-                            "full_name" varchar NOT NULL,
-                            "email" varchar UNIQUE NOT NULL,
-                            "type" bigserial NOT NULL,
-                            "media" bigserial,
-                            "password_changed_at" timestamptz NOT NULL DEFAULT '0001-01-01 00:00:00Z',
-                            "created_at" timestamptz NOT NULL DEFAULT (now())
+    "id" bigserial PRIMARY KEY,
+    "username" varchar UNIQUE NOT NULL,
+    "hashed_password" varchar NOT NULL,
+    "full_name" varchar NOT NULL,
+    "email" varchar UNIQUE NOT NULL,
+    "type" bigserial NOT NULL,
+    "media" serial,
+    "password_changed_at" timestamptz NOT NULL DEFAULT '0001-01-01 00:00:00Z',
+    "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "account_type" (
@@ -58,7 +58,7 @@ CREATE TABLE "products" (
 CREATE TABLE "product_media" (
                                  "id" bigserial PRIMARY KEY,
                                  "product" bigserial,
-                                 "media" bigserial
+                                 "media" serial
 );
 
 CREATE TABLE "product_categories" (
@@ -189,7 +189,7 @@ CREATE TABLE "ticket_status" (
 );
 
 CREATE TABLE "medias" (
-                          "id" bigserial PRIMARY KEY,
+                          "id" serial PRIMARY KEY,
                           "media_url" varchar NOT NULL
 );
 
