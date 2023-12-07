@@ -19,6 +19,15 @@ migratedown:
 migratedown1:
 	migrate -path db/migration -database "postgresql://root:Hoanglong2502@localhost:5432/simple_bank?sslmode=disable" -verbose down 1
 
+new_migration:
+	migrate create -ext sql -dir db/migration -seq $name
+
+db_docs:
+	dbdocs build docs/db.dbml
+
+db_schema:
+	dbml2sql --postgres -o docs/schema.sql docs/db.dbml
+
 sqlc:
 	sqlc generate
 
@@ -45,4 +54,4 @@ proto:
 evans:
 	evans --host localhost --port 9090 -r repl
 
-.PHONY: postgres createdb dropdb migrateup migrateup1 migratedown migratedown1 sqlc proto evans
+.PHONY: postgres createdb dropdb migrateup migrateup1 migratedown migratedown1 new_migration server sqlc proto evans

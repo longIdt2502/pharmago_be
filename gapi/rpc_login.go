@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
+	"github.com/longIdt2502/pharmago_be/gapi/mapper"
 	"github.com/longIdt2502/pharmago_be/pb"
 	"github.com/longIdt2502/pharmago_be/utils"
 	"google.golang.org/grpc/codes"
@@ -53,8 +54,11 @@ func (server *ServerGRPC) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to create session:", err)
 	}
+
+	accountResponse := mapper.AccountMapper(account)
+
 	rsp := &pb.LoginResponse{
-		Account:               nil,
+		Account:               accountResponse,
 		SessionId:             session.ID.String(),
 		AccessToken:           accessToken,
 		RefreshToken:          refreshToken,
