@@ -12,15 +12,27 @@ import (
 )
 
 type Account struct {
-	ID                int64         `json:"id"`
-	Username          string        `json:"username"`
-	HashedPassword    string        `json:"hashed_password"`
-	FullName          string        `json:"full_name"`
-	Email             string        `json:"email"`
-	Type              int64         `json:"type"`
-	Media             sql.NullInt64 `json:"media"`
-	PasswordChangedAt time.Time     `json:"password_changed_at"`
-	CreatedAt         time.Time     `json:"created_at"`
+	ID                int64     `json:"id"`
+	Username          string    `json:"username"`
+	HashedPassword    string    `json:"hashed_password"`
+	FullName          string    `json:"full_name"`
+	Email             string    `json:"email"`
+	Type              int64     `json:"type"`
+	IsVerify          bool      `json:"is_verify"`
+	PasswordChangedAt time.Time `json:"password_changed_at"`
+	CreatedAt         time.Time `json:"created_at"`
+}
+
+type AccountCompany struct {
+	ID      int64 `json:"id"`
+	Account int64 `json:"account"`
+	Company int64 `json:"company"`
+}
+
+type AccountMedium struct {
+	ID      int64 `json:"id"`
+	Account int64 `json:"account"`
+	Media   int64 `json:"media"`
 }
 
 type AccountType struct {
@@ -41,6 +53,7 @@ type Address struct {
 type Company struct {
 	ID          int64          `json:"id"`
 	Name        string         `json:"name"`
+	Code        string         `json:"code"`
 	TaxCode     sql.NullString `json:"tax_code"`
 	Phone       sql.NullString `json:"phone"`
 	Description sql.NullString `json:"description"`
@@ -211,8 +224,18 @@ type Variant struct {
 	CreatedAt      time.Time     `json:"created_at"`
 }
 
+type Verify struct {
+	ID         int64     `json:"id"`
+	Username   string    `json:"username"`
+	Email      string    `json:"email"`
+	SecretCode string    `json:"secret_code"`
+	IsUsed     bool      `json:"is_used"`
+	CreatedAt  time.Time `json:"created_at"`
+	ExpiredAt  time.Time `json:"expired_at"`
+}
+
 type Warehouse struct {
-	ID        int64         `json:"id"`
-	Address   sql.NullInt64 `json:"address"`
-	Companies sql.NullInt64 `json:"companies"`
+	ID        int64 `json:"id"`
+	Address   int64 `json:"address"`
+	Companies int64 `json:"companies"`
 }

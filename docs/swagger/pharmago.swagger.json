@@ -52,6 +52,70 @@
           "Pharmago"
         ]
       }
+    },
+    "/account/v1/register": {
+      "post": {
+        "operationId": "Pharmago_CreateAccount",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCreateAccountResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbCreateAccountRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Pharmago"
+        ]
+      }
+    },
+    "/account/v1/verify": {
+      "post": {
+        "operationId": "Pharmago_VerifyAccount",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbVerifyAccountResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbVerifyAccountRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Pharmago"
+        ]
+      }
     }
   },
   "definitions": {
@@ -67,6 +131,10 @@
         "email": {
           "type": "string"
         },
+        "verifyId": {
+          "type": "string",
+          "format": "int64"
+        },
         "passwordChangedAt": {
           "type": "string",
           "format": "date-time"
@@ -74,6 +142,46 @@
         "createdAt": {
           "type": "string",
           "format": "date-time"
+        }
+      }
+    },
+    "pbCreateAccountRequest": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "accountType": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "pbCreateAccountResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "$ref": "#/definitions/pbAccount"
+        },
+        "verifyId": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -110,6 +218,33 @@
         "refreshTokenExpiresAt": {
           "type": "string",
           "format": "date-time"
+        }
+      }
+    },
+    "pbVerifyAccountRequest": {
+      "type": "object",
+      "properties": {
+        "idVerify": {
+          "type": "string",
+          "format": "int64"
+        },
+        "secretCode": {
+          "type": "string"
+        }
+      }
+    },
+    "pbVerifyAccountResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "type": "boolean"
         }
       }
     },
