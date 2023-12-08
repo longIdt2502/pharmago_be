@@ -5,6 +5,8 @@ package pb;
 import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 import "rpc/rpc_login.proto";
+import "rpc/rpc_create_account.proto";
+import "rpc/rpc_verify_account.proto";
 
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
@@ -24,6 +26,18 @@ service Pharmago {
   rpc Login (LoginRequest) returns (LoginResponse) {
     option (google.api.http) = {
       post: "/account/v1/login"
+      body: "*"
+    };
+  };
+  rpc CreateAccount (CreateAccountRequest) returns (CreateAccountResponse) {
+    option (google.api.http) = {
+      post: "/account/v1/register"
+      body: "*"
+    };
+  };
+  rpc VerifyAccount (VerifyAccountRequest) returns (VerifyAccountResponse) {
+    option (google.api.http) = {
+      post: "/account/v1/verify"
       body: "*"
     };
   };

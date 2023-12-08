@@ -67,6 +67,20 @@ ALTER TABLE IF EXISTS "tickets" DROP CONSTRAINT IF EXISTS "tickets_user_updated_
 -- Xoá ràng buộc trên bảng "medias"
 ALTER TABLE IF EXISTS "medias" DROP CONSTRAINT IF EXISTS "medias_accounts_media_fk";
 
+-- Xoá ràng buộc trên bảng "account_media"
+ALTER TABLE IF EXISTS "account_media" DROP CONSTRAINT IF EXISTS "account_media_account_fkey";
+ALTER TABLE IF EXISTS "account_media" DROP CONSTRAINT IF EXISTS "account_media_media_fkey";
+
+-- Xoá ràng buộc trên bảng "account_company"
+ALTER TABLE IF EXISTS "account_company" DROP CONSTRAINT IF EXISTS "account_company_account_fkey";
+ALTER TABLE IF EXISTS "account_company" DROP CONSTRAINT IF EXISTS "account_company_company_fkey";
+
+-- Xoá ràng buộc trên bảng "sessions"
+ALTER TABLE IF EXISTS "sessions" DROP CONSTRAINT IF EXISTS "sessions_username_fkey";
+
+-- Xoá ràng buộc trên bảng "verifies"
+ALTER TABLE IF EXISTS "verifies" DROP CONSTRAINT IF EXISTS "verifies_username_fkey";
+
 DROP TABLE IF EXISTS order_type;
 DROP TABLE IF EXISTS ticket_type;
 DROP TABLE IF EXISTS product_type;
@@ -84,8 +98,12 @@ DROP TABLE IF EXISTS order_items;
 DROP TABLE IF EXISTS customers;
 DROP TABLE IF EXISTS tickets;
 DROP TABLE IF EXISTS ticket_status;
-DROP TABLE IF EXISTS medias;
 DROP TABLE IF EXISTS address;
-DROP TABLE IF EXISTS companies;
 DROP TABLE IF EXISTS account_type;
+DROP TABLE IF EXISTS account_media;
+DROP TABLE IF EXISTS medias;
+DROP TABLE IF EXISTS account_company;
+DROP TABLE IF EXISTS companies;
+DROP TABLE IF EXISTS sessions;
 DROP TABLE IF EXISTS accounts;
+DROP TABLE IF EXISTS verifies;

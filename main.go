@@ -8,6 +8,7 @@ import (
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	_ "github.com/longIdt2502/pharmago_be/docs/statik"
 	"github.com/longIdt2502/pharmago_be/gapi"
+	"github.com/longIdt2502/pharmago_be/mail"
 	"github.com/longIdt2502/pharmago_be/pb"
 	"github.com/longIdt2502/pharmago_be/utils"
 	"github.com/rakyll/statik/fs"
@@ -30,9 +31,11 @@ func main() {
 		log.Fatal("cannot open database:", err)
 	}
 
+	sender := mail.NewGmailSender(config.EmailSenderName, config.EmailSenderAddress, config.EmailSenderPassword)
+
 	store := db.NewStore(conn)
-	go runGatewayServer(config, &store)
-	runServerGRPC(config, &store)
+	go runGatewayServer(config, &store, sender)
+	runServerGRPC(config, &store, sender)
 
 	//ginServer, err := api.NewServer(config, &store)
 	//
@@ -42,8 +45,8 @@ func main() {
 	//}
 }
 
-func runServerGRPC(config utils.Config, store *db.Store) {
-	server, err := gapi.NewServer(config, store)
+func runServerGRPC(config utils.Config, store *db.Store, sender mail.EmailSender) {
+	server, err := gapi.NewServer(config, store, sender)
 	if err != nil {
 		log.Fatal("cannot create server:", err)
 	}
@@ -64,8 +67,8 @@ func runServerGRPC(config utils.Config, store *db.Store) {
 	}
 }
 
-func runGatewayServer(config utils.Config, store *db.Store) {
-	server, err := gapi.NewServer(config, store)
+func runGatewayServer(config utils.Config, store *db.Store, sender mail.EmailSender) {
+	server, err := gapi.NewServer(config, store, sender)
 	if err != nil {
 		log.Fatal("cannot create server:", err)
 	}

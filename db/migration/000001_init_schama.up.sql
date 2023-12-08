@@ -1,13 +1,25 @@
 CREATE TABLE "accounts" (
-    "id" bigserial PRIMARY KEY,
-    "username" varchar UNIQUE NOT NULL,
-    "hashed_password" varchar NOT NULL,
-    "full_name" varchar NOT NULL,
-    "email" varchar UNIQUE NOT NULL,
-    "type" bigserial NOT NULL,
-    "media" serial,
-    "password_changed_at" timestamptz NOT NULL DEFAULT '0001-01-01 00:00:00Z',
-    "created_at" timestamptz NOT NULL DEFAULT (now())
+                            "id" bigserial PRIMARY KEY,
+                            "username" varchar UNIQUE NOT NULL,
+                            "hashed_password" varchar NOT NULL,
+                            "full_name" varchar NOT NULL,
+                            "email" varchar UNIQUE NOT NULL,
+                            "type" bigserial NOT NULL,
+                            "is_verify" boolean NOT NULL DEFAULT false,
+                            "password_changed_at" timestamptz NOT NULL DEFAULT '0001-01-01 00:00:00Z',
+                            "created_at" timestamptz NOT NULL DEFAULT (now())
+);
+
+CREATE TABLE "account_media" (
+                                 "id" bigserial PRIMARY KEY,
+                                 "account" bigserial NOT NULL,
+                                 "media" bigserial NOT NULL
+);
+
+CREATE TABLE "account_company" (
+                                   "id" bigserial PRIMARY KEY,
+                                   "account" bigserial NOT NULL,
+                                   "company" bigserial NOT NULL
 );
 
 CREATE TABLE "account_type" (
@@ -16,9 +28,31 @@ CREATE TABLE "account_type" (
                                 "title" varchar NOT NULL
 );
 
+CREATE TABLE "sessions" (
+                            "id" uuid PRIMARY KEY,
+                            "username" varchar NOT NULL,
+                            "refresh_token" varchar NOT NULL,
+                            "user_agent" varchar NOT NULL,
+                            "client_ip" varchar NOT NULL,
+                            "is_blocked" boolean NOT NULL DEFAULT false,
+                            "expires_at" timestamptz NOT NULL,
+                            "created_at" timestamptz NOT NULL DEFAULT (now())
+);
+
+CREATE TABLE "verifies" (
+                            "id" bigserial PRIMARY KEY,
+                            "username" varchar NOT NULL,
+                            "email" varchar NOT NULL,
+                            "secret_code" varchar NOT NULL,
+                            "is_used" bool NOT NULL DEFAULT false,
+                            "created_at" timestamptz NOT NULL DEFAULT (now()),
+                            "expired_at" timestamptz NOT NULL DEFAULT ((now() + interval '15 minutes'))
+);
+
 CREATE TABLE "companies" (
                              "id" bigserial PRIMARY KEY,
                              "name" varchar NOT NULL,
+                             "code" varchar NOT NULL,
                              "tax_code" varchar,
                              "phone" varchar,
                              "description" varchar,
@@ -37,8 +71,8 @@ CREATE TABLE "address" (
 
 CREATE TABLE "warehouses" (
                               "id" bigserial PRIMARY KEY,
-                              "address" bigserial,
-                              "companies" bigserial
+                              "address" bigserial NOT NULL,
+                              "companies" bigserial NOT NULL
 );
 
 CREATE TABLE "products" (
@@ -58,7 +92,7 @@ CREATE TABLE "products" (
 CREATE TABLE "product_media" (
                                  "id" bigserial PRIMARY KEY,
                                  "product" bigserial,
-                                 "media" serial
+                                 "media" bigserial
 );
 
 CREATE TABLE "product_categories" (
@@ -189,16 +223,43 @@ CREATE TABLE "ticket_status" (
 );
 
 CREATE TABLE "medias" (
-                          "id" serial PRIMARY KEY,
+                          "id" bigserial PRIMARY KEY,
                           "media_url" varchar NOT NULL
 );
 
+CREATE INDEX ON "warehouses" ("address");
+
+CREATE UNIQUE INDEX ON "warehouses" ("id", "address");
+
+CREATE INDEX ON "products" ("unit");
+
+CREATE UNIQUE INDEX ON "products" ("id", "unit");
+
+CREATE INDEX ON "orders" ("qr");
+
+CREATE UNIQUE INDEX ON "orders" ("id", "qr");
+
+CREATE INDEX ON "customers" ("address");
+
+CREATE UNIQUE INDEX ON "customers" ("id", "address");
+
+CREATE INDEX ON "tickets" ("qr");
+
+CREATE UNIQUE INDEX ON "tickets" ("id", "qr");
+
 ALTER TABLE "accounts" ADD FOREIGN KEY ("type") REFERENCES "account_type" ("id");
 
-ALTER TABLE "accounts" ALTER COLUMN "media" DROP NOT NULL;
-ALTER TABLE "accounts" ADD FOREIGN KEY ("media") REFERENCES "medias" ("id") ON DELETE SET NULL ON UPDATE NO ACTION;
+ALTER TABLE "account_media" ADD FOREIGN KEY ("account") REFERENCES "accounts" ("id");
 
--- ALTER TABLE "accounts" ADD CONSTRAINT "fk_media" FOREIGN KEY ("media") REFERENCES "medias" ("id") ON DELETE SET NULL ON UPDATE NO ACTION;
+ALTER TABLE "account_media" ADD FOREIGN KEY ("media") REFERENCES "medias" ("id");
+
+ALTER TABLE "account_company" ADD FOREIGN KEY ("account") REFERENCES "accounts" ("id");
+
+ALTER TABLE "account_company" ADD FOREIGN KEY ("company") REFERENCES "companies" ("id");
+
+ALTER TABLE "sessions" ADD FOREIGN KEY ("username") REFERENCES "accounts" ("username");
+
+ALTER TABLE "verifies" ADD FOREIGN KEY ("username") REFERENCES "accounts" ("username");
 
 ALTER TABLE "companies" ADD FOREIGN KEY ("owner") REFERENCES "accounts" ("id");
 

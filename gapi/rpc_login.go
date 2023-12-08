@@ -23,11 +23,14 @@ func (server *ServerGRPC) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 		}
 		return nil, status.Errorf(codes.Internal, "failed to find user")
 	}
+	if !account.IsVerify {
+		return nil, status.Errorf(codes.Unauthenticated, "account not verify")
+	}
 
 	password := req.GetPassword()
 	err = utils.CheckPassword(password, account.HashedPassword)
 	if err != nil {
-		return nil, status.Errorf(codes.Unauthenticated, "user not found")
+		return nil, status.Errorf(codes.Unauthenticated, "password incorrect:", err)
 	}
 
 	accessToken, accessTokenPayload, err := server.tokenMaker.CreateToken(username, server.config.AccessTokenDuration)

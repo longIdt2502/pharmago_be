@@ -11,17 +11,16 @@ import (
 )
 
 const createAccount = `-- name: CreateAccount :one
-INSERT INTO accounts (username, hashed_password, full_name, email, type, media)
-VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, username, hashed_password, full_name, email, type, media, password_changed_at, created_at
+INSERT INTO accounts (username, hashed_password, full_name, email, type)
+VALUES ($1, $2, $3, $4, $5) RETURNING id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, created_at
 `
 
 type CreateAccountParams struct {
-	Username       string        `json:"username"`
-	HashedPassword string        `json:"hashed_password"`
-	FullName       string        `json:"full_name"`
-	Email          string        `json:"email"`
-	Type           int64         `json:"type"`
-	Media          sql.NullInt64 `json:"media"`
+	Username       string `json:"username"`
+	HashedPassword string `json:"hashed_password"`
+	FullName       string `json:"full_name"`
+	Email          string `json:"email"`
+	Type           int64  `json:"type"`
 }
 
 func (q *Queries) CreateAccount(ctx context.Context, arg CreateAccountParams) (Account, error) {
@@ -31,7 +30,6 @@ func (q *Queries) CreateAccount(ctx context.Context, arg CreateAccountParams) (A
 		arg.FullName,
 		arg.Email,
 		arg.Type,
-		arg.Media,
 	)
 	var i Account
 	err := row.Scan(
@@ -41,7 +39,7 @@ func (q *Queries) CreateAccount(ctx context.Context, arg CreateAccountParams) (A
 		&i.FullName,
 		&i.Email,
 		&i.Type,
-		&i.Media,
+		&i.IsVerify,
 		&i.PasswordChangedAt,
 		&i.CreatedAt,
 	)
@@ -49,7 +47,7 @@ func (q *Queries) CreateAccount(ctx context.Context, arg CreateAccountParams) (A
 }
 
 const getAccount = `-- name: GetAccount :one
-SELECT id, username, hashed_password, full_name, email, type, media, password_changed_at, created_at FROM accounts
+SELECT id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, created_at FROM accounts
 WHERE id = $1 LIMIT 1
 `
 
@@ -63,7 +61,7 @@ func (q *Queries) GetAccount(ctx context.Context, id int64) (Account, error) {
 		&i.FullName,
 		&i.Email,
 		&i.Type,
-		&i.Media,
+		&i.IsVerify,
 		&i.PasswordChangedAt,
 		&i.CreatedAt,
 	)
@@ -71,7 +69,7 @@ func (q *Queries) GetAccount(ctx context.Context, id int64) (Account, error) {
 }
 
 const getAccountByUseName = `-- name: GetAccountByUseName :one
-SELECT id, username, hashed_password, full_name, email, type, media, password_changed_at, created_at FROM accounts
+SELECT id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, created_at FROM accounts
 WHERE username = $1 LIMIT 1
 `
 
@@ -85,7 +83,40 @@ func (q *Queries) GetAccountByUseName(ctx context.Context, username string) (Acc
 		&i.FullName,
 		&i.Email,
 		&i.Type,
-		&i.Media,
+		&i.IsVerify,
+		&i.PasswordChangedAt,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const updateAccount = `-- name: UpdateAccount :one
+UPDATE accounts
+SET
+    is_verify = COALESCE($1, is_verify)
+WHERE
+    id = $2
+    OR username = $3
+RETURNING id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, created_at
+`
+
+type UpdateAccountParams struct {
+	IsVerify sql.NullBool   `json:"is_verify"`
+	ID       sql.NullInt64  `json:"id"`
+	Username sql.NullString `json:"username"`
+}
+
+func (q *Queries) UpdateAccount(ctx context.Context, arg UpdateAccountParams) (Account, error) {
+	row := q.db.QueryRowContext(ctx, updateAccount, arg.IsVerify, arg.ID, arg.Username)
+	var i Account
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.HashedPassword,
+		&i.FullName,
+		&i.Email,
+		&i.Type,
+		&i.IsVerify,
 		&i.PasswordChangedAt,
 		&i.CreatedAt,
 	)
