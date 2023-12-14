@@ -8,12 +8,12 @@ import "entities/account.proto";
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
 message VerifyAccountRequest {
-  int64 id_verify = 1;
+  int32 id_verify = 1;
   string secret_code = 2;
 }
 
 message VerifyAccountResponse {
   int32 code = 1;
   string message = 2;
-  bool data = 3;
+  bool details = 3;
 }

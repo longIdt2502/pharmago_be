@@ -116,6 +116,134 @@
           "Pharmago"
         ]
       }
+    },
+    "/address/v1/district": {
+      "post": {
+        "operationId": "Pharmago_ListDistricts",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbDistrictsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbDistrictsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Pharmago"
+        ]
+      }
+    },
+    "/address/v1/province": {
+      "post": {
+        "operationId": "Pharmago_ListProvinces",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbProvincesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbProvincesRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Pharmago"
+        ]
+      }
+    },
+    "/address/v1/ward": {
+      "post": {
+        "operationId": "Pharmago_ListWards",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbWardsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbWardsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Pharmago"
+        ]
+      }
+    },
+    "/company/v1/create": {
+      "post": {
+        "operationId": "Pharmago_CreateCompany",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCreateCompanyResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbCreateCompanyRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Pharmago"
+        ]
+      }
     }
   },
   "definitions": {
@@ -145,6 +273,82 @@
         }
       }
     },
+    "pbAddress": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "lat": {
+          "type": "number",
+          "format": "float"
+        },
+        "lng": {
+          "type": "number",
+          "format": "float"
+        },
+        "province": {
+          "$ref": "#/definitions/pbAddressItem"
+        },
+        "district": {
+          "$ref": "#/definitions/pbAddressItem"
+        },
+        "ward": {
+          "$ref": "#/definitions/pbAddressItem"
+        },
+        "title": {
+          "type": "string"
+        }
+      }
+    },
+    "pbAddressItem": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "nameEn": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "fullNameEn": {
+          "type": "string"
+        }
+      }
+    },
+    "pbCompany": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        },
+        "taxCode": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "address": {
+          "$ref": "#/definitions/pbAddress"
+        },
+        "owner": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
     "pbCreateAccountRequest": {
       "type": "object",
       "properties": {
@@ -161,8 +365,7 @@
           "type": "string"
         },
         "accountType": {
-          "type": "string",
-          "format": "int64"
+          "type": "string"
         }
       }
     },
@@ -176,10 +379,150 @@
         "message": {
           "type": "string"
         },
-        "data": {
+        "details": {
           "$ref": "#/definitions/pbAccount"
         },
         "verifyId": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbCreateCompanyAddressRequest": {
+      "type": "object",
+      "properties": {
+        "lat": {
+          "type": "number",
+          "format": "float"
+        },
+        "lng": {
+          "type": "number",
+          "format": "float"
+        },
+        "province": {
+          "type": "string"
+        },
+        "district": {
+          "type": "string"
+        },
+        "ward": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        }
+      }
+    },
+    "pbCreateCompanyDataRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "taxCode": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "pbCreateCompanyRequest": {
+      "type": "object",
+      "properties": {
+        "company": {
+          "$ref": "#/definitions/pbCreateCompanyDataRequest"
+        },
+        "address": {
+          "$ref": "#/definitions/pbCreateCompanyAddressRequest"
+        }
+      }
+    },
+    "pbCreateCompanyResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "$ref": "#/definitions/pbCompany"
+        }
+      }
+    },
+    "pbDistrict": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "nameEn": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "fullNameEn": {
+          "type": "string"
+        },
+        "codeName": {
+          "type": "string"
+        },
+        "provinceCode": {
+          "type": "string"
+        },
+        "administrativeUnit": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbDistrictsRequest": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "string",
+          "format": "int64"
+        },
+        "limit": {
+          "type": "string",
+          "format": "int64"
+        },
+        "search": {
+          "type": "string"
+        },
+        "province": {
+          "type": "string"
+        }
+      }
+    },
+    "pbDistrictsResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbDistrict"
+          }
+        },
+        "count": {
           "type": "integer",
           "format": "int32"
         }
@@ -221,12 +564,82 @@
         }
       }
     },
+    "pbProvince": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "nameEn": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "fullNameEn": {
+          "type": "string"
+        },
+        "codeName": {
+          "type": "string"
+        },
+        "administrativeUnit": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "administrativeRegion": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbProvincesRequest": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "string",
+          "format": "int64"
+        },
+        "limit": {
+          "type": "string",
+          "format": "int64"
+        },
+        "search": {
+          "type": "string"
+        }
+      }
+    },
+    "pbProvincesResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbProvince"
+          }
+        },
+        "count": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
     "pbVerifyAccountRequest": {
       "type": "object",
       "properties": {
         "idVerify": {
-          "type": "string",
-          "format": "int64"
+          "type": "integer",
+          "format": "int32"
         },
         "secretCode": {
           "type": "string"
@@ -243,8 +656,80 @@
         "message": {
           "type": "string"
         },
-        "data": {
+        "details": {
           "type": "boolean"
+        }
+      }
+    },
+    "pbWard": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "nameEn": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "fullNameEn": {
+          "type": "string"
+        },
+        "codeName": {
+          "type": "string"
+        },
+        "districtCode": {
+          "type": "string"
+        },
+        "administrativeUnit": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbWardsRequest": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "limit": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "search": {
+          "type": "string"
+        },
+        "district": {
+          "type": "string"
+        }
+      }
+    },
+    "pbWardsResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbWard"
+          }
+        },
+        "count": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },

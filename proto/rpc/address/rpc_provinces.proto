@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+import "entities/account.proto";
+import "entities/province.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message ProvincesRequest {
+  int64 page = 1;
+  optional int64 limit = 2;
+  string search = 3;
+}
+
+message ProvincesResponse {
+  int32 code = 1;
+  string message = 2;
+  repeated Province details = 3;
+  int32 count =4;
+}

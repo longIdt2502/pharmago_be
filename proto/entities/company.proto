@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+import "entities/address.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message Company {
+  string name = 1;
+  string code = 2;
+  optional string tax_code = 3;
+  optional string phone = 4;
+  optional string description = 5;
+  Address address = 6;
+  int32 owner = 7;
+}

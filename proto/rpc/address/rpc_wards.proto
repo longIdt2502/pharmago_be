@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+import "entities/account.proto";
+import "entities/ward.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message WardsRequest {
+  int32 page = 1;
+  optional int32 limit = 2;
+  string search = 3;
+  string district = 4;
+}
+
+message WardsResponse {
+  int32 code = 1;
+  string message = 2;
+  repeated Ward details = 3;
+  int32 count = 4;
+}

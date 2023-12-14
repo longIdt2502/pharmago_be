@@ -9,6 +9,7 @@ import (
 var (
 	isValidUsername = regexp.MustCompile(`^[a-z0-9_]+$`).MatchString
 	isValidFullName = regexp.MustCompile(`^[a-zA-Z\sàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ]+$`).MatchString
+	isValidPhone    = regexp.MustCompile(`^(0[1-9][0-9]{8,9})$`).MatchString
 )
 
 func ValidateString(value string, minLength int, maxLength int) error {
@@ -20,11 +21,11 @@ func ValidateString(value string, minLength int, maxLength int) error {
 }
 
 func ValidateUsername(value string) error {
-	if err := ValidateString(value, 3, 100); err != nil {
+	if err := ValidateString(value, 10, 12); err != nil {
 		return err
 	}
-	if !isValidUsername(value) {
-		return fmt.Errorf("must contain only letter, digits or underscore")
+	if !isValidPhone(value) {
+		return fmt.Errorf("must contain only number")
 	}
 	return nil
 }
