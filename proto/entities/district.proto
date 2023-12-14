@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message District {
+  string code = 1;
+  string name = 2;
+  string name_en = 3;
+  string full_name = 4;
+  string full_name_en = 5;
+  string code_name = 6;
+  optional string province_code = 7;
+  optional int32 administrative_unit = 8;
+}

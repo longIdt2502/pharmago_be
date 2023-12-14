@@ -63,6 +63,7 @@ Table companies as C {
   tax_code varchar
   phone varchar
   description varchar
+  address bigserial [ref: > address.id, not null]
   created_at timestamptz [not null, default: `now()`]
   owner bigserial [ref: > A.id]
 }
@@ -71,9 +72,84 @@ Table address {
   id bigserial [pk]
   lat numeric [not null]
   lng numeric [not null]
+  province varchar [ref: > provinces.code]
+  district varchar [ref: > districts.code]
+  ward varchar [ref: > wards.code]
   title varchar [not null]
   user_created bigserial [ref: > A.id, not null]
   created_at timestamptz [not null, default: `now()`]
+
+  Indexes {
+    province
+    district
+    ward
+  }
+}
+
+Table administrative_regions {
+  id bigserial [pk]
+  name varchar [not null]
+  name_en varchar [not null]
+  code_name varchar [not null]
+  code_name_en varchar [not null]
+}
+
+Table administrative_units {
+  id bigserial [pk]
+  full_name varchar [not null]
+  full_name_en varchar [not null]
+  short_name varchar [not null]
+  short_name_en varchar [not null]
+  code_name varchar [not null]
+  code_name_en varchar [not null]
+}
+
+Table provinces {
+  code varchar(20) [pk, unique]
+  name varchar [not null]
+  name_en varchar [not null]
+  full_name varchar [not null]
+  full_name_en varchar [not null]
+  code_name varchar [not null]
+  administrative_unit_id bigserial [ref: > administrative_units.id]
+  administrative_region_id bigserial [ref: > administrative_regions.id]
+
+  Indexes {
+    administrative_unit_id
+    administrative_region_id
+  }
+}
+
+Table districts {
+  code varchar [pk, unique]
+  name varchar [not null]
+  name_en varchar [not null]
+  full_name varchar [not null]
+  full_name_en varchar [not null]
+  code_name varchar [not null]
+  province_code varchar [ref: > provinces.code]
+  administrative_unit_id bigserial [ref: > administrative_units.id]
+
+  Indexes {
+    province_code
+    administrative_unit_id
+  }
+}
+
+Table wards {
+  code varchar [pk, unique]
+  name varchar [not null]
+  name_en varchar [not null]
+  full_name varchar [not null]
+  full_name_en varchar [not null]
+  code_name varchar [not null]
+  district_code varchar [ref: > districts.code]
+  administrative_unit_id bigserial [ref: > administrative_units.id]
+
+  Indexes {
+    district_code
+    administrative_unit_id
+  }
 }
 
 Table warehouses as W {

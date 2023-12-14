@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message AddressItem {
+  string code = 1;
+  string name = 2;
+  string name_en = 3;
+  string full_name = 4;
+  string full_name_en = 5;
+}
+
+message Address {
+  int32 id = 1;
+  float lat = 2;
+  float lng = 3;
+  AddressItem province = 4;
+  AddressItem district = 5;
+  optional AddressItem ward = 6;
+  string title = 7;
+}

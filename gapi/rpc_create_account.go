@@ -2,6 +2,8 @@ package gapi
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 	"fmt"
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
@@ -27,23 +29,37 @@ func (server *ServerGRPC) CreateAccount(ctx context.Context, req *pb.CreateAccou
 		return nil, status.Errorf(codes.Internal, "can't hashed password:", err)
 	}
 
+	accountType, err := server.store.GetAccountType(ctx, db.GetAccountTypeParams{
+		ID: sql.NullInt64{},
+		Code: sql.NullString{
+			String: req.AccountType,
+			Valid:  true,
+		},
+	})
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, status.Errorf(codes.NotFound, "account code doesn't exists")
+		}
+		return nil, status.Errorf(codes.Internal, "failed to get account type")
+	}
+
 	account, err := server.store.CreateAccount(ctx, db.CreateAccountParams{
 		Username:       req.Username,
 		HashedPassword: hashedPassword,
 		FullName:       req.FullName,
 		Email:          req.Email,
-		Type:           req.AccountType,
+		Type:           accountType.ID,
 	})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed create record account:", err)
 	}
 
-	secretCode := utils.RandomInt(100000, 999999)
-
+	randomCode := utils.RandomInt(100000, 999999)
+	secretCode := strconv.Itoa(int(randomCode))
 	verify, err := server.store.CreateVerify(ctx, db.CreateVerifyParams{
 		Username:   req.Username,
 		Email:      req.Email,
-		SecretCode: strconv.Itoa(int(secretCode)),
+		SecretCode: secretCode,
 	})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to create verify:", err)
@@ -51,7 +67,7 @@ func (server *ServerGRPC) CreateAccount(ctx context.Context, req *pb.CreateAccou
 
 	subject := "Xin chào đến với Pharmago"
 	content := fmt.Sprintf(`
-		Đây là mã code của bạn: %c
+		Đây là mã code của bạn: %s
 	`, secretCode)
 	to := []string{req.Email}
 	err = server.sender.SendEmail(subject, content, to, nil, nil, nil)
@@ -63,7 +79,7 @@ func (server *ServerGRPC) CreateAccount(ctx context.Context, req *pb.CreateAccou
 	rsp := &pb.CreateAccountResponse{
 		Code:     int32(200),
 		Message:  "success",
-		Data:     accountMapper,
+		Details:  accountMapper,
 		VerifyId: int32(verify.ID),
 	}
 	return rsp, nil

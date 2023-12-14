@@ -7,15 +7,23 @@ package db
 
 import (
 	"context"
+	"database/sql"
 )
 
 const getAccountType = `-- name: GetAccountType :one
 SELECT id, code, title from account_type
-WHERE id = $1 LIMIT 1
+WHERE id = $1
+    OR code = $2
+LIMIT 1
 `
 
-func (q *Queries) GetAccountType(ctx context.Context, id int64) (AccountType, error) {
-	row := q.db.QueryRowContext(ctx, getAccountType, id)
+type GetAccountTypeParams struct {
+	ID   sql.NullInt64  `json:"id"`
+	Code sql.NullString `json:"code"`
+}
+
+func (q *Queries) GetAccountType(ctx context.Context, arg GetAccountTypeParams) (AccountType, error) {
+	row := q.db.QueryRowContext(ctx, getAccountType, arg.ID, arg.Code)
 	var i AccountType
 	err := row.Scan(&i.ID, &i.Code, &i.Title)
 	return i, err

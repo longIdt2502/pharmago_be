@@ -42,12 +42,33 @@ type AccountType struct {
 }
 
 type Address struct {
-	ID          int64     `json:"id"`
-	Lat         string    `json:"lat"`
-	Lng         string    `json:"lng"`
-	Title       string    `json:"title"`
-	UserCreated int64     `json:"user_created"`
-	CreatedAt   time.Time `json:"created_at"`
+	ID          int64          `json:"id"`
+	Lat         float64        `json:"lat"`
+	Lng         float64        `json:"lng"`
+	Title       string         `json:"title"`
+	UserCreated int64          `json:"user_created"`
+	CreatedAt   time.Time      `json:"created_at"`
+	Province    sql.NullString `json:"province"`
+	District    sql.NullString `json:"district"`
+	Ward        sql.NullString `json:"ward"`
+}
+
+type AdministrativeRegion struct {
+	ID         int64  `json:"id"`
+	Name       string `json:"name"`
+	NameEn     string `json:"name_en"`
+	CodeName   string `json:"code_name"`
+	CodeNameEn string `json:"code_name_en"`
+}
+
+type AdministrativeUnit struct {
+	ID          int64  `json:"id"`
+	FullName    string `json:"full_name"`
+	FullNameEn  string `json:"full_name_en"`
+	ShortName   string `json:"short_name"`
+	ShortNameEn string `json:"short_name_en"`
+	CodeName    string `json:"code_name"`
+	CodeNameEn  string `json:"code_name_en"`
 }
 
 type Company struct {
@@ -58,7 +79,8 @@ type Company struct {
 	Phone       sql.NullString `json:"phone"`
 	Description sql.NullString `json:"description"`
 	CreatedAt   time.Time      `json:"created_at"`
-	Owner       sql.NullInt64  `json:"owner"`
+	Owner       int64          `json:"owner"`
+	Address     int64          `json:"address"`
 }
 
 type Customer struct {
@@ -73,6 +95,17 @@ type Customer struct {
 	UserUpdated sql.NullInt64  `json:"user_updated"`
 	UpdatedAt   sql.NullTime   `json:"updated_at"`
 	CreatedAt   time.Time      `json:"created_at"`
+}
+
+type District struct {
+	Code                 string         `json:"code"`
+	Name                 string         `json:"name"`
+	NameEn               string         `json:"name_en"`
+	FullName             string         `json:"full_name"`
+	FullNameEn           string         `json:"full_name_en"`
+	CodeName             string         `json:"code_name"`
+	ProvinceCode         sql.NullString `json:"province_code"`
+	AdministrativeUnitID sql.NullInt64  `json:"administrative_unit_id"`
 }
 
 type Media struct {
@@ -143,6 +176,17 @@ type ProductMedium struct {
 type ProductType struct {
 	ID   int64  `json:"id"`
 	Name string `json:"name"`
+}
+
+type Province struct {
+	Code                   string        `json:"code"`
+	Name                   string        `json:"name"`
+	NameEn                 string        `json:"name_en"`
+	FullName               string        `json:"full_name"`
+	FullNameEn             string        `json:"full_name_en"`
+	CodeName               string        `json:"code_name"`
+	AdministrativeUnitID   sql.NullInt64 `json:"administrative_unit_id"`
+	AdministrativeRegionID sql.NullInt64 `json:"administrative_region_id"`
 }
 
 type Session struct {
@@ -224,6 +268,12 @@ type Variant struct {
 	CreatedAt      time.Time     `json:"created_at"`
 }
 
+type VariantMedium struct {
+	ID      int64 `json:"id"`
+	Variant int64 `json:"variant"`
+	Media   int64 `json:"media"`
+}
+
 type Verify struct {
 	ID         int64     `json:"id"`
 	Username   string    `json:"username"`
@@ -232,6 +282,17 @@ type Verify struct {
 	IsUsed     bool      `json:"is_used"`
 	CreatedAt  time.Time `json:"created_at"`
 	ExpiredAt  time.Time `json:"expired_at"`
+}
+
+type Ward struct {
+	Code                 string         `json:"code"`
+	Name                 string         `json:"name"`
+	NameEn               string         `json:"name_en"`
+	FullName             string         `json:"full_name"`
+	FullNameEn           string         `json:"full_name_en"`
+	CodeName             string         `json:"code_name"`
+	DistrictCode         sql.NullString `json:"district_code"`
+	AdministrativeUnitID sql.NullInt64  `json:"administrative_unit_id"`
 }
 
 type Warehouse struct {

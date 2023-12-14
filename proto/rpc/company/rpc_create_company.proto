@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+import "entities/account.proto";
+import "entities/company.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message CreateCompanyDataRequest {
+  string name = 1;
+  optional string tax_code = 2;
+  optional string phone = 3;
+  optional string description = 4;
+}
+
+message CreateCompanyAddressRequest {
+  float lat = 1;
+  float lng = 2;
+  string province = 3;
+  string district = 4;
+  optional string ward = 5;
+  string title = 6;
+}
+
+message CreateCompanyRequest {
+    CreateCompanyDataRequest company = 1;
+    CreateCompanyAddressRequest address = 2;
+}
+
+message CreateCompanyResponse {
+  int32 code = 1;
+  string message = 2;
+  Company details = 3;
+}

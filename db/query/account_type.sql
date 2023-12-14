@@ -1,3 +1,6 @@
 -- name: GetAccountType :one
 SELECT * from account_type
-WHERE id = $1 LIMIT 1;
+WHERE id = sqlc.narg(id)
+    OR code = sqlc.narg(code)
+LIMIT 1;
+
