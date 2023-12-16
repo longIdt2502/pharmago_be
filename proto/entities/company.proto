@@ -8,11 +8,12 @@ import "entities/address.proto";
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
 message Company {
-  string name = 1;
-  string code = 2;
-  optional string tax_code = 3;
-  optional string phone = 4;
-  optional string description = 5;
-  Address address = 6;
-  int32 owner = 7;
+  int32 id = 1;
+  string name = 2;
+  string code = 3;
+  optional string tax_code = 4;
+  optional string phone = 5;
+  optional string description = 6;
+  Address address = 7;
+  int32 owner = 8;
 }

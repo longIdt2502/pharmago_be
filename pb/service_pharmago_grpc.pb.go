@@ -26,9 +26,11 @@ type PharmagoClient interface {
 	CreateAccount(ctx context.Context, in *CreateAccountRequest, opts ...grpc.CallOption) (*CreateAccountResponse, error)
 	VerifyAccount(ctx context.Context, in *VerifyAccountRequest, opts ...grpc.CallOption) (*VerifyAccountResponse, error)
 	CreateCompany(ctx context.Context, in *CreateCompanyRequest, opts ...grpc.CallOption) (*CreateCompanyResponse, error)
+	ListCompanies(ctx context.Context, in *GetCompaniesRequest, opts ...grpc.CallOption) (*GetCompaniesResponse, error)
 	ListProvinces(ctx context.Context, in *ProvincesRequest, opts ...grpc.CallOption) (*ProvincesResponse, error)
 	ListDistricts(ctx context.Context, in *DistrictsRequest, opts ...grpc.CallOption) (*DistrictsResponse, error)
 	ListWards(ctx context.Context, in *WardsRequest, opts ...grpc.CallOption) (*WardsResponse, error)
+	CreateProduct(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*CreateProductResponse, error)
 }
 
 type pharmagoClient struct {
@@ -75,6 +77,15 @@ func (c *pharmagoClient) CreateCompany(ctx context.Context, in *CreateCompanyReq
 	return out, nil
 }
 
+func (c *pharmagoClient) ListCompanies(ctx context.Context, in *GetCompaniesRequest, opts ...grpc.CallOption) (*GetCompaniesResponse, error) {
+	out := new(GetCompaniesResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/ListCompanies", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *pharmagoClient) ListProvinces(ctx context.Context, in *ProvincesRequest, opts ...grpc.CallOption) (*ProvincesResponse, error) {
 	out := new(ProvincesResponse)
 	err := c.cc.Invoke(ctx, "/pb.Pharmago/ListProvinces", in, out, opts...)
@@ -102,6 +113,15 @@ func (c *pharmagoClient) ListWards(ctx context.Context, in *WardsRequest, opts .
 	return out, nil
 }
 
+func (c *pharmagoClient) CreateProduct(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*CreateProductResponse, error) {
+	out := new(CreateProductResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/CreateProduct", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PharmagoServer is the server API for Pharmago service.
 // All implementations must embed UnimplementedPharmagoServer
 // for forward compatibility
@@ -110,9 +130,11 @@ type PharmagoServer interface {
 	CreateAccount(context.Context, *CreateAccountRequest) (*CreateAccountResponse, error)
 	VerifyAccount(context.Context, *VerifyAccountRequest) (*VerifyAccountResponse, error)
 	CreateCompany(context.Context, *CreateCompanyRequest) (*CreateCompanyResponse, error)
+	ListCompanies(context.Context, *GetCompaniesRequest) (*GetCompaniesResponse, error)
 	ListProvinces(context.Context, *ProvincesRequest) (*ProvincesResponse, error)
 	ListDistricts(context.Context, *DistrictsRequest) (*DistrictsResponse, error)
 	ListWards(context.Context, *WardsRequest) (*WardsResponse, error)
+	CreateProduct(context.Context, *CreateProductRequest) (*CreateProductResponse, error)
 	mustEmbedUnimplementedPharmagoServer()
 }
 
@@ -132,6 +154,9 @@ func (UnimplementedPharmagoServer) VerifyAccount(context.Context, *VerifyAccount
 func (UnimplementedPharmagoServer) CreateCompany(context.Context, *CreateCompanyRequest) (*CreateCompanyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateCompany not implemented")
 }
+func (UnimplementedPharmagoServer) ListCompanies(context.Context, *GetCompaniesRequest) (*GetCompaniesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListCompanies not implemented")
+}
 func (UnimplementedPharmagoServer) ListProvinces(context.Context, *ProvincesRequest) (*ProvincesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListProvinces not implemented")
 }
@@ -140,6 +165,9 @@ func (UnimplementedPharmagoServer) ListDistricts(context.Context, *DistrictsRequ
 }
 func (UnimplementedPharmagoServer) ListWards(context.Context, *WardsRequest) (*WardsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListWards not implemented")
+}
+func (UnimplementedPharmagoServer) CreateProduct(context.Context, *CreateProductRequest) (*CreateProductResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateProduct not implemented")
 }
 func (UnimplementedPharmagoServer) mustEmbedUnimplementedPharmagoServer() {}
 
@@ -226,6 +254,24 @@ func _Pharmago_CreateCompany_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Pharmago_ListCompanies_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCompaniesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ListCompanies(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/ListCompanies",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ListCompanies(ctx, req.(*GetCompaniesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Pharmago_ListProvinces_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ProvincesRequest)
 	if err := dec(in); err != nil {
@@ -280,6 +326,24 @@ func _Pharmago_ListWards_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Pharmago_CreateProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateProductRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).CreateProduct(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/CreateProduct",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).CreateProduct(ctx, req.(*CreateProductRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Pharmago_ServiceDesc is the grpc.ServiceDesc for Pharmago service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -304,6 +368,10 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Pharmago_CreateCompany_Handler,
 		},
 		{
+			MethodName: "ListCompanies",
+			Handler:    _Pharmago_ListCompanies_Handler,
+		},
+		{
 			MethodName: "ListProvinces",
 			Handler:    _Pharmago_ListProvinces_Handler,
 		},
@@ -314,6 +382,10 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListWards",
 			Handler:    _Pharmago_ListWards_Handler,
+		},
+		{
+			MethodName: "CreateProduct",
+			Handler:    _Pharmago_CreateProduct_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

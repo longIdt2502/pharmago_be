@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml-lang.org)
 -- Database: PostgreSQL
--- Generated at: 2023-12-11T06:29:20.448Z
+-- Generated at: 2023-12-15T09:41:02.480Z
 
 CREATE TABLE "accounts" (
   "id" bigserial PRIMARY KEY,
@@ -56,13 +56,13 @@ CREATE TABLE "verifies" (
 CREATE TABLE "companies" (
   "id" bigserial PRIMARY KEY,
   "name" varchar NOT NULL,
-  "code" varchar NOT NULL,
+  "code" varchar UNIQUE NOT NULL,
   "tax_code" varchar,
   "phone" varchar,
   "description" varchar,
   "address" bigserial NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (now()),
-  "owner" bigserial
+  "owner" bigserial NOT NULL
 );
 
 CREATE TABLE "address" (
@@ -141,6 +141,20 @@ CREATE TABLE "products" (
   "product_category" bigserial,
   "type" bigserial,
   "unit" bigserial NOT NULL,
+  "taDuoc" varchar(255),
+  "nongDo" varchar(255),
+  "lieuDung" varchar(255) NOT NULL,
+  "chiDinh" varchar(255) NOT NULL,
+  "chongChiDinh" varchar(255),
+  "congDung" varchar(255) NOT NULL,
+  "tacDungPhu" varchar(255) NOT NULL,
+  "thanTrong" varchar(255) NOT NULL,
+  "tuongTac" varchar(255),
+  "baoQuan" varchar(255) NOT NULL,
+  "dongGoi" varchar(255) NOT NULL,
+  "noiSx" varchar(255) NOT NULL,
+  "congTySx" varchar(255) NOT NULL,
+  "congTyDk" varchar(255) NOT NULL,
   "company" bigserial,
   "user_created" bigserial NOT NULL,
   "user_updated" bigserial,
@@ -196,11 +210,11 @@ CREATE TABLE "unit_changes" (
 CREATE TABLE "variants" (
   "id" bigserial PRIMARY KEY,
   "name" varchar NOT NULL,
-  "code" varchar NOT NULL,
+  "code" varchar UNIQUE NOT NULL,
   "barcode" varchar NOT NULL,
-  "decision_number" bigint NOT NULL,
-  "register_number" bigint NOT NULL,
-  "discount" numeric NOT NULL DEFAULT 0,
+  "decision_number" varchar(255) UNIQUE NOT NULL,
+  "register_number" varchar(255) UNIQUE NOT NULL,
+  "longevity" varchar(255) NOT NULL,
   "vat" numeric NOT NULL DEFAULT 0,
   "product" bigserial,
   "user_created" bigserial NOT NULL,
@@ -344,7 +358,7 @@ CREATE INDEX ON "tickets" ("qr");
 
 CREATE UNIQUE INDEX ON "tickets" ("id", "qr");
 
-ALTER TABLE "accounts" ADD FOREIGN KEY ("type") REFERENCES "account_type" ("id");
+ALTER TABLE "accounts" ADD FOREIGN KEY ("type") REFERENCES "account_type" ("code");
 
 ALTER TABLE "account_media" ADD FOREIGN KEY ("account") REFERENCES "accounts" ("id");
 
@@ -390,7 +404,7 @@ ALTER TABLE "products" ADD FOREIGN KEY ("product_category") REFERENCES "product_
 
 ALTER TABLE "products" ADD FOREIGN KEY ("type") REFERENCES "product_type" ("id");
 
-ALTER TABLE "products" ADD FOREIGN KEY ("unit") REFERENCES "units" ("id");
+ALTER TABLE "units" ADD FOREIGN KEY ("id") REFERENCES "products" ("unit");
 
 ALTER TABLE "products" ADD FOREIGN KEY ("company") REFERENCES "companies" ("id");
 

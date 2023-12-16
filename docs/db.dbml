@@ -11,7 +11,7 @@ Table accounts as A {
   hashed_password varchar [not null]
   full_name varchar [not null]
   email varchar [unique, not null]
-  type bigserial [ref: > account_type.id, not null]
+  type bigserial [ref: > account_type.code, not null]
   is_verify boolean [not null, default: false]
   password_changed_at timestamptz [not null, default: '0001-01-01 00:00:00Z']
   created_at timestamptz [not null, default: `now()`]
@@ -59,13 +59,13 @@ Table verifies {
 Table companies as C {
   id bigserial [pk]
   name varchar [not null]
-  code varchar [not null]
+  code varchar [unique, not null]
   tax_code varchar
   phone varchar
   description varchar
   address bigserial [ref: > address.id, not null]
   created_at timestamptz [not null, default: `now()`]
-  owner bigserial [ref: > A.id]
+  owner bigserial [ref: > A.id, not null]
 }
 
 Table address {
@@ -169,7 +169,21 @@ Table products as P {
   code varchar [not null]
   product_category bigserial [ref: > product_categories.id]
   type bigserial [ref: > product_type.id]
-  unit bigserial [ref: > U.id, not null]
+  unit bigserial [ref: - U.id, not null]
+  taDuoc varchar(255)
+  nongDo varchar(255)
+  lieuDung varchar(255) [not null]
+  chiDinh varchar(255) [not null]
+  chongChiDinh varchar(255)
+  congDung varchar(255) [not null]
+  tacDungPhu varchar(255) [not null]
+  thanTrong varchar(255) [not null]
+  tuongTac varchar(255)
+  baoQuan varchar(255) [not null]
+  dongGoi varchar(255) [not null]
+  noiSx varchar(255) [not null]
+  congTySx varchar(255) [not null]
+  congTyDk varchar(255) [not null]
   company bigserial [ref: > C.id]
   user_created bigserial [ref: > A.id, not null]
   user_updated bigserial [ref: > A.id]
@@ -236,11 +250,11 @@ Table unit_changes {
 Table variants as V {
   id bigserial [pk]
   name varchar [not null]
-  code varchar [not null]
+  code varchar [not null, unique]
   barcode varchar [not null]
-  decision_number bigint [not null]
-  register_number bigint [not null]
-  discount numeric [not null, default: 0]
+  decision_number varchar(255) [not null, unique]
+  register_number varchar(255) [not null, unique]
+  longevity varchar(255) [not null]
   vat numeric [not null, default: 0]
   product bigserial [ref: > P.id]
   user_created bigserial [ref: > A.id, not null]

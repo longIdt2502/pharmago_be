@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+import "entities/account.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message CreateProductRequest {
+  string file_name = 1;
+  bytes chunk = 2;
+}
+
+message CreateProductResponse {
+  string file_name = 1;
+  uint32 size = 2;
+}

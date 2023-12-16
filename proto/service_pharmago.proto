@@ -11,6 +11,8 @@ import "rpc/address/rpc_provinces.proto";
 import "rpc/address/rpc_districts.proto";
 import "rpc/address/rpc_wards.proto";
 import "rpc/company/rpc_create_company.proto";
+import "rpc/company/rpc_companies.proto";
+import "rpc/product/rpc_create_product.proto";
 
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
@@ -32,17 +34,29 @@ service Pharmago {
       post: "/account/v1/login"
       body: "*"
     };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Login User";
+      tags: "Account";
+    };
   };
   rpc CreateAccount (CreateAccountRequest) returns (CreateAccountResponse) {
     option (google.api.http) = {
       post: "/account/v1/register"
       body: "*"
     };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create new Account";
+      tags: "Account";
+    };
   };
   rpc VerifyAccount (VerifyAccountRequest) returns (VerifyAccountResponse) {
     option (google.api.http) = {
       post: "/account/v1/verify"
       body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Verify new Account";
+      tags: "Account";
     };
   };
 
@@ -51,12 +65,30 @@ service Pharmago {
       post: "/company/v1/create"
       body: "*"
     };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create new user";
+      tags: "Company";
+    };
+  };
+
+  rpc ListCompanies (GetCompaniesRequest) returns (GetCompaniesResponse) {
+    option (google.api.http) = {
+      get: "/company/v1/list"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get list company";
+      tags: "Company";
+    };
   };
 
   rpc ListProvinces (ProvincesRequest) returns (ProvincesResponse) {
     option (google.api.http) = {
       post: "/address/v1/province"
       body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get list province";
+      tags: "Address";
     };
   };
 
@@ -65,12 +97,31 @@ service Pharmago {
       post: "/address/v1/district"
       body: "*"
     };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get list district";
+      tags: "Address";
+    };
   };
 
   rpc ListWards (WardsRequest) returns (WardsResponse) {
     option (google.api.http) = {
       post: "/address/v1/ward"
       body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get list ward";
+      tags: "Address";
+    };
+  };
+
+  rpc CreateProduct (CreateProductRequest) returns (CreateProductResponse) {
+    option (google.api.http) = {
+      post: "/product/v1/create"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create New Product";
+      tags: "Product";
     };
   };
 }

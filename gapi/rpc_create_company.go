@@ -80,7 +80,7 @@ func (server *ServerGRPC) CreateCompany(ctx context.Context, req *pb.CreateCompa
 		return nil, status.Errorf(codes.Internal, "failed to create company: ", err)
 	}
 
-	companyData := mapper.CompanyMapper(ctx, server.store, company, address)
+	companyData := mapper.CompanyMapper(ctx, server.store, company)
 
 	rsp := &pb.CreateCompanyResponse{
 		Code:    200,
