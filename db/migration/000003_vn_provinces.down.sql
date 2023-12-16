@@ -8,6 +8,8 @@ ALTER TABLE "wards" DROP CONSTRAINT IF EXISTS "wards_administrative_unit_fkey";
 ALTER TABLE "address" DROP CONSTRAINT IF EXISTS "address_province_fkey";
 ALTER TABLE "address" DROP CONSTRAINT IF EXISTS "address_district_fkey";
 ALTER TABLE "address" DROP CONSTRAINT IF EXISTS "address_ward_fkey";
+ALTER TABLE "companies" DROP CONSTRAINT IF EXISTS "companies_address_fkey";
+ALTER TABLE "companies" DROP COLUMN IF EXISTS "address";
 
 -- Drop indexes
 DROP INDEX IF EXISTS "provinces_administrative_unit_id_idx";

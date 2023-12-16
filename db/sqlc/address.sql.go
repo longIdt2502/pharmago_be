@@ -53,6 +53,29 @@ func (q *Queries) CreateAddress(ctx context.Context, arg CreateAddressParams) (A
 	return i, err
 }
 
+const getAddress = `-- name: GetAddress :one
+SELECT id, lat, lng, title, user_created, created_at, province, district, ward FROM address
+WHERE id = $1
+LIMIT 1
+`
+
+func (q *Queries) GetAddress(ctx context.Context, id int64) (Address, error) {
+	row := q.db.QueryRowContext(ctx, getAddress, id)
+	var i Address
+	err := row.Scan(
+		&i.ID,
+		&i.Lat,
+		&i.Lng,
+		&i.Title,
+		&i.UserCreated,
+		&i.CreatedAt,
+		&i.Province,
+		&i.District,
+		&i.Ward,
+	)
+	return i, err
+}
+
 const getDistrict = `-- name: GetDistrict :many
 SELECT code, name, name_en, full_name, full_name_en, code_name, province_code, administrative_unit_id FROM districts
 WHERE province_code = $1

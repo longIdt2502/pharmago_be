@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "rpc/rpc_login.proto";
+import "rpc/rpc_create_account.proto";
+import "rpc/rpc_verify_account.proto";
+import "rpc/address/rpc_provinces.proto";
+import "rpc/address/rpc_districts.proto";
+import "rpc/address/rpc_wards.proto";
+import "rpc/company/rpc_create_company.proto";
+import "rpc/company/rpc_companies.proto";
+import "rpc/product/rpc_create_product.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "A Bit of Everything";
+    version: "1.0";
+    contact: {
+      name: "Pharmago_Be";
+      url: "https://github.com/grpc-ecosystem/grpc-gateway";
+      email: "long.lbg@idtinc.co";
+    };
+  };
+};
+
+service Upload {
+  rpc Upload (LoginRequest) returns (LoginResponse) {
+    option (google.api.http) = {
+      post: "/account/v1/login"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Login User";
+      tags: "Account";
+    };
+  };
+}

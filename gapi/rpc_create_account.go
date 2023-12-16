@@ -4,17 +4,19 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"fmt"
+	"github.com/hibiken/asynq"
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/gapi/mapper"
 	"github.com/longIdt2502/pharmago_be/pb"
 	"github.com/longIdt2502/pharmago_be/utils"
 	"github.com/longIdt2502/pharmago_be/validate"
+	"github.com/longIdt2502/pharmago_be/woker"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"strconv"
+	"time"
 )
 
 func (server *ServerGRPC) CreateAccount(ctx context.Context, req *pb.CreateAccountRequest) (*pb.CreateAccountResponse, error) {
@@ -65,14 +67,20 @@ func (server *ServerGRPC) CreateAccount(ctx context.Context, req *pb.CreateAccou
 		return nil, status.Errorf(codes.Internal, "failed to create verify:", err)
 	}
 
-	subject := "Xin chào đến với Pharmago"
-	content := fmt.Sprintf(`
-		Đây là mã code của bạn: %s
-	`, secretCode)
-	to := []string{req.Email}
-	err = server.sender.SendEmail(subject, content, to, nil, nil, nil)
+	// ===== Redis task distributor send email
+	taskPayload := &woker.PayloadSendVerifyEmail{
+		Username: req.Username,
+		Code:     secretCode,
+	}
+	opts := []asynq.Option{
+		asynq.MaxRetry(10),
+		asynq.ProcessIn(10 * time.Second),
+		asynq.Queue(woker.QueueCritical),
+	}
+
+	err = server.taskDistributor.DistributeTaskSendVerifyEmail(ctx, taskPayload, opts...)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed send email code:", err)
+		return nil, status.Errorf(codes.Internal, "failed to run task email: ", err)
 	}
 
 	accountMapper := mapper.AccountMapper(account)

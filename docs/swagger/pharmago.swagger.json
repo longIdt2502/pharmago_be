@@ -23,6 +23,7 @@
   "paths": {
     "/account/v1/login": {
       "post": {
+        "summary": "Login User",
         "operationId": "Pharmago_Login",
         "responses": {
           "200": {
@@ -49,12 +50,13 @@
           }
         ],
         "tags": [
-          "Pharmago"
+          "Account"
         ]
       }
     },
     "/account/v1/register": {
       "post": {
+        "summary": "Create new Account",
         "operationId": "Pharmago_CreateAccount",
         "responses": {
           "200": {
@@ -81,12 +83,13 @@
           }
         ],
         "tags": [
-          "Pharmago"
+          "Account"
         ]
       }
     },
     "/account/v1/verify": {
       "post": {
+        "summary": "Verify new Account",
         "operationId": "Pharmago_VerifyAccount",
         "responses": {
           "200": {
@@ -113,12 +116,13 @@
           }
         ],
         "tags": [
-          "Pharmago"
+          "Account"
         ]
       }
     },
     "/address/v1/district": {
       "post": {
+        "summary": "Get list district",
         "operationId": "Pharmago_ListDistricts",
         "responses": {
           "200": {
@@ -145,12 +149,13 @@
           }
         ],
         "tags": [
-          "Pharmago"
+          "Address"
         ]
       }
     },
     "/address/v1/province": {
       "post": {
+        "summary": "Get list province",
         "operationId": "Pharmago_ListProvinces",
         "responses": {
           "200": {
@@ -177,12 +182,13 @@
           }
         ],
         "tags": [
-          "Pharmago"
+          "Address"
         ]
       }
     },
     "/address/v1/ward": {
       "post": {
+        "summary": "Get list ward",
         "operationId": "Pharmago_ListWards",
         "responses": {
           "200": {
@@ -209,12 +215,13 @@
           }
         ],
         "tags": [
-          "Pharmago"
+          "Address"
         ]
       }
     },
     "/company/v1/create": {
       "post": {
+        "summary": "Create new user",
         "operationId": "Pharmago_CreateCompany",
         "responses": {
           "200": {
@@ -241,7 +248,85 @@
           }
         ],
         "tags": [
-          "Pharmago"
+          "Company"
+        ]
+      }
+    },
+    "/company/v1/list": {
+      "get": {
+        "summary": "Get list company",
+        "operationId": "Pharmago_ListCompanies",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetCompaniesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Company"
+        ]
+      }
+    },
+    "/product/v1/create": {
+      "post": {
+        "summary": "Create New Product",
+        "operationId": "Pharmago_CreateProduct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCreateProductResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbCreateProductRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Product"
         ]
       }
     }
@@ -325,6 +410,10 @@
     "pbCompany": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
         "name": {
           "type": "string"
         },
@@ -456,6 +545,30 @@
         }
       }
     },
+    "pbCreateProductRequest": {
+      "type": "object",
+      "properties": {
+        "fileName": {
+          "type": "string"
+        },
+        "chunk": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "pbCreateProductResponse": {
+      "type": "object",
+      "properties": {
+        "fileName": {
+          "type": "string"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
     "pbDistrict": {
       "type": "object",
       "properties": {
@@ -528,6 +641,25 @@
         }
       }
     },
+    "pbGetCompaniesResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbCompany"
+          }
+        }
+      }
+    },
     "pbLoginRequest": {
       "type": "object",
       "properties": {
@@ -540,6 +672,21 @@
       }
     },
     "pbLoginResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "$ref": "#/definitions/pbLoginResponseData"
+        }
+      }
+    },
+    "pbLoginResponseData": {
       "type": "object",
       "properties": {
         "account": {

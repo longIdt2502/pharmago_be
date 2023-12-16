@@ -61,12 +61,16 @@ func (server *ServerGRPC) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 	accountResponse := mapper.AccountMapper(account)
 
 	rsp := &pb.LoginResponse{
-		Account:               accountResponse,
-		SessionId:             session.ID.String(),
-		AccessToken:           accessToken,
-		RefreshToken:          refreshToken,
-		AccessTokenExpiresAt:  timestamppb.New(accessTokenPayload.ExpireAt),
-		RefreshTokenExpiresAt: timestamppb.New(refreshTokenPayload.ExpireAt),
+		Code:    200,
+		Message: "success",
+		Details: &pb.LoginResponseData{
+			Account:               accountResponse,
+			SessionId:             session.ID.String(),
+			AccessToken:           accessToken,
+			RefreshToken:          refreshToken,
+			AccessTokenExpiresAt:  timestamppb.New(accessTokenPayload.ExpireAt),
+			RefreshTokenExpiresAt: timestamppb.New(refreshTokenPayload.ExpireAt),
+		},
 	}
 	return rsp, nil
 }

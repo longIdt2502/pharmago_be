@@ -52,3 +52,58 @@ func (q *Queries) CreateCompany(ctx context.Context, arg CreateCompanyParams) (C
 	)
 	return i, err
 }
+
+const getCompanies = `-- name: GetCompanies :many
+SELECT id, name, code, tax_code, phone, description, created_at, owner, address FROM companies
+WHERE owner = $1::int AND
+    (name ILIKE COALESCE($2::varchar, '%') OR
+    phone ILIKE COALESCE($2::varchar, '%'))
+ORDER BY -id
+LIMIT COALESCE($4::int, 10)
+OFFSET (COALESCE($3::int, 1) - 1) * COALESCE($4::int, 10)
+`
+
+type GetCompaniesParams struct {
+	Owner  sql.NullInt32  `json:"owner"`
+	Search sql.NullString `json:"search"`
+	Page   sql.NullInt32  `json:"page"`
+	Limit  sql.NullInt32  `json:"limit"`
+}
+
+func (q *Queries) GetCompanies(ctx context.Context, arg GetCompaniesParams) ([]Company, error) {
+	rows, err := q.db.QueryContext(ctx, getCompanies,
+		arg.Owner,
+		arg.Search,
+		arg.Page,
+		arg.Limit,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Company{}
+	for rows.Next() {
+		var i Company
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Code,
+			&i.TaxCode,
+			&i.Phone,
+			&i.Description,
+			&i.CreatedAt,
+			&i.Owner,
+			&i.Address,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

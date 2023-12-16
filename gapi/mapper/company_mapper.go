@@ -6,7 +6,7 @@ import (
 	"github.com/longIdt2502/pharmago_be/pb"
 )
 
-func CompanyMapper(ctx context.Context, store *db.Store, data db.Company, address db.Address) *pb.Company {
+func CompanyMapper(ctx context.Context, store *db.Store, data db.Company) *pb.Company {
 	var taxCode *string
 	if data.TaxCode.Valid {
 		taxCode = &data.TaxCode.String
@@ -16,6 +16,8 @@ func CompanyMapper(ctx context.Context, store *db.Store, data db.Company, addres
 	if data.Phone.Valid {
 		phone = &data.Phone.String
 	}
+
+	address, _ := store.GetAddress(ctx, data.Address)
 
 	var provincePb *pb.AddressItem
 	if address.Province.Valid {
@@ -64,6 +66,7 @@ func CompanyMapper(ctx context.Context, store *db.Store, data db.Company, addres
 	}
 
 	return &pb.Company{
+		Id:          int32(data.ID),
 		Name:        data.Name,
 		Code:        data.Code,
 		TaxCode:     taxCode,
