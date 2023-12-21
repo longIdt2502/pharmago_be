@@ -300,6 +300,151 @@
         ]
       }
     },
+    "/price_list/v1/detail/{id}": {
+      "get": {
+        "summary": "Get Detail Price list",
+        "operationId": "Pharmago_DetailPriceList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbDetailPriceListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Price List"
+        ]
+      }
+    },
+    "/price_list/v1/list": {
+      "get": {
+        "summary": "Get Price list",
+        "operationId": "Pharmago_GetPriceList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbPriceListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "company",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "minPriceImport",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "float"
+          },
+          {
+            "name": "maxPriceImport",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "float"
+          },
+          {
+            "name": "minPriceSell",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "float"
+          },
+          {
+            "name": "maxPriceSell",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "float"
+          }
+        ],
+        "tags": [
+          "Price List"
+        ]
+      }
+    },
+    "/price_list/v1/update": {
+      "put": {
+        "summary": "Update Price list",
+        "operationId": "Pharmago_UpdatePriceList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbUpdatePriceListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbUpdatePriceListRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Price List"
+        ]
+      }
+    },
     "/product/v1/create": {
       "post": {
         "summary": "Create New Product",
@@ -759,6 +904,21 @@
         }
       }
     },
+    "pbDetailPriceListResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "$ref": "#/definitions/pbPriceList"
+        }
+      }
+    },
     "pbDistrict": {
       "type": "object",
       "properties": {
@@ -920,6 +1080,69 @@
         }
       }
     },
+    "pbPriceList": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "variantCode": {
+          "type": "string"
+        },
+        "variantName": {
+          "type": "string"
+        },
+        "variantMedia": {
+          "type": "string"
+        },
+        "priceImport": {
+          "type": "number",
+          "format": "float"
+        },
+        "priceSell": {
+          "type": "number",
+          "format": "float"
+        },
+        "unit": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "unitName": {
+          "type": "string"
+        },
+        "userCreated": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "userCreatedName": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "pbPriceListResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbPriceList"
+          }
+        }
+      }
+    },
     "pbProduct": {
       "type": "object",
       "properties": {
@@ -1058,6 +1281,38 @@
         "count": {
           "type": "integer",
           "format": "int32"
+        }
+      }
+    },
+    "pbUpdatePriceListRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "priceImport": {
+          "type": "number",
+          "format": "float"
+        },
+        "priceSell": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "pbUpdatePriceListResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "$ref": "#/definitions/pbPriceList"
         }
       }
     },

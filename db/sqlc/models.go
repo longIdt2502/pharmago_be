@@ -144,6 +144,30 @@ type OrderType struct {
 	Title string `json:"title"`
 }
 
+type PriceList struct {
+	ID          int64         `json:"id"`
+	VariantCode string        `json:"variant_code"`
+	VariantName string        `json:"variant_name"`
+	PriceImport float64       `json:"price_import"`
+	PriceSell   float64       `json:"price_sell"`
+	Unit        int64         `json:"unit"`
+	UserCreated int64         `json:"user_created"`
+	UserUpdated sql.NullInt64 `json:"user_updated"`
+	UpdatedAt   sql.NullTime  `json:"updated_at"`
+	CreatedAt   time.Time     `json:"created_at"`
+}
+
+type PriceListLog struct {
+	ID             int64     `json:"id"`
+	OldPriceImport float64   `json:"old_price_import"`
+	NewPriceImport float64   `json:"new_price_import"`
+	OldPriceSell   float64   `json:"old_price_sell"`
+	NewPriceSell   float64   `json:"new_price_sell"`
+	PriceList      int64     `json:"price_list"`
+	UserUpdated    int64     `json:"user_updated"`
+	UpdatedAt      time.Time `json:"updated_at"`
+}
+
 type Product struct {
 	ID              int64          `json:"id"`
 	Name            string         `json:"name"`

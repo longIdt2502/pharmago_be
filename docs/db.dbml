@@ -196,6 +196,30 @@ Table products as P {
   }
 }
 
+Table price_list as PL {
+  id bigserial [pk]
+  variant_code varchar [ref: > V.code, not null, unique]
+  variant_name varchar [not null]
+  price_import float [not null]
+  price_sell float [not null]
+  unit bigserial [ref: > U.id, not null]
+  user_created bigserial [ref: > A.id, not null]
+  user_updated bigserial [ref: > A.id]
+  updated_at timestamptz
+  created_at timestamptz [not null, default: `now()`]
+}
+
+Table price_list_log as PLL {
+  id bigserial [pk]
+  old_price_import float [not null]
+  new_price_import float [not null]
+  old_price_sell float [not null]
+  new_price_sell float [not null]
+  price_list bigserial [ref: > PL.id, not null]
+  user_updated bigserial [ref: > A.id, not null]
+  updated_at timestamptz [not null, default: `now()`]
+}
+
 Table product_media {
   id bigserial [pk]
   product bigserial [ref: > P.id]
