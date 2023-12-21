@@ -9,6 +9,19 @@ import (
 	"context"
 )
 
+const createMedia = `-- name: CreateMedia :one
+INSERT INTO medias (
+    media_url
+) VALUES ($1) RETURNING id, media_url
+`
+
+func (q *Queries) CreateMedia(ctx context.Context, mediaUrl string) (Media, error) {
+	row := q.db.QueryRowContext(ctx, createMedia, mediaUrl)
+	var i Media
+	err := row.Scan(&i.ID, &i.MediaUrl)
+	return i, err
+}
+
 const getMedia = `-- name: GetMedia :one
 SELECT id, media_url FROM medias
 WHERE id = $1 LIMIT 1

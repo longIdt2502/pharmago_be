@@ -3,16 +3,60 @@ syntax = "proto3";
 package pb;
 
 import "google/protobuf/timestamp.proto";
-import "entities/account.proto";
+import "entities/product.proto";
 
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
+message CreateProductRequestData {
+  string name = 1;
+  string code = 2;
+  optional int32 category = 3;
+  optional int32 type = 4;
+  int32 company = 5;
+  optional string taDuoc = 6;
+  optional string nongDo = 7;
+  string lieuDung = 8;
+  string chiDinh = 9;
+  optional string chongChiDinh = 10;
+  string congDung = 11;
+  string tacDungPhu = 12;
+  string thanTrong = 13;
+  optional string tuongTac = 14;
+  string baoQuan = 15;
+  string dongGoi = 16;
+  string noiSx = 17;
+  string congTySx = 18;
+  string congTyDk = 19;
+  repeated bytes image = 20;
+}
+
+message CreateProductRequestUnit {
+  string name = 1;
+  double sell_price = 2;
+  double import_price = 3;
+  optional double weight = 4;
+  optional string weight_unit = 5;
+}
+
+message CreateProductRequestVariant {
+  string name = 1;
+  string code = 2;
+  string barCode = 3;
+  string decision_number = 4;
+  string register_number = 5;
+  string longevity = 6;
+  optional double vat = 7;
+  optional bytes image = 8;
+}
+
 message CreateProductRequest {
-  string file_name = 1;
-  bytes chunk = 2;
+  CreateProductRequestData product = 1;
+  CreateProductRequestUnit unit = 2;
+  repeated CreateProductRequestVariant variants = 3;
 }
 
 message CreateProductResponse {
-  string file_name = 1;
-  uint32 size = 2;
+  int32 code = 1;
+  string message = 2;
+  Product details = 3;
 }

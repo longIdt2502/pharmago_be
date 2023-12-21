@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message Product {
+  int32 id = 1;
+  string name = 2;
+  string code = 3;
+  optional int32 category = 4;
+  optional int32 type = 5;
+  optional string taDuoc = 6;
+  optional string nongDo = 7;
+  string lieuDung = 8;
+  string chiDinh = 9;
+  optional string chongChiDinh = 10;
+  string congDung = 11;
+  string tacDungPhu = 12;
+  string thanTrong = 13;
+  optional string tuongTac = 14;
+  string baoQuan = 15;
+  string dongGoi = 16;
+  string noiSx = 17;
+  string congTySx = 18;
+  string congTyDk = 19;
+  repeated string image = 20;
+}
+
+message ProductPreview {
+  string name = 1;
+  string code = 2;
+  int32 company = 3;
+  repeated string image = 4;
+}

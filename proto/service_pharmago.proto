@@ -13,6 +13,7 @@ import "rpc/address/rpc_wards.proto";
 import "rpc/company/rpc_create_company.proto";
 import "rpc/company/rpc_companies.proto";
 import "rpc/product/rpc_create_product.proto";
+import "rpc/product/rpc_list_product.proto";
 
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
@@ -26,6 +27,22 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
       email: "long.lbg@idtinc.co";
     };
   };
+  security_definitions: {
+    security: {
+      key: "bearer"
+      value: {
+        type: TYPE_API_KEY
+        in: IN_HEADER
+        name: "Authorization"
+        description: "Authentication token, prefixed by Bearer: Bearer <token>"
+      }
+    }
+  }
+  security: {
+    security_requirement: {
+      key: "bearer"
+    }
+  }
 };
 
 service Pharmago {
@@ -37,6 +54,7 @@ service Pharmago {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Login User";
       tags: "Account";
+      security: {};
     };
   };
   rpc CreateAccount (CreateAccountRequest) returns (CreateAccountResponse) {
@@ -47,6 +65,7 @@ service Pharmago {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Create new Account";
       tags: "Account";
+      security: {};
     };
   };
   rpc VerifyAccount (VerifyAccountRequest) returns (VerifyAccountResponse) {
@@ -57,6 +76,7 @@ service Pharmago {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Verify new Account";
       tags: "Account";
+      security: {};
     };
   };
 
@@ -118,6 +138,16 @@ service Pharmago {
     option (google.api.http) = {
       post: "/product/v1/create"
       body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create New Product";
+      tags: "Product";
+    };
+  };
+
+  rpc ListProduct (ListProductRequest) returns (ListProductResponse) {
+    option (google.api.http) = {
+      get: "/product/v1/list"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Create New Product";

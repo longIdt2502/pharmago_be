@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+import "entities/product.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message ListProductRequest {
+  optional int32 page = 1;
+  optional int32 limit = 2;
+  optional string search = 3;
+  optional int32 company = 4;
+}
+
+message ListProductResponse {
+  int32 code = 1;
+  string message = 2;
+  repeated Product details = 3;
+}

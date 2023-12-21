@@ -145,21 +145,36 @@ type OrderType struct {
 }
 
 type Product struct {
-	ID              int64         `json:"id"`
-	Name            string        `json:"name"`
-	Code            string        `json:"code"`
-	ProductCategory sql.NullInt64 `json:"product_category"`
-	Type            sql.NullInt64 `json:"type"`
-	Unit            int64         `json:"unit"`
-	Company         sql.NullInt64 `json:"company"`
-	UserCreated     int64         `json:"user_created"`
-	UserUpdated     sql.NullInt64 `json:"user_updated"`
-	UpdatedAt       sql.NullTime  `json:"updated_at"`
-	CreatedAt       time.Time     `json:"created_at"`
+	ID              int64          `json:"id"`
+	Name            string         `json:"name"`
+	Code            string         `json:"code"`
+	ProductCategory sql.NullInt64  `json:"product_category"`
+	Type            sql.NullInt64  `json:"type"`
+	Unit            int64          `json:"unit"`
+	Company         sql.NullInt64  `json:"company"`
+	UserCreated     int64          `json:"user_created"`
+	UserUpdated     sql.NullInt64  `json:"user_updated"`
+	UpdatedAt       sql.NullTime   `json:"updated_at"`
+	CreatedAt       time.Time      `json:"created_at"`
+	Taduoc          sql.NullString `json:"taduoc"`
+	Nongdo          sql.NullString `json:"nongdo"`
+	Lieudung        string         `json:"lieudung"`
+	Chidinh         string         `json:"chidinh"`
+	Chongchidinh    sql.NullString `json:"chongchidinh"`
+	Congdung        string         `json:"congdung"`
+	Tacdungphu      string         `json:"tacdungphu"`
+	Thantrong       string         `json:"thantrong"`
+	Tuongtac        sql.NullString `json:"tuongtac"`
+	Baoquan         string         `json:"baoquan"`
+	Donggoi         string         `json:"donggoi"`
+	Noisx           string         `json:"noisx"`
+	Congtysx        string         `json:"congtysx"`
+	Congtydk        string         `json:"congtydk"`
+	Active          bool           `json:"active"`
 }
 
 type ProductCategory struct {
-	ID          int64         `json:"id"`
+	ID          int32         `json:"id"`
 	Name        string        `json:"name"`
 	UserCreated int64         `json:"user_created"`
 	UserUpdated sql.NullInt64 `json:"user_updated"`
@@ -174,7 +189,7 @@ type ProductMedium struct {
 }
 
 type ProductType struct {
-	ID   int64  `json:"id"`
+	ID   int32  `json:"id"`
 	Name string `json:"name"`
 }
 
@@ -257,15 +272,15 @@ type Variant struct {
 	Name           string        `json:"name"`
 	Code           string        `json:"code"`
 	Barcode        string        `json:"barcode"`
-	DecisionNumber int64         `json:"decision_number"`
-	RegisterNumber int64         `json:"register_number"`
-	Discount       string        `json:"discount"`
+	DecisionNumber string        `json:"decision_number"`
+	RegisterNumber string        `json:"register_number"`
 	Vat            string        `json:"vat"`
 	Product        sql.NullInt64 `json:"product"`
 	UserCreated    int64         `json:"user_created"`
 	UserUpdated    sql.NullInt64 `json:"user_updated"`
 	UpdatedAt      sql.NullTime  `json:"updated_at"`
 	CreatedAt      time.Time     `json:"created_at"`
+	Longevity      string        `json:"longevity"`
 }
 
 type VariantMedium struct {

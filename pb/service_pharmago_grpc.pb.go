@@ -31,6 +31,7 @@ type PharmagoClient interface {
 	ListDistricts(ctx context.Context, in *DistrictsRequest, opts ...grpc.CallOption) (*DistrictsResponse, error)
 	ListWards(ctx context.Context, in *WardsRequest, opts ...grpc.CallOption) (*WardsResponse, error)
 	CreateProduct(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*CreateProductResponse, error)
+	ListProduct(ctx context.Context, in *ListProductRequest, opts ...grpc.CallOption) (*ListProductResponse, error)
 }
 
 type pharmagoClient struct {
@@ -122,6 +123,15 @@ func (c *pharmagoClient) CreateProduct(ctx context.Context, in *CreateProductReq
 	return out, nil
 }
 
+func (c *pharmagoClient) ListProduct(ctx context.Context, in *ListProductRequest, opts ...grpc.CallOption) (*ListProductResponse, error) {
+	out := new(ListProductResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/ListProduct", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PharmagoServer is the server API for Pharmago service.
 // All implementations must embed UnimplementedPharmagoServer
 // for forward compatibility
@@ -135,6 +145,7 @@ type PharmagoServer interface {
 	ListDistricts(context.Context, *DistrictsRequest) (*DistrictsResponse, error)
 	ListWards(context.Context, *WardsRequest) (*WardsResponse, error)
 	CreateProduct(context.Context, *CreateProductRequest) (*CreateProductResponse, error)
+	ListProduct(context.Context, *ListProductRequest) (*ListProductResponse, error)
 	mustEmbedUnimplementedPharmagoServer()
 }
 
@@ -168,6 +179,9 @@ func (UnimplementedPharmagoServer) ListWards(context.Context, *WardsRequest) (*W
 }
 func (UnimplementedPharmagoServer) CreateProduct(context.Context, *CreateProductRequest) (*CreateProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateProduct not implemented")
+}
+func (UnimplementedPharmagoServer) ListProduct(context.Context, *ListProductRequest) (*ListProductResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListProduct not implemented")
 }
 func (UnimplementedPharmagoServer) mustEmbedUnimplementedPharmagoServer() {}
 
@@ -344,6 +358,24 @@ func _Pharmago_CreateProduct_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Pharmago_ListProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListProductRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ListProduct(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/ListProduct",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ListProduct(ctx, req.(*ListProductRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Pharmago_ServiceDesc is the grpc.ServiceDesc for Pharmago service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -386,6 +418,10 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateProduct",
 			Handler:    _Pharmago_CreateProduct_Handler,
+		},
+		{
+			MethodName: "ListProduct",
+			Handler:    _Pharmago_ListProduct_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
