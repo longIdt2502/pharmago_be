@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml-lang.org)
 -- Database: PostgreSQL
--- Generated at: 2023-12-15T09:41:02.480Z
+-- Generated at: 2023-12-16T02:22:30.724Z
 
 CREATE TABLE "accounts" (
   "id" bigserial PRIMARY KEY,
@@ -138,8 +138,8 @@ CREATE TABLE "products" (
   "id" bigserial PRIMARY KEY,
   "name" varchar NOT NULL,
   "code" varchar NOT NULL,
-  "product_category" bigserial,
-  "type" bigserial,
+  "product_category" serial,
+  "type" serial,
   "unit" bigserial NOT NULL,
   "taDuoc" varchar(255),
   "nongDo" varchar(255),
@@ -169,7 +169,7 @@ CREATE TABLE "product_media" (
 );
 
 CREATE TABLE "product_categories" (
-  "id" bigserial PRIMARY KEY,
+  "id" serial PRIMARY KEY,
   "name" varchar NOT NULL,
   "user_created" bigserial NOT NULL,
   "user_updated" bigserial,
@@ -178,7 +178,7 @@ CREATE TABLE "product_categories" (
 );
 
 CREATE TABLE "product_type" (
-  "id" bigserial PRIMARY KEY,
+  "id" serial PRIMARY KEY,
   "name" varchar NOT NULL
 );
 

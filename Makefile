@@ -61,4 +61,16 @@ proto:
 evans:
 	evans --host localhost --port 9090 -r repl
 
-.PHONY: postgres createdb dropdb migrateup migrateup1 migratedown migratedown1 new_migration server sqlc proto evans
+new_service:
+	mkdir $(name)
+	cd $(name)
+	mkdir proto
+	mkdir pb
+	mkdir db
+	mkdir docs
+	mkdir gapi
+	touch main.go
+
+
+
+.PHONY: postgres createdb dropdb migrateup migrateup1 migratedown migratedown1 new_migration server sqlc proto evans new_service

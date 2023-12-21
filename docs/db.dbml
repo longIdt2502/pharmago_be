@@ -167,8 +167,8 @@ Table products as P {
   id bigserial [pk]
   name varchar [not null]
   code varchar [not null]
-  product_category bigserial [ref: > product_categories.id]
-  type bigserial [ref: > product_type.id]
+  product_category serial [ref: > product_categories.id]
+  type serial [ref: > product_type.id]
   unit bigserial [ref: - U.id, not null]
   taDuoc varchar(255)
   nongDo varchar(255)
@@ -209,7 +209,7 @@ Table product_media {
 }
 
 Table product_categories {
-  id bigserial [pk]
+  id serial [pk]
   name varchar [not null]
   user_created bigserial [ref: > A.id, not null]
   user_updated bigserial [ref: > A.id]
@@ -218,7 +218,7 @@ Table product_categories {
 }
 
 Table product_type {
-  id bigserial [pk]
+  id serial [pk]
   name varchar [not null]
 }
 
