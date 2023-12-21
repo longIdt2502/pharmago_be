@@ -32,6 +32,9 @@ type PharmagoClient interface {
 	ListWards(ctx context.Context, in *WardsRequest, opts ...grpc.CallOption) (*WardsResponse, error)
 	CreateProduct(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*CreateProductResponse, error)
 	ListProduct(ctx context.Context, in *ListProductRequest, opts ...grpc.CallOption) (*ListProductResponse, error)
+	GetPriceList(ctx context.Context, in *PriceListRequest, opts ...grpc.CallOption) (*PriceListResponse, error)
+	DetailPriceList(ctx context.Context, in *DetailPriceListRequest, opts ...grpc.CallOption) (*DetailPriceListResponse, error)
+	UpdatePriceList(ctx context.Context, in *UpdatePriceListRequest, opts ...grpc.CallOption) (*UpdatePriceListResponse, error)
 }
 
 type pharmagoClient struct {
@@ -132,6 +135,33 @@ func (c *pharmagoClient) ListProduct(ctx context.Context, in *ListProductRequest
 	return out, nil
 }
 
+func (c *pharmagoClient) GetPriceList(ctx context.Context, in *PriceListRequest, opts ...grpc.CallOption) (*PriceListResponse, error) {
+	out := new(PriceListResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/GetPriceList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) DetailPriceList(ctx context.Context, in *DetailPriceListRequest, opts ...grpc.CallOption) (*DetailPriceListResponse, error) {
+	out := new(DetailPriceListResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/DetailPriceList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) UpdatePriceList(ctx context.Context, in *UpdatePriceListRequest, opts ...grpc.CallOption) (*UpdatePriceListResponse, error) {
+	out := new(UpdatePriceListResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/UpdatePriceList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PharmagoServer is the server API for Pharmago service.
 // All implementations must embed UnimplementedPharmagoServer
 // for forward compatibility
@@ -146,6 +176,9 @@ type PharmagoServer interface {
 	ListWards(context.Context, *WardsRequest) (*WardsResponse, error)
 	CreateProduct(context.Context, *CreateProductRequest) (*CreateProductResponse, error)
 	ListProduct(context.Context, *ListProductRequest) (*ListProductResponse, error)
+	GetPriceList(context.Context, *PriceListRequest) (*PriceListResponse, error)
+	DetailPriceList(context.Context, *DetailPriceListRequest) (*DetailPriceListResponse, error)
+	UpdatePriceList(context.Context, *UpdatePriceListRequest) (*UpdatePriceListResponse, error)
 	mustEmbedUnimplementedPharmagoServer()
 }
 
@@ -182,6 +215,15 @@ func (UnimplementedPharmagoServer) CreateProduct(context.Context, *CreateProduct
 }
 func (UnimplementedPharmagoServer) ListProduct(context.Context, *ListProductRequest) (*ListProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListProduct not implemented")
+}
+func (UnimplementedPharmagoServer) GetPriceList(context.Context, *PriceListRequest) (*PriceListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPriceList not implemented")
+}
+func (UnimplementedPharmagoServer) DetailPriceList(context.Context, *DetailPriceListRequest) (*DetailPriceListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DetailPriceList not implemented")
+}
+func (UnimplementedPharmagoServer) UpdatePriceList(context.Context, *UpdatePriceListRequest) (*UpdatePriceListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdatePriceList not implemented")
 }
 func (UnimplementedPharmagoServer) mustEmbedUnimplementedPharmagoServer() {}
 
@@ -376,6 +418,60 @@ func _Pharmago_ListProduct_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Pharmago_GetPriceList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PriceListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).GetPriceList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/GetPriceList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).GetPriceList(ctx, req.(*PriceListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_DetailPriceList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DetailPriceListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).DetailPriceList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/DetailPriceList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).DetailPriceList(ctx, req.(*DetailPriceListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_UpdatePriceList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdatePriceListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).UpdatePriceList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/UpdatePriceList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).UpdatePriceList(ctx, req.(*UpdatePriceListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Pharmago_ServiceDesc is the grpc.ServiceDesc for Pharmago service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -422,6 +518,18 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListProduct",
 			Handler:    _Pharmago_ListProduct_Handler,
+		},
+		{
+			MethodName: "GetPriceList",
+			Handler:    _Pharmago_GetPriceList_Handler,
+		},
+		{
+			MethodName: "DetailPriceList",
+			Handler:    _Pharmago_DetailPriceList_Handler,
+		},
+		{
+			MethodName: "UpdatePriceList",
+			Handler:    _Pharmago_UpdatePriceList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

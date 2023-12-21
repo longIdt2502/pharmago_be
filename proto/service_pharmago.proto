@@ -14,6 +14,9 @@ import "rpc/company/rpc_create_company.proto";
 import "rpc/company/rpc_companies.proto";
 import "rpc/product/rpc_create_product.proto";
 import "rpc/product/rpc_list_product.proto";
+import "rpc/product/rpc_price_list.proto";
+import "rpc/product/rpc_detail_price_list.proto";
+import "rpc/product/rpc_update_price_list.proto";
 
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
@@ -152,6 +155,37 @@ service Pharmago {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Create New Product";
       tags: "Product";
+    };
+  };
+
+  rpc GetPriceList (PriceListRequest) returns (PriceListResponse) {
+    option (google.api.http) = {
+      get: "/price_list/v1/list"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get Price list";
+      tags: "Price List";
+    };
+  };
+
+  rpc DetailPriceList (DetailPriceListRequest) returns (DetailPriceListResponse) {
+    option (google.api.http) = {
+      get: "/price_list/v1/detail/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get Detail Price list";
+      tags: "Price List";
+    };
+  };
+
+  rpc UpdatePriceList (UpdatePriceListRequest) returns (UpdatePriceListResponse) {
+    option (google.api.http) = {
+      put: "/price_list/v1/update"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Update Price list";
+      tags: "Price List";
     };
   };
 }

@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+import "entities/price_list.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message PriceListRequest {
+  optional int32 page = 1;
+  optional int32 limit = 2;
+  optional string search = 3;
+  optional int32 company = 4;
+  optional float min_price_import = 5;
+  optional float max_price_import = 6;
+  optional float min_price_sell = 7;
+  optional float max_price_sell = 8;
+}
+
+message PriceListResponse {
+  int32 code = 1;
+  string message = 2;
+  repeated PriceList details = 3;
+}

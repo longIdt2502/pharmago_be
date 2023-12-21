@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+import "entities/price_list.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message DetailPriceListRequest {
+  int32 id = 1;
+}
+
+message DetailPriceListResponse {
+  int32 code = 1;
+  string message = 2;
+  PriceList details = 3;
+}

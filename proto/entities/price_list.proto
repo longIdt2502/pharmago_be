@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message PriceList {
+  int32 id = 1;
+  string variant_code = 2;
+  string variant_name = 3;
+  optional string variant_media = 4;
+  float price_import = 5;
+  float price_sell = 6;
+  int32 unit = 7;
+  string unit_name = 8;
+  int32 user_created = 9;
+  string user_created_name = 10;
+  google.protobuf.Timestamp created_at = 11;
+}
