@@ -47,3 +47,24 @@ func (q *Queries) CreateCompanyPharma(ctx context.Context, arg CreateCompanyPhar
 	)
 	return i, err
 }
+
+const getCompanyPharmaByName = `-- name: GetCompanyPharmaByName :one
+SELECT id, name, code, country, address, company_pharma_type, created_at FROM company_pharma
+WHERE name = $1
+LIMIT 1
+`
+
+func (q *Queries) GetCompanyPharmaByName(ctx context.Context, name string) (CompanyPharma, error) {
+	row := q.db.QueryRowContext(ctx, getCompanyPharmaByName, name)
+	var i CompanyPharma
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Code,
+		&i.Country,
+		&i.Address,
+		&i.CompanyPharmaType,
+		&i.CreatedAt,
+	)
+	return i, err
+}

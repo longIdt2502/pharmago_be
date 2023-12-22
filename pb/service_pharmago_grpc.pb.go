@@ -37,6 +37,8 @@ type PharmagoClient interface {
 	UpdatePriceList(ctx context.Context, in *UpdatePriceListRequest, opts ...grpc.CallOption) (*UpdatePriceListResponse, error)
 	// ================== IMPORT ===================
 	ImportCompany(ctx context.Context, in *ImportCompanyRequest, opts ...grpc.CallOption) (*ImportCompanyResponse, error)
+	ImportProduct(ctx context.Context, in *ImportProductRequest, opts ...grpc.CallOption) (*ImportProductResponse, error)
+	ImportProductMasterData(ctx context.Context, in *ImportProductMasterDataRequest, opts ...grpc.CallOption) (*ImportProductMasterDataResponse, error)
 }
 
 type pharmagoClient struct {
@@ -173,6 +175,24 @@ func (c *pharmagoClient) ImportCompany(ctx context.Context, in *ImportCompanyReq
 	return out, nil
 }
 
+func (c *pharmagoClient) ImportProduct(ctx context.Context, in *ImportProductRequest, opts ...grpc.CallOption) (*ImportProductResponse, error) {
+	out := new(ImportProductResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/ImportProduct", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) ImportProductMasterData(ctx context.Context, in *ImportProductMasterDataRequest, opts ...grpc.CallOption) (*ImportProductMasterDataResponse, error) {
+	out := new(ImportProductMasterDataResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/ImportProductMasterData", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PharmagoServer is the server API for Pharmago service.
 // All implementations must embed UnimplementedPharmagoServer
 // for forward compatibility
@@ -192,6 +212,8 @@ type PharmagoServer interface {
 	UpdatePriceList(context.Context, *UpdatePriceListRequest) (*UpdatePriceListResponse, error)
 	// ================== IMPORT ===================
 	ImportCompany(context.Context, *ImportCompanyRequest) (*ImportCompanyResponse, error)
+	ImportProduct(context.Context, *ImportProductRequest) (*ImportProductResponse, error)
+	ImportProductMasterData(context.Context, *ImportProductMasterDataRequest) (*ImportProductMasterDataResponse, error)
 	mustEmbedUnimplementedPharmagoServer()
 }
 
@@ -240,6 +262,12 @@ func (UnimplementedPharmagoServer) UpdatePriceList(context.Context, *UpdatePrice
 }
 func (UnimplementedPharmagoServer) ImportCompany(context.Context, *ImportCompanyRequest) (*ImportCompanyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ImportCompany not implemented")
+}
+func (UnimplementedPharmagoServer) ImportProduct(context.Context, *ImportProductRequest) (*ImportProductResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ImportProduct not implemented")
+}
+func (UnimplementedPharmagoServer) ImportProductMasterData(context.Context, *ImportProductMasterDataRequest) (*ImportProductMasterDataResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ImportProductMasterData not implemented")
 }
 func (UnimplementedPharmagoServer) mustEmbedUnimplementedPharmagoServer() {}
 
@@ -506,6 +534,42 @@ func _Pharmago_ImportCompany_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Pharmago_ImportProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ImportProductRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ImportProduct(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/ImportProduct",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ImportProduct(ctx, req.(*ImportProductRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_ImportProductMasterData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ImportProductMasterDataRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ImportProductMasterData(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/ImportProductMasterData",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ImportProductMasterData(ctx, req.(*ImportProductMasterDataRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Pharmago_ServiceDesc is the grpc.ServiceDesc for Pharmago service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -568,6 +632,14 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ImportCompany",
 			Handler:    _Pharmago_ImportCompany_Handler,
+		},
+		{
+			MethodName: "ImportProduct",
+			Handler:    _Pharmago_ImportProduct_Handler,
+		},
+		{
+			MethodName: "ImportProductMasterData",
+			Handler:    _Pharmago_ImportProductMasterData_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

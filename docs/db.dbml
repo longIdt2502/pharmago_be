@@ -196,6 +196,28 @@ Table products as P {
   }
 }
 
+Table products_bank {
+  id bigserial [pk]
+  name varchar [not null]
+  code varchar [not null]
+  taDuoc varchar(255)
+  nongDo varchar(255)
+  lieuDung varchar(255) [not null]
+  chiDinh varchar(255) [not null]
+  chongChiDinh varchar(255)
+  congDung varchar(255) [not null]
+  tacDungPhu varchar(255) [not null]
+  thanTrong varchar(255) [not null]
+  tuongTac varchar(255)
+  baoQuan varchar(255) [not null]
+  dongGoi varchar(255) [not null]
+  phanLoai varchar [ref: > classify.code]
+  dangBaoche varchar [ref: > preparation_type.code, not null]
+  tieuChuanSx varchar [ref: > production_standard.code, not null]
+  congTySx bigserial [ref: > company_pharma.id, not null]
+  congTyDk bigserial [ref: > company_pharma.id, not null]
+}
+
 Table price_list as PL {
   id bigserial [pk]
   variant_code varchar [ref: > V.code, not null, unique]
@@ -255,16 +277,57 @@ Table product_media {
 
 Table product_categories {
   id serial [pk]
+  code varchar [not null, unique]
   name varchar [not null]
   user_created bigserial [ref: > A.id, not null]
-  user_updated bigserial [ref: > A.id]
-  updated_at timestamptz
+  created_at timestamptz [not null, default: `now()`]
+}
+
+Table product_brand {
+  id serial [pk]
+  code varchar [not null, unique]
+  name varchar [not null]
+  user_created bigserial [ref: > A.id, not null]
   created_at timestamptz [not null, default: `now()`]
 }
 
 Table product_type {
   id serial [pk]
+  code varchar [not null, unique]
   name varchar [not null]
+  user_created bigserial [ref: > A.id, not null]
+  created_at timestamptz [not null, default: `now()`]
+}
+
+Table classify {
+  id serial [pk]
+  code varchar [not null, unique]
+  name varchar [not null, unique]
+}
+
+Table preparation_type {
+  id serial [pk]
+  code varchar [not null, unique]
+  name varchar [not null, unique]
+}
+
+Table production_standard {
+  id serial [pk]
+  code varchar [not null, unique]
+  name varchar [not null, unique]
+}
+
+Table ingredient {
+  id serial [pk]
+  name varchar [not null]
+  weight float [not null, default: 0]
+  unit varchar [not null]
+}
+
+Table product_ingredient {
+  id bigserial [pk]
+  product bigserial [ref: > products.id, not null]
+  ingredient serial [ref: > ingredient.id, not null]
 }
 
 Table units as U {

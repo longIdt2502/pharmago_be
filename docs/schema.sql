@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml-lang.org)
 -- Database: PostgreSQL
--- Generated at: 2023-12-21T17:33:51.292Z
+-- Generated at: 2023-12-22T06:30:23.604Z
 
 CREATE TABLE "accounts" (
   "id" bigserial PRIMARY KEY,
@@ -162,6 +162,28 @@ CREATE TABLE "products" (
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
+CREATE TABLE "products_bank" (
+  "id" bigserial PRIMARY KEY,
+  "name" varchar NOT NULL,
+  "code" varchar NOT NULL,
+  "taDuoc" varchar(255),
+  "nongDo" varchar(255),
+  "lieuDung" varchar(255) NOT NULL,
+  "chiDinh" varchar(255) NOT NULL,
+  "chongChiDinh" varchar(255),
+  "congDung" varchar(255) NOT NULL,
+  "tacDungPhu" varchar(255) NOT NULL,
+  "thanTrong" varchar(255) NOT NULL,
+  "tuongTac" varchar(255),
+  "baoQuan" varchar(255) NOT NULL,
+  "dongGoi" varchar(255) NOT NULL,
+  "phanLoai" varchar,
+  "dangBaoche" varchar NOT NULL,
+  "tieuChuanSx" varchar NOT NULL,
+  "congTySx" bigserial NOT NULL,
+  "congTyDk" bigserial NOT NULL
+);
+
 CREATE TABLE "price_list" (
   "id" bigserial PRIMARY KEY,
   "variant_code" varchar UNIQUE NOT NULL,
@@ -210,16 +232,57 @@ CREATE TABLE "product_media" (
 
 CREATE TABLE "product_categories" (
   "id" serial PRIMARY KEY,
+  "code" varchar UNIQUE NOT NULL,
   "name" varchar NOT NULL,
   "user_created" bigserial NOT NULL,
-  "user_updated" bigserial,
-  "updated_at" timestamptz,
+  "created_at" timestamptz NOT NULL DEFAULT (now())
+);
+
+CREATE TABLE "product_brand" (
+  "id" serial PRIMARY KEY,
+  "code" varchar UNIQUE NOT NULL,
+  "name" varchar NOT NULL,
+  "user_created" bigserial NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "product_type" (
   "id" serial PRIMARY KEY,
-  "name" varchar NOT NULL
+  "code" varchar UNIQUE NOT NULL,
+  "name" varchar NOT NULL,
+  "user_created" bigserial NOT NULL,
+  "created_at" timestamptz NOT NULL DEFAULT (now())
+);
+
+CREATE TABLE "classify" (
+  "id" serial PRIMARY KEY,
+  "code" varchar UNIQUE NOT NULL,
+  "name" varchar UNIQUE NOT NULL
+);
+
+CREATE TABLE "preparation_type" (
+  "id" serial PRIMARY KEY,
+  "code" varchar UNIQUE NOT NULL,
+  "name" varchar UNIQUE NOT NULL
+);
+
+CREATE TABLE "production_standard" (
+  "id" serial PRIMARY KEY,
+  "code" varchar UNIQUE NOT NULL,
+  "name" varchar UNIQUE NOT NULL
+);
+
+CREATE TABLE "ingredient" (
+  "id" serial PRIMARY KEY,
+  "name" varchar NOT NULL,
+  "weight" float NOT NULL DEFAULT 0,
+  "unit" varchar NOT NULL
+);
+
+CREATE TABLE "product_ingredient" (
+  "id" bigserial PRIMARY KEY,
+  "product" bigserial NOT NULL,
+  "ingredient" serial NOT NULL
 );
 
 CREATE TABLE "units" (
@@ -460,6 +523,16 @@ ALTER TABLE "products" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("
 
 ALTER TABLE "products" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" ("id");
 
+ALTER TABLE "products_bank" ADD FOREIGN KEY ("phanLoai") REFERENCES "classify" ("code");
+
+ALTER TABLE "products_bank" ADD FOREIGN KEY ("dangBaoche") REFERENCES "preparation_type" ("code");
+
+ALTER TABLE "products_bank" ADD FOREIGN KEY ("tieuChuanSx") REFERENCES "production_standard" ("code");
+
+ALTER TABLE "products_bank" ADD FOREIGN KEY ("congTySx") REFERENCES "company_pharma" ("id");
+
+ALTER TABLE "products_bank" ADD FOREIGN KEY ("congTyDk") REFERENCES "company_pharma" ("id");
+
 ALTER TABLE "price_list" ADD FOREIGN KEY ("variant_code") REFERENCES "variants" ("code");
 
 ALTER TABLE "price_list" ADD FOREIGN KEY ("unit") REFERENCES "units" ("id");
@@ -480,7 +553,13 @@ ALTER TABLE "product_media" ADD FOREIGN KEY ("media") REFERENCES "medias" ("id")
 
 ALTER TABLE "product_categories" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id");
 
-ALTER TABLE "product_categories" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" ("id");
+ALTER TABLE "product_brand" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id");
+
+ALTER TABLE "product_type" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id");
+
+ALTER TABLE "product_ingredient" ADD FOREIGN KEY ("product") REFERENCES "products" ("id");
+
+ALTER TABLE "product_ingredient" ADD FOREIGN KEY ("ingredient") REFERENCES "ingredient" ("id");
 
 ALTER TABLE "units" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id");
 

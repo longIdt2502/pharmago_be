@@ -5,3 +5,8 @@ INSERT INTO company_pharma (
     sqlc.arg('name')::varchar, sqlc.narg('code')::varchar, sqlc.narg('country')::varchar, sqlc.narg('address')::varchar,
     sqlc.arg('company_pharma_type')::varchar
 ) RETURNING *;
+
+-- name: GetCompanyPharmaByName :one
+SELECT * FROM company_pharma
+WHERE name = $1
+LIMIT 1;
