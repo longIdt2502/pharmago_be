@@ -71,6 +71,12 @@ type AdministrativeUnit struct {
 	CodeNameEn  string `json:"code_name_en"`
 }
 
+type Classify struct {
+	ID   int32  `json:"id"`
+	Code string `json:"code"`
+	Name string `json:"name"`
+}
+
 type Company struct {
 	ID          int64          `json:"id"`
 	Name        string         `json:"name"`
@@ -124,6 +130,13 @@ type District struct {
 	AdministrativeUnitID sql.NullInt64  `json:"administrative_unit_id"`
 }
 
+type Ingredient struct {
+	ID     int32   `json:"id"`
+	Name   string  `json:"name"`
+	Weight float64 `json:"weight"`
+	Unit   string  `json:"unit"`
+}
+
 type Media struct {
 	ID       int64  `json:"id"`
 	MediaUrl string `json:"media_url"`
@@ -158,6 +171,12 @@ type OrderType struct {
 	ID    int64  `json:"id"`
 	Code  string `json:"code"`
 	Title string `json:"title"`
+}
+
+type PreparationType struct {
+	ID   int32  `json:"id"`
+	Code string `json:"code"`
+	Name string `json:"name"`
 }
 
 type PriceList struct {
@@ -213,15 +232,29 @@ type Product struct {
 	Active          bool           `json:"active"`
 	CongTySx        sql.NullInt64  `json:"congTySx"`
 	CongTyDk        sql.NullInt64  `json:"congTyDk"`
+	Brand           int32          `json:"brand"`
+}
+
+type ProductBrand struct {
+	ID          int32     `json:"id"`
+	Code        string    `json:"code"`
+	Name        string    `json:"name"`
+	UserCreated int64     `json:"user_created"`
+	CreatedAt   time.Time `json:"created_at"`
 }
 
 type ProductCategory struct {
-	ID          int32         `json:"id"`
-	Name        string        `json:"name"`
-	UserCreated int64         `json:"user_created"`
-	UserUpdated sql.NullInt64 `json:"user_updated"`
-	UpdatedAt   sql.NullTime  `json:"updated_at"`
-	CreatedAt   time.Time     `json:"created_at"`
+	ID          int32     `json:"id"`
+	Code        string    `json:"code"`
+	Name        string    `json:"name"`
+	UserCreated int64     `json:"user_created"`
+	CreatedAt   time.Time `json:"created_at"`
+}
+
+type ProductIngredient struct {
+	ID         int64 `json:"id"`
+	Product    int64 `json:"product"`
+	Ingredient int32 `json:"ingredient"`
 }
 
 type ProductMedium struct {
@@ -231,8 +264,39 @@ type ProductMedium struct {
 }
 
 type ProductType struct {
+	ID          int32     `json:"id"`
+	Code        string    `json:"code"`
+	Name        string    `json:"name"`
+	UserCreated int64     `json:"user_created"`
+	CreatedAt   time.Time `json:"created_at"`
+}
+
+type ProductionStandard struct {
 	ID   int32  `json:"id"`
+	Code string `json:"code"`
 	Name string `json:"name"`
+}
+
+type ProductsBank struct {
+	ID           int64          `json:"id"`
+	Name         string         `json:"name"`
+	Code         string         `json:"code"`
+	TaDuoc       sql.NullString `json:"taDuoc"`
+	NongDo       sql.NullString `json:"nongDo"`
+	LieuDung     string         `json:"lieuDung"`
+	ChiDinh      string         `json:"chiDinh"`
+	ChongChiDinh sql.NullString `json:"chongChiDinh"`
+	CongDung     string         `json:"congDung"`
+	TacDungPhu   string         `json:"tacDungPhu"`
+	ThanTrong    string         `json:"thanTrong"`
+	TuongTac     sql.NullString `json:"tuongTac"`
+	BaoQuan      string         `json:"baoQuan"`
+	DongGoi      string         `json:"dongGoi"`
+	PhanLoai     sql.NullString `json:"phanLoai"`
+	DangBaoche   string         `json:"dangBaoche"`
+	TieuChuanSx  string         `json:"tieuChuanSx"`
+	CongTySx     int64          `json:"congTySx"`
+	CongTyDk     int64          `json:"congTyDk"`
 }
 
 type Province struct {

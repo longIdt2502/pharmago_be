@@ -18,6 +18,8 @@ import "rpc/product/rpc_price_list.proto";
 import "rpc/product/rpc_detail_price_list.proto";
 import "rpc/product/rpc_update_price_list.proto";
 import "rpc/rpc_import_company.proto";
+import "rpc/rpc_import_product.proto";
+import "rpc/rpc_import_product_master_data.proto";
 
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
@@ -197,6 +199,24 @@ service Pharmago {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Import Data company pharma";
+      tags: "Import Master Data";
+    };
+  };
+  rpc ImportProduct (ImportProductRequest) returns (ImportProductResponse) {
+    option (google.api.http) = {
+      get: "/import/v1/product"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Import Data Product pharma";
+      tags: "Import Master Data";
+    };
+  };
+  rpc ImportProductMasterData (ImportProductMasterDataRequest) returns (ImportProductMasterDataResponse) {
+    option (google.api.http) = {
+      get: "/import/v1/product_master_data"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Import product data master pharma";
       tags: "Import Master Data";
     };
   };
