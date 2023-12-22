@@ -4,3 +4,9 @@ bin/
 .idea
 .env
 .vscode
+
+# Ignore all .xlsx files
+*.xlsx
+
+# Ignore all .xlsx files in subdirectories
+**/*.xlsx

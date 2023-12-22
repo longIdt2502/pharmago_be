@@ -83,6 +83,22 @@ type Company struct {
 	Address     int64          `json:"address"`
 }
 
+type CompanyPharma struct {
+	ID                int64          `json:"id"`
+	Name              string         `json:"name"`
+	Code              sql.NullString `json:"code"`
+	Country           sql.NullString `json:"country"`
+	Address           sql.NullString `json:"address"`
+	CompanyPharmaType sql.NullString `json:"company_pharma_type"`
+	CreatedAt         time.Time      `json:"created_at"`
+}
+
+type CompanyPharmaType struct {
+	ID    int64  `json:"id"`
+	Code  string `json:"code"`
+	Title string `json:"title"`
+}
+
 type Customer struct {
 	ID          int64          `json:"id"`
 	FullName    string         `json:"full_name"`
@@ -195,6 +211,8 @@ type Product struct {
 	Congtysx        string         `json:"congtysx"`
 	Congtydk        string         `json:"congtydk"`
 	Active          bool           `json:"active"`
+	CongTySx        sql.NullInt64  `json:"congTySx"`
+	CongTyDk        sql.NullInt64  `json:"congTyDk"`
 }
 
 type ProductCategory struct {

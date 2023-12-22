@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml-lang.org)
 -- Database: PostgreSQL
--- Generated at: 2023-12-21T08:00:08.737Z
+-- Generated at: 2023-12-21T17:33:51.292Z
 
 CREATE TABLE "accounts" (
   "id" bigserial PRIMARY KEY,
@@ -153,8 +153,8 @@ CREATE TABLE "products" (
   "baoQuan" varchar(255) NOT NULL,
   "dongGoi" varchar(255) NOT NULL,
   "noiSx" varchar(255) NOT NULL,
-  "congTySx" varchar(255) NOT NULL,
-  "congTyDk" varchar(255) NOT NULL,
+  "congTySx" bigserial NOT NULL,
+  "congTyDk" bigserial NOT NULL,
   "company" bigserial,
   "user_created" bigserial NOT NULL,
   "user_updated" bigserial,
@@ -184,6 +184,22 @@ CREATE TABLE "price_list_log" (
   "price_list" bigserial NOT NULL,
   "user_updated" bigserial NOT NULL,
   "updated_at" timestamptz NOT NULL DEFAULT (now())
+);
+
+CREATE TABLE "company_pharma" (
+  "id" bigserial PRIMARY KEY,
+  "name" varchar(255) NOT NULL,
+  "code" varchar(255),
+  "country" varchar(255),
+  "address" varchar(255),
+  "company_pharma_type" varchar,
+  "created_at" timestamptz NOT NULL DEFAULT (now())
+);
+
+CREATE TABLE "company_pharma_type" (
+  "id" bigserial PRIMARY KEY,
+  "code" varchar UNIQUE NOT NULL,
+  "title" varchar(255) NOT NULL
 );
 
 CREATE TABLE "product_media" (
@@ -358,6 +374,10 @@ CREATE INDEX ON "products" ("unit");
 
 CREATE UNIQUE INDEX ON "products" ("id", "unit");
 
+CREATE INDEX ON "company_pharma" ("company_pharma_type");
+
+CREATE UNIQUE INDEX ON "company_pharma" ("name", "company_pharma_type");
+
 CREATE INDEX ON "product_media" ("product");
 
 CREATE INDEX ON "product_media" ("media");
@@ -430,6 +450,10 @@ ALTER TABLE "products" ADD FOREIGN KEY ("type") REFERENCES "product_type" ("id")
 
 ALTER TABLE "units" ADD FOREIGN KEY ("id") REFERENCES "products" ("unit");
 
+ALTER TABLE "products" ADD FOREIGN KEY ("congTySx") REFERENCES "company_pharma" ("id");
+
+ALTER TABLE "products" ADD FOREIGN KEY ("congTyDk") REFERENCES "company_pharma" ("id");
+
 ALTER TABLE "products" ADD FOREIGN KEY ("company") REFERENCES "companies" ("id");
 
 ALTER TABLE "products" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id");
@@ -447,6 +471,8 @@ ALTER TABLE "price_list" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" 
 ALTER TABLE "price_list_log" ADD FOREIGN KEY ("price_list") REFERENCES "price_list" ("id");
 
 ALTER TABLE "price_list_log" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" ("id");
+
+ALTER TABLE "company_pharma" ADD FOREIGN KEY ("company_pharma_type") REFERENCES "company_pharma_type" ("code");
 
 ALTER TABLE "product_media" ADD FOREIGN KEY ("product") REFERENCES "products" ("id");
 

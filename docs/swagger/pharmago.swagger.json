@@ -300,6 +300,29 @@
         ]
       }
     },
+    "/import/v1/company": {
+      "get": {
+        "summary": "Import Data company pharma",
+        "operationId": "Pharmago_ImportCompany",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbImportCompanyResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "Import Master Data"
+        ]
+      }
+    },
     "/price_list/v1/detail/{id}": {
       "get": {
         "summary": "Get Detail Price list",
@@ -1007,6 +1030,18 @@
             "type": "object",
             "$ref": "#/definitions/pbCompany"
           }
+        }
+      }
+    },
+    "pbImportCompanyResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
         }
       }
     },
