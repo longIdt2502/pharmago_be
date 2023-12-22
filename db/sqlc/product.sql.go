@@ -22,7 +22,7 @@ INSERT INTO products (
     $13::varchar, $14::varchar, $15::varchar, $16::varchar,
     $17::varchar, $18::varchar, $19::varchar, $20::int,
     $21::int, $22::int
-) RETURNING id, name, code, product_category, type, unit, company, user_created, user_updated, updated_at, created_at, taduoc, nongdo, lieudung, chidinh, chongchidinh, congdung, tacdungphu, thantrong, tuongtac, baoquan, donggoi, noisx, congtysx, congtydk, active
+) RETURNING id, name, code, product_category, type, unit, company, user_created, user_updated, updated_at, created_at, taduoc, nongdo, lieudung, chidinh, chongchidinh, congdung, tacdungphu, thantrong, tuongtac, baoquan, donggoi, noisx, congtysx, congtydk, active, "congTySx", "congTyDk"
 `
 
 type CreateProductParams struct {
@@ -103,6 +103,8 @@ func (q *Queries) CreateProduct(ctx context.Context, arg CreateProductParams) (P
 		&i.Congtysx,
 		&i.Congtydk,
 		&i.Active,
+		&i.CongTySx,
+		&i.CongTyDk,
 	)
 	return i, err
 }
@@ -279,7 +281,7 @@ func (q *Queries) GetProductMedia(ctx context.Context, product sql.NullInt64) ([
 }
 
 const getProducts = `-- name: GetProducts :many
-SELECT id, name, code, product_category, type, unit, company, user_created, user_updated, updated_at, created_at, taduoc, nongdo, lieudung, chidinh, chongchidinh, congdung, tacdungphu, thantrong, tuongtac, baoquan, donggoi, noisx, congtysx, congtydk, active FROM products
+SELECT id, name, code, product_category, type, unit, company, user_created, user_updated, updated_at, created_at, taduoc, nongdo, lieudung, chidinh, chongchidinh, congdung, tacdungphu, thantrong, tuongtac, baoquan, donggoi, noisx, congtysx, congtydk, active, "congTySx", "congTyDk" FROM products
 WHERE company = $1::int AND (
     name ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
     code ILIKE '%' || COALESCE($2::varchar, '') || '%'
@@ -337,6 +339,8 @@ func (q *Queries) GetProducts(ctx context.Context, arg GetProductsParams) ([]Pro
 			&i.Congtysx,
 			&i.Congtydk,
 			&i.Active,
+			&i.CongTySx,
+			&i.CongTyDk,
 		); err != nil {
 			return nil, err
 		}

@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message ImportCompanyRequest {}
+
+message ImportCompanyResponse {
+  int32 code = 1;
+  string message = 2;
+}

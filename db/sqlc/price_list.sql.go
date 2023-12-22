@@ -174,7 +174,7 @@ func (q *Queries) DetailPriceList(ctx context.Context, id int32) (DetailPriceLis
 }
 
 const getPriceLists = `-- name: GetPriceLists :many
-SELECT pl.id, variant_code, variant_name, price_import, price_sell, pl.unit, pl.user_created, pl.user_updated, pl.updated_at, pl.created_at, u.id, u.name, sell_price, import_price, weight, weight_unit, u.user_created, u.user_updated, u.updated_at, u.created_at, v.id, v.name, v.code, barcode, decision_number, register_number, vat, product, v.user_created, v.user_updated, v.updated_at, v.created_at, longevity, a.id, username, hashed_password, full_name, email, a.type, is_verify, password_changed_at, a.created_at, vm.id, variant, media, m.id, media_url, p.id, p.name, p.code, product_category, p.type, p.unit, company, p.user_created, p.user_updated, p.updated_at, p.created_at, taduoc, nongdo, lieudung, chidinh, chongchidinh, congdung, tacdungphu, thantrong, tuongtac, baoquan, donggoi, noisx, congtysx, congtydk, active, u.name AS unit_name, p.company AS company, m.media_url AS variant_media,
+SELECT pl.id, variant_code, variant_name, price_import, price_sell, pl.unit, pl.user_created, pl.user_updated, pl.updated_at, pl.created_at, u.id, u.name, sell_price, import_price, weight, weight_unit, u.user_created, u.user_updated, u.updated_at, u.created_at, v.id, v.name, v.code, barcode, decision_number, register_number, vat, product, v.user_created, v.user_updated, v.updated_at, v.created_at, longevity, a.id, username, hashed_password, full_name, email, a.type, is_verify, password_changed_at, a.created_at, vm.id, variant, media, m.id, media_url, p.id, p.name, p.code, product_category, p.type, p.unit, company, p.user_created, p.user_updated, p.updated_at, p.created_at, taduoc, nongdo, lieudung, chidinh, chongchidinh, congdung, tacdungphu, thantrong, tuongtac, baoquan, donggoi, noisx, congtysx, congtydk, active, "congTySx", "congTyDk", u.name AS unit_name, p.company AS company, m.media_url AS variant_media,
        a.full_name AS user_created_name FROM price_list pl
 JOIN units u ON pl.unit = u.id
 JOIN variants v ON pl.variant_code = v.code
@@ -283,6 +283,8 @@ type GetPriceListsRow struct {
 	Congtysx          string         `json:"congtysx"`
 	Congtydk          string         `json:"congtydk"`
 	Active            bool           `json:"active"`
+	CongTySx          sql.NullInt64  `json:"congTySx"`
+	CongTyDk          sql.NullInt64  `json:"congTyDk"`
 	UnitName          string         `json:"unit_name"`
 	Company_2         sql.NullInt64  `json:"company_2"`
 	VariantMedia      sql.NullString `json:"variant_media"`
@@ -381,6 +383,8 @@ func (q *Queries) GetPriceLists(ctx context.Context, arg GetPriceListsParams) ([
 			&i.Congtysx,
 			&i.Congtydk,
 			&i.Active,
+			&i.CongTySx,
+			&i.CongTyDk,
 			&i.UnitName,
 			&i.Company_2,
 			&i.VariantMedia,
