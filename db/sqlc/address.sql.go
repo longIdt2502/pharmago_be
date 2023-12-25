@@ -15,7 +15,7 @@ INSERT INTO address (
     lat, lng, province, district, ward, title, user_created
 ) VALUES (
     $1, $2, $3, $4, $5, $6, $7
-) RETURNING id, lat, lng, title, user_created, created_at, province, district, ward
+) RETURNING id, lat, lng, province, district, ward, title, user_created, created_at
 `
 
 type CreateAddressParams struct {
@@ -25,7 +25,7 @@ type CreateAddressParams struct {
 	District    sql.NullString `json:"district"`
 	Ward        sql.NullString `json:"ward"`
 	Title       string         `json:"title"`
-	UserCreated int64          `json:"user_created"`
+	UserCreated int32          `json:"user_created"`
 }
 
 func (q *Queries) CreateAddress(ctx context.Context, arg CreateAddressParams) (Address, error) {
@@ -43,35 +43,35 @@ func (q *Queries) CreateAddress(ctx context.Context, arg CreateAddressParams) (A
 		&i.ID,
 		&i.Lat,
 		&i.Lng,
-		&i.Title,
-		&i.UserCreated,
-		&i.CreatedAt,
 		&i.Province,
 		&i.District,
 		&i.Ward,
+		&i.Title,
+		&i.UserCreated,
+		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const getAddress = `-- name: GetAddress :one
-SELECT id, lat, lng, title, user_created, created_at, province, district, ward FROM address
+SELECT id, lat, lng, province, district, ward, title, user_created, created_at FROM address
 WHERE id = $1
 LIMIT 1
 `
 
-func (q *Queries) GetAddress(ctx context.Context, id int64) (Address, error) {
+func (q *Queries) GetAddress(ctx context.Context, id int32) (Address, error) {
 	row := q.db.QueryRowContext(ctx, getAddress, id)
 	var i Address
 	err := row.Scan(
 		&i.ID,
 		&i.Lat,
 		&i.Lng,
-		&i.Title,
-		&i.UserCreated,
-		&i.CreatedAt,
 		&i.Province,
 		&i.District,
 		&i.Ward,
+		&i.Title,
+		&i.UserCreated,
+		&i.CreatedAt,
 	)
 	return i, err
 }

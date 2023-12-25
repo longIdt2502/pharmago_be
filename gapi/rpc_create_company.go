@@ -73,8 +73,11 @@ func (server *ServerGRPC) CreateCompany(ctx context.Context, req *pb.CreateCompa
 			String: req.Company.GetDescription(),
 			Valid:  req.Company.Description != nil,
 		},
-		Address: address.ID,
-		Owner:   accountRequest.ID,
+		Address: sql.NullInt32{
+			Int32: address.ID,
+			Valid: true,
+		},
+		Owner: accountRequest.ID,
 	})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to create company: ", err)

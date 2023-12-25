@@ -44,7 +44,7 @@ func (server *ServerGRPC) ImportProduct(ctx context.Context, req *pb.ImportProdu
 					String: utils.ExtractFirstLetters(row.GetCell(9).String()),
 					Valid:  row.GetCell(9) != nil,
 				},
-				DangBaoche:  utils.ExtractFirstLetters(row.GetCell(12).String()),
+				DangBaoChe:  utils.ExtractFirstLetters(row.GetCell(12).String()),
 				TieuChuanSx: row.GetCell(14).String(),
 				CongTySx:    congTySx.ID,
 				CongTyDk:    congTyDk.ID,

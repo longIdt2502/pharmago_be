@@ -22,7 +22,7 @@ INSERT INTO price_list (
 type CreateProductPriceListParams struct {
 	VariantCode string  `json:"variant_code"`
 	VariantName string  `json:"variant_name"`
-	Unit        int64   `json:"unit"`
+	Unit        int32   `json:"unit"`
 	PriceImport float64 `json:"price_import"`
 	PriceSell   float64 `json:"price_sell"`
 }
@@ -52,7 +52,7 @@ func (q *Queries) CreateProductPriceList(ctx context.Context, arg CreateProductP
 }
 
 const detailPriceList = `-- name: DetailPriceList :one
-SELECT pl.id, variant_code, variant_name, price_import, price_sell, unit, pl.user_created, pl.user_updated, pl.updated_at, pl.created_at, u.id, u.name, sell_price, import_price, weight, weight_unit, u.user_created, u.user_updated, u.updated_at, u.created_at, v.id, v.name, code, barcode, decision_number, register_number, vat, product, v.user_created, v.user_updated, v.updated_at, v.created_at, longevity, a.id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, a.created_at, vm.id, variant, media, m.id, media_url, u.name AS unit_name, m.media_url AS variant_media,
+SELECT pl.id, variant_code, variant_name, price_import, price_sell, unit, pl.user_created, pl.user_updated, pl.updated_at, pl.created_at, u.id, u.name, sell_price, import_price, weight, weight_unit, u.user_created, u.user_updated, u.updated_at, u.created_at, v.id, v.name, code, barcode, decision_number, register_number, longevity, vat, product, v.user_created, v.user_updated, v.updated_at, v.created_at, a.id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, a.created_at, vm.id, variant, media, m.id, media_url, u.name AS unit_name, m.media_url AS variant_media,
        a.full_name AS user_created_name FROM price_list pl
 JOIN units u ON pl.unit = u.id
 JOIN variants v ON pl.variant_code = v.code
@@ -63,56 +63,56 @@ WHERE pl.id = $1::int
 `
 
 type DetailPriceListRow struct {
-	ID                int64          `json:"id"`
-	VariantCode       string         `json:"variant_code"`
-	VariantName       string         `json:"variant_name"`
-	PriceImport       float64        `json:"price_import"`
-	PriceSell         float64        `json:"price_sell"`
-	Unit              int64          `json:"unit"`
-	UserCreated       int64          `json:"user_created"`
-	UserUpdated       sql.NullInt64  `json:"user_updated"`
-	UpdatedAt         sql.NullTime   `json:"updated_at"`
-	CreatedAt         time.Time      `json:"created_at"`
-	ID_2              int64          `json:"id_2"`
-	Name              string         `json:"name"`
-	SellPrice         string         `json:"sell_price"`
-	ImportPrice       string         `json:"import_price"`
-	Weight            sql.NullString `json:"weight"`
-	WeightUnit        sql.NullString `json:"weight_unit"`
-	UserCreated_2     int64          `json:"user_created_2"`
-	UserUpdated_2     sql.NullInt64  `json:"user_updated_2"`
-	UpdatedAt_2       sql.NullTime   `json:"updated_at_2"`
-	CreatedAt_2       time.Time      `json:"created_at_2"`
-	ID_3              int64          `json:"id_3"`
-	Name_2            string         `json:"name_2"`
-	Code              string         `json:"code"`
-	Barcode           string         `json:"barcode"`
-	DecisionNumber    string         `json:"decision_number"`
-	RegisterNumber    string         `json:"register_number"`
-	Vat               string         `json:"vat"`
-	Product           sql.NullInt64  `json:"product"`
-	UserCreated_3     int64          `json:"user_created_3"`
-	UserUpdated_3     sql.NullInt64  `json:"user_updated_3"`
-	UpdatedAt_3       sql.NullTime   `json:"updated_at_3"`
-	CreatedAt_3       time.Time      `json:"created_at_3"`
-	Longevity         string         `json:"longevity"`
-	ID_4              int64          `json:"id_4"`
-	Username          string         `json:"username"`
-	HashedPassword    string         `json:"hashed_password"`
-	FullName          string         `json:"full_name"`
-	Email             string         `json:"email"`
-	Type              int64          `json:"type"`
-	IsVerify          bool           `json:"is_verify"`
-	PasswordChangedAt time.Time      `json:"password_changed_at"`
-	CreatedAt_4       time.Time      `json:"created_at_4"`
-	ID_5              sql.NullInt64  `json:"id_5"`
-	Variant           sql.NullInt64  `json:"variant"`
-	Media             sql.NullInt64  `json:"media"`
-	ID_6              sql.NullInt64  `json:"id_6"`
-	MediaUrl          sql.NullString `json:"media_url"`
-	UnitName          string         `json:"unit_name"`
-	VariantMedia      sql.NullString `json:"variant_media"`
-	UserCreatedName   string         `json:"user_created_name"`
+	ID                int32           `json:"id"`
+	VariantCode       string          `json:"variant_code"`
+	VariantName       string          `json:"variant_name"`
+	PriceImport       float64         `json:"price_import"`
+	PriceSell         float64         `json:"price_sell"`
+	Unit              int32           `json:"unit"`
+	UserCreated       int32           `json:"user_created"`
+	UserUpdated       sql.NullInt32   `json:"user_updated"`
+	UpdatedAt         sql.NullTime    `json:"updated_at"`
+	CreatedAt         time.Time       `json:"created_at"`
+	ID_2              int32           `json:"id_2"`
+	Name              string          `json:"name"`
+	SellPrice         float64         `json:"sell_price"`
+	ImportPrice       float64         `json:"import_price"`
+	Weight            sql.NullFloat64 `json:"weight"`
+	WeightUnit        sql.NullString  `json:"weight_unit"`
+	UserCreated_2     int32           `json:"user_created_2"`
+	UserUpdated_2     sql.NullInt32   `json:"user_updated_2"`
+	UpdatedAt_2       sql.NullTime    `json:"updated_at_2"`
+	CreatedAt_2       time.Time       `json:"created_at_2"`
+	ID_3              int32           `json:"id_3"`
+	Name_2            string          `json:"name_2"`
+	Code              string          `json:"code"`
+	Barcode           string          `json:"barcode"`
+	DecisionNumber    string          `json:"decision_number"`
+	RegisterNumber    string          `json:"register_number"`
+	Longevity         string          `json:"longevity"`
+	Vat               float64         `json:"vat"`
+	Product           int32           `json:"product"`
+	UserCreated_3     int32           `json:"user_created_3"`
+	UserUpdated_3     sql.NullInt32   `json:"user_updated_3"`
+	UpdatedAt_3       sql.NullTime    `json:"updated_at_3"`
+	CreatedAt_3       time.Time       `json:"created_at_3"`
+	ID_4              int32           `json:"id_4"`
+	Username          string          `json:"username"`
+	HashedPassword    string          `json:"hashed_password"`
+	FullName          string          `json:"full_name"`
+	Email             string          `json:"email"`
+	Type              int32           `json:"type"`
+	IsVerify          bool            `json:"is_verify"`
+	PasswordChangedAt time.Time       `json:"password_changed_at"`
+	CreatedAt_4       time.Time       `json:"created_at_4"`
+	ID_5              sql.NullInt32   `json:"id_5"`
+	Variant           sql.NullInt32   `json:"variant"`
+	Media             sql.NullInt32   `json:"media"`
+	ID_6              sql.NullInt32   `json:"id_6"`
+	MediaUrl          sql.NullString  `json:"media_url"`
+	UnitName          string          `json:"unit_name"`
+	VariantMedia      sql.NullString  `json:"variant_media"`
+	UserCreatedName   string          `json:"user_created_name"`
 }
 
 func (q *Queries) DetailPriceList(ctx context.Context, id int32) (DetailPriceListRow, error) {
@@ -145,13 +145,13 @@ func (q *Queries) DetailPriceList(ctx context.Context, id int32) (DetailPriceLis
 		&i.Barcode,
 		&i.DecisionNumber,
 		&i.RegisterNumber,
+		&i.Longevity,
 		&i.Vat,
 		&i.Product,
 		&i.UserCreated_3,
 		&i.UserUpdated_3,
 		&i.UpdatedAt_3,
 		&i.CreatedAt_3,
-		&i.Longevity,
 		&i.ID_4,
 		&i.Username,
 		&i.HashedPassword,
@@ -174,7 +174,7 @@ func (q *Queries) DetailPriceList(ctx context.Context, id int32) (DetailPriceLis
 }
 
 const getPriceLists = `-- name: GetPriceLists :many
-SELECT pl.id, variant_code, variant_name, price_import, price_sell, pl.unit, pl.user_created, pl.user_updated, pl.updated_at, pl.created_at, u.id, u.name, sell_price, import_price, weight, weight_unit, u.user_created, u.user_updated, u.updated_at, u.created_at, v.id, v.name, v.code, barcode, decision_number, register_number, vat, product, v.user_created, v.user_updated, v.updated_at, v.created_at, longevity, a.id, username, hashed_password, full_name, email, a.type, is_verify, password_changed_at, a.created_at, vm.id, variant, media, m.id, media_url, p.id, p.name, p.code, product_category, p.type, p.unit, company, p.user_created, p.user_updated, p.updated_at, p.created_at, taduoc, nongdo, lieudung, chidinh, chongchidinh, congdung, tacdungphu, thantrong, tuongtac, baoquan, donggoi, noisx, congtysx, congtydk, active, "congTySx", "congTyDk", brand, u.name AS unit_name, p.company AS company, m.media_url AS variant_media,
+SELECT pl.id, variant_code, variant_name, price_import, price_sell, pl.unit, pl.user_created, pl.user_updated, pl.updated_at, pl.created_at, u.id, u.name, sell_price, import_price, weight, weight_unit, u.user_created, u.user_updated, u.updated_at, u.created_at, v.id, v.name, v.code, barcode, decision_number, register_number, longevity, vat, product, v.user_created, v.user_updated, v.updated_at, v.created_at, a.id, username, hashed_password, full_name, email, a.type, is_verify, password_changed_at, a.created_at, vm.id, variant, media, m.id, media_url, p.id, p.name, p.code, product_category, p.type, brand, p.unit, ta_duoc, nong_do, lieu_dung, chi_dinh, chong_chi_dinh, cong_dung, tac_dung_phu, than_trong, tuong_tac, bao_quan, dong_goi, phan_loai, dang_bao_che, tieu_chuan_sx, cong_ty_sx, cong_ty_dk, active, company, p.user_created, p.user_updated, p.updated_at, p.created_at, u.name AS unit_name, p.company AS company, m.media_url AS variant_media,
        a.full_name AS user_created_name FROM price_list pl
 JOIN units u ON pl.unit = u.id
 JOIN variants v ON pl.variant_code = v.code
@@ -210,86 +210,86 @@ type GetPriceListsParams struct {
 }
 
 type GetPriceListsRow struct {
-	ID                int64          `json:"id"`
-	VariantCode       string         `json:"variant_code"`
-	VariantName       string         `json:"variant_name"`
-	PriceImport       float64        `json:"price_import"`
-	PriceSell         float64        `json:"price_sell"`
-	Unit              int64          `json:"unit"`
-	UserCreated       int64          `json:"user_created"`
-	UserUpdated       sql.NullInt64  `json:"user_updated"`
-	UpdatedAt         sql.NullTime   `json:"updated_at"`
-	CreatedAt         time.Time      `json:"created_at"`
-	ID_2              int64          `json:"id_2"`
-	Name              string         `json:"name"`
-	SellPrice         string         `json:"sell_price"`
-	ImportPrice       string         `json:"import_price"`
-	Weight            sql.NullString `json:"weight"`
-	WeightUnit        sql.NullString `json:"weight_unit"`
-	UserCreated_2     int64          `json:"user_created_2"`
-	UserUpdated_2     sql.NullInt64  `json:"user_updated_2"`
-	UpdatedAt_2       sql.NullTime   `json:"updated_at_2"`
-	CreatedAt_2       time.Time      `json:"created_at_2"`
-	ID_3              int64          `json:"id_3"`
-	Name_2            string         `json:"name_2"`
-	Code              string         `json:"code"`
-	Barcode           string         `json:"barcode"`
-	DecisionNumber    string         `json:"decision_number"`
-	RegisterNumber    string         `json:"register_number"`
-	Vat               string         `json:"vat"`
-	Product           sql.NullInt64  `json:"product"`
-	UserCreated_3     int64          `json:"user_created_3"`
-	UserUpdated_3     sql.NullInt64  `json:"user_updated_3"`
-	UpdatedAt_3       sql.NullTime   `json:"updated_at_3"`
-	CreatedAt_3       time.Time      `json:"created_at_3"`
-	Longevity         string         `json:"longevity"`
-	ID_4              int64          `json:"id_4"`
-	Username          string         `json:"username"`
-	HashedPassword    string         `json:"hashed_password"`
-	FullName          string         `json:"full_name"`
-	Email             string         `json:"email"`
-	Type              int64          `json:"type"`
-	IsVerify          bool           `json:"is_verify"`
-	PasswordChangedAt time.Time      `json:"password_changed_at"`
-	CreatedAt_4       time.Time      `json:"created_at_4"`
-	ID_5              sql.NullInt64  `json:"id_5"`
-	Variant           sql.NullInt64  `json:"variant"`
-	Media             sql.NullInt64  `json:"media"`
-	ID_6              sql.NullInt64  `json:"id_6"`
-	MediaUrl          sql.NullString `json:"media_url"`
-	ID_7              int64          `json:"id_7"`
-	Name_3            string         `json:"name_3"`
-	Code_2            string         `json:"code_2"`
-	ProductCategory   sql.NullInt64  `json:"product_category"`
-	Type_2            sql.NullInt64  `json:"type_2"`
-	Unit_2            int64          `json:"unit_2"`
-	Company           sql.NullInt64  `json:"company"`
-	UserCreated_4     int64          `json:"user_created_4"`
-	UserUpdated_4     sql.NullInt64  `json:"user_updated_4"`
-	UpdatedAt_4       sql.NullTime   `json:"updated_at_4"`
-	CreatedAt_5       time.Time      `json:"created_at_5"`
-	Taduoc            sql.NullString `json:"taduoc"`
-	Nongdo            sql.NullString `json:"nongdo"`
-	Lieudung          string         `json:"lieudung"`
-	Chidinh           string         `json:"chidinh"`
-	Chongchidinh      sql.NullString `json:"chongchidinh"`
-	Congdung          string         `json:"congdung"`
-	Tacdungphu        string         `json:"tacdungphu"`
-	Thantrong         string         `json:"thantrong"`
-	Tuongtac          sql.NullString `json:"tuongtac"`
-	Baoquan           string         `json:"baoquan"`
-	Donggoi           string         `json:"donggoi"`
-	Noisx             string         `json:"noisx"`
-	Congtysx          string         `json:"congtysx"`
-	Congtydk          string         `json:"congtydk"`
-	Active            bool           `json:"active"`
-	CongTySx          sql.NullInt64  `json:"congTySx"`
-	CongTyDk          sql.NullInt64  `json:"congTyDk"`
-	Brand             int32          `json:"brand"`
-	UnitName          string         `json:"unit_name"`
-	Company_2         sql.NullInt64  `json:"company_2"`
-	VariantMedia      sql.NullString `json:"variant_media"`
-	UserCreatedName   string         `json:"user_created_name"`
+	ID                int32           `json:"id"`
+	VariantCode       string          `json:"variant_code"`
+	VariantName       string          `json:"variant_name"`
+	PriceImport       float64         `json:"price_import"`
+	PriceSell         float64         `json:"price_sell"`
+	Unit              int32           `json:"unit"`
+	UserCreated       int32           `json:"user_created"`
+	UserUpdated       sql.NullInt32   `json:"user_updated"`
+	UpdatedAt         sql.NullTime    `json:"updated_at"`
+	CreatedAt         time.Time       `json:"created_at"`
+	ID_2              int32           `json:"id_2"`
+	Name              string          `json:"name"`
+	SellPrice         float64         `json:"sell_price"`
+	ImportPrice       float64         `json:"import_price"`
+	Weight            sql.NullFloat64 `json:"weight"`
+	WeightUnit        sql.NullString  `json:"weight_unit"`
+	UserCreated_2     int32           `json:"user_created_2"`
+	UserUpdated_2     sql.NullInt32   `json:"user_updated_2"`
+	UpdatedAt_2       sql.NullTime    `json:"updated_at_2"`
+	CreatedAt_2       time.Time       `json:"created_at_2"`
+	ID_3              int32           `json:"id_3"`
+	Name_2            string          `json:"name_2"`
+	Code              string          `json:"code"`
+	Barcode           string          `json:"barcode"`
+	DecisionNumber    string          `json:"decision_number"`
+	RegisterNumber    string          `json:"register_number"`
+	Longevity         string          `json:"longevity"`
+	Vat               float64         `json:"vat"`
+	Product           int32           `json:"product"`
+	UserCreated_3     int32           `json:"user_created_3"`
+	UserUpdated_3     sql.NullInt32   `json:"user_updated_3"`
+	UpdatedAt_3       sql.NullTime    `json:"updated_at_3"`
+	CreatedAt_3       time.Time       `json:"created_at_3"`
+	ID_4              int32           `json:"id_4"`
+	Username          string          `json:"username"`
+	HashedPassword    string          `json:"hashed_password"`
+	FullName          string          `json:"full_name"`
+	Email             string          `json:"email"`
+	Type              int32           `json:"type"`
+	IsVerify          bool            `json:"is_verify"`
+	PasswordChangedAt time.Time       `json:"password_changed_at"`
+	CreatedAt_4       time.Time       `json:"created_at_4"`
+	ID_5              sql.NullInt32   `json:"id_5"`
+	Variant           sql.NullInt32   `json:"variant"`
+	Media             sql.NullInt32   `json:"media"`
+	ID_6              sql.NullInt32   `json:"id_6"`
+	MediaUrl          sql.NullString  `json:"media_url"`
+	ID_7              int32           `json:"id_7"`
+	Name_3            string          `json:"name_3"`
+	Code_2            string          `json:"code_2"`
+	ProductCategory   sql.NullInt32   `json:"product_category"`
+	Type_2            sql.NullInt32   `json:"type_2"`
+	Brand             int32           `json:"brand"`
+	Unit_2            int32           `json:"unit_2"`
+	TaDuoc            sql.NullString  `json:"ta_duoc"`
+	NongDo            sql.NullString  `json:"nong_do"`
+	LieuDung          string          `json:"lieu_dung"`
+	ChiDinh           string          `json:"chi_dinh"`
+	ChongChiDinh      sql.NullString  `json:"chong_chi_dinh"`
+	CongDung          string          `json:"cong_dung"`
+	TacDungPhu        string          `json:"tac_dung_phu"`
+	ThanTrong         string          `json:"than_trong"`
+	TuongTac          sql.NullString  `json:"tuong_tac"`
+	BaoQuan           string          `json:"bao_quan"`
+	DongGoi           string          `json:"dong_goi"`
+	PhanLoai          sql.NullString  `json:"phan_loai"`
+	DangBaoChe        string          `json:"dang_bao_che"`
+	TieuChuanSx       string          `json:"tieu_chuan_sx"`
+	CongTySx          int32           `json:"cong_ty_sx"`
+	CongTyDk          int32           `json:"cong_ty_dk"`
+	Active            bool            `json:"active"`
+	Company           int32           `json:"company"`
+	UserCreated_4     int32           `json:"user_created_4"`
+	UserUpdated_4     sql.NullInt32   `json:"user_updated_4"`
+	UpdatedAt_4       sql.NullTime    `json:"updated_at_4"`
+	CreatedAt_5       time.Time       `json:"created_at_5"`
+	UnitName          string          `json:"unit_name"`
+	Company_2         int32           `json:"company_2"`
+	VariantMedia      sql.NullString  `json:"variant_media"`
+	UserCreatedName   string          `json:"user_created_name"`
 }
 
 func (q *Queries) GetPriceLists(ctx context.Context, arg GetPriceListsParams) ([]GetPriceListsRow, error) {
@@ -337,13 +337,13 @@ func (q *Queries) GetPriceLists(ctx context.Context, arg GetPriceListsParams) ([
 			&i.Barcode,
 			&i.DecisionNumber,
 			&i.RegisterNumber,
+			&i.Longevity,
 			&i.Vat,
 			&i.Product,
 			&i.UserCreated_3,
 			&i.UserUpdated_3,
 			&i.UpdatedAt_3,
 			&i.CreatedAt_3,
-			&i.Longevity,
 			&i.ID_4,
 			&i.Username,
 			&i.HashedPassword,
@@ -363,30 +363,30 @@ func (q *Queries) GetPriceLists(ctx context.Context, arg GetPriceListsParams) ([
 			&i.Code_2,
 			&i.ProductCategory,
 			&i.Type_2,
+			&i.Brand,
 			&i.Unit_2,
+			&i.TaDuoc,
+			&i.NongDo,
+			&i.LieuDung,
+			&i.ChiDinh,
+			&i.ChongChiDinh,
+			&i.CongDung,
+			&i.TacDungPhu,
+			&i.ThanTrong,
+			&i.TuongTac,
+			&i.BaoQuan,
+			&i.DongGoi,
+			&i.PhanLoai,
+			&i.DangBaoChe,
+			&i.TieuChuanSx,
+			&i.CongTySx,
+			&i.CongTyDk,
+			&i.Active,
 			&i.Company,
 			&i.UserCreated_4,
 			&i.UserUpdated_4,
 			&i.UpdatedAt_4,
 			&i.CreatedAt_5,
-			&i.Taduoc,
-			&i.Nongdo,
-			&i.Lieudung,
-			&i.Chidinh,
-			&i.Chongchidinh,
-			&i.Congdung,
-			&i.Tacdungphu,
-			&i.Thantrong,
-			&i.Tuongtac,
-			&i.Baoquan,
-			&i.Donggoi,
-			&i.Noisx,
-			&i.Congtysx,
-			&i.Congtydk,
-			&i.Active,
-			&i.CongTySx,
-			&i.CongTyDk,
-			&i.Brand,
 			&i.UnitName,
 			&i.Company_2,
 			&i.VariantMedia,
@@ -417,7 +417,7 @@ RETURNING id, variant_code, variant_name, price_import, price_sell, unit, user_c
 type UpdatePriceListParams struct {
 	PriceImport float64 `json:"price_import"`
 	PriceSell   float64 `json:"price_sell"`
-	ID          int64   `json:"id"`
+	ID          int32   `json:"id"`
 }
 
 func (q *Queries) UpdatePriceList(ctx context.Context, arg UpdatePriceListParams) (PriceList, error) {

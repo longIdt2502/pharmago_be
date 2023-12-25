@@ -36,7 +36,7 @@ func (server *ServerGRPC) ListProduct(ctx context.Context, req *pb.ListProductRe
 		},
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to get product")
+		return nil, status.Errorf(codes.Internal, "failed to get product: %w", err)
 	}
 
 	var productsPb []*pb.Product

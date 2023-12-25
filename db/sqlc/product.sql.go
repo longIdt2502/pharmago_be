@@ -10,19 +10,52 @@ import (
 	"database/sql"
 )
 
+const createIngredient = `-- name: CreateIngredient :one
+INSERT INTO ingredient (
+    name, weight, unit, product
+) values (
+    $1::varchar, $2::float, $3::varchar, $4::int
+) RETURNING id, name, weight, unit, product
+`
+
+type CreateIngredientParams struct {
+	Name    string        `json:"name"`
+	Weight  float64       `json:"weight"`
+	Unit    string        `json:"unit"`
+	Product sql.NullInt32 `json:"product"`
+}
+
+func (q *Queries) CreateIngredient(ctx context.Context, arg CreateIngredientParams) (Ingredient, error) {
+	row := q.db.QueryRowContext(ctx, createIngredient,
+		arg.Name,
+		arg.Weight,
+		arg.Unit,
+		arg.Product,
+	)
+	var i Ingredient
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Weight,
+		&i.Unit,
+		&i.Product,
+	)
+	return i, err
+}
+
 const createProduct = `-- name: CreateProduct :one
 INSERT INTO products (
-    name, code, product_category, type, unit, taDuoc, nongDo, lieuDung, chiDinh, chongChiDinh,
-    congDung, tacDungPhu, thanTrong, tuongTac, baoQuan, dongGoi, noiSx, congTySx, congTyDk,
-    company, user_created, user_updated
+    name, code, product_category, type, brand, unit, ta_duoc, nong_do, lieu_dung, chi_dinh, chong_chi_dinh,
+    cong_dung, tac_dung_phu, than_trong, tuong_tac, bao_quan, dong_goi, cong_ty_sx, cong_ty_dk,
+    company, user_created, user_updated, phan_loai, dang_bao_che, tieu_chuan_sx
 ) values (
-    $1::varchar, $2::varchar, $3::int, $4::int,
-    $5::int, $6::varchar, $7::varchar, $8::varchar,
-    $9::varchar, $10::varchar, $11::varchar, $12::varchar,
-    $13::varchar, $14::varchar, $15::varchar, $16::varchar,
-    $17::varchar, $18::varchar, $19::varchar, $20::int,
-    $21::int, $22::int
-) RETURNING id, name, code, product_category, type, unit, company, user_created, user_updated, updated_at, created_at, taduoc, nongdo, lieudung, chidinh, chongchidinh, congdung, tacdungphu, thantrong, tuongtac, baoquan, donggoi, noisx, congtysx, congtydk, active, "congTySx", "congTyDk", brand
+    $1::varchar, $2::varchar, $3::int, $4::int, $5::int,
+    $6::int, $7::varchar, $8::varchar, $9::varchar,
+    $10::varchar, $11::varchar, $12::varchar, $13::varchar,
+    $14::varchar, $15::varchar, $16::varchar, $17::varchar,
+    $18::int, $19::int, $20::int,
+    $21::int, $22::int, $23::varchar, $24::varchar, $25::varchar
+) RETURNING id, name, code, product_category, type, brand, unit, ta_duoc, nong_do, lieu_dung, chi_dinh, chong_chi_dinh, cong_dung, tac_dung_phu, than_trong, tuong_tac, bao_quan, dong_goi, phan_loai, dang_bao_che, tieu_chuan_sx, cong_ty_sx, cong_ty_dk, active, company, user_created, user_updated, updated_at, created_at
 `
 
 type CreateProductParams struct {
@@ -30,6 +63,7 @@ type CreateProductParams struct {
 	Code            string         `json:"code"`
 	ProductCategory sql.NullInt32  `json:"product_category"`
 	Type            sql.NullInt32  `json:"type"`
+	Brand           sql.NullInt32  `json:"brand"`
 	Unit            int32          `json:"unit"`
 	Taduoc          sql.NullString `json:"taduoc"`
 	Nongdo          sql.NullString `json:"nongdo"`
@@ -42,12 +76,14 @@ type CreateProductParams struct {
 	Tuongtac        sql.NullString `json:"tuongtac"`
 	Baoquan         string         `json:"baoquan"`
 	Donggoi         string         `json:"donggoi"`
-	Noisx           string         `json:"noisx"`
-	Congtysx        string         `json:"congtysx"`
-	Congtydk        string         `json:"congtydk"`
+	Congtysx        int32          `json:"congtysx"`
+	Congtydk        int32          `json:"congtydk"`
 	Company         int32          `json:"company"`
 	UserCreated     int32          `json:"user_created"`
 	UserUpdated     int32          `json:"user_updated"`
+	Phanloai        string         `json:"phanloai"`
+	Dangbaoche      string         `json:"dangbaoche"`
+	Tieuchuansx     string         `json:"tieuchuansx"`
 }
 
 func (q *Queries) CreateProduct(ctx context.Context, arg CreateProductParams) (Product, error) {
@@ -56,6 +92,7 @@ func (q *Queries) CreateProduct(ctx context.Context, arg CreateProductParams) (P
 		arg.Code,
 		arg.ProductCategory,
 		arg.Type,
+		arg.Brand,
 		arg.Unit,
 		arg.Taduoc,
 		arg.Nongdo,
@@ -68,12 +105,14 @@ func (q *Queries) CreateProduct(ctx context.Context, arg CreateProductParams) (P
 		arg.Tuongtac,
 		arg.Baoquan,
 		arg.Donggoi,
-		arg.Noisx,
 		arg.Congtysx,
 		arg.Congtydk,
 		arg.Company,
 		arg.UserCreated,
 		arg.UserUpdated,
+		arg.Phanloai,
+		arg.Dangbaoche,
+		arg.Tieuchuansx,
 	)
 	var i Product
 	err := row.Scan(
@@ -82,30 +121,30 @@ func (q *Queries) CreateProduct(ctx context.Context, arg CreateProductParams) (P
 		&i.Code,
 		&i.ProductCategory,
 		&i.Type,
+		&i.Brand,
 		&i.Unit,
+		&i.TaDuoc,
+		&i.NongDo,
+		&i.LieuDung,
+		&i.ChiDinh,
+		&i.ChongChiDinh,
+		&i.CongDung,
+		&i.TacDungPhu,
+		&i.ThanTrong,
+		&i.TuongTac,
+		&i.BaoQuan,
+		&i.DongGoi,
+		&i.PhanLoai,
+		&i.DangBaoChe,
+		&i.TieuChuanSx,
+		&i.CongTySx,
+		&i.CongTyDk,
+		&i.Active,
 		&i.Company,
 		&i.UserCreated,
 		&i.UserUpdated,
 		&i.UpdatedAt,
 		&i.CreatedAt,
-		&i.Taduoc,
-		&i.Nongdo,
-		&i.Lieudung,
-		&i.Chidinh,
-		&i.Chongchidinh,
-		&i.Congdung,
-		&i.Tacdungphu,
-		&i.Thantrong,
-		&i.Tuongtac,
-		&i.Baoquan,
-		&i.Donggoi,
-		&i.Noisx,
-		&i.Congtysx,
-		&i.Congtydk,
-		&i.Active,
-		&i.CongTySx,
-		&i.CongTyDk,
-		&i.Brand,
 	)
 	return i, err
 }
@@ -117,8 +156,8 @@ INSERT INTO product_media (
 `
 
 type CreateProductMediaParams struct {
-	Product sql.NullInt64 `json:"product"`
-	Media   sql.NullInt64 `json:"media"`
+	Product int32 `json:"product"`
+	Media   int32 `json:"media"`
 }
 
 func (q *Queries) CreateProductMedia(ctx context.Context, arg CreateProductMediaParams) (ProductMedium, error) {
@@ -173,6 +212,43 @@ func (q *Queries) CreateUnit(ctx context.Context, arg CreateUnitParams) (Unit, e
 	return i, err
 }
 
+const createUnitChange = `-- name: CreateUnitChange :one
+INSERT INTO unit_changes (
+    name, value, sell_price, unit
+) values (
+    $1::varchar, $2::int, $3::float, $4::int
+) RETURNING id, name, value, sell_price, unit, user_created, user_updated, updated_at, created_at
+`
+
+type CreateUnitChangeParams struct {
+	Name      string        `json:"name"`
+	Value     int32         `json:"value"`
+	SellPrice float64       `json:"sell_price"`
+	Unit      sql.NullInt32 `json:"unit"`
+}
+
+func (q *Queries) CreateUnitChange(ctx context.Context, arg CreateUnitChangeParams) (UnitChange, error) {
+	row := q.db.QueryRowContext(ctx, createUnitChange,
+		arg.Name,
+		arg.Value,
+		arg.SellPrice,
+		arg.Unit,
+	)
+	var i UnitChange
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Value,
+		&i.SellPrice,
+		&i.Unit,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.UpdatedAt,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const createVariant = `-- name: CreateVariant :one
 INSERT INTO variants (
     name, code, barcode, vat, decision_number, register_number, longevity, product, user_created, user_updated
@@ -180,7 +256,7 @@ INSERT INTO variants (
     $1::varchar, $2::varchar, $3::varchar, $4::float,
     $5::varchar, $6::varchar, $7::varchar,
     $8::int, $9::int, $10::int
-) RETURNING id, name, code, barcode, decision_number, register_number, vat, product, user_created, user_updated, updated_at, created_at, longevity
+) RETURNING id, name, code, barcode, decision_number, register_number, longevity, vat, product, user_created, user_updated, updated_at, created_at
 `
 
 type CreateVariantParams struct {
@@ -217,13 +293,13 @@ func (q *Queries) CreateVariant(ctx context.Context, arg CreateVariantParams) (V
 		&i.Barcode,
 		&i.DecisionNumber,
 		&i.RegisterNumber,
+		&i.Longevity,
 		&i.Vat,
 		&i.Product,
 		&i.UserCreated,
 		&i.UserUpdated,
 		&i.UpdatedAt,
 		&i.CreatedAt,
-		&i.Longevity,
 	)
 	return i, err
 }
@@ -235,8 +311,8 @@ INSERT INTO variant_media (
 `
 
 type CreateVariantMediaParams struct {
-	Variant int64 `json:"variant"`
-	Media   int64 `json:"media"`
+	Variant int32 `json:"variant"`
+	Media   int32 `json:"media"`
 }
 
 func (q *Queries) CreateVariantMedia(ctx context.Context, arg CreateVariantMediaParams) (VariantMedium, error) {
@@ -253,12 +329,12 @@ WHERE product = $1
 `
 
 type GetProductMediaRow struct {
-	Product  sql.NullInt64 `json:"product"`
-	Media    sql.NullInt64 `json:"media"`
-	MediaUrl string        `json:"media_url"`
+	Product  int32  `json:"product"`
+	Media    int32  `json:"media"`
+	MediaUrl string `json:"media_url"`
 }
 
-func (q *Queries) GetProductMedia(ctx context.Context, product sql.NullInt64) ([]GetProductMediaRow, error) {
+func (q *Queries) GetProductMedia(ctx context.Context, product int32) ([]GetProductMediaRow, error) {
 	rows, err := q.db.QueryContext(ctx, getProductMedia, product)
 	if err != nil {
 		return nil, err
@@ -282,7 +358,7 @@ func (q *Queries) GetProductMedia(ctx context.Context, product sql.NullInt64) ([
 }
 
 const getProducts = `-- name: GetProducts :many
-SELECT id, name, code, product_category, type, unit, company, user_created, user_updated, updated_at, created_at, taduoc, nongdo, lieudung, chidinh, chongchidinh, congdung, tacdungphu, thantrong, tuongtac, baoquan, donggoi, noisx, congtysx, congtydk, active, "congTySx", "congTyDk", brand FROM products
+SELECT id, name, code, product_category, type, brand, unit, ta_duoc, nong_do, lieu_dung, chi_dinh, chong_chi_dinh, cong_dung, tac_dung_phu, than_trong, tuong_tac, bao_quan, dong_goi, phan_loai, dang_bao_che, tieu_chuan_sx, cong_ty_sx, cong_ty_dk, active, company, user_created, user_updated, updated_at, created_at FROM products
 WHERE company = $1::int AND (
     name ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
     code ILIKE '%' || COALESCE($2::varchar, '') || '%'
@@ -319,30 +395,30 @@ func (q *Queries) GetProducts(ctx context.Context, arg GetProductsParams) ([]Pro
 			&i.Code,
 			&i.ProductCategory,
 			&i.Type,
+			&i.Brand,
 			&i.Unit,
+			&i.TaDuoc,
+			&i.NongDo,
+			&i.LieuDung,
+			&i.ChiDinh,
+			&i.ChongChiDinh,
+			&i.CongDung,
+			&i.TacDungPhu,
+			&i.ThanTrong,
+			&i.TuongTac,
+			&i.BaoQuan,
+			&i.DongGoi,
+			&i.PhanLoai,
+			&i.DangBaoChe,
+			&i.TieuChuanSx,
+			&i.CongTySx,
+			&i.CongTyDk,
+			&i.Active,
 			&i.Company,
 			&i.UserCreated,
 			&i.UserUpdated,
 			&i.UpdatedAt,
 			&i.CreatedAt,
-			&i.Taduoc,
-			&i.Nongdo,
-			&i.Lieudung,
-			&i.Chidinh,
-			&i.Chongchidinh,
-			&i.Congdung,
-			&i.Tacdungphu,
-			&i.Thantrong,
-			&i.Tuongtac,
-			&i.Baoquan,
-			&i.Donggoi,
-			&i.Noisx,
-			&i.Congtysx,
-			&i.Congtydk,
-			&i.Active,
-			&i.CongTySx,
-			&i.CongTyDk,
-			&i.Brand,
 		); err != nil {
 			return nil, err
 		}

@@ -15,7 +15,7 @@ INSERT INTO companies (
     name, code, tax_code, phone, description, address, owner
 ) VALUES (
     $1, $2, $3, $4, $5, $6, $7
-) RETURNING id, name, code, tax_code, phone, description, created_at, owner, address
+) RETURNING id, name, code, tax_code, phone, description, address, created_at, owner
 `
 
 type CreateCompanyParams struct {
@@ -24,8 +24,8 @@ type CreateCompanyParams struct {
 	TaxCode     sql.NullString `json:"tax_code"`
 	Phone       sql.NullString `json:"phone"`
 	Description sql.NullString `json:"description"`
-	Address     int64          `json:"address"`
-	Owner       int64          `json:"owner"`
+	Address     sql.NullInt32  `json:"address"`
+	Owner       int32          `json:"owner"`
 }
 
 func (q *Queries) CreateCompany(ctx context.Context, arg CreateCompanyParams) (Company, error) {
@@ -46,15 +46,15 @@ func (q *Queries) CreateCompany(ctx context.Context, arg CreateCompanyParams) (C
 		&i.TaxCode,
 		&i.Phone,
 		&i.Description,
+		&i.Address,
 		&i.CreatedAt,
 		&i.Owner,
-		&i.Address,
 	)
 	return i, err
 }
 
 const getCompanies = `-- name: GetCompanies :many
-SELECT id, name, code, tax_code, phone, description, created_at, owner, address FROM companies
+SELECT id, name, code, tax_code, phone, description, address, created_at, owner FROM companies
 WHERE owner = $1::int AND
     (name ILIKE COALESCE($2::varchar, '%') OR
     phone ILIKE COALESCE($2::varchar, '%'))
@@ -91,9 +91,9 @@ func (q *Queries) GetCompanies(ctx context.Context, arg GetCompaniesParams) ([]C
 			&i.TaxCode,
 			&i.Phone,
 			&i.Description,
+			&i.Address,
 			&i.CreatedAt,
 			&i.Owner,
-			&i.Address,
 		); err != nil {
 			return nil, err
 		}

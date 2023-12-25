@@ -1,33 +1,33 @@
 -- SQL dump generated using DBML (dbml-lang.org)
 -- Database: PostgreSQL
--- Generated at: 2023-12-22T06:30:23.604Z
+-- Generated at: 2023-12-25T02:57:54.550Z
 
 CREATE TABLE "accounts" (
-  "id" bigserial PRIMARY KEY,
+  "id" serial PRIMARY KEY,
   "username" varchar UNIQUE NOT NULL,
   "hashed_password" varchar NOT NULL,
   "full_name" varchar NOT NULL,
   "email" varchar UNIQUE NOT NULL,
-  "type" bigserial NOT NULL,
+  "type" serial NOT NULL,
   "is_verify" boolean NOT NULL DEFAULT false,
   "password_changed_at" timestamptz NOT NULL DEFAULT '0001-01-01 00:00:00Z',
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "account_media" (
-  "id" bigserial PRIMARY KEY,
-  "account" bigserial NOT NULL,
-  "media" bigserial NOT NULL
+  "id" serial PRIMARY KEY,
+  "account" serial NOT NULL,
+  "media" serial NOT NULL
 );
 
 CREATE TABLE "account_company" (
-  "id" bigserial PRIMARY KEY,
-  "account" bigserial NOT NULL,
-  "company" bigserial NOT NULL
+  "id" serial PRIMARY KEY,
+  "account" serial NOT NULL,
+  "company" serial NOT NULL
 );
 
 CREATE TABLE "account_type" (
-  "id" bigserial PRIMARY KEY,
+  "id" serial PRIMARY KEY,
   "code" varchar NOT NULL,
   "title" varchar NOT NULL
 );
@@ -44,7 +44,7 @@ CREATE TABLE "sessions" (
 );
 
 CREATE TABLE "verifies" (
-  "id" bigserial PRIMARY KEY,
+  "id" serial PRIMARY KEY,
   "username" varchar NOT NULL,
   "email" varchar NOT NULL,
   "secret_code" varchar NOT NULL,
@@ -54,31 +54,31 @@ CREATE TABLE "verifies" (
 );
 
 CREATE TABLE "companies" (
-  "id" bigserial PRIMARY KEY,
+  "id" serial PRIMARY KEY,
   "name" varchar NOT NULL,
   "code" varchar UNIQUE NOT NULL,
   "tax_code" varchar,
   "phone" varchar,
   "description" varchar,
-  "address" bigserial NOT NULL,
+  "address" serial,
   "created_at" timestamptz NOT NULL DEFAULT (now()),
-  "owner" bigserial NOT NULL
+  "owner" serial NOT NULL
 );
 
 CREATE TABLE "address" (
-  "id" bigserial PRIMARY KEY,
-  "lat" numeric NOT NULL,
-  "lng" numeric NOT NULL,
+  "id" serial PRIMARY KEY,
+  "lat" float NOT NULL,
+  "lng" float NOT NULL,
   "province" varchar,
   "district" varchar,
   "ward" varchar,
   "title" varchar NOT NULL,
-  "user_created" bigserial NOT NULL,
+  "user_created" serial NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "administrative_regions" (
-  "id" bigserial PRIMARY KEY,
+  "id" serial PRIMARY KEY,
   "name" varchar NOT NULL,
   "name_en" varchar NOT NULL,
   "code_name" varchar NOT NULL,
@@ -86,7 +86,7 @@ CREATE TABLE "administrative_regions" (
 );
 
 CREATE TABLE "administrative_units" (
-  "id" bigserial PRIMARY KEY,
+  "id" serial PRIMARY KEY,
   "full_name" varchar NOT NULL,
   "full_name_en" varchar NOT NULL,
   "short_name" varchar NOT NULL,
@@ -102,8 +102,8 @@ CREATE TABLE "provinces" (
   "full_name" varchar NOT NULL,
   "full_name_en" varchar NOT NULL,
   "code_name" varchar NOT NULL,
-  "administrative_unit_id" bigserial,
-  "administrative_region_id" bigserial
+  "administrative_unit_id" serial,
+  "administrative_region_id" serial
 );
 
 CREATE TABLE "districts" (
@@ -114,7 +114,7 @@ CREATE TABLE "districts" (
   "full_name_en" varchar NOT NULL,
   "code_name" varchar NOT NULL,
   "province_code" varchar,
-  "administrative_unit_id" bigserial
+  "administrative_unit_id" serial
 );
 
 CREATE TABLE "wards" (
@@ -125,133 +125,134 @@ CREATE TABLE "wards" (
   "full_name_en" varchar NOT NULL,
   "code_name" varchar NOT NULL,
   "district_code" varchar,
-  "administrative_unit_id" bigserial
-);
-
-CREATE TABLE "warehouses" (
-  "id" bigserial PRIMARY KEY,
-  "address" bigserial NOT NULL,
-  "companies" bigserial NOT NULL
+  "administrative_unit_id" serial
 );
 
 CREATE TABLE "products" (
-  "id" bigserial PRIMARY KEY,
+  "id" serial PRIMARY KEY,
   "name" varchar NOT NULL,
   "code" varchar NOT NULL,
   "product_category" serial,
   "type" serial,
-  "unit" bigserial NOT NULL,
-  "taDuoc" varchar(255),
-  "nongDo" varchar(255),
-  "lieuDung" varchar(255) NOT NULL,
-  "chiDinh" varchar(255) NOT NULL,
-  "chongChiDinh" varchar(255),
-  "congDung" varchar(255) NOT NULL,
-  "tacDungPhu" varchar(255) NOT NULL,
-  "thanTrong" varchar(255) NOT NULL,
-  "tuongTac" varchar(255),
-  "baoQuan" varchar(255) NOT NULL,
-  "dongGoi" varchar(255) NOT NULL,
-  "noiSx" varchar(255) NOT NULL,
-  "congTySx" bigserial NOT NULL,
-  "congTyDk" bigserial NOT NULL,
-  "company" bigserial,
-  "user_created" bigserial NOT NULL,
-  "user_updated" bigserial,
+  "brand" serial NOT NULL,
+  "unit" serial NOT NULL,
+  "ta_duoc" varchar(255),
+  "nong_do" varchar(255),
+  "lieu_dung" varchar(255) NOT NULL,
+  "chi_dinh" varchar(255) NOT NULL,
+  "chong_chi_dinh" varchar(255),
+  "cong_dung" varchar(255) NOT NULL,
+  "tac_dung_phu" varchar(255) NOT NULL,
+  "than_trong" varchar(255) NOT NULL,
+  "tuong_tac" varchar(255),
+  "bao_quan" varchar(255) NOT NULL,
+  "dong_goi" varchar(255) NOT NULL,
+  "phan_loai" varchar DEFAULT null,
+  "dang_bao_che" varchar NOT NULL,
+  "tieu_chuan_sx" varchar NOT NULL,
+  "cong_ty_sx" serial NOT NULL,
+  "cong_ty_dk" serial NOT NULL,
+  "active" boolean NOT NULL DEFAULT true,
+  "company" serial NOT NULL,
+  "user_created" serial NOT NULL,
+  "user_updated" serial,
   "updated_at" timestamptz,
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "products_bank" (
-  "id" bigserial PRIMARY KEY,
+  "id" serial PRIMARY KEY,
   "name" varchar NOT NULL,
   "code" varchar NOT NULL,
-  "taDuoc" varchar(255),
-  "nongDo" varchar(255),
-  "lieuDung" varchar(255) NOT NULL,
-  "chiDinh" varchar(255) NOT NULL,
-  "chongChiDinh" varchar(255),
-  "congDung" varchar(255) NOT NULL,
-  "tacDungPhu" varchar(255) NOT NULL,
-  "thanTrong" varchar(255) NOT NULL,
-  "tuongTac" varchar(255),
-  "baoQuan" varchar(255) NOT NULL,
-  "dongGoi" varchar(255) NOT NULL,
-  "phanLoai" varchar,
-  "dangBaoche" varchar NOT NULL,
-  "tieuChuanSx" varchar NOT NULL,
-  "congTySx" bigserial NOT NULL,
-  "congTyDk" bigserial NOT NULL
+  "ta_duoc" varchar(255),
+  "nong_do" varchar(255),
+  "lieu_dung" varchar(255) NOT NULL,
+  "chi_dinh" varchar(255) NOT NULL,
+  "chong_chi_dinh" varchar(255),
+  "cong_dung" varchar(255) NOT NULL,
+  "tac_dung_phu" varchar(255) NOT NULL,
+  "than_trong" varchar(255) NOT NULL,
+  "tuong_tac" varchar(255),
+  "bao_quan" varchar(255) NOT NULL,
+  "dong_goi" varchar(255) NOT NULL,
+  "phan_loai" varchar DEFAULT null,
+  "dang_bao_che" varchar NOT NULL,
+  "tieu_chuan_sx" varchar NOT NULL,
+  "cong_ty_sx" serial NOT NULL,
+  "cong_ty_dk" serial NOT NULL
 );
 
 CREATE TABLE "price_list" (
-  "id" bigserial PRIMARY KEY,
+  "id" serial PRIMARY KEY,
   "variant_code" varchar UNIQUE NOT NULL,
   "variant_name" varchar NOT NULL,
   "price_import" float NOT NULL,
   "price_sell" float NOT NULL,
-  "unit" bigserial NOT NULL,
-  "user_created" bigserial NOT NULL,
-  "user_updated" bigserial,
+  "unit" serial NOT NULL,
+  "user_created" serial NOT NULL,
+  "user_updated" serial,
   "updated_at" timestamptz,
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "price_list_log" (
-  "id" bigserial PRIMARY KEY,
+  "id" serial PRIMARY KEY,
   "old_price_import" float NOT NULL,
   "new_price_import" float NOT NULL,
   "old_price_sell" float NOT NULL,
   "new_price_sell" float NOT NULL,
-  "price_list" bigserial NOT NULL,
-  "user_updated" bigserial NOT NULL,
+  "price_list" serial NOT NULL,
+  "user_updated" serial,
   "updated_at" timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "company_pharma" (
-  "id" bigserial PRIMARY KEY,
+  "id" serial PRIMARY KEY,
   "name" varchar(255) NOT NULL,
   "code" varchar(255),
   "country" varchar(255),
   "address" varchar(255),
-  "company_pharma_type" varchar,
+  "company_pharma_type" varchar DEFAULT null,
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "company_pharma_type" (
-  "id" bigserial PRIMARY KEY,
+  "id" serial PRIMARY KEY,
   "code" varchar UNIQUE NOT NULL,
   "title" varchar(255) NOT NULL
 );
 
 CREATE TABLE "product_media" (
-  "id" bigserial PRIMARY KEY,
-  "product" bigserial,
-  "media" bigserial
+  "id" serial PRIMARY KEY,
+  "product" serial NOT NULL,
+  "media" serial NOT NULL
 );
 
 CREATE TABLE "product_categories" (
   "id" serial PRIMARY KEY,
   "code" varchar UNIQUE NOT NULL,
   "name" varchar NOT NULL,
-  "user_created" bigserial NOT NULL,
-  "created_at" timestamptz NOT NULL DEFAULT (now())
+  "user_created" serial NOT NULL,
+  "created_at" timestamptz NOT NULL DEFAULT (now()),
+  "company" serial NOT NULL
 );
 
 CREATE TABLE "product_brand" (
   "id" serial PRIMARY KEY,
   "code" varchar UNIQUE NOT NULL,
   "name" varchar NOT NULL,
-  "user_created" bigserial NOT NULL,
-  "created_at" timestamptz NOT NULL DEFAULT (now())
+  "user_created" serial NOT NULL,
+  "created_at" timestamptz NOT NULL DEFAULT (now()),
+  "company" serial NOT NULL
 );
 
 CREATE TABLE "product_type" (
   "id" serial PRIMARY KEY,
   "code" varchar UNIQUE NOT NULL,
   "name" varchar NOT NULL,
-  "user_created" bigserial NOT NULL,
-  "created_at" timestamptz NOT NULL DEFAULT (now())
+  "user_created" serial NOT NULL,
+  "created_at" timestamptz NOT NULL DEFAULT (now()),
+  "company" serial NOT NULL
 );
 
 CREATE TABLE "classify" (
@@ -276,139 +277,179 @@ CREATE TABLE "ingredient" (
   "id" serial PRIMARY KEY,
   "name" varchar NOT NULL,
   "weight" float NOT NULL DEFAULT 0,
-  "unit" varchar NOT NULL
-);
-
-CREATE TABLE "product_ingredient" (
-  "id" bigserial PRIMARY KEY,
-  "product" bigserial NOT NULL,
-  "ingredient" serial NOT NULL
+  "unit" varchar NOT NULL,
+  "product" serial NOT NULL
 );
 
 CREATE TABLE "units" (
-  "id" bigserial PRIMARY KEY,
+  "id" serial PRIMARY KEY,
   "name" varchar NOT NULL,
-  "sell_price" numeric NOT NULL DEFAULT 0,
-  "import_price" numeric NOT NULL DEFAULT 0,
-  "weight" numeric,
+  "sell_price" float NOT NULL DEFAULT 0,
+  "import_price" float NOT NULL DEFAULT 0,
+  "weight" float,
   "weight_unit" varchar,
-  "user_created" bigserial NOT NULL,
-  "user_updated" bigserial,
+  "user_created" serial NOT NULL,
+  "user_updated" serial,
   "updated_at" timestamptz,
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "unit_changes" (
-  "id" bigserial PRIMARY KEY,
+  "id" serial PRIMARY KEY,
   "name" varchar NOT NULL,
   "value" bigint NOT NULL DEFAULT 0,
-  "sell_price" numeric NOT NULL DEFAULT 0,
-  "unit" bigserial,
-  "user_created" bigserial NOT NULL,
-  "user_updated" bigserial,
+  "sell_price" float NOT NULL DEFAULT 0,
+  "unit" serial NOT NULL,
+  "user_created" serial NOT NULL,
+  "user_updated" serial,
   "updated_at" timestamptz,
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "variants" (
-  "id" bigserial PRIMARY KEY,
+  "id" serial PRIMARY KEY,
   "name" varchar NOT NULL,
   "code" varchar UNIQUE NOT NULL,
   "barcode" varchar NOT NULL,
   "decision_number" varchar(255) UNIQUE NOT NULL,
   "register_number" varchar(255) UNIQUE NOT NULL,
   "longevity" varchar(255) NOT NULL,
-  "vat" numeric NOT NULL DEFAULT 0,
-  "product" bigserial,
-  "user_created" bigserial NOT NULL,
-  "user_updated" bigserial,
+  "vat" float NOT NULL DEFAULT 0,
+  "product" serial NOT NULL,
+  "user_created" serial NOT NULL,
+  "user_updated" serial,
   "updated_at" timestamptz,
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "variant_media" (
-  "id" bigserial PRIMARY KEY,
-  "variant" bigserial NOT NULL,
-  "media" bigserial NOT NULL
+  "id" serial PRIMARY KEY,
+  "variant" serial NOT NULL,
+  "media" serial NOT NULL
 );
 
 CREATE TABLE "orders" (
-  "id" bigserial PRIMARY KEY,
-  "vat" numeric NOT NULL DEFAULT 0,
-  "total_price" numeric NOT NULL DEFAULT 0,
+  "id" serial PRIMARY KEY,
+  "vat" float NOT NULL DEFAULT 0,
+  "total_price" float NOT NULL DEFAULT 0,
   "description" varchar,
-  "customer" bigserial,
-  "status" bigserial NOT NULL,
-  "type" bigserial,
-  "ticket" bigserial,
-  "qr" bigserial
+  "customer" serial,
+  "status" serial,
+  "type" serial,
+  "ticket" serial,
+  "qr" serial
 );
 
 CREATE TABLE "order_type" (
-  "id" bigserial PRIMARY KEY,
+  "id" serial PRIMARY KEY,
   "code" varchar NOT NULL,
   "title" varchar NOT NULL
 );
 
 CREATE TABLE "order_status" (
-  "id" bigserial PRIMARY KEY,
+  "id" serial PRIMARY KEY,
   "code" varchar NOT NULL,
   "title" varchar NOT NULL
 );
 
 CREATE TABLE "order_items" (
-  "id" bigserial PRIMARY KEY,
-  "order" bigserial,
-  "variant" bigserial,
+  "id" serial PRIMARY KEY,
+  "order" serial NOT NULL,
+  "variant" serial NOT NULL,
   "value" int NOT NULL DEFAULT 0,
   "expired_at" timestamptz,
   "manufactured_at" timestamptz
 );
 
 CREATE TABLE "customers" (
-  "id" bigserial PRIMARY KEY,
+  "id" serial PRIMARY KEY,
   "full_name" varchar NOT NULL,
   "code" varchar NOT NULL,
-  "company" bigserial,
-  "address" bigserial,
+  "company" serial NOT NULL,
+  "address" serial,
   "email" varchar,
   "birthday" timestamptz,
-  "user_created" bigserial NOT NULL,
-  "user_updated" bigserial,
+  "user_created" serial NOT NULL,
+  "user_updated" serial,
   "updated_at" timestamptz,
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
+CREATE TABLE "medias" (
+  "id" serial PRIMARY KEY,
+  "media_url" varchar NOT NULL
+);
+
+CREATE TABLE "warehouses" (
+  "id" serial PRIMARY KEY,
+  "address" serial,
+  "companies" serial
+);
+
 CREATE TABLE "tickets" (
-  "id" bigserial PRIMARY KEY,
+  "id" serial PRIMARY KEY,
   "code" varchar NOT NULL,
-  "type" bigserial NOT NULL,
-  "status" bigserial NOT NULL,
+  "type" serial,
+  "status" serial,
   "note" varchar,
-  "qr" bigserial,
-  "export_from" bigserial NOT NULL,
-  "import_to" bigserial NOT NULL,
-  "user_created" bigserial NOT NULL,
-  "user_updated" bigserial,
+  "qr" serial,
+  "export_to" serial,
+  "import_from" serial,
+  "total_price" float NOT NULL DEFAULT 0,
+  "warehouse" serial NOT NULL,
+  "user_created" serial NOT NULL,
+  "user_updated" serial,
   "updated_at" timestamptz,
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "ticket_type" (
-  "id" bigserial PRIMARY KEY,
+  "id" serial PRIMARY KEY,
   "code" varchar NOT NULL,
   "title" varchar NOT NULL
 );
 
 CREATE TABLE "ticket_status" (
-  "id" bigserial PRIMARY KEY,
+  "id" serial PRIMARY KEY,
   "code" varchar NOT NULL,
   "title" varchar NOT NULL
 );
 
-CREATE TABLE "medias" (
-  "id" bigserial PRIMARY KEY,
-  "media_url" varchar NOT NULL
+CREATE TABLE "consignment" (
+  "id" serial PRIMARY KEY,
+  "code" varchar UNIQUE NOT NULL,
+  "quantity" int NOT NULL DEFAULT 0,
+  "inventory" int NOT NULL DEFAULT 0,
+  "ticket" serial,
+  "product" serial,
+  "expired_at" timestamptz NOT NULL,
+  "producted_at" timestamptz NOT NULL,
+  "is_available" bool NOT NULL DEFAULT false,
+  "user_created" serial,
+  "user_updated" serial,
+  "updated_at" timestamptz,
+  "created_at" timestamptz NOT NULL DEFAULT (now())
+);
+
+CREATE TABLE "consignment_log" (
+  "id" serial PRIMARY KEY,
+  "consignment" serial UNIQUE NOT NULL,
+  "inventory" int NOT NULL DEFAULT 0,
+  "amount_change" int NOT NULL DEFAULT 0,
+  "user_created" serial,
+  "created_at" timestamptz NOT NULL DEFAULT (now())
+);
+
+CREATE TABLE "suplier" (
+  "id" serial PRIMARY KEY,
+  "code" varchar UNIQUE NOT NULL,
+  "name" varchar(255) NOT NULL,
+  "deputy_name" varchar(255) NOT NULL,
+  "phone" varchar(255) NOT NULL,
+  "email" varchar(255),
+  "address" serial,
+  "warehouses" serial,
+  "company" serial
 );
 
 CREATE INDEX ON "address" ("province");
@@ -429,17 +470,13 @@ CREATE INDEX ON "wards" ("district_code");
 
 CREATE INDEX ON "wards" ("administrative_unit_id");
 
-CREATE INDEX ON "warehouses" ("address");
-
-CREATE UNIQUE INDEX ON "warehouses" ("id", "address");
-
 CREATE INDEX ON "products" ("unit");
 
-CREATE UNIQUE INDEX ON "products" ("id", "unit");
+CREATE INDEX ON "products" ("id", "unit");
 
 CREATE INDEX ON "company_pharma" ("company_pharma_type");
 
-CREATE UNIQUE INDEX ON "company_pharma" ("name", "company_pharma_type");
+CREATE INDEX ON "company_pharma" ("name", "company_pharma_type");
 
 CREATE INDEX ON "product_media" ("product");
 
@@ -455,7 +492,7 @@ CREATE UNIQUE INDEX ON "variant_media" ("variant", "media");
 
 CREATE INDEX ON "orders" ("qr");
 
-CREATE UNIQUE INDEX ON "orders" ("id", "qr");
+CREATE INDEX ON "orders" ("id", "qr");
 
 CREATE INDEX ON "customers" ("address");
 
@@ -465,23 +502,23 @@ CREATE INDEX ON "tickets" ("qr");
 
 CREATE UNIQUE INDEX ON "tickets" ("id", "qr");
 
-ALTER TABLE "accounts" ADD FOREIGN KEY ("type") REFERENCES "account_type" ("code");
+ALTER TABLE "accounts" ADD FOREIGN KEY ("type") REFERENCES "account_type" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "account_media" ADD FOREIGN KEY ("account") REFERENCES "accounts" ("id");
+ALTER TABLE "account_media" ADD FOREIGN KEY ("account") REFERENCES "accounts" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "account_media" ADD FOREIGN KEY ("media") REFERENCES "medias" ("id");
+ALTER TABLE "account_media" ADD FOREIGN KEY ("media") REFERENCES "medias" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "account_company" ADD FOREIGN KEY ("account") REFERENCES "accounts" ("id");
+ALTER TABLE "account_company" ADD FOREIGN KEY ("account") REFERENCES "accounts" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "account_company" ADD FOREIGN KEY ("company") REFERENCES "companies" ("id");
+ALTER TABLE "account_company" ADD FOREIGN KEY ("company") REFERENCES "companies" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "sessions" ADD FOREIGN KEY ("username") REFERENCES "accounts" ("username");
+ALTER TABLE "sessions" ADD FOREIGN KEY ("username") REFERENCES "accounts" ("username") ON DELETE CASCADE;
 
-ALTER TABLE "verifies" ADD FOREIGN KEY ("username") REFERENCES "accounts" ("username");
-
-ALTER TABLE "companies" ADD FOREIGN KEY ("address") REFERENCES "address" ("id");
+ALTER TABLE "verifies" ADD FOREIGN KEY ("username") REFERENCES "accounts" ("username") ON DELETE CASCADE;
 
 ALTER TABLE "companies" ADD FOREIGN KEY ("owner") REFERENCES "accounts" ("id");
+
+ALTER TABLE "companies" ADD FOREIGN KEY ("address") REFERENCES "address" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "address" ADD FOREIGN KEY ("province") REFERENCES "provinces" ("code");
 
@@ -503,116 +540,148 @@ ALTER TABLE "wards" ADD FOREIGN KEY ("district_code") REFERENCES "districts" ("c
 
 ALTER TABLE "wards" ADD FOREIGN KEY ("administrative_unit_id") REFERENCES "administrative_units" ("id");
 
-ALTER TABLE "warehouses" ADD FOREIGN KEY ("address") REFERENCES "address" ("id");
+ALTER TABLE "products" ADD FOREIGN KEY ("product_category") REFERENCES "product_categories" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "warehouses" ADD FOREIGN KEY ("companies") REFERENCES "companies" ("id");
+ALTER TABLE "products" ADD FOREIGN KEY ("type") REFERENCES "product_type" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "products" ADD FOREIGN KEY ("product_category") REFERENCES "product_categories" ("id");
+ALTER TABLE "products" ADD FOREIGN KEY ("brand") REFERENCES "product_brand" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "products" ADD FOREIGN KEY ("type") REFERENCES "product_type" ("id");
+ALTER TABLE "products" ADD FOREIGN KEY ("unit") REFERENCES "units" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "units" ADD FOREIGN KEY ("id") REFERENCES "products" ("unit");
+ALTER TABLE "products" ADD FOREIGN KEY ("phan_loai") REFERENCES "classify" ("code") ON DELETE SET NULL;
 
-ALTER TABLE "products" ADD FOREIGN KEY ("congTySx") REFERENCES "company_pharma" ("id");
+ALTER TABLE "products" ADD FOREIGN KEY ("dang_bao_che") REFERENCES "preparation_type" ("code") ON DELETE CASCADE;
 
-ALTER TABLE "products" ADD FOREIGN KEY ("congTyDk") REFERENCES "company_pharma" ("id");
+ALTER TABLE "products" ADD FOREIGN KEY ("tieu_chuan_sx") REFERENCES "production_standard" ("code") ON DELETE CASCADE;
 
-ALTER TABLE "products" ADD FOREIGN KEY ("company") REFERENCES "companies" ("id");
+ALTER TABLE "products" ADD FOREIGN KEY ("cong_ty_sx") REFERENCES "company_pharma" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "products" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id");
+ALTER TABLE "products" ADD FOREIGN KEY ("cong_ty_dk") REFERENCES "company_pharma" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "products" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" ("id");
+ALTER TABLE "products" ADD FOREIGN KEY ("company") REFERENCES "companies" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "products_bank" ADD FOREIGN KEY ("phanLoai") REFERENCES "classify" ("code");
+ALTER TABLE "products" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "products_bank" ADD FOREIGN KEY ("dangBaoche") REFERENCES "preparation_type" ("code");
+ALTER TABLE "products" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "products_bank" ADD FOREIGN KEY ("tieuChuanSx") REFERENCES "production_standard" ("code");
+ALTER TABLE "products_bank" ADD FOREIGN KEY ("phan_loai") REFERENCES "classify" ("code") ON DELETE SET NULL;
 
-ALTER TABLE "products_bank" ADD FOREIGN KEY ("congTySx") REFERENCES "company_pharma" ("id");
+ALTER TABLE "products_bank" ADD FOREIGN KEY ("dang_bao_che") REFERENCES "preparation_type" ("code") ON DELETE CASCADE;
 
-ALTER TABLE "products_bank" ADD FOREIGN KEY ("congTyDk") REFERENCES "company_pharma" ("id");
+ALTER TABLE "products_bank" ADD FOREIGN KEY ("tieu_chuan_sx") REFERENCES "production_standard" ("code") ON DELETE CASCADE;
 
-ALTER TABLE "price_list" ADD FOREIGN KEY ("variant_code") REFERENCES "variants" ("code");
+ALTER TABLE "products_bank" ADD FOREIGN KEY ("cong_ty_sx") REFERENCES "company_pharma" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "price_list" ADD FOREIGN KEY ("unit") REFERENCES "units" ("id");
+ALTER TABLE "products_bank" ADD FOREIGN KEY ("cong_ty_dk") REFERENCES "company_pharma" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "price_list" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id");
+ALTER TABLE "price_list" ADD FOREIGN KEY ("variant_code") REFERENCES "variants" ("code") ON DELETE CASCADE;
 
-ALTER TABLE "price_list" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" ("id");
+ALTER TABLE "price_list" ADD FOREIGN KEY ("unit") REFERENCES "units" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "price_list_log" ADD FOREIGN KEY ("price_list") REFERENCES "price_list" ("id");
+ALTER TABLE "price_list" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "price_list_log" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" ("id");
+ALTER TABLE "price_list" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "company_pharma" ADD FOREIGN KEY ("company_pharma_type") REFERENCES "company_pharma_type" ("code");
+ALTER TABLE "price_list_log" ADD FOREIGN KEY ("price_list") REFERENCES "price_list" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "product_media" ADD FOREIGN KEY ("product") REFERENCES "products" ("id");
+ALTER TABLE "price_list_log" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "product_media" ADD FOREIGN KEY ("media") REFERENCES "medias" ("id");
+ALTER TABLE "company_pharma" ADD FOREIGN KEY ("company_pharma_type") REFERENCES "company_pharma_type" ("code") ON DELETE SET NULL;
+
+ALTER TABLE "product_media" ADD FOREIGN KEY ("product") REFERENCES "products" ("id") ON DELETE CASCADE;
+
+ALTER TABLE "product_media" ADD FOREIGN KEY ("media") REFERENCES "medias" ("id") ON DELETE CASCADE;
 
 ALTER TABLE "product_categories" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id");
 
+ALTER TABLE "product_categories" ADD FOREIGN KEY ("company") REFERENCES "companies" ("id") ON DELETE CASCADE;
+
 ALTER TABLE "product_brand" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id");
+
+ALTER TABLE "product_brand" ADD FOREIGN KEY ("company") REFERENCES "companies" ("id") ON DELETE CASCADE;
 
 ALTER TABLE "product_type" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id");
 
-ALTER TABLE "product_ingredient" ADD FOREIGN KEY ("product") REFERENCES "products" ("id");
+ALTER TABLE "product_type" ADD FOREIGN KEY ("company") REFERENCES "companies" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "product_ingredient" ADD FOREIGN KEY ("ingredient") REFERENCES "ingredient" ("id");
+ALTER TABLE "ingredient" ADD FOREIGN KEY ("product") REFERENCES "products" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "units" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id");
+ALTER TABLE "units" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "units" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" ("id");
+ALTER TABLE "units" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "unit_changes" ADD FOREIGN KEY ("unit") REFERENCES "units" ("id");
+ALTER TABLE "unit_changes" ADD FOREIGN KEY ("unit") REFERENCES "units" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "unit_changes" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id");
+ALTER TABLE "unit_changes" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "unit_changes" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" ("id");
+ALTER TABLE "unit_changes" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "variants" ADD FOREIGN KEY ("product") REFERENCES "products" ("id");
+ALTER TABLE "variants" ADD FOREIGN KEY ("product") REFERENCES "products" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "variants" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id");
+ALTER TABLE "variants" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "variants" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" ("id");
+ALTER TABLE "variants" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "variant_media" ADD FOREIGN KEY ("variant") REFERENCES "variants" ("id");
+ALTER TABLE "variant_media" ADD FOREIGN KEY ("variant") REFERENCES "variants" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "variant_media" ADD FOREIGN KEY ("media") REFERENCES "medias" ("id");
+ALTER TABLE "variant_media" ADD FOREIGN KEY ("media") REFERENCES "medias" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "orders" ADD FOREIGN KEY ("customer") REFERENCES "customers" ("id");
+ALTER TABLE "orders" ADD FOREIGN KEY ("customer") REFERENCES "customers" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "orders" ADD FOREIGN KEY ("status") REFERENCES "order_status" ("id");
+ALTER TABLE "orders" ADD FOREIGN KEY ("status") REFERENCES "order_status" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "orders" ADD FOREIGN KEY ("type") REFERENCES "order_type" ("id");
+ALTER TABLE "orders" ADD FOREIGN KEY ("type") REFERENCES "order_type" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "orders" ADD FOREIGN KEY ("ticket") REFERENCES "tickets" ("id");
+ALTER TABLE "orders" ADD FOREIGN KEY ("ticket") REFERENCES "tickets" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "orders" ADD FOREIGN KEY ("qr") REFERENCES "medias" ("id");
+ALTER TABLE "orders" ADD FOREIGN KEY ("qr") REFERENCES "medias" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "order_items" ADD FOREIGN KEY ("order") REFERENCES "orders" ("id");
+ALTER TABLE "order_items" ADD FOREIGN KEY ("order") REFERENCES "orders" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "order_items" ADD FOREIGN KEY ("variant") REFERENCES "variants" ("id");
+ALTER TABLE "order_items" ADD FOREIGN KEY ("variant") REFERENCES "variants" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "customers" ADD FOREIGN KEY ("company") REFERENCES "companies" ("id");
+ALTER TABLE "customers" ADD FOREIGN KEY ("company") REFERENCES "companies" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "customers" ADD FOREIGN KEY ("address") REFERENCES "address" ("id");
+ALTER TABLE "customers" ADD FOREIGN KEY ("address") REFERENCES "address" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "customers" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id");
+ALTER TABLE "customers" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "customers" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" ("id");
+ALTER TABLE "customers" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "tickets" ADD FOREIGN KEY ("type") REFERENCES "ticket_type" ("id");
+ALTER TABLE "warehouses" ADD FOREIGN KEY ("address") REFERENCES "address" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "tickets" ADD FOREIGN KEY ("status") REFERENCES "ticket_status" ("id");
+ALTER TABLE "warehouses" ADD FOREIGN KEY ("companies") REFERENCES "companies" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "tickets" ADD FOREIGN KEY ("qr") REFERENCES "medias" ("id");
+ALTER TABLE "tickets" ADD FOREIGN KEY ("type") REFERENCES "ticket_type" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "tickets" ADD FOREIGN KEY ("export_from") REFERENCES "warehouses" ("id");
+ALTER TABLE "tickets" ADD FOREIGN KEY ("status") REFERENCES "ticket_status" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "tickets" ADD FOREIGN KEY ("import_to") REFERENCES "warehouses" ("id");
+ALTER TABLE "tickets" ADD FOREIGN KEY ("qr") REFERENCES "medias" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "tickets" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id");
+ALTER TABLE "tickets" ADD FOREIGN KEY ("export_to") REFERENCES "address" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "tickets" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" ("id");
+ALTER TABLE "tickets" ADD FOREIGN KEY ("import_from") REFERENCES "address" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "tickets" ADD FOREIGN KEY ("warehouse") REFERENCES "warehouses" ("id") ON DELETE CASCADE;
+
+ALTER TABLE "tickets" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id") ON DELETE CASCADE;
+
+ALTER TABLE "tickets" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "consignment" ADD FOREIGN KEY ("ticket") REFERENCES "tickets" ("id") ON DELETE CASCADE;
+
+ALTER TABLE "consignment" ADD FOREIGN KEY ("product") REFERENCES "products" ("id") ON DELETE CASCADE;
+
+ALTER TABLE "consignment" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "consignment" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "consignment_log" ADD FOREIGN KEY ("consignment") REFERENCES "consignment" ("id") ON DELETE CASCADE;
+
+ALTER TABLE "consignment_log" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "suplier" ADD FOREIGN KEY ("warehouses") REFERENCES "warehouses" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "suplier" ADD FOREIGN KEY ("address") REFERENCES "address" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "suplier" ADD FOREIGN KEY ("company") REFERENCES "companies" ("id") ON DELETE CASCADE;

@@ -6,77 +6,91 @@ Project pharmago {
 }
 
 Table accounts as A {
-  id bigserial [pk]
+  id serial [pk]
   username varchar [unique, not null]
   hashed_password varchar [not null]
   full_name varchar [not null]
   email varchar [unique, not null]
-  type bigserial [ref: > account_type.code, not null]
+  type serial [not null]
   is_verify boolean [not null, default: false]
   password_changed_at timestamptz [not null, default: '0001-01-01 00:00:00Z']
   created_at timestamptz [not null, default: `now()`]
 }
 
+Ref: A.type > account_type.id [delete: cascade]
+
 Table account_media {
-  id bigserial [pk]
-  account bigserial [ref: > A.id, not null]
-  media bigserial [ref: > medias.id, not null]
+  id serial [pk]
+  account serial [not null]
+  media serial [not null]
 }
+
+Ref: account_media.account > A.id [delete: cascade]
+Ref: account_media.media > medias.id [delete: cascade]
 
 Table account_company {
-  id bigserial [pk]
-  account bigserial [ref: > A.id, not null]
-  company bigserial [ref: > C.id, not null]
+  id serial [pk]
+  account serial [not null]
+  company serial [not null]
 }
 
+Ref: account_company.account > A.id [delete: cascade]
+Ref: account_company.company > C.id [delete: cascade]
+
 Table account_type {
-  id bigserial [pk]
+  id serial [pk]
   code varchar [not null]
   title varchar [not null]
 }
 
 Table sessions {
   id uuid [pk]
-  username varchar [ref: > A.username, not null]
-  refresh_token varchar [NOT NULL]
-  user_agent varchar [NOT NULL]
-  client_ip varchar [NOT NULL]
-  is_blocked boolean [NOT NULL, default: false]
-  expires_at timestamptz [NOT NULL]
-  created_at timestamptz [NOT NULL, default: `now()`]
+  username varchar [not null]
+  refresh_token varchar [not null]
+  user_agent varchar [not null]
+  client_ip varchar [not null]
+  is_blocked boolean [not null, default: false]
+  expires_at timestamptz [not null]
+  created_at timestamptz [not null, default: `now()`]
 }
+
+Ref: sessions.username > A.username [delete: cascade]
 
 Table verifies {
-  id bigserial [pk]
-  username varchar [ref: > A.username, NOT NULL]
-  email varchar [NOT NULL]
-  secret_code varchar [NOT NULL]
-  is_used bool [NOT NULL, default: false]
-  created_at timestamptz [NOT NULL, default: `now()`]
-  expired_at timestamptz [NOT NULL, default: `(now() + interval '15 minutes')`]
+  id serial [pk]
+  username varchar [not null]
+  email varchar [not null]
+  secret_code varchar [not null]
+  is_used bool [not null, default: false]
+  created_at timestamptz [not null, default: `now()`]
+  expired_at timestamptz [not null, default: `(now() + interval '15 minutes')`]
 }
 
+Ref: verifies.username > A.username [delete: cascade]
+
 Table companies as C {
-  id bigserial [pk]
+  id serial [pk]
   name varchar [not null]
   code varchar [unique, not null]
   tax_code varchar
   phone varchar
   description varchar
-  address bigserial [ref: > address.id, not null]
+  address serial
   created_at timestamptz [not null, default: `now()`]
-  owner bigserial [ref: > A.id, not null]
+  owner serial [ref: > A.id, not null]
 }
 
+Ref: C.address > address.id [delete: set null]
+
 Table address {
-  id bigserial [pk]
-  lat numeric [not null]
-  lng numeric [not null]
+  id serial [pk]
+  lat float [not null]
+  lng float [not null]
   province varchar [ref: > provinces.code]
   district varchar [ref: > districts.code]
   ward varchar [ref: > wards.code]
   title varchar [not null]
-  user_created bigserial [ref: > A.id, not null]
+  user_created serial [ref: > A.id, not null]
   created_at timestamptz [not null, default: `now()`]
 
   Indexes {
@@ -87,7 +101,7 @@ Table address {
 }
 
 Table administrative_regions {
-  id bigserial [pk]
+  id serial [pk]
   name varchar [not null]
   name_en varchar [not null]
   code_name varchar [not null]
@@ -95,7 +109,7 @@ Table administrative_regions {
 }
 
 Table administrative_units {
-  id bigserial [pk]
+  id serial [pk]
   full_name varchar [not null]
   full_name_en varchar [not null]
   short_name varchar [not null]
@@ -111,8 +125,8 @@ Table provinces {
   full_name varchar [not null]
   full_name_en varchar [not null]
   code_name varchar [not null]
-  administrative_unit_id bigserial [ref: > administrative_units.id]
-  administrative_region_id bigserial [ref: > administrative_regions.id]
+  administrative_unit_id serial [ref: > administrative_units.id]
+  administrative_region_id serial [ref: > administrative_regions.id]
 
   Indexes {
     administrative_unit_id
@@ -128,7 +142,7 @@ Table districts {
   full_name_en varchar [not null]
   code_name varchar [not null]
   province_code varchar [ref: > provinces.code]
-  administrative_unit_id bigserial [ref: > administrative_units.id]
+  administrative_unit_id serial [ref: > administrative_units.id]
 
   Indexes {
     province_code
@@ -144,7 +158,7 @@ Table wards {
   full_name_en varchar [not null]
   code_name varchar [not null]
   district_code varchar [ref: > districts.code]
-  administrative_unit_id bigserial [ref: > administrative_units.id]
+  administrative_unit_id serial [ref: > administrative_units.id]
 
   Indexes {
     district_code
@@ -152,121 +166,143 @@ Table wards {
   }
 }
 
-Table warehouses as W {
-  id bigserial [pk]
-  address bigserial [ref: > address.id, not null]
-  companies bigserial [ref: > C.id, not null]
-
-  Indexes {
-    address
-    (id, address) [unique]
-  }
-}
-
 Table products as P {
-  id bigserial [pk]
+  id serial [pk]
   name varchar [not null]
   code varchar [not null]
-  product_category serial [ref: > product_categories.id]
-  type serial [ref: > product_type.id]
-  unit bigserial [ref: - U.id, not null]
-  taDuoc varchar(255)
-  nongDo varchar(255)
-  lieuDung varchar(255) [not null]
-  chiDinh varchar(255) [not null]
-  chongChiDinh varchar(255)
-  congDung varchar(255) [not null]
-  tacDungPhu varchar(255) [not null]
-  thanTrong varchar(255) [not null]
-  tuongTac varchar(255)
-  baoQuan varchar(255) [not null]
-  dongGoi varchar(255) [not null]
-  noiSx varchar(255) [not null]
-  congTySx bigserial [ref: > company_pharma.id, not null]
-  congTyDk bigserial [ref: > company_pharma.id, not null]
-  company bigserial [ref: > C.id]
-  user_created bigserial [ref: > A.id, not null]
-  user_updated bigserial [ref: > A.id]
+  product_category serial
+  type serial
+  brand serial [not null]
+  unit serial [not null]
+  ta_duoc varchar(255)
+  nong_do varchar(255)
+  lieu_dung varchar(255) [not null]
+  chi_dinh varchar(255) [not null]
+  chong_chi_dinh varchar(255)
+  cong_dung varchar(255) [not null]
+  tac_dung_phu varchar(255) [not null]
+  than_trong varchar(255) [not null]
+  tuong_tac varchar(255)
+  bao_quan varchar(255) [not null]
+  dong_goi varchar(255) [not null]
+  phan_loai varchar [default: null]
+  dang_bao_che varchar [not null]
+  tieu_chuan_sx varchar [not null]
+  cong_ty_sx serial [not null]
+  cong_ty_dk serial [not null]
+  active boolean [not null, default: true]
+  company serial [not null]
+  user_created serial [not null]
+  user_updated serial
   updated_at timestamptz
   created_at timestamptz [not null, default: `now()`]
 
   Indexes {
     unit
-    (id, unit) [unique]
+    (id, unit)
   }
 }
 
+Ref: P.product_category > product_categories.id [delete: set null]
+Ref: P.type > product_type.id [delete: set null]
+Ref: P.brand > product_brand.id [delete: cascade]
+Ref: U.id - P.unit [delete: cascade]
+Ref: P.phan_loai > classify.code [delete: set null]
+Ref: P.dang_bao_che > preparation_type.code [delete: cascade]
+Ref: P.tieu_chuan_sx > production_standard.code [delete: cascade]
+Ref: P.cong_ty_sx > company_pharma.id [delete: cascade]
+Ref: P.cong_ty_dk > company_pharma.id [delete: cascade]
+Ref: P.company > C.id [delete: cascade]
+Ref: P.user_created > A.id [delete: cascade]
+Ref: P.user_updated > A.id [delete: set null]
+
 Table products_bank {
-  id bigserial [pk]
+  id serial [pk]
   name varchar [not null]
   code varchar [not null]
-  taDuoc varchar(255)
-  nongDo varchar(255)
-  lieuDung varchar(255) [not null]
-  chiDinh varchar(255) [not null]
-  chongChiDinh varchar(255)
-  congDung varchar(255) [not null]
-  tacDungPhu varchar(255) [not null]
-  thanTrong varchar(255) [not null]
-  tuongTac varchar(255)
-  baoQuan varchar(255) [not null]
-  dongGoi varchar(255) [not null]
-  phanLoai varchar [ref: > classify.code]
-  dangBaoche varchar [ref: > preparation_type.code, not null]
-  tieuChuanSx varchar [ref: > production_standard.code, not null]
-  congTySx bigserial [ref: > company_pharma.id, not null]
-  congTyDk bigserial [ref: > company_pharma.id, not null]
+  ta_duoc varchar(255)
+  nong_do varchar(255)
+  lieu_dung varchar(255) [not null]
+  chi_dinh varchar(255) [not null]
+  chong_chi_dinh varchar(255)
+  cong_dung varchar(255) [not null]
+  tac_dung_phu varchar(255) [not null]
+  than_trong varchar(255) [not null]
+  tuong_tac varchar(255)
+  bao_quan varchar(255) [not null]
+  dong_goi varchar(255) [not null]
+  phan_loai varchar [default: null]
+  dang_bao_che varchar [not null]
+  tieu_chuan_sx varchar [not null]
+  cong_ty_sx serial [not null]
+  cong_ty_dk serial [not null]
 }
 
+Ref: products_bank.phan_loai > classify.code [delete: set null]
+Ref: products_bank.dang_bao_che > preparation_type.code [delete: cascade]
+Ref: products_bank.tieu_chuan_sx > production_standard.code [delete: cascade]
+Ref: products_bank.cong_ty_sx > company_pharma.id [delete: cascade]
+Ref: products_bank.cong_ty_dk > company_pharma.id [delete: cascade]
+
 Table price_list as PL {
-  id bigserial [pk]
-  variant_code varchar [ref: > V.code, not null, unique]
+  id serial [pk]
+  variant_code varchar [not null, unique]
   variant_name varchar [not null]
   price_import float [not null]
   price_sell float [not null]
-  unit bigserial [ref: > U.id, not null]
-  user_created bigserial [ref: > A.id, not null]
-  user_updated bigserial [ref: > A.id]
+  unit serial [not null]
+  user_created serial [not null]
+  user_updated serial
   updated_at timestamptz
   created_at timestamptz [not null, default: `now()`]
 }
 
+Ref: PL.variant_code > V.code [delete: cascade]
+Ref: PL.unit > U.id [delete: cascade]
+Ref: PL.user_created > A.id [delete: cascade]
+Ref: PL.user_updated > A.id [delete: set null]
+
 Table price_list_log as PLL {
-  id bigserial [pk]
+  id serial [pk]
   old_price_import float [not null]
   new_price_import float [not null]
   old_price_sell float [not null]
   new_price_sell float [not null]
-  price_list bigserial [ref: > PL.id, not null]
-  user_updated bigserial [ref: > A.id, not null]
+  price_list serial [not null]
+  user_updated serial
   updated_at timestamptz [not null, default: `now()`]
 }
 
+Ref: PLL.price_list > PL.id [delete: cascade]
+Ref: PLL.user_updated > A.id [delete: set null]
+
 Table company_pharma {
-  id bigserial [pk]
+  id serial [pk]
   name varchar(255) [not null]
   code varchar(255)
   country varchar(255)
   address varchar(255)
-  company_pharma_type varchar [ref: > company_pharma_type.code]
+  company_pharma_type varchar [default: null]
   created_at timestamptz [not null, default: `now()`]
 
   Indexes {
     company_pharma_type
-    (name, company_pharma_type) [unique]
+    (name, company_pharma_type)
   }
 }
 
+Ref: company_pharma_type.code - company_pharma.company_pharma_type [delete: set null]
+
 Table company_pharma_type {
-  id bigserial [pk]
+  id serial [pk]
   code varchar [not null, unique]
   title varchar(255) [not null]
 }
 
 Table product_media {
-  id bigserial [pk]
-  product bigserial [ref: > P.id]
-  media bigserial [ref: > M.id]
+  id serial [pk]
+  product serial [not null]
+  media serial [not null]
 
   Indexes {
     product
@@ -275,29 +311,41 @@ Table product_media {
   }
 }
 
+Ref: product_media.product > P.id [delete: cascade]
+Ref: product_media.media > M.id [delete: cascade]
+
 Table product_categories {
   id serial [pk]
   code varchar [not null, unique]
   name varchar [not null]
-  user_created bigserial [ref: > A.id, not null]
+  user_created serial [ref: > A.id, not null]
   created_at timestamptz [not null, default: `now()`]
+  company serial [not null]
 }
+
+Ref: product_categories.company > C.id [delete: cascade]
 
 Table product_brand {
   id serial [pk]
   code varchar [not null, unique]
   name varchar [not null]
-  user_created bigserial [ref: > A.id, not null]
+  user_created serial [ref: > A.id, not null]
   created_at timestamptz [not null, default: `now()`]
+  company serial [not null]
 }
+
+Ref: product_brand.company > C.id [delete: cascade]
 
 Table product_type {
   id serial [pk]
   code varchar [not null, unique]
   name varchar [not null]
-  user_created bigserial [ref: > A.id, not null]
+  user_created serial [ref: > A.id, not null]
   created_at timestamptz [not null, default: `now()`]
+  company serial [not null]
 }
+
+Ref: product_type.company > C.id [delete: cascade]
 
 Table classify {
   id serial [pk]
@@ -322,59 +370,67 @@ Table ingredient {
   name varchar [not null]
   weight float [not null, default: 0]
   unit varchar [not null]
+  product serial [not null]
 }
 
-Table product_ingredient {
-  id bigserial [pk]
-  product bigserial [ref: > products.id, not null]
-  ingredient serial [ref: > ingredient.id, not null]
-}
+Ref: ingredient.product > P.id [delete: cascade]
 
 Table units as U {
-  id bigserial [pk]
+  id serial [pk]
   name varchar [not null]
-  sell_price numeric [not null, default: 0]
-  import_price numeric [not null, default: 0]
-  weight numeric
+  sell_price float [not null, default: 0]
+  import_price float [not null, default: 0]
+  weight float
   weight_unit varchar
-  user_created bigserial [ref: > A.id, not null]
-  user_updated bigserial [ref: > A.id]
+  user_created serial [not null]
+  user_updated serial
   updated_at timestamptz
   created_at timestamptz [not null, default: `now()`]
 }
+
+Ref: U.user_created > A.id [delete: cascade]
+Ref: U.user_updated > A.id [delete: set null]
 
 Table unit_changes {
-  id bigserial [pk]
+  id serial [pk]
   name varchar [not null]
   value bigint [not null, default: 0]
-  sell_price numeric [not null, default: 0]
-  unit bigserial [ref: > U.id]
-  user_created bigserial [ref: > A.id, not null]
-  user_updated bigserial [ref: > A.id]
+  sell_price float [not null, default: 0]
+  unit serial [not null]
+  user_created serial [not null]
+  user_updated serial
   updated_at timestamptz
   created_at timestamptz [not null, default: `now()`]
 }
 
+Ref: unit_changes.unit > U.id [delete: cascade]
+Ref: unit_changes.user_created > A.id [delete: cascade]
+Ref: unit_changes.user_updated > A.id [delete: set null]
+
 Table variants as V {
-  id bigserial [pk]
+  id serial [pk]
   name varchar [not null]
   code varchar [not null, unique]
   barcode varchar [not null]
   decision_number varchar(255) [not null, unique]
   register_number varchar(255) [not null, unique]
   longevity varchar(255) [not null]
-  vat numeric [not null, default: 0]
-  product bigserial [ref: > P.id]
-  user_created bigserial [ref: > A.id, not null]
-  user_updated bigserial [ref: > A.id]
+  vat float [not null, default: 0]
+  product serial [not null]
+  user_created serial [not null]
+  user_updated serial
   updated_at timestamptz
   created_at timestamptz [not null, default: `now()`]
 }
 
+Ref: V.product > P.id [delete: cascade]
+Ref: V.user_created > A.id [delete: cascade]
+Ref: V.user_updated > A.id [delete: set null]
+
 Table variant_media {
-  id bigserial [pk]
-  variant bigserial [ref: > V.id, not null]
-  media bigserial [ref: > M.id, not null]
+  id serial [pk]
+  variant serial [not null]
+  media serial [not null]
 
   Indexes {
     variant
@@ -383,54 +439,66 @@ Table variant_media {
   }
 }
 
+Ref: variant_media.variant > V.id [delete: cascade]
+Ref: variant_media.media > M.id [delete: cascade]
+
 Table orders as O {
-  id bigserial [pk]
-  vat numeric [not null, default: 0]
-  total_price numeric [not null, default: 0]
+  id serial [pk]
+  vat float [not null, default: 0]
+  total_price float [not null, default: 0]
   description varchar
-  customer bigserial [ref: > customers.id]
-  status bigserial [ref: > order_status.id, not null]
-  type bigserial [ref: > order_type.id]
-  ticket bigserial [ref: > T.id]
-  qr bigserial [ref: > M.id]
+  customer serial
+  status serial
+  type serial
+  ticket serial
+  qr serial
 
   Indexes {
     qr
-    (id, qr) [unique]
+    (id, qr)
   }
 }
 
+Ref: O.customer > customers.id [delete: set null]
+Ref: O.status > order_status.id [delete: set null]
+Ref: O.type > order_type.id [delete: set null]
+Ref: O.ticket > T.id [delete: set null]
+Ref: M.id - O.qr [delete: set null]
+
 Table order_type {
-  id bigserial [pk]
+  id serial [pk]
   code varchar [not null]
   title varchar [not null]
 }
 
 Table order_status {
-  id bigserial [pk]
+  id serial [pk]
   code varchar [not null]
   title varchar [not null]
 }
 
 Table order_items {
-  id bigserial [pk]
-  order bigserial [ref: > O.id]
-  variant bigserial [ref: > V.id]
+  id serial [pk]
+  order serial [not null]
+  variant serial [not null]
   value int [not null, default: 0]
   expired_at timestamptz
   manufactured_at timestamptz
 }
 
+Ref: order_items.order > O.id [delete: cascade]
+Ref: order_items.variant > V.id [delete: cascade]
+
 Table customers {
-  id bigserial [pk]
+  id serial [pk]
   full_name varchar [not null]
   code varchar [not null]
-  company bigserial [ref: > C.id]
-  address bigserial [ref: > address.id]
+  company serial [not null]
+  address serial
   email varchar
   birthday timestamptz
-  user_created bigserial [ref: > A.id, not null]
-  user_updated bigserial [ref: > A.id]
+  user_created serial [not null]
+  user_updated serial
   updated_at timestamptz
   created_at timestamptz [not null, default: `now()`]
 
@@ -439,18 +507,38 @@ Table customers {
     (id, address) [unique]
   }
 }
+Ref: customers.company > C.id [delete: cascade]
+Ref: customers.address > address.id [delete: set null]
+Ref: customers.user_created > A.id [delete: cascade]
+Ref: customers.user_updated > A.id [delete: set null]
+
+Table medias as M {
+  id serial [pk]
+  media_url varchar [not null]
+}
+
+Table warehouses as W {
+  id serial [pk]
+  address serial
+  companies serial
+}
+
+Ref: W.address > address.id [delete: set null]
+Ref: W.companies > C.id [delete: cascade]
 
 Table tickets as T {
-  id bigserial [pk]
+  id serial [pk]
   code varchar [not null]
-  type bigserial [ref: > ticket_type.id, not null]
-  status bigserial [ref: > ticket_status.id, not null]
+  type serial
+  status serial
   note varchar
-  qr bigserial [ref: > M.id]
-  export_from bigserial [ref: > W.id, not null]
-  import_to bigserial [ref: > W.id, not null]
-  user_created bigserial [ref: > A.id, not null]
-  user_updated bigserial [ref: > A.id]
+  qr serial
+  export_to serial
+  import_from serial
+  total_price float [not null, default: 0]
+  warehouse serial [not null]
+  user_created serial [not null]
+  user_updated serial
   updated_at timestamptz
   created_at timestamptz [not null, default: `now()`]
 
@@ -460,23 +548,110 @@ Table tickets as T {
   }
 }
 
+Ref: T.type > ticket_type.id [delete: set null]
+Ref: T.status > ticket_status.id [delete: set null]
+Ref: M.id - T.qr [delete: set null]
+Ref: T.export_to > address.id [delete: set null]
+Ref: T.import_from > address.id [delete: set null]
+Ref: T.warehouse > W.id [delete: cascade]
+Ref: T.user_created > A.id [delete: cascade]
+Ref: T.user_updated > A.id [delete: set null]
 
 Table ticket_type {
-  id bigserial [pk]
+  id serial [pk]
   code varchar [not null]
   title varchar [not null]
 }
 
 Table ticket_status {
-  id bigserial [pk]
+  id serial [pk]
   code varchar [not null]
   title varchar [not null]
 }
 
-Table medias as M {
-  id bigserial [pk]
-  media_url varchar [not null]
+
+Table consignment {
+  id serial [pk]
+  code varchar [not null, unique]
+  quantity int [not null, default: 0]
+  inventory int [not null, default: 0]
+  ticket serial
+  product serial
+  expired_at timestamptz [not null]
+  producted_at timestamptz [not null]
+  is_available bool [not null, default: false]
+  user_created serial
+  user_updated serial
+  updated_at timestamptz
+  created_at timestamptz [not null, default: `now()`]
 }
+
+Ref: consignment.ticket > T.id [delete: cascade]
+Ref: consignment.product > P.id [delete: cascade]
+Ref: consignment.user_created > A.id [delete: set null]
+Ref: consignment.user_updated > A.id [delete: set null]
+
+Table consignment_log {
+  id serial [pk]
+  consignment serial [not null, unique]
+  inventory int [not null, default: 0]
+  amount_change int [not null, default: 0]
+  user_created serial
+  created_at timestamptz [not null, default: `now()`]
+}
+
+Ref: consignment_log.consignment > consignment.id [delete: cascade]
+Ref: consignment_log.user_created > A.id [delete: set null]
+
+Table suplier {
+  id serial [pk]
+  code varchar [not null, unique]
+  name varchar(255) [not null]
+  deputy_name varchar(255) [not null]
+  phone varchar(255) [not null]
+  email varchar(255)
+  address serial
+  warehouses serial
+  company serial
+}
+
+Ref: suplier.warehouses > warehouses.id [delete: set null]
+Ref: suplier.address > address.id [delete: set null]
+Ref: suplier.company > C.id [delete: cascade]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -32,7 +32,7 @@ func (server *ServerGRPC) CreateAccount(ctx context.Context, req *pb.CreateAccou
 	}
 
 	accountType, err := server.store.GetAccountType(ctx, db.GetAccountTypeParams{
-		ID: sql.NullInt64{},
+		ID: sql.NullInt32{},
 		Code: sql.NullString{
 			String: req.AccountType,
 			Valid:  true,

@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+import "entities/simple_data.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message ProductionStandardListRequest {
+  optional int32 page = 1;
+  optional int32 limit = 2;
+  optional string search = 3;
+}
+
+message ProductionStandardListResponse {
+  int32 code = 1;
+  string message = 2;
+  repeated SimpleData details = 3;
+}

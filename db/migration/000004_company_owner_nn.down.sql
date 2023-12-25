@@ -1,2 +1,0 @@
-ALTER TABLE companies ALTER COLUMN owner DROP NOT NULL;
-ALTER TABLE companies DROP CONSTRAINT unique_code;

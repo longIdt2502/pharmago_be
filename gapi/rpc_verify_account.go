@@ -21,7 +21,7 @@ func (server *ServerGRPC) VerifyAccount(ctx context.Context, req *pb.VerifyAccou
 		return nil, config.InvalidArgumentError(violations)
 	}
 
-	verify, err := server.store.GetVerify(ctx, int64(req.IdVerify))
+	verify, err := server.store.GetVerify(ctx, req.IdVerify)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, status.Errorf(codes.NotFound, "verify id invalid:", err)
@@ -37,7 +37,7 @@ func (server *ServerGRPC) VerifyAccount(ctx context.Context, req *pb.VerifyAccou
 		return nil, status.Errorf(codes.InvalidArgument, "code incorrect")
 	}
 
-	_, err = server.store.UpdateVerify(ctx, int64(req.IdVerify))
+	_, err = server.store.UpdateVerify(ctx, req.IdVerify)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to verify account:", err)
 	}
@@ -47,7 +47,7 @@ func (server *ServerGRPC) VerifyAccount(ctx context.Context, req *pb.VerifyAccou
 			Bool:  true,
 			Valid: true,
 		},
-		ID: sql.NullInt64{},
+		ID: sql.NullInt32{},
 		Username: sql.NullString{
 			String: verify.Username,
 			Valid:  true,

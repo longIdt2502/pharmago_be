@@ -27,7 +27,7 @@ SELECT id, media_url FROM medias
 WHERE id = $1 LIMIT 1
 `
 
-func (q *Queries) GetMedia(ctx context.Context, id int64) (Media, error) {
+func (q *Queries) GetMedia(ctx context.Context, id int32) (Media, error) {
 	row := q.db.QueryRowContext(ctx, getMedia, id)
 	var i Media
 	err := row.Scan(&i.ID, &i.MediaUrl)

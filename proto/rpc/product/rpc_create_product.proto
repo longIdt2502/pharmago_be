@@ -12,7 +12,7 @@ message CreateProductRequestData {
   string code = 2;
   optional int32 category = 3;
   optional int32 type = 4;
-  int32 company = 5;
+  int32 brand = 5;
   optional string taDuoc = 6;
   optional string nongDo = 7;
   string lieuDung = 8;
@@ -25,9 +25,13 @@ message CreateProductRequestData {
   string baoQuan = 15;
   string dongGoi = 16;
   string noiSx = 17;
-  string congTySx = 18;
-  string congTyDk = 19;
-  repeated bytes image = 20;
+  int32 congTySx = 18;
+  int32 congTyDk = 19;
+  string phanLoai = 20;
+  string tieuChuanSx = 21;
+  string dangBaoChe = 22;
+  int32 company = 23;
+  repeated bytes image = 24;
 }
 
 message CreateProductRequestUnit {
@@ -49,10 +53,24 @@ message CreateProductRequestVariant {
   optional bytes image = 8;
 }
 
+message CreateProductRequestUnitChange {
+  string name = 1;
+  int32 value = 2;
+  float sell_price = 3;
+}
+
+message CreateProductRequestIngredient {
+  string name = 1;
+  float weight = 2;
+  string unit = 3;
+}
+
 message CreateProductRequest {
   CreateProductRequestData product = 1;
   CreateProductRequestUnit unit = 2;
   repeated CreateProductRequestVariant variants = 3;
+  repeated CreateProductRequestUnitChange unitChanges = 4;
+  repeated CreateProductRequestIngredient ingredients = 5;
 }
 
 message CreateProductResponse {

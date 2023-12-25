@@ -9,7 +9,7 @@ func WardMapper(ward db.Ward) *pb.Ward {
 
 	var administrativeUnit *int32
 	if ward.AdministrativeUnitID.Valid {
-		administrativeUnitValue := int32(ward.AdministrativeUnitID.Int64)
+		administrativeUnitValue := ward.AdministrativeUnitID.Int32
 		administrativeUnit = &administrativeUnitValue
 	}
 
