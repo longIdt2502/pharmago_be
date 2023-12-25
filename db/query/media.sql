@@ -6,3 +6,8 @@ WHERE id = $1 LIMIT 1;
 INSERT INTO medias (
     media_url
 ) VALUES ($1) RETURNING *;
+
+-- name: GetMediaVariant :one
+SELECT *, m.media_url FROM variant_media vm
+JOIN medias m ON m.id = vm.media
+WHERE variant = $1 LIMIT 1;

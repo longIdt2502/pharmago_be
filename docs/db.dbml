@@ -519,6 +519,8 @@ Table medias as M {
 
 Table warehouses as W {
   id serial [pk]
+  name varchar(255) [not null]
+  code varchar(255) [not null, unique]
   address serial
   companies serial
 }
@@ -576,7 +578,7 @@ Table consignment {
   quantity int [not null, default: 0]
   inventory int [not null, default: 0]
   ticket serial
-  product serial
+  variant serial
   expired_at timestamptz [not null]
   producted_at timestamptz [not null]
   is_available bool [not null, default: false]
@@ -587,7 +589,7 @@ Table consignment {
 }
 
 Ref: consignment.ticket > T.id [delete: cascade]
-Ref: consignment.product > P.id [delete: cascade]
+Ref: consignment.variant > V.id [delete: cascade]
 Ref: consignment.user_created > A.id [delete: set null]
 Ref: consignment.user_updated > A.id [delete: set null]
 

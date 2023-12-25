@@ -111,7 +111,6 @@ type Consignment struct {
 	Quantity    int32         `json:"quantity"`
 	Inventory   int32         `json:"inventory"`
 	Ticket      sql.NullInt32 `json:"ticket"`
-	Product     sql.NullInt32 `json:"product"`
 	ExpiredAt   time.Time     `json:"expired_at"`
 	ProductedAt time.Time     `json:"producted_at"`
 	IsAvailable bool          `json:"is_available"`
@@ -119,6 +118,7 @@ type Consignment struct {
 	UserUpdated sql.NullInt32 `json:"user_updated"`
 	UpdatedAt   sql.NullTime  `json:"updated_at"`
 	CreatedAt   time.Time     `json:"created_at"`
+	Variant     sql.NullInt32 `json:"variant"`
 }
 
 type ConsignmentLog struct {
@@ -459,4 +459,6 @@ type Warehouse struct {
 	ID        int32         `json:"id"`
 	Address   sql.NullInt32 `json:"address"`
 	Companies sql.NullInt32 `json:"companies"`
+	Name      string        `json:"name"`
+	Code      string        `json:"code"`
 }

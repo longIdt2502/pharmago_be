@@ -940,9 +940,235 @@
           "Product Master Data"
         ]
       }
+    },
+    "/warehouse/v1/consignment/list": {
+      "get": {
+        "summary": "get list consignment",
+        "operationId": "Pharmago_ConsignmentList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbConsignmentListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "company",
+            "description": "int32 value field",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "warehouse",
+            "description": "int32 value field",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Warehouse"
+        ]
+      }
+    },
+    "/warehouse/v1/create": {
+      "post": {
+        "summary": "create warehouse",
+        "description": "code: optional",
+        "operationId": "Pharmago_WarehouseCreate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbWarehouseCreateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbWarehouseCreateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Warehouse"
+        ]
+      }
+    },
+    "/warehouse/v1/list": {
+      "get": {
+        "summary": "list warehouses",
+        "operationId": "Pharmago_WarehouseList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbWarehouseListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "company",
+            "description": "int32 value field",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Warehouse"
+        ]
+      }
+    },
+    "/warehouse/v1/ticket/create": {
+      "post": {
+        "summary": "create ticket",
+        "description": "type: ['IMPORT', 'EXPORT']\nstatus: ['NEW', 'IN_PROCESS', 'COMPLETE', 'CANCEL']\ncode: optional\nexportTo: id address\nimportFrom: id address",
+        "operationId": "Pharmago_TicketCreate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbTicketCreateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbTicketCreateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Warehouse"
+        ]
+      }
+    },
+    "/warehouse/v1/ticket/update_status": {
+      "patch": {
+        "summary": "update ticket status",
+        "description": "type: ['IMPORT', 'EXPORT']\nstatus: ['NEW', 'IN_PROCESS', 'COMPLETE', 'CANCEL']\ncode: optional\nexportTo: id address\nimportFrom: id address",
+        "operationId": "Pharmago_TicketUpdateStatus",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbTicketUpdateStatusResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbTicketUpdateStatusRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Warehouse"
+        ]
+      }
     }
   },
   "definitions": {
+    "TicketUpdateStatusRequestSTATUS": {
+      "type": "string",
+      "enum": [
+        "NEW",
+        "IN_PROCESS",
+        "COMPLETE",
+        "CANCEL"
+      ],
+      "default": "NEW"
+    },
     "pbAccount": {
       "type": "object",
       "properties": {
@@ -992,6 +1218,31 @@
         },
         "ward": {
           "$ref": "#/definitions/pbAddressItem"
+        },
+        "title": {
+          "type": "string"
+        }
+      }
+    },
+    "pbAddressCreate": {
+      "type": "object",
+      "properties": {
+        "lat": {
+          "type": "number",
+          "format": "float"
+        },
+        "lng": {
+          "type": "number",
+          "format": "float"
+        },
+        "province": {
+          "type": "string"
+        },
+        "district": {
+          "type": "string"
+        },
+        "ward": {
+          "type": "string"
         },
         "title": {
           "type": "string"
@@ -1183,6 +1434,59 @@
           "items": {
             "type": "object",
             "$ref": "#/definitions/pbCompanyPharma"
+          }
+        }
+      }
+    },
+    "pbConsignment": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "code": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "inventory": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "variant": {
+          "$ref": "#/definitions/pbVariant"
+        },
+        "expiredAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "producedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "isAvailable": {
+          "type": "boolean"
+        }
+      }
+    },
+    "pbConsignmentListResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbConsignment"
           }
         }
       }
@@ -2022,6 +2326,129 @@
         }
       }
     },
+    "pbTicketCreateRequest": {
+      "type": "object",
+      "properties": {
+        "ticket": {
+          "$ref": "#/definitions/pbTicketCreateRequestInfo"
+        },
+        "consignment": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbTicketCreateRequestConsignment"
+          }
+        }
+      }
+    },
+    "pbTicketCreateRequestConsignment": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "inventory": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "variant": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "expiredAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "producedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "pbTicketCreateRequestInfo": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "totalPrice": {
+          "type": "number",
+          "format": "float"
+        },
+        "exportTo": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "importFrom": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "warehouse": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbTicketCreateResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbTicketUpdateStatusRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "status": {
+          "$ref": "#/definitions/TicketUpdateStatusRequestSTATUS",
+          "description": "string value field"
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status"
+      ]
+    },
+    "pbTicketUpdateStatusResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
     "pbUpdatePriceListRequest": {
       "type": "object",
       "properties": {
@@ -2051,6 +2478,44 @@
         },
         "details": {
           "$ref": "#/definitions/pbPriceList"
+        }
+      }
+    },
+    "pbVariant": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "code": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "barcode": {
+          "type": "string"
+        },
+        "decisionNumber": {
+          "type": "string"
+        },
+        "registerNumber": {
+          "type": "string"
+        },
+        "longevity": {
+          "type": "string"
+        },
+        "vat": {
+          "type": "number",
+          "format": "float"
+        },
+        "product": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "media": {
+          "type": "string"
         }
       }
     },
@@ -2150,6 +2615,80 @@
         "count": {
           "type": "integer",
           "format": "int32"
+        }
+      }
+    },
+    "pbWarehouse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "name": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        },
+        "address": {
+          "$ref": "#/definitions/pbAddress"
+        },
+        "company": {
+          "$ref": "#/definitions/pbCompany"
+        }
+      }
+    },
+    "pbWarehouseCreateRequest": {
+      "type": "object",
+      "properties": {
+        "company": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "address": {
+          "$ref": "#/definitions/pbAddressCreate"
+        },
+        "name": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        }
+      }
+    },
+    "pbWarehouseCreateResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbWarehouseListResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbWarehouse"
+          }
         }
       }
     },

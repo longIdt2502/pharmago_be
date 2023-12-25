@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml-lang.org)
 -- Database: PostgreSQL
--- Generated at: 2023-12-25T02:57:54.550Z
+-- Generated at: 2023-12-25T11:14:12.683Z
 
 CREATE TABLE "accounts" (
   "id" serial PRIMARY KEY,
@@ -382,6 +382,8 @@ CREATE TABLE "medias" (
 
 CREATE TABLE "warehouses" (
   "id" serial PRIMARY KEY,
+  "name" varchar(255) NOT NULL,
+  "code" varchar(255) UNIQUE NOT NULL,
   "address" serial,
   "companies" serial
 );
@@ -421,7 +423,7 @@ CREATE TABLE "consignment" (
   "quantity" int NOT NULL DEFAULT 0,
   "inventory" int NOT NULL DEFAULT 0,
   "ticket" serial,
-  "product" serial,
+  "variant" serial,
   "expired_at" timestamptz NOT NULL,
   "producted_at" timestamptz NOT NULL,
   "is_available" bool NOT NULL DEFAULT false,
@@ -670,7 +672,7 @@ ALTER TABLE "tickets" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" ("i
 
 ALTER TABLE "consignment" ADD FOREIGN KEY ("ticket") REFERENCES "tickets" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "consignment" ADD FOREIGN KEY ("product") REFERENCES "products" ("id") ON DELETE CASCADE;
+ALTER TABLE "consignment" ADD FOREIGN KEY ("variant") REFERENCES "variants" ("id") ON DELETE CASCADE;
 
 ALTER TABLE "consignment" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id") ON DELETE SET NULL;
 

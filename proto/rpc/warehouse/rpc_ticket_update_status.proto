@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package pb;
+
+import "entities/warehouse.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message TicketUpdateStatusRequest {
+  enum STATUS {
+    NEW = 0;
+    IN_PROCESS = 1;
+    COMPLETE = 2;
+    CANCEL = 3;
+  }
+  int32 id = 1;
+  STATUS status = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "string value field",
+    required: [
+      "status"
+    ],
+
+  }];
+  string note = 3;
+}
+
+message TicketUpdateStatusResponse {
+  int32 code = 1;
+  string message = 2;
+}

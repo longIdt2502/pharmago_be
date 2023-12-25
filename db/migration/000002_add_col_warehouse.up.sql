@@ -1,0 +1,2 @@
+ALTER TABLE warehouses ADD COLUMN IF NOT EXISTS "name" varchar(255) NOT NULL;
+ALTER TABLE warehouses ADD COLUMN IF NOT EXISTS "code" varchar(255) NOT NULL UNIQUE;

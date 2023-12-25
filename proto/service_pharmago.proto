@@ -25,6 +25,12 @@ import "rpc/product/rpc_production_standard_list.proto";
 import "rpc/product/rpc_preparation_type_list.proto";
 import "rpc/product/rpc_company_pharma_list.proto";
 
+import "rpc/warehouse/rpc_ticket_create.proto";
+import "rpc/warehouse/rpc_consignment_list.proto";
+import "rpc/warehouse/rpc_warehouse_create.proto";
+import "rpc/warehouse/rpc_warehouse_list.proto";
+import "rpc/warehouse/rpc_ticket_update_status.proto";
+
 import "rpc/rpc_import_company.proto";
 import "rpc/rpc_import_product.proto";
 import "rpc/rpc_import_product_master_data.proto";
@@ -274,6 +280,60 @@ service Pharmago {
       tags: "Product Type";
     };
   };
+
+  // ================== WAREHOUSE ===================
+  rpc WarehouseCreate (WarehouseCreateRequest) returns (WarehouseCreateResponse) {
+    option (google.api.http) = {
+      post: "/warehouse/v1/create"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "create warehouse";
+      description: "code: optional";
+      tags: "Warehouse";
+    };
+  };
+  rpc WarehouseList (WarehouseListRequest) returns (WarehouseListResponse) {
+    option (google.api.http) = {
+      get: "/warehouse/v1/list"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "list warehouses";
+      tags: "Warehouse";
+    };
+  };
+  rpc TicketCreate (TicketCreateRequest) returns (TicketCreateResponse) {
+    option (google.api.http) = {
+      post: "/warehouse/v1/ticket/create"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "create ticket";
+      description: "type: ['IMPORT', 'EXPORT']\nstatus: ['NEW', 'IN_PROCESS', 'COMPLETE', 'CANCEL']\ncode: optional\nexportTo: id address\nimportFrom: id address";
+      tags: "Warehouse";
+    };
+  };
+  rpc TicketUpdateStatus (TicketUpdateStatusRequest) returns (TicketUpdateStatusResponse) {
+    option (google.api.http) = {
+      patch: "/warehouse/v1/ticket/update_status"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "update ticket status";
+      description: "type: ['IMPORT', 'EXPORT']\nstatus: ['NEW', 'IN_PROCESS', 'COMPLETE', 'CANCEL']\ncode: optional\nexportTo: id address\nimportFrom: id address";
+      tags: "Warehouse";
+    };
+  };
+  rpc ConsignmentList (ConsignmentListRequest) returns (ConsignmentListResponse) {
+    option (google.api.http) = {
+      get: "/warehouse/v1/consignment/list"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "get list consignment";
+      tags: "Warehouse";
+    };
+  };
+
 
   // ================== IMPORT ===================
   rpc ImportCompany (ImportCompanyRequest) returns (ImportCompanyResponse) {
