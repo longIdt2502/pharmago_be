@@ -9,13 +9,13 @@ func ProvinceMapper(province db.Province) *pb.Province {
 
 	var administrativeUnit *int32
 	if province.AdministrativeUnitID.Valid {
-		administrativeUnitValue := int32(province.AdministrativeUnitID.Int64)
+		administrativeUnitValue := province.AdministrativeUnitID.Int32
 		administrativeUnit = &administrativeUnitValue
 	}
 
 	var administrativeRegion *int32
 	if province.AdministrativeRegionID.Valid {
-		administrativeRegionValue := int32(province.AdministrativeRegionID.Int64)
+		administrativeRegionValue := province.AdministrativeRegionID.Int32
 		administrativeRegion = &administrativeRegionValue
 	}
 

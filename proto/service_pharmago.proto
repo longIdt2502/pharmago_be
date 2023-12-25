@@ -17,9 +17,18 @@ import "rpc/product/rpc_list_product.proto";
 import "rpc/product/rpc_price_list.proto";
 import "rpc/product/rpc_detail_price_list.proto";
 import "rpc/product/rpc_update_price_list.proto";
+import "rpc/product/rpc_brand_list.proto";
+import "rpc/product/rpc_category_list.proto";
+import "rpc/product/rpc_product_type_list.proto";
+import "rpc/product/rpc_classify_list.proto";
+import "rpc/product/rpc_production_standard_list.proto";
+import "rpc/product/rpc_preparation_type_list.proto";
+import "rpc/product/rpc_company_pharma_list.proto";
+
 import "rpc/rpc_import_company.proto";
 import "rpc/rpc_import_product.proto";
 import "rpc/rpc_import_product_master_data.proto";
+
 
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
@@ -189,6 +198,80 @@ service Pharmago {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Update Price list";
       tags: "Price List";
+    };
+  };
+
+  // ================== PRODUCT MASTER DATA ===================
+  rpc ClassifyList (ClassifyListRequest) returns (ClassifyListResponse) {
+    option (google.api.http) = {
+      get: "/classify/v1/list"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List classify";
+      tags: "Product Master Data";
+    };
+  };
+
+  rpc ProductionStandardList (ProductionStandardListRequest) returns (ProductionStandardListResponse) {
+    option (google.api.http) = {
+      get: "/production_standard/v1/list"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List production standard";
+      tags: "Product Master Data";
+    };
+  };
+
+  rpc PreparationTypeList (PreparationTypeListRequest) returns (PreparationTypeListResponse) {
+    option (google.api.http) = {
+      get: "/preparation_type/v1/list"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List preparation type";
+      tags: "Product Master Data";
+    };
+  };
+
+  rpc CompanyPharmaList (CompanyPharmaListRequest) returns (CompanyPharmaListResponse) {
+    option (google.api.http) = {
+      get: "/company_pharma/v1/list"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List company pharma";
+      tags: "Product Master Data";
+    };
+  };
+
+  // ================== BRAND ===================
+  rpc BrandList (BrandListRequest) returns (BrandListResponse) {
+    option (google.api.http) = {
+      get: "/brand/v1/list"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List brand";
+      tags: "Product Brand";
+    };
+  };
+
+  // ================== CATEGORY ===================
+  rpc CategoryList (CategoryListRequest) returns (CategoryListResponse) {
+    option (google.api.http) = {
+      get: "/category/v1/list"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List category";
+      tags: "Product Category";
+    };
+  };
+
+  // ================== PRODUCT_TYPE ===================
+  rpc ProductTypeList (ProductTypeListRequest) returns (ProductTypeListResponse) {
+    option (google.api.http) = {
+      get: "/product_type/v1/list"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List product type";
+      tags: "Product Type";
     };
   };
 

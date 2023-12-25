@@ -20,7 +20,7 @@ type CreateAccountParams struct {
 	HashedPassword string `json:"hashed_password"`
 	FullName       string `json:"full_name"`
 	Email          string `json:"email"`
-	Type           int64  `json:"type"`
+	Type           int32  `json:"type"`
 }
 
 func (q *Queries) CreateAccount(ctx context.Context, arg CreateAccountParams) (Account, error) {
@@ -51,7 +51,7 @@ SELECT id, username, hashed_password, full_name, email, type, is_verify, passwor
 WHERE id = $1 LIMIT 1
 `
 
-func (q *Queries) GetAccount(ctx context.Context, id int64) (Account, error) {
+func (q *Queries) GetAccount(ctx context.Context, id int32) (Account, error) {
 	row := q.db.QueryRowContext(ctx, getAccount, id)
 	var i Account
 	err := row.Scan(
@@ -102,7 +102,7 @@ RETURNING id, username, hashed_password, full_name, email, type, is_verify, pass
 
 type UpdateAccountParams struct {
 	IsVerify sql.NullBool   `json:"is_verify"`
-	ID       sql.NullInt64  `json:"id"`
+	ID       sql.NullInt32  `json:"id"`
 	Username sql.NullString `json:"username"`
 }
 

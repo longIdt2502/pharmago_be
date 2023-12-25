@@ -24,8 +24,8 @@ message Product {
   string baoQuan = 15;
   string dongGoi = 16;
   string noiSx = 17;
-  string congTySx = 18;
-  string congTyDk = 19;
+  int32 congTySx = 18;
+  int32 congTyDk = 19;
   repeated string image = 20;
 }
 

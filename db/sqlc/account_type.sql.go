@@ -18,7 +18,7 @@ LIMIT 1
 `
 
 type GetAccountTypeParams struct {
-	ID   sql.NullInt64  `json:"id"`
+	ID   sql.NullInt32  `json:"id"`
 	Code sql.NullString `json:"code"`
 }
 

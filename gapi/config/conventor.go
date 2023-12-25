@@ -2,10 +2,10 @@ package config
 
 import "database/sql"
 
-func NewInt32Optional(data sql.NullInt64) *int32 {
+func NewInt32Optional(data sql.NullInt32) *int32 {
 	var value *int32
 	if data.Valid {
-		typeInt32 := int32(data.Int64)
+		typeInt32 := data.Int32
 		value = &typeInt32
 	}
 	return value

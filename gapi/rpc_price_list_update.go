@@ -19,7 +19,7 @@ func (server *ServerGRPC) UpdatePriceList(ctx context.Context, req *pb.UpdatePri
 	_, err = server.store.UpdatePriceList(ctx, db.UpdatePriceListParams{
 		PriceImport: float64(req.GetPriceImport()),
 		PriceSell:   float64(req.GetPriceSell()),
-		ID:          int64(req.GetId()),
+		ID:          req.GetId(),
 	})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to update price list: ", err)

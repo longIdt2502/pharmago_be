@@ -1,15 +1,15 @@
 -- name: CreateProduct :one
 INSERT INTO products (
-    name, code, product_category, type, unit, taDuoc, nongDo, lieuDung, chiDinh, chongChiDinh,
-    congDung, tacDungPhu, thanTrong, tuongTac, baoQuan, dongGoi, noiSx, congTySx, congTyDk,
-    company, user_created, user_updated
+    name, code, product_category, type, brand, unit, ta_duoc, nong_do, lieu_dung, chi_dinh, chong_chi_dinh,
+    cong_dung, tac_dung_phu, than_trong, tuong_tac, bao_quan, dong_goi, cong_ty_sx, cong_ty_dk,
+    company, user_created, user_updated, phan_loai, dang_bao_che, tieu_chuan_sx
 ) values (
-    sqlc.arg(name)::varchar, sqlc.arg(code)::varchar, sqlc.narg(product_category)::int, sqlc.narg(type)::int,
+    sqlc.arg(name)::varchar, sqlc.arg(code)::varchar, sqlc.narg(product_category)::int, sqlc.narg(type)::int, sqlc.narg(brand)::int,
     sqlc.arg(unit)::int, sqlc.narg(taDuoc)::varchar, sqlc.narg(nongDo)::varchar, sqlc.arg(lieuDung)::varchar,
     sqlc.arg(chiDinh)::varchar, sqlc.narg(chongChiDinh)::varchar, sqlc.arg(congDung)::varchar, sqlc.arg(tacDungPhu)::varchar,
     sqlc.arg(thanTrong)::varchar, sqlc.narg(tuongTac)::varchar, sqlc.arg(baoQuan)::varchar, sqlc.arg(dongGoi)::varchar,
-    sqlc.arg(noiSx)::varchar, sqlc.arg(congTySx)::varchar, sqlc.arg(congTyDk)::varchar, sqlc.arg(company)::int,
-    sqlc.arg(user_created)::int, sqlc.arg(user_updated)::int
+    sqlc.arg(congTySx)::int, sqlc.arg(congTyDk)::int, sqlc.arg(company)::int,
+    sqlc.arg(user_created)::int, sqlc.arg(user_updated)::int, sqlc.arg(phanLoai)::varchar, sqlc.arg(dangBaoche)::varchar, sqlc.arg(tieuChuanSx)::varchar
 ) RETURNING *;
 
 -- name: CreateVariant :one
@@ -27,6 +27,20 @@ INSERT INTO units (
 ) values (
     sqlc.arg(name)::varchar, sqlc.arg(sell_price)::float, sqlc.arg(import_price)::float, sqlc.narg(weight)::float,
     sqlc.narg(weight_unit)::varchar, sqlc.arg(user_created)::int, sqlc.arg(user_updated)::int
+) RETURNING *;
+
+-- name: CreateUnitChange :one
+INSERT INTO unit_changes (
+    name, value, sell_price, unit
+) values (
+    sqlc.arg(name)::varchar, sqlc.arg(value)::int, sqlc.arg(sell_price)::float, sqlc.narg(unit)::int
+) RETURNING *;
+
+-- name: CreateIngredient :one
+INSERT INTO ingredient (
+    name, weight, unit, product
+) values (
+    sqlc.arg(name)::varchar, sqlc.arg(weight)::float, sqlc.arg(unit)::varchar, sqlc.narg(product)::int
 ) RETURNING *;
 
 -- name: CreateProductMedia :one

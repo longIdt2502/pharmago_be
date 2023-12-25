@@ -45,6 +45,21 @@ func (server *ServerGRPC) CreateProduct(ctx context.Context, req *pb.CreateProdu
 		return nil, status.Errorf(codes.Internal, "failed to record unit data: ", err)
 	}
 
+	for _, value := range req.GetUnitChanges() {
+		_, err := server.store.CreateUnitChange(ctx, db.CreateUnitChangeParams{
+			Name:      value.GetName(),
+			Value:     value.GetValue(),
+			SellPrice: float64(value.GetSellPrice()),
+			Unit: sql.NullInt32{
+				Int32: int32(unit.ID),
+				Valid: true,
+			},
+		})
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to record unit change: %w", err)
+		}
+	}
+
 	product, err := server.store.CreateProduct(ctx, db.CreateProductParams{
 		Name: productData.GetName(),
 		Code: utils.RandomString(10),
@@ -54,6 +69,10 @@ func (server *ServerGRPC) CreateProduct(ctx context.Context, req *pb.CreateProdu
 		},
 		Type: sql.NullInt32{
 			Int32: productData.GetType(),
+			Valid: productData.Type != nil,
+		},
+		Brand: sql.NullInt32{
+			Int32: productData.GetBrand(),
 			Valid: productData.Type != nil,
 		},
 		Unit: int32(unit.ID),
@@ -80,12 +99,14 @@ func (server *ServerGRPC) CreateProduct(ctx context.Context, req *pb.CreateProdu
 		},
 		Baoquan:     productData.GetBaoQuan(),
 		Donggoi:     productData.GetDongGoi(),
-		Noisx:       productData.GetNoiSx(),
 		Congtysx:    productData.GetCongTySx(),
 		Congtydk:    productData.GetCongTyDk(),
 		Company:     productData.GetCompany(),
-		UserCreated: int32(account.ID),
-		UserUpdated: int32(account.ID),
+		UserCreated: account.ID,
+		UserUpdated: account.ID,
+		Phanloai:    productData.GetPhanLoai(),
+		Dangbaoche:  productData.GetDangBaoChe(),
+		Tieuchuansx: productData.GetTieuChuanSx(),
 	})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to record product data: ", err)
@@ -110,17 +131,26 @@ func (server *ServerGRPC) CreateProduct(ctx context.Context, req *pb.CreateProdu
 		}
 
 		_, err = server.store.CreateProductMedia(ctx, db.CreateProductMediaParams{
-			Product: sql.NullInt64{
-				Int64: product.ID,
-				Valid: true,
-			},
-			Media: sql.NullInt64{
-				Int64: media.ID,
+			Product: product.ID,
+			Media:   media.ID,
+		})
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to record media product: ", err.Error())
+		}
+	}
+
+	for _, value := range req.GetIngredients() {
+		_, err := server.store.CreateIngredient(ctx, db.CreateIngredientParams{
+			Name:   value.GetName(),
+			Weight: float64(value.GetWeight()),
+			Unit:   value.GetUnit(),
+			Product: sql.NullInt32{
+				Int32: int32(product.ID),
 				Valid: true,
 			},
 		})
 		if err != nil {
-			return nil, status.Errorf(codes.Internal, "failed to record media product: ", err.Error())
+			return nil, status.Errorf(codes.Internal, "failed to record ingredient: %w", err)
 		}
 	}
 
@@ -143,6 +173,8 @@ func (server *ServerGRPC) CreateProduct(ctx context.Context, req *pb.CreateProdu
 		if err != nil {
 			return nil, status.Errorf(codes.Internal, "failed to record variant data: ", err)
 		}
+
+		// create price list
 	}
 
 	return &pb.CreateProductResponse{

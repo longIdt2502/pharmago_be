@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+import "entities/company_pharma.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message CompanyPharmaListRequest {
+  optional int32 page = 1;
+  optional int32 limit = 2;
+  optional string search = 3;
+  optional string type = 4;
+}
+
+message CompanyPharmaListResponse {
+  int32 code = 1;
+  string message = 2;
+  repeated CompanyPharma details = 3;
+}

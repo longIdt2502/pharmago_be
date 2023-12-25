@@ -35,6 +35,17 @@ type PharmagoClient interface {
 	GetPriceList(ctx context.Context, in *PriceListRequest, opts ...grpc.CallOption) (*PriceListResponse, error)
 	DetailPriceList(ctx context.Context, in *DetailPriceListRequest, opts ...grpc.CallOption) (*DetailPriceListResponse, error)
 	UpdatePriceList(ctx context.Context, in *UpdatePriceListRequest, opts ...grpc.CallOption) (*UpdatePriceListResponse, error)
+	// ================== PRODUCT MASTER DATA ===================
+	ClassifyList(ctx context.Context, in *ClassifyListRequest, opts ...grpc.CallOption) (*ClassifyListResponse, error)
+	ProductionStandardList(ctx context.Context, in *ProductionStandardListRequest, opts ...grpc.CallOption) (*ProductionStandardListResponse, error)
+	PreparationTypeList(ctx context.Context, in *PreparationTypeListRequest, opts ...grpc.CallOption) (*PreparationTypeListResponse, error)
+	CompanyPharmaList(ctx context.Context, in *CompanyPharmaListRequest, opts ...grpc.CallOption) (*CompanyPharmaListResponse, error)
+	// ================== BRAND ===================
+	BrandList(ctx context.Context, in *BrandListRequest, opts ...grpc.CallOption) (*BrandListResponse, error)
+	// ================== CATEGORY ===================
+	CategoryList(ctx context.Context, in *CategoryListRequest, opts ...grpc.CallOption) (*CategoryListResponse, error)
+	// ================== PRODUCT_TYPE ===================
+	ProductTypeList(ctx context.Context, in *ProductTypeListRequest, opts ...grpc.CallOption) (*ProductTypeListResponse, error)
 	// ================== IMPORT ===================
 	ImportCompany(ctx context.Context, in *ImportCompanyRequest, opts ...grpc.CallOption) (*ImportCompanyResponse, error)
 	ImportProduct(ctx context.Context, in *ImportProductRequest, opts ...grpc.CallOption) (*ImportProductResponse, error)
@@ -166,6 +177,69 @@ func (c *pharmagoClient) UpdatePriceList(ctx context.Context, in *UpdatePriceLis
 	return out, nil
 }
 
+func (c *pharmagoClient) ClassifyList(ctx context.Context, in *ClassifyListRequest, opts ...grpc.CallOption) (*ClassifyListResponse, error) {
+	out := new(ClassifyListResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/ClassifyList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) ProductionStandardList(ctx context.Context, in *ProductionStandardListRequest, opts ...grpc.CallOption) (*ProductionStandardListResponse, error) {
+	out := new(ProductionStandardListResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/ProductionStandardList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) PreparationTypeList(ctx context.Context, in *PreparationTypeListRequest, opts ...grpc.CallOption) (*PreparationTypeListResponse, error) {
+	out := new(PreparationTypeListResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/PreparationTypeList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) CompanyPharmaList(ctx context.Context, in *CompanyPharmaListRequest, opts ...grpc.CallOption) (*CompanyPharmaListResponse, error) {
+	out := new(CompanyPharmaListResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/CompanyPharmaList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) BrandList(ctx context.Context, in *BrandListRequest, opts ...grpc.CallOption) (*BrandListResponse, error) {
+	out := new(BrandListResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/BrandList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) CategoryList(ctx context.Context, in *CategoryListRequest, opts ...grpc.CallOption) (*CategoryListResponse, error) {
+	out := new(CategoryListResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/CategoryList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) ProductTypeList(ctx context.Context, in *ProductTypeListRequest, opts ...grpc.CallOption) (*ProductTypeListResponse, error) {
+	out := new(ProductTypeListResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/ProductTypeList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *pharmagoClient) ImportCompany(ctx context.Context, in *ImportCompanyRequest, opts ...grpc.CallOption) (*ImportCompanyResponse, error) {
 	out := new(ImportCompanyResponse)
 	err := c.cc.Invoke(ctx, "/pb.Pharmago/ImportCompany", in, out, opts...)
@@ -210,6 +284,17 @@ type PharmagoServer interface {
 	GetPriceList(context.Context, *PriceListRequest) (*PriceListResponse, error)
 	DetailPriceList(context.Context, *DetailPriceListRequest) (*DetailPriceListResponse, error)
 	UpdatePriceList(context.Context, *UpdatePriceListRequest) (*UpdatePriceListResponse, error)
+	// ================== PRODUCT MASTER DATA ===================
+	ClassifyList(context.Context, *ClassifyListRequest) (*ClassifyListResponse, error)
+	ProductionStandardList(context.Context, *ProductionStandardListRequest) (*ProductionStandardListResponse, error)
+	PreparationTypeList(context.Context, *PreparationTypeListRequest) (*PreparationTypeListResponse, error)
+	CompanyPharmaList(context.Context, *CompanyPharmaListRequest) (*CompanyPharmaListResponse, error)
+	// ================== BRAND ===================
+	BrandList(context.Context, *BrandListRequest) (*BrandListResponse, error)
+	// ================== CATEGORY ===================
+	CategoryList(context.Context, *CategoryListRequest) (*CategoryListResponse, error)
+	// ================== PRODUCT_TYPE ===================
+	ProductTypeList(context.Context, *ProductTypeListRequest) (*ProductTypeListResponse, error)
 	// ================== IMPORT ===================
 	ImportCompany(context.Context, *ImportCompanyRequest) (*ImportCompanyResponse, error)
 	ImportProduct(context.Context, *ImportProductRequest) (*ImportProductResponse, error)
@@ -259,6 +344,27 @@ func (UnimplementedPharmagoServer) DetailPriceList(context.Context, *DetailPrice
 }
 func (UnimplementedPharmagoServer) UpdatePriceList(context.Context, *UpdatePriceListRequest) (*UpdatePriceListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdatePriceList not implemented")
+}
+func (UnimplementedPharmagoServer) ClassifyList(context.Context, *ClassifyListRequest) (*ClassifyListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ClassifyList not implemented")
+}
+func (UnimplementedPharmagoServer) ProductionStandardList(context.Context, *ProductionStandardListRequest) (*ProductionStandardListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductionStandardList not implemented")
+}
+func (UnimplementedPharmagoServer) PreparationTypeList(context.Context, *PreparationTypeListRequest) (*PreparationTypeListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PreparationTypeList not implemented")
+}
+func (UnimplementedPharmagoServer) CompanyPharmaList(context.Context, *CompanyPharmaListRequest) (*CompanyPharmaListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CompanyPharmaList not implemented")
+}
+func (UnimplementedPharmagoServer) BrandList(context.Context, *BrandListRequest) (*BrandListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BrandList not implemented")
+}
+func (UnimplementedPharmagoServer) CategoryList(context.Context, *CategoryListRequest) (*CategoryListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CategoryList not implemented")
+}
+func (UnimplementedPharmagoServer) ProductTypeList(context.Context, *ProductTypeListRequest) (*ProductTypeListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductTypeList not implemented")
 }
 func (UnimplementedPharmagoServer) ImportCompany(context.Context, *ImportCompanyRequest) (*ImportCompanyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ImportCompany not implemented")
@@ -516,6 +622,132 @@ func _Pharmago_UpdatePriceList_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Pharmago_ClassifyList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ClassifyListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ClassifyList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/ClassifyList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ClassifyList(ctx, req.(*ClassifyListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_ProductionStandardList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductionStandardListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ProductionStandardList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/ProductionStandardList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ProductionStandardList(ctx, req.(*ProductionStandardListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_PreparationTypeList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PreparationTypeListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).PreparationTypeList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/PreparationTypeList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).PreparationTypeList(ctx, req.(*PreparationTypeListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_CompanyPharmaList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CompanyPharmaListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).CompanyPharmaList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/CompanyPharmaList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).CompanyPharmaList(ctx, req.(*CompanyPharmaListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_BrandList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BrandListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).BrandList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/BrandList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).BrandList(ctx, req.(*BrandListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_CategoryList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CategoryListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).CategoryList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/CategoryList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).CategoryList(ctx, req.(*CategoryListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_ProductTypeList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductTypeListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ProductTypeList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/ProductTypeList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ProductTypeList(ctx, req.(*ProductTypeListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Pharmago_ImportCompany_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ImportCompanyRequest)
 	if err := dec(in); err != nil {
@@ -628,6 +860,34 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdatePriceList",
 			Handler:    _Pharmago_UpdatePriceList_Handler,
+		},
+		{
+			MethodName: "ClassifyList",
+			Handler:    _Pharmago_ClassifyList_Handler,
+		},
+		{
+			MethodName: "ProductionStandardList",
+			Handler:    _Pharmago_ProductionStandardList_Handler,
+		},
+		{
+			MethodName: "PreparationTypeList",
+			Handler:    _Pharmago_PreparationTypeList_Handler,
+		},
+		{
+			MethodName: "CompanyPharmaList",
+			Handler:    _Pharmago_CompanyPharmaList_Handler,
+		},
+		{
+			MethodName: "BrandList",
+			Handler:    _Pharmago_BrandList_Handler,
+		},
+		{
+			MethodName: "CategoryList",
+			Handler:    _Pharmago_CategoryList_Handler,
+		},
+		{
+			MethodName: "ProductTypeList",
+			Handler:    _Pharmago_ProductTypeList_Handler,
 		},
 		{
 			MethodName: "ImportCompany",

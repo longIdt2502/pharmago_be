@@ -9,7 +9,7 @@ func DistrictMapper(district db.District) *pb.District {
 
 	var administrativeUnit *int32
 	if district.AdministrativeUnitID.Valid {
-		administrativeUnitValue := int32(district.AdministrativeUnitID.Int64)
+		administrativeUnitValue := district.AdministrativeUnitID.Int32
 		administrativeUnit = &administrativeUnitValue
 	}
 

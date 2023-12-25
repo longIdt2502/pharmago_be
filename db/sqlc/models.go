@@ -12,49 +12,49 @@ import (
 )
 
 type Account struct {
-	ID                int64     `json:"id"`
+	ID                int32     `json:"id"`
 	Username          string    `json:"username"`
 	HashedPassword    string    `json:"hashed_password"`
 	FullName          string    `json:"full_name"`
 	Email             string    `json:"email"`
-	Type              int64     `json:"type"`
+	Type              int32     `json:"type"`
 	IsVerify          bool      `json:"is_verify"`
 	PasswordChangedAt time.Time `json:"password_changed_at"`
 	CreatedAt         time.Time `json:"created_at"`
 }
 
 type AccountCompany struct {
-	ID      int64 `json:"id"`
-	Account int64 `json:"account"`
-	Company int64 `json:"company"`
+	ID      int32 `json:"id"`
+	Account int32 `json:"account"`
+	Company int32 `json:"company"`
 }
 
 type AccountMedium struct {
-	ID      int64 `json:"id"`
-	Account int64 `json:"account"`
-	Media   int64 `json:"media"`
+	ID      int32 `json:"id"`
+	Account int32 `json:"account"`
+	Media   int32 `json:"media"`
 }
 
 type AccountType struct {
-	ID    int64  `json:"id"`
+	ID    int32  `json:"id"`
 	Code  string `json:"code"`
 	Title string `json:"title"`
 }
 
 type Address struct {
-	ID          int64          `json:"id"`
+	ID          int32          `json:"id"`
 	Lat         float64        `json:"lat"`
 	Lng         float64        `json:"lng"`
-	Title       string         `json:"title"`
-	UserCreated int64          `json:"user_created"`
-	CreatedAt   time.Time      `json:"created_at"`
 	Province    sql.NullString `json:"province"`
 	District    sql.NullString `json:"district"`
 	Ward        sql.NullString `json:"ward"`
+	Title       string         `json:"title"`
+	UserCreated int32          `json:"user_created"`
+	CreatedAt   time.Time      `json:"created_at"`
 }
 
 type AdministrativeRegion struct {
-	ID         int64  `json:"id"`
+	ID         int32  `json:"id"`
 	Name       string `json:"name"`
 	NameEn     string `json:"name_en"`
 	CodeName   string `json:"code_name"`
@@ -62,7 +62,7 @@ type AdministrativeRegion struct {
 }
 
 type AdministrativeUnit struct {
-	ID          int64  `json:"id"`
+	ID          int32  `json:"id"`
 	FullName    string `json:"full_name"`
 	FullNameEn  string `json:"full_name_en"`
 	ShortName   string `json:"short_name"`
@@ -78,19 +78,19 @@ type Classify struct {
 }
 
 type Company struct {
-	ID          int64          `json:"id"`
+	ID          int32          `json:"id"`
 	Name        string         `json:"name"`
 	Code        string         `json:"code"`
 	TaxCode     sql.NullString `json:"tax_code"`
 	Phone       sql.NullString `json:"phone"`
 	Description sql.NullString `json:"description"`
+	Address     sql.NullInt32  `json:"address"`
 	CreatedAt   time.Time      `json:"created_at"`
-	Owner       int64          `json:"owner"`
-	Address     int64          `json:"address"`
+	Owner       int32          `json:"owner"`
 }
 
 type CompanyPharma struct {
-	ID                int64          `json:"id"`
+	ID                int32          `json:"id"`
 	Name              string         `json:"name"`
 	Code              sql.NullString `json:"code"`
 	Country           sql.NullString `json:"country"`
@@ -100,21 +100,46 @@ type CompanyPharma struct {
 }
 
 type CompanyPharmaType struct {
-	ID    int64  `json:"id"`
+	ID    int32  `json:"id"`
 	Code  string `json:"code"`
 	Title string `json:"title"`
 }
 
+type Consignment struct {
+	ID          int32         `json:"id"`
+	Code        string        `json:"code"`
+	Quantity    int32         `json:"quantity"`
+	Inventory   int32         `json:"inventory"`
+	Ticket      sql.NullInt32 `json:"ticket"`
+	Product     sql.NullInt32 `json:"product"`
+	ExpiredAt   time.Time     `json:"expired_at"`
+	ProductedAt time.Time     `json:"producted_at"`
+	IsAvailable bool          `json:"is_available"`
+	UserCreated sql.NullInt32 `json:"user_created"`
+	UserUpdated sql.NullInt32 `json:"user_updated"`
+	UpdatedAt   sql.NullTime  `json:"updated_at"`
+	CreatedAt   time.Time     `json:"created_at"`
+}
+
+type ConsignmentLog struct {
+	ID           int32         `json:"id"`
+	Consignment  int32         `json:"consignment"`
+	Inventory    int32         `json:"inventory"`
+	AmountChange int32         `json:"amount_change"`
+	UserCreated  sql.NullInt32 `json:"user_created"`
+	CreatedAt    time.Time     `json:"created_at"`
+}
+
 type Customer struct {
-	ID          int64          `json:"id"`
+	ID          int32          `json:"id"`
 	FullName    string         `json:"full_name"`
 	Code        string         `json:"code"`
-	Company     sql.NullInt64  `json:"company"`
-	Address     sql.NullInt64  `json:"address"`
+	Company     int32          `json:"company"`
+	Address     sql.NullInt32  `json:"address"`
 	Email       sql.NullString `json:"email"`
 	Birthday    sql.NullTime   `json:"birthday"`
-	UserCreated int64          `json:"user_created"`
-	UserUpdated sql.NullInt64  `json:"user_updated"`
+	UserCreated int32          `json:"user_created"`
+	UserUpdated sql.NullInt32  `json:"user_updated"`
 	UpdatedAt   sql.NullTime   `json:"updated_at"`
 	CreatedAt   time.Time      `json:"created_at"`
 }
@@ -127,48 +152,51 @@ type District struct {
 	FullNameEn           string         `json:"full_name_en"`
 	CodeName             string         `json:"code_name"`
 	ProvinceCode         sql.NullString `json:"province_code"`
-	AdministrativeUnitID sql.NullInt64  `json:"administrative_unit_id"`
+	AdministrativeUnitID sql.NullInt32  `json:"administrative_unit_id"`
 }
 
 type Ingredient struct {
-	ID     int32   `json:"id"`
-	Name   string  `json:"name"`
-	Weight float64 `json:"weight"`
-	Unit   string  `json:"unit"`
+	ID      int32   `json:"id"`
+	Name    string  `json:"name"`
+	Weight  float64 `json:"weight"`
+	Unit    string  `json:"unit"`
+	Product int32   `json:"product"`
 }
 
 type Media struct {
-	ID       int64  `json:"id"`
+	ID       int32  `json:"id"`
 	MediaUrl string `json:"media_url"`
 }
 
 type Order struct {
-	ID          int64          `json:"id"`
-	Vat         string         `json:"vat"`
-	TotalPrice  string         `json:"total_price"`
+	ID          int32          `json:"id"`
+	Vat         float64        `json:"vat"`
+	TotalPrice  float64        `json:"total_price"`
 	Description sql.NullString `json:"description"`
-	Customer    sql.NullInt64  `json:"customer"`
-	Status      int64          `json:"status"`
-	Type        sql.NullInt64  `json:"type"`
-	Ticket      sql.NullInt64  `json:"ticket"`
-	Qr          sql.NullInt64  `json:"qr"`
+	Customer    sql.NullInt32  `json:"customer"`
+	Status      sql.NullInt32  `json:"status"`
+	Type        sql.NullInt32  `json:"type"`
+	Ticket      sql.NullInt32  `json:"ticket"`
+	Qr          sql.NullInt32  `json:"qr"`
 }
 
 type OrderItem struct {
-	ID      int64         `json:"id"`
-	Order   sql.NullInt64 `json:"order"`
-	Variant sql.NullInt64 `json:"variant"`
-	Value   int32         `json:"value"`
+	ID             int32        `json:"id"`
+	Order          int32        `json:"order"`
+	Variant        int32        `json:"variant"`
+	Value          int32        `json:"value"`
+	ExpiredAt      sql.NullTime `json:"expired_at"`
+	ManufacturedAt sql.NullTime `json:"manufactured_at"`
 }
 
 type OrderStatus struct {
-	ID    int64  `json:"id"`
+	ID    int32  `json:"id"`
 	Code  string `json:"code"`
 	Title string `json:"title"`
 }
 
 type OrderType struct {
-	ID    int64  `json:"id"`
+	ID    int32  `json:"id"`
 	Code  string `json:"code"`
 	Title string `json:"title"`
 }
@@ -180,95 +208,92 @@ type PreparationType struct {
 }
 
 type PriceList struct {
-	ID          int64         `json:"id"`
+	ID          int32         `json:"id"`
 	VariantCode string        `json:"variant_code"`
 	VariantName string        `json:"variant_name"`
 	PriceImport float64       `json:"price_import"`
 	PriceSell   float64       `json:"price_sell"`
-	Unit        int64         `json:"unit"`
-	UserCreated int64         `json:"user_created"`
-	UserUpdated sql.NullInt64 `json:"user_updated"`
+	Unit        int32         `json:"unit"`
+	UserCreated int32         `json:"user_created"`
+	UserUpdated sql.NullInt32 `json:"user_updated"`
 	UpdatedAt   sql.NullTime  `json:"updated_at"`
 	CreatedAt   time.Time     `json:"created_at"`
 }
 
 type PriceListLog struct {
-	ID             int64     `json:"id"`
-	OldPriceImport float64   `json:"old_price_import"`
-	NewPriceImport float64   `json:"new_price_import"`
-	OldPriceSell   float64   `json:"old_price_sell"`
-	NewPriceSell   float64   `json:"new_price_sell"`
-	PriceList      int64     `json:"price_list"`
-	UserUpdated    int64     `json:"user_updated"`
-	UpdatedAt      time.Time `json:"updated_at"`
+	ID             int32         `json:"id"`
+	OldPriceImport float64       `json:"old_price_import"`
+	NewPriceImport float64       `json:"new_price_import"`
+	OldPriceSell   float64       `json:"old_price_sell"`
+	NewPriceSell   float64       `json:"new_price_sell"`
+	PriceList      int32         `json:"price_list"`
+	UserUpdated    sql.NullInt32 `json:"user_updated"`
+	UpdatedAt      time.Time     `json:"updated_at"`
 }
 
 type Product struct {
-	ID              int64          `json:"id"`
+	ID              int32          `json:"id"`
 	Name            string         `json:"name"`
 	Code            string         `json:"code"`
-	ProductCategory sql.NullInt64  `json:"product_category"`
-	Type            sql.NullInt64  `json:"type"`
-	Unit            int64          `json:"unit"`
-	Company         sql.NullInt64  `json:"company"`
-	UserCreated     int64          `json:"user_created"`
-	UserUpdated     sql.NullInt64  `json:"user_updated"`
+	ProductCategory sql.NullInt32  `json:"product_category"`
+	Type            sql.NullInt32  `json:"type"`
+	Brand           int32          `json:"brand"`
+	Unit            int32          `json:"unit"`
+	TaDuoc          sql.NullString `json:"ta_duoc"`
+	NongDo          sql.NullString `json:"nong_do"`
+	LieuDung        string         `json:"lieu_dung"`
+	ChiDinh         string         `json:"chi_dinh"`
+	ChongChiDinh    sql.NullString `json:"chong_chi_dinh"`
+	CongDung        string         `json:"cong_dung"`
+	TacDungPhu      string         `json:"tac_dung_phu"`
+	ThanTrong       string         `json:"than_trong"`
+	TuongTac        sql.NullString `json:"tuong_tac"`
+	BaoQuan         string         `json:"bao_quan"`
+	DongGoi         string         `json:"dong_goi"`
+	PhanLoai        sql.NullString `json:"phan_loai"`
+	DangBaoChe      string         `json:"dang_bao_che"`
+	TieuChuanSx     string         `json:"tieu_chuan_sx"`
+	CongTySx        int32          `json:"cong_ty_sx"`
+	CongTyDk        int32          `json:"cong_ty_dk"`
+	Active          bool           `json:"active"`
+	Company         int32          `json:"company"`
+	UserCreated     int32          `json:"user_created"`
+	UserUpdated     sql.NullInt32  `json:"user_updated"`
 	UpdatedAt       sql.NullTime   `json:"updated_at"`
 	CreatedAt       time.Time      `json:"created_at"`
-	Taduoc          sql.NullString `json:"taduoc"`
-	Nongdo          sql.NullString `json:"nongdo"`
-	Lieudung        string         `json:"lieudung"`
-	Chidinh         string         `json:"chidinh"`
-	Chongchidinh    sql.NullString `json:"chongchidinh"`
-	Congdung        string         `json:"congdung"`
-	Tacdungphu      string         `json:"tacdungphu"`
-	Thantrong       string         `json:"thantrong"`
-	Tuongtac        sql.NullString `json:"tuongtac"`
-	Baoquan         string         `json:"baoquan"`
-	Donggoi         string         `json:"donggoi"`
-	Noisx           string         `json:"noisx"`
-	Congtysx        string         `json:"congtysx"`
-	Congtydk        string         `json:"congtydk"`
-	Active          bool           `json:"active"`
-	CongTySx        sql.NullInt64  `json:"congTySx"`
-	CongTyDk        sql.NullInt64  `json:"congTyDk"`
-	Brand           int32          `json:"brand"`
 }
 
 type ProductBrand struct {
 	ID          int32     `json:"id"`
 	Code        string    `json:"code"`
 	Name        string    `json:"name"`
-	UserCreated int64     `json:"user_created"`
+	UserCreated int32     `json:"user_created"`
 	CreatedAt   time.Time `json:"created_at"`
+	Company     int32     `json:"company"`
 }
 
 type ProductCategory struct {
 	ID          int32     `json:"id"`
 	Code        string    `json:"code"`
 	Name        string    `json:"name"`
-	UserCreated int64     `json:"user_created"`
+	UserCreated int32     `json:"user_created"`
 	CreatedAt   time.Time `json:"created_at"`
-}
-
-type ProductIngredient struct {
-	ID         int64 `json:"id"`
-	Product    int64 `json:"product"`
-	Ingredient int32 `json:"ingredient"`
+	Company     int32     `json:"company"`
 }
 
 type ProductMedium struct {
-	ID      int64         `json:"id"`
-	Product sql.NullInt64 `json:"product"`
-	Media   sql.NullInt64 `json:"media"`
+	ID      int32 `json:"id"`
+	Product int32 `json:"product"`
+	Media   int32 `json:"media"`
 }
 
 type ProductType struct {
 	ID          int32     `json:"id"`
 	Code        string    `json:"code"`
 	Name        string    `json:"name"`
-	UserCreated int64     `json:"user_created"`
+	UserCreated int32     `json:"user_created"`
 	CreatedAt   time.Time `json:"created_at"`
+	Company     int32     `json:"company"`
 }
 
 type ProductionStandard struct {
@@ -278,25 +303,25 @@ type ProductionStandard struct {
 }
 
 type ProductsBank struct {
-	ID           int64          `json:"id"`
+	ID           int32          `json:"id"`
 	Name         string         `json:"name"`
 	Code         string         `json:"code"`
-	TaDuoc       sql.NullString `json:"taDuoc"`
-	NongDo       sql.NullString `json:"nongDo"`
-	LieuDung     string         `json:"lieuDung"`
-	ChiDinh      string         `json:"chiDinh"`
-	ChongChiDinh sql.NullString `json:"chongChiDinh"`
-	CongDung     string         `json:"congDung"`
-	TacDungPhu   string         `json:"tacDungPhu"`
-	ThanTrong    string         `json:"thanTrong"`
-	TuongTac     sql.NullString `json:"tuongTac"`
-	BaoQuan      string         `json:"baoQuan"`
-	DongGoi      string         `json:"dongGoi"`
-	PhanLoai     sql.NullString `json:"phanLoai"`
-	DangBaoche   string         `json:"dangBaoche"`
-	TieuChuanSx  string         `json:"tieuChuanSx"`
-	CongTySx     int64          `json:"congTySx"`
-	CongTyDk     int64          `json:"congTyDk"`
+	TaDuoc       sql.NullString `json:"ta_duoc"`
+	NongDo       sql.NullString `json:"nong_do"`
+	LieuDung     string         `json:"lieu_dung"`
+	ChiDinh      string         `json:"chi_dinh"`
+	ChongChiDinh sql.NullString `json:"chong_chi_dinh"`
+	CongDung     string         `json:"cong_dung"`
+	TacDungPhu   string         `json:"tac_dung_phu"`
+	ThanTrong    string         `json:"than_trong"`
+	TuongTac     sql.NullString `json:"tuong_tac"`
+	BaoQuan      string         `json:"bao_quan"`
+	DongGoi      string         `json:"dong_goi"`
+	PhanLoai     sql.NullString `json:"phan_loai"`
+	DangBaoChe   string         `json:"dang_bao_che"`
+	TieuChuanSx  string         `json:"tieu_chuan_sx"`
+	CongTySx     int32          `json:"cong_ty_sx"`
+	CongTyDk     int32          `json:"cong_ty_dk"`
 }
 
 type Province struct {
@@ -306,8 +331,8 @@ type Province struct {
 	FullName               string        `json:"full_name"`
 	FullNameEn             string        `json:"full_name_en"`
 	CodeName               string        `json:"code_name"`
-	AdministrativeUnitID   sql.NullInt64 `json:"administrative_unit_id"`
-	AdministrativeRegionID sql.NullInt64 `json:"administrative_region_id"`
+	AdministrativeUnitID   sql.NullInt32 `json:"administrative_unit_id"`
+	AdministrativeRegionID sql.NullInt32 `json:"administrative_region_id"`
 }
 
 type Session struct {
@@ -321,82 +346,96 @@ type Session struct {
 	CreatedAt    time.Time `json:"created_at"`
 }
 
+type Suplier struct {
+	ID         int32          `json:"id"`
+	Code       string         `json:"code"`
+	Name       string         `json:"name"`
+	DeputyName string         `json:"deputy_name"`
+	Phone      string         `json:"phone"`
+	Email      sql.NullString `json:"email"`
+	Address    sql.NullInt32  `json:"address"`
+	Warehouses sql.NullInt32  `json:"warehouses"`
+	Company    sql.NullInt32  `json:"company"`
+}
+
 type Ticket struct {
-	ID          int64          `json:"id"`
+	ID          int32          `json:"id"`
 	Code        string         `json:"code"`
-	Type        int64          `json:"type"`
-	Status      int64          `json:"status"`
+	Type        sql.NullInt32  `json:"type"`
+	Status      sql.NullInt32  `json:"status"`
 	Note        sql.NullString `json:"note"`
-	Qr          sql.NullInt64  `json:"qr"`
-	ExportFrom  int64          `json:"export_from"`
-	ImportTo    int64          `json:"import_to"`
-	UserCreated int64          `json:"user_created"`
-	UserUpdated sql.NullInt64  `json:"user_updated"`
+	Qr          sql.NullInt32  `json:"qr"`
+	ExportTo    sql.NullInt32  `json:"export_to"`
+	ImportFrom  sql.NullInt32  `json:"import_from"`
+	TotalPrice  float64        `json:"total_price"`
+	Warehouse   int32          `json:"warehouse"`
+	UserCreated int32          `json:"user_created"`
+	UserUpdated sql.NullInt32  `json:"user_updated"`
 	UpdatedAt   sql.NullTime   `json:"updated_at"`
 	CreatedAt   time.Time      `json:"created_at"`
 }
 
 type TicketStatus struct {
-	ID    int64  `json:"id"`
+	ID    int32  `json:"id"`
 	Code  string `json:"code"`
 	Title string `json:"title"`
 }
 
 type TicketType struct {
-	ID    int64  `json:"id"`
+	ID    int32  `json:"id"`
 	Code  string `json:"code"`
 	Title string `json:"title"`
 }
 
 type Unit struct {
-	ID          int64          `json:"id"`
-	Name        string         `json:"name"`
-	SellPrice   string         `json:"sell_price"`
-	ImportPrice string         `json:"import_price"`
-	Weight      sql.NullString `json:"weight"`
-	WeightUnit  sql.NullString `json:"weight_unit"`
-	UserCreated int64          `json:"user_created"`
-	UserUpdated sql.NullInt64  `json:"user_updated"`
-	UpdatedAt   sql.NullTime   `json:"updated_at"`
-	CreatedAt   time.Time      `json:"created_at"`
+	ID          int32           `json:"id"`
+	Name        string          `json:"name"`
+	SellPrice   float64         `json:"sell_price"`
+	ImportPrice float64         `json:"import_price"`
+	Weight      sql.NullFloat64 `json:"weight"`
+	WeightUnit  sql.NullString  `json:"weight_unit"`
+	UserCreated int32           `json:"user_created"`
+	UserUpdated sql.NullInt32   `json:"user_updated"`
+	UpdatedAt   sql.NullTime    `json:"updated_at"`
+	CreatedAt   time.Time       `json:"created_at"`
 }
 
 type UnitChange struct {
-	ID          int64         `json:"id"`
+	ID          int32         `json:"id"`
 	Name        string        `json:"name"`
 	Value       int64         `json:"value"`
-	SellPrice   string        `json:"sell_price"`
-	Unit        sql.NullInt64 `json:"unit"`
-	UserCreated int64         `json:"user_created"`
-	UserUpdated sql.NullInt64 `json:"user_updated"`
+	SellPrice   float64       `json:"sell_price"`
+	Unit        int32         `json:"unit"`
+	UserCreated int32         `json:"user_created"`
+	UserUpdated sql.NullInt32 `json:"user_updated"`
 	UpdatedAt   sql.NullTime  `json:"updated_at"`
 	CreatedAt   time.Time     `json:"created_at"`
 }
 
 type Variant struct {
-	ID             int64         `json:"id"`
+	ID             int32         `json:"id"`
 	Name           string        `json:"name"`
 	Code           string        `json:"code"`
 	Barcode        string        `json:"barcode"`
 	DecisionNumber string        `json:"decision_number"`
 	RegisterNumber string        `json:"register_number"`
-	Vat            string        `json:"vat"`
-	Product        sql.NullInt64 `json:"product"`
-	UserCreated    int64         `json:"user_created"`
-	UserUpdated    sql.NullInt64 `json:"user_updated"`
+	Longevity      string        `json:"longevity"`
+	Vat            float64       `json:"vat"`
+	Product        int32         `json:"product"`
+	UserCreated    int32         `json:"user_created"`
+	UserUpdated    sql.NullInt32 `json:"user_updated"`
 	UpdatedAt      sql.NullTime  `json:"updated_at"`
 	CreatedAt      time.Time     `json:"created_at"`
-	Longevity      string        `json:"longevity"`
 }
 
 type VariantMedium struct {
-	ID      int64 `json:"id"`
-	Variant int64 `json:"variant"`
-	Media   int64 `json:"media"`
+	ID      int32 `json:"id"`
+	Variant int32 `json:"variant"`
+	Media   int32 `json:"media"`
 }
 
 type Verify struct {
-	ID         int64     `json:"id"`
+	ID         int32     `json:"id"`
 	Username   string    `json:"username"`
 	Email      string    `json:"email"`
 	SecretCode string    `json:"secret_code"`
@@ -413,11 +452,11 @@ type Ward struct {
 	FullNameEn           string         `json:"full_name_en"`
 	CodeName             string         `json:"code_name"`
 	DistrictCode         sql.NullString `json:"district_code"`
-	AdministrativeUnitID sql.NullInt64  `json:"administrative_unit_id"`
+	AdministrativeUnitID sql.NullInt32  `json:"administrative_unit_id"`
 }
 
 type Warehouse struct {
-	ID        int64 `json:"id"`
-	Address   int64 `json:"address"`
-	Companies int64 `json:"companies"`
+	ID        int32         `json:"id"`
+	Address   sql.NullInt32 `json:"address"`
+	Companies sql.NullInt32 `json:"companies"`
 }

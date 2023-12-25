@@ -41,7 +41,7 @@ SELECT id, username, email, secret_code, is_used, created_at, expired_at FROM ve
 WHERE id = $1 LIMIT 1
 `
 
-func (q *Queries) GetVerify(ctx context.Context, id int64) (Verify, error) {
+func (q *Queries) GetVerify(ctx context.Context, id int32) (Verify, error) {
 	row := q.db.QueryRowContext(ctx, getVerify, id)
 	var i Verify
 	err := row.Scan(
@@ -65,7 +65,7 @@ WHERE
 RETURNING id, username, email, secret_code, is_used, created_at, expired_at
 `
 
-func (q *Queries) UpdateVerify(ctx context.Context, id int64) (Verify, error) {
+func (q *Queries) UpdateVerify(ctx context.Context, id int32) (Verify, error) {
 	row := q.db.QueryRowContext(ctx, updateVerify, id)
 	var i Verify
 	err := row.Scan(

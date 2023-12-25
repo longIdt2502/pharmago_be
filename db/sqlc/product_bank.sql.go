@@ -12,32 +12,32 @@ import (
 
 const createProductBank = `-- name: CreateProductBank :one
 INSERT INTO products_bank (
-    name, code, "taDuoc", "nongDo", "lieuDung", "chiDinh", "chongChiDinh", "congDung", "tacDungPhu", "thanTrong", "tuongTac", "baoQuan",
-    "dongGoi", "phanLoai", "dangBaoche", "tieuChuanSx", "congTySx", "congTyDk"
+    name, code, ta_duoc, nong_do, lieu_dung, chi_dinh, chong_chi_dinh, cong_dung, tac_dung_phu, than_trong, tuong_tac, bao_quan,
+    dong_goi, phan_loai, dang_bao_che, tieu_chuan_sx, cong_ty_sx, cong_ty_dk
 ) VALUES (
     $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18
-) RETURNING id, name, code, "taDuoc", "nongDo", "lieuDung", "chiDinh", "chongChiDinh", "congDung", "tacDungPhu", "thanTrong", "tuongTac", "baoQuan", "dongGoi", "phanLoai", "dangBaoche", "tieuChuanSx", "congTySx", "congTyDk"
+) RETURNING id, name, code, ta_duoc, nong_do, lieu_dung, chi_dinh, chong_chi_dinh, cong_dung, tac_dung_phu, than_trong, tuong_tac, bao_quan, dong_goi, phan_loai, dang_bao_che, tieu_chuan_sx, cong_ty_sx, cong_ty_dk
 `
 
 type CreateProductBankParams struct {
 	Name         string         `json:"name"`
 	Code         string         `json:"code"`
-	TaDuoc       sql.NullString `json:"taDuoc"`
-	NongDo       sql.NullString `json:"nongDo"`
-	LieuDung     string         `json:"lieuDung"`
-	ChiDinh      string         `json:"chiDinh"`
-	ChongChiDinh sql.NullString `json:"chongChiDinh"`
-	CongDung     string         `json:"congDung"`
-	TacDungPhu   string         `json:"tacDungPhu"`
-	ThanTrong    string         `json:"thanTrong"`
-	TuongTac     sql.NullString `json:"tuongTac"`
-	BaoQuan      string         `json:"baoQuan"`
-	DongGoi      string         `json:"dongGoi"`
-	PhanLoai     sql.NullString `json:"phanLoai"`
-	DangBaoche   string         `json:"dangBaoche"`
-	TieuChuanSx  string         `json:"tieuChuanSx"`
-	CongTySx     int64          `json:"congTySx"`
-	CongTyDk     int64          `json:"congTyDk"`
+	TaDuoc       sql.NullString `json:"ta_duoc"`
+	NongDo       sql.NullString `json:"nong_do"`
+	LieuDung     string         `json:"lieu_dung"`
+	ChiDinh      string         `json:"chi_dinh"`
+	ChongChiDinh sql.NullString `json:"chong_chi_dinh"`
+	CongDung     string         `json:"cong_dung"`
+	TacDungPhu   string         `json:"tac_dung_phu"`
+	ThanTrong    string         `json:"than_trong"`
+	TuongTac     sql.NullString `json:"tuong_tac"`
+	BaoQuan      string         `json:"bao_quan"`
+	DongGoi      string         `json:"dong_goi"`
+	PhanLoai     sql.NullString `json:"phan_loai"`
+	DangBaoChe   string         `json:"dang_bao_che"`
+	TieuChuanSx  string         `json:"tieu_chuan_sx"`
+	CongTySx     int32          `json:"cong_ty_sx"`
+	CongTyDk     int32          `json:"cong_ty_dk"`
 }
 
 func (q *Queries) CreateProductBank(ctx context.Context, arg CreateProductBankParams) (ProductsBank, error) {
@@ -56,7 +56,7 @@ func (q *Queries) CreateProductBank(ctx context.Context, arg CreateProductBankPa
 		arg.BaoQuan,
 		arg.DongGoi,
 		arg.PhanLoai,
-		arg.DangBaoche,
+		arg.DangBaoChe,
 		arg.TieuChuanSx,
 		arg.CongTySx,
 		arg.CongTyDk,
@@ -78,7 +78,7 @@ func (q *Queries) CreateProductBank(ctx context.Context, arg CreateProductBankPa
 		&i.BaoQuan,
 		&i.DongGoi,
 		&i.PhanLoai,
-		&i.DangBaoche,
+		&i.DangBaoChe,
 		&i.TieuChuanSx,
 		&i.CongTySx,
 		&i.CongTyDk,

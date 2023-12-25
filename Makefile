@@ -5,7 +5,7 @@ createdb:
 	docker exec -it postgres createdb --username=root --owner=root pharmago
 
 dropdb:
-	docker exec -it postgres dropdb simple_bank
+	docker exec -it postgres dropdb pharmago
 
 migrateup:
 	migrate -path db/migration -database "postgresql://root:Hoanglong2502@localhost:5432/pharmago?sslmode=disable" -verbose up
