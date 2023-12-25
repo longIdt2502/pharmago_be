@@ -46,6 +46,12 @@ type PharmagoClient interface {
 	CategoryList(ctx context.Context, in *CategoryListRequest, opts ...grpc.CallOption) (*CategoryListResponse, error)
 	// ================== PRODUCT_TYPE ===================
 	ProductTypeList(ctx context.Context, in *ProductTypeListRequest, opts ...grpc.CallOption) (*ProductTypeListResponse, error)
+	// ================== WAREHOUSE ===================
+	WarehouseCreate(ctx context.Context, in *WarehouseCreateRequest, opts ...grpc.CallOption) (*WarehouseCreateResponse, error)
+	WarehouseList(ctx context.Context, in *WarehouseListRequest, opts ...grpc.CallOption) (*WarehouseListResponse, error)
+	TicketCreate(ctx context.Context, in *TicketCreateRequest, opts ...grpc.CallOption) (*TicketCreateResponse, error)
+	TicketUpdateStatus(ctx context.Context, in *TicketUpdateStatusRequest, opts ...grpc.CallOption) (*TicketUpdateStatusResponse, error)
+	ConsignmentList(ctx context.Context, in *ConsignmentListRequest, opts ...grpc.CallOption) (*ConsignmentListResponse, error)
 	// ================== IMPORT ===================
 	ImportCompany(ctx context.Context, in *ImportCompanyRequest, opts ...grpc.CallOption) (*ImportCompanyResponse, error)
 	ImportProduct(ctx context.Context, in *ImportProductRequest, opts ...grpc.CallOption) (*ImportProductResponse, error)
@@ -240,6 +246,51 @@ func (c *pharmagoClient) ProductTypeList(ctx context.Context, in *ProductTypeLis
 	return out, nil
 }
 
+func (c *pharmagoClient) WarehouseCreate(ctx context.Context, in *WarehouseCreateRequest, opts ...grpc.CallOption) (*WarehouseCreateResponse, error) {
+	out := new(WarehouseCreateResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/WarehouseCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) WarehouseList(ctx context.Context, in *WarehouseListRequest, opts ...grpc.CallOption) (*WarehouseListResponse, error) {
+	out := new(WarehouseListResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/WarehouseList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) TicketCreate(ctx context.Context, in *TicketCreateRequest, opts ...grpc.CallOption) (*TicketCreateResponse, error) {
+	out := new(TicketCreateResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/TicketCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) TicketUpdateStatus(ctx context.Context, in *TicketUpdateStatusRequest, opts ...grpc.CallOption) (*TicketUpdateStatusResponse, error) {
+	out := new(TicketUpdateStatusResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/TicketUpdateStatus", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) ConsignmentList(ctx context.Context, in *ConsignmentListRequest, opts ...grpc.CallOption) (*ConsignmentListResponse, error) {
+	out := new(ConsignmentListResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/ConsignmentList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *pharmagoClient) ImportCompany(ctx context.Context, in *ImportCompanyRequest, opts ...grpc.CallOption) (*ImportCompanyResponse, error) {
 	out := new(ImportCompanyResponse)
 	err := c.cc.Invoke(ctx, "/pb.Pharmago/ImportCompany", in, out, opts...)
@@ -295,6 +346,12 @@ type PharmagoServer interface {
 	CategoryList(context.Context, *CategoryListRequest) (*CategoryListResponse, error)
 	// ================== PRODUCT_TYPE ===================
 	ProductTypeList(context.Context, *ProductTypeListRequest) (*ProductTypeListResponse, error)
+	// ================== WAREHOUSE ===================
+	WarehouseCreate(context.Context, *WarehouseCreateRequest) (*WarehouseCreateResponse, error)
+	WarehouseList(context.Context, *WarehouseListRequest) (*WarehouseListResponse, error)
+	TicketCreate(context.Context, *TicketCreateRequest) (*TicketCreateResponse, error)
+	TicketUpdateStatus(context.Context, *TicketUpdateStatusRequest) (*TicketUpdateStatusResponse, error)
+	ConsignmentList(context.Context, *ConsignmentListRequest) (*ConsignmentListResponse, error)
 	// ================== IMPORT ===================
 	ImportCompany(context.Context, *ImportCompanyRequest) (*ImportCompanyResponse, error)
 	ImportProduct(context.Context, *ImportProductRequest) (*ImportProductResponse, error)
@@ -365,6 +422,21 @@ func (UnimplementedPharmagoServer) CategoryList(context.Context, *CategoryListRe
 }
 func (UnimplementedPharmagoServer) ProductTypeList(context.Context, *ProductTypeListRequest) (*ProductTypeListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductTypeList not implemented")
+}
+func (UnimplementedPharmagoServer) WarehouseCreate(context.Context, *WarehouseCreateRequest) (*WarehouseCreateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WarehouseCreate not implemented")
+}
+func (UnimplementedPharmagoServer) WarehouseList(context.Context, *WarehouseListRequest) (*WarehouseListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WarehouseList not implemented")
+}
+func (UnimplementedPharmagoServer) TicketCreate(context.Context, *TicketCreateRequest) (*TicketCreateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TicketCreate not implemented")
+}
+func (UnimplementedPharmagoServer) TicketUpdateStatus(context.Context, *TicketUpdateStatusRequest) (*TicketUpdateStatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TicketUpdateStatus not implemented")
+}
+func (UnimplementedPharmagoServer) ConsignmentList(context.Context, *ConsignmentListRequest) (*ConsignmentListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConsignmentList not implemented")
 }
 func (UnimplementedPharmagoServer) ImportCompany(context.Context, *ImportCompanyRequest) (*ImportCompanyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ImportCompany not implemented")
@@ -748,6 +820,96 @@ func _Pharmago_ProductTypeList_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Pharmago_WarehouseCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WarehouseCreateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).WarehouseCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/WarehouseCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).WarehouseCreate(ctx, req.(*WarehouseCreateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_WarehouseList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WarehouseListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).WarehouseList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/WarehouseList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).WarehouseList(ctx, req.(*WarehouseListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_TicketCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TicketCreateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).TicketCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/TicketCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).TicketCreate(ctx, req.(*TicketCreateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_TicketUpdateStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TicketUpdateStatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).TicketUpdateStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/TicketUpdateStatus",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).TicketUpdateStatus(ctx, req.(*TicketUpdateStatusRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_ConsignmentList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ConsignmentListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ConsignmentList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/ConsignmentList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ConsignmentList(ctx, req.(*ConsignmentListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Pharmago_ImportCompany_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ImportCompanyRequest)
 	if err := dec(in); err != nil {
@@ -888,6 +1050,26 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ProductTypeList",
 			Handler:    _Pharmago_ProductTypeList_Handler,
+		},
+		{
+			MethodName: "WarehouseCreate",
+			Handler:    _Pharmago_WarehouseCreate_Handler,
+		},
+		{
+			MethodName: "WarehouseList",
+			Handler:    _Pharmago_WarehouseList_Handler,
+		},
+		{
+			MethodName: "TicketCreate",
+			Handler:    _Pharmago_TicketCreate_Handler,
+		},
+		{
+			MethodName: "TicketUpdateStatus",
+			Handler:    _Pharmago_TicketUpdateStatus_Handler,
+		},
+		{
+			MethodName: "ConsignmentList",
+			Handler:    _Pharmago_ConsignmentList_Handler,
 		},
 		{
 			MethodName: "ImportCompany",

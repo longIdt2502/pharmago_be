@@ -107,3 +107,26 @@ func (q *Queries) GetCompanies(ctx context.Context, arg GetCompaniesParams) ([]C
 	}
 	return items, nil
 }
+
+const getCompanyById = `-- name: GetCompanyById :one
+SELECT id, name, code, tax_code, phone, description, address, created_at, owner FROM companies
+WHERE id = $1
+LIMIT 1
+`
+
+func (q *Queries) GetCompanyById(ctx context.Context, id int32) (Company, error) {
+	row := q.db.QueryRowContext(ctx, getCompanyById, id)
+	var i Company
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Code,
+		&i.TaxCode,
+		&i.Phone,
+		&i.Description,
+		&i.Address,
+		&i.CreatedAt,
+		&i.Owner,
+	)
+	return i, err
+}

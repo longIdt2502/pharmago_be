@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message TicketCreateRequestInfo {
+  optional string code = 1;
+  string type = 2;
+  string status = 3;
+  string note = 4;
+  float total_price = 5;
+  int32 export_to = 6;
+  int32 import_from = 7;
+  int32 warehouse = 8;
+}
+
+message TicketCreateRequestConsignment {
+  optional string code = 1;
+  int32 quantity = 2;
+  int32 inventory = 3;
+  int32 variant = 4;
+  google.protobuf.Timestamp expired_at = 5;
+  google.protobuf.Timestamp produced_at = 6;
+}
+
+message TicketCreateRequest {
+  TicketCreateRequestInfo ticket = 1;
+  repeated TicketCreateRequestConsignment consignment = 2;
+}
+
+message TicketCreateResponse {
+  int32 code = 1;
+  string message = 2;
+  int32 details = 3;
+}

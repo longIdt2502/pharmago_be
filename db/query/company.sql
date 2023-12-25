@@ -13,3 +13,8 @@ WHERE owner = sqlc.narg('owner')::int AND
 ORDER BY -id
 LIMIT COALESCE(sqlc.narg('limit')::int, 10)
 OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10);
+
+-- name: GetCompanyById :one
+SELECT * FROM companies
+WHERE id = $1
+LIMIT 1;

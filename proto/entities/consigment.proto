@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package pb;
+
+import "entities/address.proto";
+import "entities/company.proto";
+import "entities/variant.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message Consignment {
+  int32 id = 1;
+  string code = 2;
+  int32 quantity = 3;
+  int32 inventory = 4;
+  Variant variant = 5;
+  google.protobuf.Timestamp expired_at = 6;
+  google.protobuf.Timestamp produced_at = 7;
+  bool is_available = 8;
+}

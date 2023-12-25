@@ -33,7 +33,7 @@ func (server *ServerGRPC) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 		return nil, status.Errorf(codes.Unauthenticated, "password incorrect:", err)
 	}
 
-	accessToken, accessTokenPayload, err := server.tokenMaker.CreateToken(username, server.config.AccessTokenDuration)
+	accessToken, accessTokenPayload, err := server.tokenMaker.CreateToken(username, account.ID, server.config.AccessTokenDuration)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to create access token")
 	}
@@ -42,7 +42,7 @@ func (server *ServerGRPC) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to create refresh token duration:", err)
 	}
-	refreshToken, refreshTokenPayload, err := server.tokenMaker.CreateToken(username, refreshTokenDuration)
+	refreshToken, refreshTokenPayload, err := server.tokenMaker.CreateToken(username, account.ID, refreshTokenDuration)
 
 	metadata := server.extractMetadata(ctx)
 	session, err := server.store.CreateSession(ctx, db.CreateSessionParams{
