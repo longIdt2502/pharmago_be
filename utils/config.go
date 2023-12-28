@@ -21,6 +21,7 @@ type Config struct {
 	B2ApplicationKey    string        `mapstructure:"B2_APPLICATION_KEY"`
 	B2Bucket            string        `mapstructure:"B2_BUCKET"`
 	B2AccountId         string        `mapstructure:"B2_ACCOUNT_ID"`
+	MigrationURL        string        `mapstructure:"MIGRATION_URL"`
 }
 
 func LoadConfig(path string) (config Config, err error) {

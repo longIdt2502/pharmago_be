@@ -62,6 +62,40 @@ func (q *Queries) CreateConsignment(ctx context.Context, arg CreateConsignmentPa
 	return i, err
 }
 
+const createConsignmentLog = `-- name: CreateConsignmentLog :one
+INSERT INTO consignment_log (
+    consignment, inventory, amount_change, user_created
+) VALUES (
+     $1, $2, $3, $4
+) RETURNING id, consignment, inventory, amount_change, user_created, created_at
+`
+
+type CreateConsignmentLogParams struct {
+	Consignment  int32         `json:"consignment"`
+	Inventory    int32         `json:"inventory"`
+	AmountChange int32         `json:"amount_change"`
+	UserCreated  sql.NullInt32 `json:"user_created"`
+}
+
+func (q *Queries) CreateConsignmentLog(ctx context.Context, arg CreateConsignmentLogParams) (ConsignmentLog, error) {
+	row := q.db.QueryRowContext(ctx, createConsignmentLog,
+		arg.Consignment,
+		arg.Inventory,
+		arg.AmountChange,
+		arg.UserCreated,
+	)
+	var i ConsignmentLog
+	err := row.Scan(
+		&i.ID,
+		&i.Consignment,
+		&i.Inventory,
+		&i.AmountChange,
+		&i.UserCreated,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const createTicket = `-- name: CreateTicket :one
 INSERT INTO tickets (
     code, type, status, note, qr, export_to, import_from, total_price, warehouse, user_created, user_updated
@@ -147,6 +181,38 @@ func (q *Queries) CreateWarehouse(ctx context.Context, arg CreateWarehouseParams
 		&i.Companies,
 		&i.Name,
 		&i.Code,
+	)
+	return i, err
+}
+
+const getConsignment = `-- name: GetConsignment :one
+SELECT id, code, quantity, inventory, ticket, expired_at, producted_at, is_available, user_created, user_updated, updated_at, created_at, variant FROM consignment
+WHERE id = $1 AND variant = $2
+LIMIT 1
+`
+
+type GetConsignmentParams struct {
+	ID      int32         `json:"id"`
+	Variant sql.NullInt32 `json:"variant"`
+}
+
+func (q *Queries) GetConsignment(ctx context.Context, arg GetConsignmentParams) (Consignment, error) {
+	row := q.db.QueryRowContext(ctx, getConsignment, arg.ID, arg.Variant)
+	var i Consignment
+	err := row.Scan(
+		&i.ID,
+		&i.Code,
+		&i.Quantity,
+		&i.Inventory,
+		&i.Ticket,
+		&i.ExpiredAt,
+		&i.ProductedAt,
+		&i.IsAvailable,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.UpdatedAt,
+		&i.CreatedAt,
+		&i.Variant,
 	)
 	return i, err
 }
@@ -304,6 +370,25 @@ func (q *Queries) GetTicketType(ctx context.Context, arg GetTicketTypeParams) (T
 	return i, err
 }
 
+const getWarehouse = `-- name: GetWarehouse :one
+SELECT id, address, companies, name, code FROM warehouses
+WHERE id = $1
+LIMIT 1
+`
+
+func (q *Queries) GetWarehouse(ctx context.Context, id int32) (Warehouse, error) {
+	row := q.db.QueryRowContext(ctx, getWarehouse, id)
+	var i Warehouse
+	err := row.Scan(
+		&i.ID,
+		&i.Address,
+		&i.Companies,
+		&i.Name,
+		&i.Code,
+	)
+	return i, err
+}
+
 const listWarehouse = `-- name: ListWarehouse :many
 SELECT id, address, companies, name, code FROM warehouses
 WHERE companies = $1::int AND (
@@ -354,6 +439,67 @@ func (q *Queries) ListWarehouse(ctx context.Context, arg ListWarehouseParams) ([
 		return nil, err
 	}
 	return items, nil
+}
+
+const suggestConsignmentForVariant = `-- name: SuggestConsignmentForVariant :one
+SELECT id, code, quantity, inventory, ticket, expired_at, producted_at, is_available, user_created, user_updated, updated_at, created_at, variant FROM consignment c
+WHERE c.variant = $1 AND inventory = (SELECT MIN(inventory) FROM consignment) AND is_available = true
+ORDER BY ABS(EXTRACT(EPOCH FROM (expired_at - NOW()))) ASC
+LIMIT 1
+`
+
+func (q *Queries) SuggestConsignmentForVariant(ctx context.Context, variant sql.NullInt32) (Consignment, error) {
+	row := q.db.QueryRowContext(ctx, suggestConsignmentForVariant, variant)
+	var i Consignment
+	err := row.Scan(
+		&i.ID,
+		&i.Code,
+		&i.Quantity,
+		&i.Inventory,
+		&i.Ticket,
+		&i.ExpiredAt,
+		&i.ProductedAt,
+		&i.IsAvailable,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.UpdatedAt,
+		&i.CreatedAt,
+		&i.Variant,
+	)
+	return i, err
+}
+
+const updateConsignment = `-- name: UpdateConsignment :one
+UPDATE consignment
+SET inventory = inventory + $1::int
+WHERE id = $2
+RETURNING id, code, quantity, inventory, ticket, expired_at, producted_at, is_available, user_created, user_updated, updated_at, created_at, variant
+`
+
+type UpdateConsignmentParams struct {
+	Amount int32 `json:"amount"`
+	ID     int32 `json:"id"`
+}
+
+func (q *Queries) UpdateConsignment(ctx context.Context, arg UpdateConsignmentParams) (Consignment, error) {
+	row := q.db.QueryRowContext(ctx, updateConsignment, arg.Amount, arg.ID)
+	var i Consignment
+	err := row.Scan(
+		&i.ID,
+		&i.Code,
+		&i.Quantity,
+		&i.Inventory,
+		&i.Ticket,
+		&i.ExpiredAt,
+		&i.ProductedAt,
+		&i.IsAvailable,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.UpdatedAt,
+		&i.CreatedAt,
+		&i.Variant,
+	)
+	return i, err
 }
 
 const updateConsignmentByTicket = `-- name: UpdateConsignmentByTicket :many

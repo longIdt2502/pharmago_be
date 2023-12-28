@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package pb;
+
+import "entities/address.proto";
+import "entities/company.proto";
+import "entities/simple_data.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message Order {
+  int32 id = 1;
+  string code = 2;
+  float total_price = 3;
+  string description = 4;
+  string decision_number = 5;
+  string register_number = 6;
+  string longevity = 7;
+  float vat = 8;
+  int32 product = 9;
+  string media = 10;
+  optional int32 quantity_in_stock = 11;
+}
+
+message OrderPreview {
+  int32 id = 1;
+  string code = 2;
+  float total_price = 3;
+  SimpleData status = 4;
+  string description = 5;
+  string customer_name = 6;
+  string user_created = 7;
+  google.protobuf.Timestamp created_at = 8;
+}

@@ -214,17 +214,20 @@ func (q *Queries) CreateUnit(ctx context.Context, arg CreateUnitParams) (Unit, e
 
 const createUnitChange = `-- name: CreateUnitChange :one
 INSERT INTO unit_changes (
-    name, value, sell_price, unit
+    name, value, sell_price, unit, user_created, user_updated
 ) values (
-    $1::varchar, $2::int, $3::float, $4::int
+    $1::varchar, $2::int, $3::float, $4::int,
+    $5::int, $6::int
 ) RETURNING id, name, value, sell_price, unit, user_created, user_updated, updated_at, created_at
 `
 
 type CreateUnitChangeParams struct {
-	Name      string        `json:"name"`
-	Value     int32         `json:"value"`
-	SellPrice float64       `json:"sell_price"`
-	Unit      sql.NullInt32 `json:"unit"`
+	Name        string        `json:"name"`
+	Value       int32         `json:"value"`
+	SellPrice   float64       `json:"sell_price"`
+	Unit        sql.NullInt32 `json:"unit"`
+	UserCreated int32         `json:"user_created"`
+	UserUpdated int32         `json:"user_updated"`
 }
 
 func (q *Queries) CreateUnitChange(ctx context.Context, arg CreateUnitChangeParams) (UnitChange, error) {
@@ -233,6 +236,8 @@ func (q *Queries) CreateUnitChange(ctx context.Context, arg CreateUnitChangePara
 		arg.Value,
 		arg.SellPrice,
 		arg.Unit,
+		arg.UserCreated,
+		arg.UserUpdated,
 	)
 	var i UnitChange
 	err := row.Scan(

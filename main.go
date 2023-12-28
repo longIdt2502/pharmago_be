@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"database/sql"
+	"errors"
+	"github.com/golang-migrate/migrate/v4"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/hibiken/asynq"
 	"github.com/kothar/go-backblaze"
@@ -25,6 +27,9 @@ import (
 	"net"
 	"net/http"
 	"os"
+
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
 func main() {
@@ -39,6 +44,9 @@ func main() {
 	if err != nil {
 		log.Fatal().Err(err).Msg("cannot open database")
 	}
+
+	// run db migration
+	runDBMigration(config.MigrationURL, config.DBSource)
 
 	store := db.NewStore(conn)
 
@@ -63,6 +71,19 @@ func main() {
 	//if err != nil {
 	//	log.Fatal("cannot start server:", err)
 	//}
+}
+
+func runDBMigration(migrationURL string, dbSource string) {
+	migration, err := migrate.New(migrationURL, dbSource)
+	if err != nil {
+		log.Fatal().Err(err).Msg("cannot create new migrate instance")
+	}
+
+	if err = migration.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
+		log.Fatal().Err(err).Msg("failed to run migrate up")
+	}
+
+	log.Info().Msg("db migrated successfully")
 }
 
 func runTaskProcessor(config utils.Config, redisOpt asynq.RedisClientOpt, store db.Store) {

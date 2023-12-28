@@ -5,6 +5,11 @@ INSERT INTO warehouses (
     $1, $2, $3, $4
 ) RETURNING *;
 
+-- name: GetWarehouse :one
+SELECT * FROM warehouses
+WHERE id = $1
+LIMIT 1;
+
 -- name: ListWarehouse :many
 SELECT * FROM warehouses
 WHERE companies = sqlc.narg(company)::int AND (
@@ -27,6 +32,13 @@ INSERT INTO consignment (
     code, quantity, inventory, ticket, variant, expired_at, producted_at, user_created, user_updated
 ) VALUES (
     $1, $2, $3, $4, $5, $6, $7, $8, $9
+) RETURNING *;
+
+-- name: CreateConsignmentLog :one
+INSERT INTO consignment_log (
+    consignment, inventory, amount_change, user_created
+) VALUES (
+     $1, $2, $3, $4
 ) RETURNING *;
 
 -- name: GetTicketType :one
@@ -55,6 +67,23 @@ AND (
 ORDER BY -c.id
 LIMIT COALESCE(sqlc.narg('limit')::int, 10)
 OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10);
+
+-- name: GetConsignment :one
+SELECT * FROM consignment
+WHERE id = $1 AND variant = $2
+LIMIT 1;
+
+-- name: UpdateConsignment :one
+UPDATE consignment
+SET inventory = inventory + sqlc.arg('amount')::int
+WHERE id = sqlc.arg('id')
+RETURNING *;
+
+-- name: SuggestConsignmentForVariant :one
+SELECT * FROM consignment c
+WHERE c.variant = $1 AND inventory = (SELECT MIN(inventory) FROM consignment) AND is_available = true
+ORDER BY ABS(EXTRACT(EPOCH FROM (expired_at - NOW()))) ASC
+LIMIT 1;
 
 -- name: UpdateConsignmentByTicket :many
 UPDATE consignment

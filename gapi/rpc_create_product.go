@@ -38,8 +38,8 @@ func (server *ServerGRPC) CreateProduct(ctx context.Context, req *pb.CreateProdu
 			String: unitData.GetWeightUnit(),
 			Valid:  unitData.WeightUnit != nil,
 		},
-		UserCreated: int32(account.ID),
-		UserUpdated: int32(account.ID),
+		UserCreated: account.ID,
+		UserUpdated: account.ID,
 	})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to record unit data: ", err)
@@ -51,9 +51,11 @@ func (server *ServerGRPC) CreateProduct(ctx context.Context, req *pb.CreateProdu
 			Value:     value.GetValue(),
 			SellPrice: float64(value.GetSellPrice()),
 			Unit: sql.NullInt32{
-				Int32: int32(unit.ID),
+				Int32: unit.ID,
 				Valid: true,
 			},
+			UserCreated: tokenPayload.UserID,
+			UserUpdated: tokenPayload.UserID,
 		})
 		if err != nil {
 			return nil, status.Errorf(codes.Internal, "failed to record unit change: %w", err)
@@ -155,7 +157,7 @@ func (server *ServerGRPC) CreateProduct(ctx context.Context, req *pb.CreateProdu
 	}
 
 	for _, value := range variantData {
-		_, err = server.store.CreateVariant(ctx, db.CreateVariantParams{
+		variant, err := server.store.CreateVariant(ctx, db.CreateVariantParams{
 			Name:    value.GetName(),
 			Code:    value.GetCode(),
 			Barcode: value.GetCode(),
@@ -166,15 +168,54 @@ func (server *ServerGRPC) CreateProduct(ctx context.Context, req *pb.CreateProdu
 			DecisionNumber: value.GetDecisionNumber(),
 			RegisterNumber: value.GetRegisterNumber(),
 			Longevity:      value.GetLongevity(),
-			Product:        int32(product.ID),
-			UserCreated:    int32(account.ID),
-			UserUpdated:    int32(account.ID),
+			Product:        product.ID,
+			UserCreated:    account.ID,
+			UserUpdated:    account.ID,
 		})
 		if err != nil {
 			return nil, status.Errorf(codes.Internal, "failed to record variant data: ", err)
 		}
 
-		// create price list
+		fileVariant, _ := utils.NewFileFromImage(value.Image)
+		_, err = server.b2Bucket.UploadFile(fileVariant.Name, fileVariant.Meta, fileVariant.File)
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to upload image to b2", err)
+		}
+
+		urlVariant, err := server.b2Bucket.FileURL(fileVariant.Name)
+		if err != nil {
+			return nil, status.Errorf(codes.NotFound, "failed to get url by file name")
+		}
+		println("hay", urlVariant)
+
+		media, err := server.store.CreateMedia(ctx, urlVariant)
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to record media: ", err.Error())
+		}
+
+		_, err = server.store.CreateVariantMedia(ctx, db.CreateVariantMediaParams{
+			Variant: variant.ID,
+			Media:   media.ID,
+		})
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to record media product: ", err.Error())
+		}
+
+		_, err = server.store.CreateProductPriceList(ctx, db.CreateProductPriceListParams{
+			VariantCode: variant.Code,
+			VariantName: variant.Name,
+			Unit:        unit.ID,
+			PriceImport: unit.ImportPrice,
+			PriceSell:   unit.SellPrice,
+			UserCreated: tokenPayload.UserID,
+			UserUpdated: sql.NullInt32{
+				Int32: tokenPayload.UserID,
+				Valid: true,
+			},
+		})
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to record price list: ", err)
+		}
 	}
 
 	return &pb.CreateProductResponse{

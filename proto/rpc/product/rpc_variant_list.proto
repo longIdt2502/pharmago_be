@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "entities/variant.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message ListVariantRequest {
+  int32 company = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "int32 value field",
+    required: [
+      "company"
+    ],
+  }];
+  optional int32 page = 2;
+  optional int32 limit = 3;
+  optional string search = 4;
+}
+
+message ListVariantResponse {
+  int32 code = 1;
+  string message = 2;
+  repeated Variant details = 3;
+}

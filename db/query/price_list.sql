@@ -1,8 +1,8 @@
 -- name: CreateProductPriceList :one
 INSERT INTO price_list (
-    variant_code, variant_name, unit, price_import, price_sell
+    variant_code, variant_name, unit, price_import, price_sell, user_created, user_updated
 ) VALUES (
-    $1, $2, $3, $4, $5
+    $1, $2, $3, $4, $5, $6, $7
 ) RETURNING *;
 
 -- name: GetPriceLists :many

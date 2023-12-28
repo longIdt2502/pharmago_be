@@ -444,14 +444,25 @@ Ref: variant_media.media > M.id [delete: cascade]
 
 Table orders as O {
   id serial [pk]
-  vat float [not null, default: 0]
+  code varchar(255) [not null, unique]
   total_price float [not null, default: 0]
-  description varchar
+  description varchar(255)
+  vat float [not null, default: 0]
+  discount varchar(255) [not null, default: '0']
+  service_price float [not null, default: 0]
+  must_paid float [not null, default: 0]
   customer serial
-  status serial
-  type serial
+  address serial
+  status varchar
+  type varchar
   ticket serial
   qr serial
+  company serial [not null]
+  payment serial [not null]
+  user_created serial
+  user_updated serial
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz
 
   Indexes {
     qr
@@ -460,20 +471,25 @@ Table orders as O {
 }
 
 Ref: O.customer > customers.id [delete: set null]
-Ref: O.status > order_status.id [delete: set null]
-Ref: O.type > order_type.id [delete: set null]
+Ref: O.status > order_status.code [delete: set null]
+Ref: O.type > order_type.code [delete: set null]
 Ref: O.ticket > T.id [delete: set null]
 Ref: M.id - O.qr [delete: set null]
+Ref: O.company > C.id [delete: cascade]
+Ref: O.user_created > A.id [delete: set null]
+Ref: O.user_updated > A.id [delete: set null]
+Ref: payments.id - O.payment [delete: cascade]
+Ref: O.address > address.id [delete: set null]
 
 Table order_type {
   id serial [pk]
-  code varchar [not null]
+  code varchar [not null, unique]
   title varchar [not null]
 }
 
 Table order_status {
   id serial [pk]
-  code varchar [not null]
+  code varchar [not null, unique]
   title varchar [not null]
 }
 
@@ -482,12 +498,15 @@ Table order_items {
   order serial [not null]
   variant serial [not null]
   value int [not null, default: 0]
-  expired_at timestamptz
-  manufactured_at timestamptz
+  total_price float [not null, default: 0]
+  consignment serial
+  consignment_log serial
 }
 
 Ref: order_items.order > O.id [delete: cascade]
 Ref: order_items.variant > V.id [delete: cascade]
+Ref: order_items.consignment > consignment.id [delete: set null]
+Ref: order_items.consignment_log > consignment_log.id [delete: set null]
 
 Table customers {
   id serial [pk]
@@ -496,6 +515,8 @@ Table customers {
   company serial [not null]
   address serial
   email varchar
+  phone varchar(20)
+  license varchar(20)
   birthday timestamptz
   user_created serial [not null]
   user_updated serial
@@ -507,10 +528,37 @@ Table customers {
     (id, address) [unique]
   }
 }
+
 Ref: customers.company > C.id [delete: cascade]
 Ref: customers.address > address.id [delete: set null]
 Ref: customers.user_created > A.id [delete: cascade]
 Ref: customers.user_updated > A.id [delete: set null]
+
+Table payment_item_types {
+  id serial [pk]
+  code varchar(255) [not null, unique]
+  title varchar(255) [not null]
+}
+
+Table payments {
+  id serial [pk]
+  code varchar [not null, unique]
+  must_paid float [not null, default: 0]
+  had_paid float [not null, default: 0]
+  need_pay float [not null, default: 0]
+}
+
+Table payment_items {
+  id serial [pk]
+  type varchar [not null]
+  value float [not null, default: 0]
+  is_paid bool [not null, default: false]
+  payment serial [not null]
+  extra_note varchar
+}
+
+Ref: payment_items.type > payment_item_types.code [delete: cascade]
+Ref: payment_items.payment > payments.id [delete: cascade]
 
 Table medias as M {
   id serial [pk]
@@ -595,7 +643,7 @@ Ref: consignment.user_updated > A.id [delete: set null]
 
 Table consignment_log {
   id serial [pk]
-  consignment serial [not null, unique]
+  consignment serial [not null]
   inventory int [not null, default: 0]
   amount_change int [not null, default: 0]
   user_created serial

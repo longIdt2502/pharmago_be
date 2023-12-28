@@ -137,6 +137,8 @@ type Customer struct {
 	Company     int32          `json:"company"`
 	Address     sql.NullInt32  `json:"address"`
 	Email       sql.NullString `json:"email"`
+	Phone       sql.NullString `json:"phone"`
+	License     sql.NullString `json:"license"`
 	Birthday    sql.NullTime   `json:"birthday"`
 	UserCreated int32          `json:"user_created"`
 	UserUpdated sql.NullInt32  `json:"user_updated"`
@@ -169,24 +171,36 @@ type Media struct {
 }
 
 type Order struct {
-	ID          int32          `json:"id"`
-	Vat         float64        `json:"vat"`
-	TotalPrice  float64        `json:"total_price"`
-	Description sql.NullString `json:"description"`
-	Customer    sql.NullInt32  `json:"customer"`
-	Status      sql.NullInt32  `json:"status"`
-	Type        sql.NullInt32  `json:"type"`
-	Ticket      sql.NullInt32  `json:"ticket"`
-	Qr          sql.NullInt32  `json:"qr"`
+	ID           int32          `json:"id"`
+	Code         string         `json:"code"`
+	TotalPrice   float64        `json:"total_price"`
+	Description  sql.NullString `json:"description"`
+	Vat          float64        `json:"vat"`
+	Discount     string         `json:"discount"`
+	ServicePrice float64        `json:"service_price"`
+	MustPaid     float64        `json:"must_paid"`
+	Customer     sql.NullInt32  `json:"customer"`
+	Address      sql.NullInt32  `json:"address"`
+	Status       sql.NullString `json:"status"`
+	Type         sql.NullString `json:"type"`
+	Ticket       sql.NullInt32  `json:"ticket"`
+	Qr           sql.NullInt32  `json:"qr"`
+	Company      int32          `json:"company"`
+	Payment      int32          `json:"payment"`
+	UserCreated  sql.NullInt32  `json:"user_created"`
+	UserUpdated  sql.NullInt32  `json:"user_updated"`
+	CreatedAt    time.Time      `json:"created_at"`
+	UpdatedAt    sql.NullTime   `json:"updated_at"`
 }
 
 type OrderItem struct {
-	ID             int32        `json:"id"`
-	Order          int32        `json:"order"`
-	Variant        int32        `json:"variant"`
-	Value          int32        `json:"value"`
-	ExpiredAt      sql.NullTime `json:"expired_at"`
-	ManufacturedAt sql.NullTime `json:"manufactured_at"`
+	ID             int32         `json:"id"`
+	Order          int32         `json:"order"`
+	Variant        int32         `json:"variant"`
+	Value          int32         `json:"value"`
+	TotalPrice     float64       `json:"total_price"`
+	Consignment    sql.NullInt32 `json:"consignment"`
+	ConsignmentLog sql.NullInt32 `json:"consignment_log"`
 }
 
 type OrderStatus struct {
@@ -196,6 +210,29 @@ type OrderStatus struct {
 }
 
 type OrderType struct {
+	ID    int32  `json:"id"`
+	Code  string `json:"code"`
+	Title string `json:"title"`
+}
+
+type Payment struct {
+	ID       int32   `json:"id"`
+	Code     string  `json:"code"`
+	MustPaid float64 `json:"must_paid"`
+	HadPaid  float64 `json:"had_paid"`
+	NeedPay  float64 `json:"need_pay"`
+}
+
+type PaymentItem struct {
+	ID        int32          `json:"id"`
+	Type      string         `json:"type"`
+	Value     float64        `json:"value"`
+	IsPaid    bool           `json:"is_paid"`
+	Payment   int32          `json:"payment"`
+	ExtraNote sql.NullString `json:"extra_note"`
+}
+
+type PaymentItemType struct {
 	ID    int32  `json:"id"`
 	Code  string `json:"code"`
 	Title string `json:"title"`
