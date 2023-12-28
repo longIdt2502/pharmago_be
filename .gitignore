@@ -2,7 +2,6 @@
 bin/
 /.idea
 .idea
-pro.env
 .vscode
 
 # Ignore all .xlsx files
