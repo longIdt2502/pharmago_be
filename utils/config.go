@@ -2,6 +2,7 @@ package utils
 
 import (
 	"github.com/spf13/viper"
+	"os"
 	"time"
 )
 
@@ -33,6 +34,26 @@ func LoadConfig(path string) (config Config, err error) {
 
 	err = viper.ReadInConfig()
 	if err != nil {
+		timeToken, _ := time.ParseDuration("24h15m")
+		config.DBDriver = os.Getenv("DB_DRIVER")
+		config.DBSource = os.Getenv("DB_SOURCE")
+		config.HTTPServerAddress = os.Getenv("HTTP_SERVER_ADDRESS")
+		config.GRPCServerAddress = os.Getenv("GRPC_SERVER_ADDRESS")
+		config.RedisAddress = os.Getenv("REDIS_ADDRESS")
+		config.TokenSymmetricKey = os.Getenv("TOKEN_SYMMETRIC_KEY")
+		config.AccessTokenDuration = timeToken
+		config.EmailSenderName = os.Getenv("EMAIL_SENDER_NAME")
+		config.EmailSenderAddress = os.Getenv("EMAIL_SENDER_ADDRESS")
+		config.EmailSenderPassword = os.Getenv("EMAIL_SENDER_PASSWORD")
+		config.B2KeyId = os.Getenv("B2_KEY_ID")
+		config.B2KeyName = os.Getenv("B2_KEY_NAME")
+		config.B2ApplicationKey = os.Getenv("B2_APPLICATION_KEY")
+		config.B2Bucket = os.Getenv("B2_BUCKET")
+		config.B2AccountId = os.Getenv("B2_ACCOUNT_ID")
+		config.MigrationURL = os.Getenv("MIGRATION_URL")
+
+		err = nil
+
 		return
 	}
 
