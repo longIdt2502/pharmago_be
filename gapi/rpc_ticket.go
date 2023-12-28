@@ -108,7 +108,7 @@ func (server *ServerGRPC) TicketCreate(ctx context.Context, req *pb.TicketCreate
 		_, err = server.store.CreateConsignment(ctx, db.CreateConsignmentParams{
 			Code:      code,
 			Quantity:  value.GetQuantity(),
-			Inventory: value.GetInventory(),
+			Inventory: value.GetQuantity(),
 			Ticket: sql.NullInt32{
 				Int32: ticket.ID,
 				Valid: true,

@@ -100,9 +100,16 @@ ALTER TABLE "orders" DROP CONSTRAINT IF EXISTS "orders_status_fkey";
 ALTER TABLE "orders" DROP CONSTRAINT IF EXISTS "orders_type_fkey";
 ALTER TABLE "orders" DROP CONSTRAINT IF EXISTS "orders_ticket_fkey";
 ALTER TABLE "orders" DROP CONSTRAINT IF EXISTS "orders_qr_fkey";
+ALTER TABLE "orders" DROP CONSTRAINT IF EXISTS "orders_company_fkey";
+ALTER TABLE "orders" DROP CONSTRAINT IF EXISTS "orders_user_created_fkey";
+ALTER TABLE "orders" DROP CONSTRAINT IF EXISTS "orders_user_updated_fkey";
+ALTER TABLE "orders" DROP CONSTRAINT IF EXISTS "orders_payment_fkey";
+ALTER TABLE "orders" DROP CONSTRAINT IF EXISTS "orders_address_fkey";
 
 ALTER TABLE "order_items" DROP CONSTRAINT IF EXISTS "order_items_order_fkey";
 ALTER TABLE "order_items" DROP CONSTRAINT IF EXISTS "order_items_variant_fkey";
+ALTER TABLE "order_items" DROP CONSTRAINT IF EXISTS "order_items_consignment_fkey";
+ALTER TABLE "order_items" DROP CONSTRAINT IF EXISTS "order_items_consignment_log_fkey";
 
 ALTER TABLE "customers" DROP CONSTRAINT IF EXISTS "customers_company_fkey";
 ALTER TABLE "customers" DROP CONSTRAINT IF EXISTS "customers_address_fkey";

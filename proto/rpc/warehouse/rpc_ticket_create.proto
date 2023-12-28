@@ -3,6 +3,7 @@ syntax = "proto3";
 package pb;
 
 import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
 
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
@@ -20,14 +21,19 @@ message TicketCreateRequestInfo {
 message TicketCreateRequestConsignment {
   optional string code = 1;
   int32 quantity = 2;
-  int32 inventory = 3;
-  int32 variant = 4;
-  google.protobuf.Timestamp expired_at = 5;
-  google.protobuf.Timestamp produced_at = 6;
+  int32 variant = 3;
+  google.protobuf.Timestamp expired_at = 4;
+  google.protobuf.Timestamp produced_at = 5;
 }
 
 message TicketCreateRequest {
-  TicketCreateRequestInfo ticket = 1;
+  TicketCreateRequestInfo ticket = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    pattern: "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$",
+    title: "x-correlation-id",
+    description: "Unique event identifier for server requests",
+    format: "uuid",
+    example: "{\"ticket\":{\"type\":\"IMPORT\",\"status\":\"NEW\",\"note\":\"Hoang Long Test\",\"totalPrice\":100000,\"exportTo\":5,\"importFrom\":1,\"warehouse\":4},\"consignment\":[{\"code\":\"không truyền thì random trong BE\",\"quantity\":10,\"variant\":1,\"expiredAt\":\"2023-12-25T10:07:50.332Z\",\"producedAt\":\"2023-12-25T10:07:50.332Z\"}]}"
+  }];
   repeated TicketCreateRequestConsignment consignment = 2;
 }
 

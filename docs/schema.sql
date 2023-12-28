@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml-lang.org)
 -- Database: PostgreSQL
--- Generated at: 2023-12-25T11:14:12.683Z
+-- Generated at: 2023-12-26T03:30:06.862Z
 
 CREATE TABLE "accounts" (
   "id" serial PRIMARY KEY,
@@ -330,25 +330,36 @@ CREATE TABLE "variant_media" (
 
 CREATE TABLE "orders" (
   "id" serial PRIMARY KEY,
-  "vat" float NOT NULL DEFAULT 0,
+  "code" varchar(255) UNIQUE NOT NULL,
   "total_price" float NOT NULL DEFAULT 0,
-  "description" varchar,
+  "description" varchar(255),
+  "vat" float NOT NULL DEFAULT 0,
+  "discount" varchar(255) NOT NULL DEFAULT '0',
+  "service_price" float NOT NULL DEFAULT 0,
+  "must_paid" float NOT NULL DEFAULT 0,
   "customer" serial,
-  "status" serial,
-  "type" serial,
+  "address" serial,
+  "status" varchar,
+  "type" varchar,
   "ticket" serial,
-  "qr" serial
+  "qr" serial,
+  "company" serial NOT NULL,
+  "payment" serial NOT NULL,
+  "user_created" serial,
+  "user_updated" serial,
+  "created_at" timestamptz NOT NULL DEFAULT (now()),
+  "updated_at" timestamptz
 );
 
 CREATE TABLE "order_type" (
   "id" serial PRIMARY KEY,
-  "code" varchar NOT NULL,
+  "code" varchar UNIQUE NOT NULL,
   "title" varchar NOT NULL
 );
 
 CREATE TABLE "order_status" (
   "id" serial PRIMARY KEY,
-  "code" varchar NOT NULL,
+  "code" varchar UNIQUE NOT NULL,
   "title" varchar NOT NULL
 );
 
@@ -357,8 +368,9 @@ CREATE TABLE "order_items" (
   "order" serial NOT NULL,
   "variant" serial NOT NULL,
   "value" int NOT NULL DEFAULT 0,
-  "expired_at" timestamptz,
-  "manufactured_at" timestamptz
+  "total_price" float NOT NULL DEFAULT 0,
+  "consignment" serial,
+  "consignment_log" serial
 );
 
 CREATE TABLE "customers" (
@@ -368,11 +380,36 @@ CREATE TABLE "customers" (
   "company" serial NOT NULL,
   "address" serial,
   "email" varchar,
+  "phone" varchar(20),
+  "license" varchar(20),
   "birthday" timestamptz,
   "user_created" serial NOT NULL,
   "user_updated" serial,
   "updated_at" timestamptz,
   "created_at" timestamptz NOT NULL DEFAULT (now())
+);
+
+CREATE TABLE "payment_item_types" (
+  "id" serial PRIMARY KEY,
+  "code" varchar(255) UNIQUE NOT NULL,
+  "title" varchar(255) NOT NULL
+);
+
+CREATE TABLE "payments" (
+  "id" serial PRIMARY KEY,
+  "code" varchar UNIQUE NOT NULL,
+  "must_paid" float NOT NULL DEFAULT 0,
+  "had_paid" float NOT NULL DEFAULT 0,
+  "need_pay" float NOT NULL DEFAULT 0
+);
+
+CREATE TABLE "payment_items" (
+  "id" serial PRIMARY KEY,
+  "type" varchar NOT NULL,
+  "value" float NOT NULL DEFAULT 0,
+  "is_paid" bool NOT NULL DEFAULT false,
+  "payment" serial NOT NULL,
+  "extra_note" varchar
 );
 
 CREATE TABLE "medias" (
@@ -630,17 +667,31 @@ ALTER TABLE "variant_media" ADD FOREIGN KEY ("media") REFERENCES "medias" ("id")
 
 ALTER TABLE "orders" ADD FOREIGN KEY ("customer") REFERENCES "customers" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "orders" ADD FOREIGN KEY ("status") REFERENCES "order_status" ("id") ON DELETE SET NULL;
+ALTER TABLE "orders" ADD FOREIGN KEY ("status") REFERENCES "order_status" ("code") ON DELETE SET NULL;
 
-ALTER TABLE "orders" ADD FOREIGN KEY ("type") REFERENCES "order_type" ("id") ON DELETE SET NULL;
+ALTER TABLE "orders" ADD FOREIGN KEY ("type") REFERENCES "order_type" ("code") ON DELETE SET NULL;
 
 ALTER TABLE "orders" ADD FOREIGN KEY ("ticket") REFERENCES "tickets" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "orders" ADD FOREIGN KEY ("qr") REFERENCES "medias" ("id") ON DELETE SET NULL;
 
+ALTER TABLE "orders" ADD FOREIGN KEY ("company") REFERENCES "companies" ("id") ON DELETE CASCADE;
+
+ALTER TABLE "orders" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "orders" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "orders" ADD FOREIGN KEY ("payment") REFERENCES "payments" ("id") ON DELETE CASCADE;
+
+ALTER TABLE "orders" ADD FOREIGN KEY ("address") REFERENCES "address" ("id") ON DELETE SET NULL;
+
 ALTER TABLE "order_items" ADD FOREIGN KEY ("order") REFERENCES "orders" ("id") ON DELETE CASCADE;
 
 ALTER TABLE "order_items" ADD FOREIGN KEY ("variant") REFERENCES "variants" ("id") ON DELETE CASCADE;
+
+ALTER TABLE "order_items" ADD FOREIGN KEY ("consignment") REFERENCES "consignment" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "order_items" ADD FOREIGN KEY ("consignment_log") REFERENCES "consignment_log" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "customers" ADD FOREIGN KEY ("company") REFERENCES "companies" ("id") ON DELETE CASCADE;
 
@@ -649,6 +700,10 @@ ALTER TABLE "customers" ADD FOREIGN KEY ("address") REFERENCES "address" ("id") 
 ALTER TABLE "customers" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id") ON DELETE CASCADE;
 
 ALTER TABLE "customers" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "payment_items" ADD FOREIGN KEY ("type") REFERENCES "payment_item_types" ("code") ON DELETE CASCADE;
+
+ALTER TABLE "payment_items" ADD FOREIGN KEY ("payment") REFERENCES "payments" ("id") ON DELETE CASCADE;
 
 ALTER TABLE "warehouses" ADD FOREIGN KEY ("address") REFERENCES "address" ("id") ON DELETE SET NULL;
 

@@ -4,6 +4,7 @@ package pb;
 
 import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
+
 import "rpc/rpc_login.proto";
 import "rpc/rpc_create_account.proto";
 import "rpc/rpc_verify_account.proto";
@@ -24,12 +25,19 @@ import "rpc/product/rpc_classify_list.proto";
 import "rpc/product/rpc_production_standard_list.proto";
 import "rpc/product/rpc_preparation_type_list.proto";
 import "rpc/product/rpc_company_pharma_list.proto";
+import "rpc/product/rpc_variant_list.proto";
 
 import "rpc/warehouse/rpc_ticket_create.proto";
 import "rpc/warehouse/rpc_consignment_list.proto";
 import "rpc/warehouse/rpc_warehouse_create.proto";
 import "rpc/warehouse/rpc_warehouse_list.proto";
 import "rpc/warehouse/rpc_ticket_update_status.proto";
+
+import "rpc/order/rpc_order_create.proto";
+import "rpc/order/rpc_order_list.proto";
+import "rpc/order/rpc_order_detail.proto";
+
+import "rpc/customer/rpc_customer_list.proto";
 
 import "rpc/rpc_import_company.proto";
 import "rpc/rpc_import_product.proto";
@@ -155,6 +163,7 @@ service Pharmago {
     };
   };
 
+  // ==================== PRODUCT ========================
   rpc CreateProduct (CreateProductRequest) returns (CreateProductResponse) {
     option (google.api.http) = {
       post: "/product/v1/create"
@@ -176,6 +185,19 @@ service Pharmago {
     };
   };
 
+  // -------- VARIANT --------
+  rpc ListVariant (ListVariantRequest) returns (ListVariantResponse) {
+    option (google.api.http) = {
+      get: "/product/v1/variant/list"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get List Variant";
+      tags: "Product";
+    };
+  };
+
+
+  // -------- PRICE_LIST --------
   rpc GetPriceList (PriceListRequest) returns (PriceListResponse) {
     option (google.api.http) = {
       get: "/price_list/v1/list"
@@ -334,6 +356,46 @@ service Pharmago {
     };
   };
 
+  // ================== ORDER ===================
+  rpc OrderCreate (OrderCreateRequest) returns (OrderCreateResponse) {
+    option (google.api.http) = {
+      post: "/order/v1/create"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create Order";
+      tags: "Order";
+    };
+  };
+  rpc OrderList (OrderListRequest) returns (OrderListResponse) {
+    option (google.api.http) = {
+      get: "/order/v1/list"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List Order";
+      tags: "Order";
+    };
+  };
+  rpc OrderDetail (OrderDetailRequest) returns (OrderDetailResponse) {
+    option (google.api.http) = {
+      get: "/order/v1/detail/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Detail Order";
+      tags: "Order";
+    };
+  };
+
+  // ================== ORDER ===================
+  rpc CustomerList (CustomerListRequest) returns (CustomerListResponse) {
+    option (google.api.http) = {
+      get: "/customer/v1/list"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List customer";
+      tags: "Customer";
+    };
+  };
 
   // ================== IMPORT ===================
   rpc ImportCompany (ImportCompanyRequest) returns (ImportCompanyResponse) {

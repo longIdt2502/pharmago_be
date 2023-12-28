@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message PaymentItemCreate {
+  string type = 1;
+  float value = 2;
+  bool is_paid = 3;
+  optional string extra_note = 4;
+}
+
+message PaymentCreate {
+  float must_paid = 1;
+  float had_paid = 2;
+  float need_pay = 3;
+}
+
+message OrderItemCreate {
+  int32 variant = 1;
+  int32 value = 2;
+  optional int32 consignment = 3;
+}
+
+message OrderCreate {
+  optional string code = 1;
+  float total_price = 2;
+  optional string description = 3;
+  float vat = 4;
+  string discount = 5;
+  float service_price = 6;
+  float must_paid = 7;
+  optional int32 customer = 8;
+  string status = 9;
+  string type = 10;
+  int32 company = 11;
+}
+
+message OrderCreateRequest {
+  OrderCreate order = 1;
+  repeated OrderItemCreate order_items = 2;
+  PaymentCreate payment = 3;
+  repeated PaymentItemCreate payment_items = 4;
+  int32 warehouse = 5;
+}
+
+message OrderCreateResponse {
+  int32 code = 1;
+  string message = 2;
+  int32 details = 3;
+}

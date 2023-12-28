@@ -500,6 +500,59 @@
         ]
       }
     },
+    "/customer/v1/list": {
+      "get": {
+        "summary": "List customer",
+        "operationId": "Pharmago_CustomerList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCustomerListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "company",
+            "description": "int32 value field",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Customer"
+        ]
+      }
+    },
     "/import/v1/company": {
       "get": {
         "summary": "Import Data company pharma",
@@ -566,6 +619,130 @@
         },
         "tags": [
           "Import Master Data"
+        ]
+      }
+    },
+    "/order/v1/create": {
+      "post": {
+        "summary": "Create Order",
+        "operationId": "Pharmago_OrderCreate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbOrderCreateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbOrderCreateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Order"
+        ]
+      }
+    },
+    "/order/v1/detail/{id}": {
+      "get": {
+        "summary": "Detail Order",
+        "operationId": "Pharmago_OrderDetail",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbOrderDetailResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Order"
+        ]
+      }
+    },
+    "/order/v1/list": {
+      "get": {
+        "summary": "List Order",
+        "operationId": "Pharmago_OrderList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbOrderListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "company",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "warehouse",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Order"
         ]
       }
     },
@@ -837,6 +1014,59 @@
             "required": false,
             "type": "integer",
             "format": "int32"
+          }
+        ],
+        "tags": [
+          "Product"
+        ]
+      }
+    },
+    "/product/v1/variant/list": {
+      "get": {
+        "summary": "Get List Variant",
+        "operationId": "Pharmago_ListVariant",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbListVariantResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "company",
+            "description": "int32 value field",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -1817,6 +2047,54 @@
         }
       }
     },
+    "pbCustomer": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "code": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "company": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "address": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        }
+      }
+    },
+    "pbCustomerListResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbCustomer"
+          }
+        }
+      }
+    },
     "pbDetailPriceListResponse": {
       "type": "object",
       "properties": {
@@ -1978,6 +2256,25 @@
         }
       }
     },
+    "pbListVariantResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbVariant"
+          }
+        }
+      }
+    },
     "pbLoginRequest": {
       "type": "object",
       "properties": {
@@ -2026,6 +2323,256 @@
         "refreshTokenExpiresAt": {
           "type": "string",
           "format": "date-time"
+        }
+      }
+    },
+    "pbOrder": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "code": {
+          "type": "string"
+        },
+        "totalPrice": {
+          "type": "number",
+          "format": "float"
+        },
+        "description": {
+          "type": "string"
+        },
+        "decisionNumber": {
+          "type": "string"
+        },
+        "registerNumber": {
+          "type": "string"
+        },
+        "longevity": {
+          "type": "string"
+        },
+        "vat": {
+          "type": "number",
+          "format": "float"
+        },
+        "product": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "media": {
+          "type": "string"
+        },
+        "quantityInStock": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbOrderCreate": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "totalPrice": {
+          "type": "number",
+          "format": "float"
+        },
+        "description": {
+          "type": "string"
+        },
+        "vat": {
+          "type": "number",
+          "format": "float"
+        },
+        "discount": {
+          "type": "string"
+        },
+        "servicePrice": {
+          "type": "number",
+          "format": "float"
+        },
+        "mustPaid": {
+          "type": "number",
+          "format": "float"
+        },
+        "customer": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "status": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "company": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbOrderCreateRequest": {
+      "type": "object",
+      "properties": {
+        "order": {
+          "$ref": "#/definitions/pbOrderCreate"
+        },
+        "orderItems": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbOrderItemCreate"
+          }
+        },
+        "payment": {
+          "$ref": "#/definitions/pbPaymentCreate"
+        },
+        "paymentItems": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbPaymentItemCreate"
+          }
+        },
+        "warehouse": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbOrderCreateResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbOrderDetailResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "$ref": "#/definitions/pbOrder"
+        }
+      }
+    },
+    "pbOrderItemCreate": {
+      "type": "object",
+      "properties": {
+        "variant": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "value": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "consignment": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbOrderListResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbOrderPreview"
+          }
+        }
+      }
+    },
+    "pbOrderPreview": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "code": {
+          "type": "string"
+        },
+        "totalPrice": {
+          "type": "number",
+          "format": "float"
+        },
+        "status": {
+          "$ref": "#/definitions/pbSimpleData"
+        },
+        "description": {
+          "type": "string"
+        },
+        "customerName": {
+          "type": "string"
+        },
+        "userCreated": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "pbPaymentCreate": {
+      "type": "object",
+      "properties": {
+        "mustPaid": {
+          "type": "number",
+          "format": "float"
+        },
+        "hadPaid": {
+          "type": "number",
+          "format": "float"
+        },
+        "needPay": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "pbPaymentItemCreate": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "value": {
+          "type": "number",
+          "format": "float"
+        },
+        "isPaid": {
+          "type": "boolean"
+        },
+        "extraNote": {
+          "type": "string"
         }
       }
     },
@@ -2330,7 +2877,31 @@
       "type": "object",
       "properties": {
         "ticket": {
-          "$ref": "#/definitions/pbTicketCreateRequestInfo"
+          "format": "uuid",
+          "$ref": "#/definitions/pbTicketCreateRequestInfo",
+          "example": {
+            "ticket": {
+              "type": "IMPORT",
+              "status": "NEW",
+              "note": "Hoang Long Test",
+              "totalPrice": 100000,
+              "exportTo": 5,
+              "importFrom": 1,
+              "warehouse": 4
+            },
+            "consignment": [
+              {
+                "code": "không truyền thì random trong BE",
+                "quantity": 10,
+                "variant": 1,
+                "expiredAt": "2023-12-25T10:07:50.332Z",
+                "producedAt": "2023-12-25T10:07:50.332Z"
+              }
+            ]
+          },
+          "description": "Unique event identifier for server requests",
+          "title": "x-correlation-id",
+          "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
         },
         "consignment": {
           "type": "array",
@@ -2348,10 +2919,6 @@
           "type": "string"
         },
         "quantity": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "inventory": {
           "type": "integer",
           "format": "int32"
         },
@@ -2449,6 +3016,40 @@
         }
       }
     },
+    "pbUnit": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "name": {
+          "type": "string"
+        },
+        "value": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sellPrice": {
+          "type": "number",
+          "format": "float"
+        },
+        "importPrice": {
+          "type": "number",
+          "format": "float"
+        },
+        "weight": {
+          "type": "number",
+          "format": "float"
+        },
+        "weightUnit": {
+          "type": "string"
+        },
+        "default": {
+          "type": "boolean"
+        }
+      }
+    },
     "pbUpdatePriceListRequest": {
       "type": "object",
       "properties": {
@@ -2516,6 +3117,25 @@
         },
         "media": {
           "type": "string"
+        },
+        "quantityInStock": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "units": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbUnit"
+          }
+        },
+        "priceSell": {
+          "type": "number",
+          "format": "float"
+        },
+        "priceImport": {
+          "type": "number",
+          "format": "float"
         }
       }
     },

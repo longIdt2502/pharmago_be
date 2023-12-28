@@ -10,7 +10,7 @@ import (
 func ConsignmentMapper(ctx context.Context, store *db.Store, data db.Consignment) *pb.Consignment {
 
 	variant, _ := store.GetVariantById(ctx, data.Variant.Int32)
-	variantPb := VariantMapper(ctx, store, variant)
+	variantPb := VariantPreviewMapper(ctx, store, variant)
 
 	return &pb.Consignment{
 		Id:          data.ID,

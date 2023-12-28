@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pharmago-api-deployment
+  labels:
+    app: pharmago-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pharmago-api
+  template:
+    metadata:
+      labels:
+        app: pharmago-api
+    spec:
+      containers:
+        - name: pharmago-api
+          image: pharmago:latest
+          ports:
+            - containerPort: 8080

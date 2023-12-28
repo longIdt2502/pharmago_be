@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message Customer {
+  int32 id = 1;
+  string code = 2;
+  string full_name = 3;
+  int32 company = 4;
+  int32 address = 5;
+  string phone = 6;
+  optional string email = 7;
+}

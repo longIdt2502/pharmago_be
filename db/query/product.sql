@@ -31,9 +31,10 @@ INSERT INTO units (
 
 -- name: CreateUnitChange :one
 INSERT INTO unit_changes (
-    name, value, sell_price, unit
+    name, value, sell_price, unit, user_created, user_updated
 ) values (
-    sqlc.arg(name)::varchar, sqlc.arg(value)::int, sqlc.arg(sell_price)::float, sqlc.narg(unit)::int
+    sqlc.arg(name)::varchar, sqlc.arg(value)::int, sqlc.arg(sell_price)::float, sqlc.narg(unit)::int,
+    sqlc.arg(user_created)::int, sqlc.arg(user_updated)::int
 ) RETURNING *;
 
 -- name: CreateIngredient :one

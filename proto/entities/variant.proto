@@ -18,4 +18,19 @@ message Variant {
   float vat = 8;
   int32 product = 9;
   string media = 10;
+  optional int32 quantity_in_stock = 11;
+  repeated Unit units = 12;
+  float price_sell = 13;
+  float price_import = 14;
+}
+
+message Unit {
+  int32 id = 1;
+  string name = 2;
+  int32 value = 3;
+  float sell_price = 4;
+  float import_price = 5;
+  float weight = 6;
+  string weight_unit = 7;
+  bool default = 8;
 }

@@ -433,7 +433,7 @@ CREATE TABLE "consignment" (
 
 CREATE TABLE "consignment_log" (
                                    "id" serial PRIMARY KEY,
-                                   "consignment" serial UNIQUE NOT NULL,
+                                   "consignment" serial NOT NULL,
                                    "inventory" int NOT NULL DEFAULT 0,
                                    "amount_change" int NOT NULL DEFAULT 0,
                                    "user_created" serial,

@@ -13,18 +13,20 @@ import (
 
 const createProductPriceList = `-- name: CreateProductPriceList :one
 INSERT INTO price_list (
-    variant_code, variant_name, unit, price_import, price_sell
+    variant_code, variant_name, unit, price_import, price_sell, user_created, user_updated
 ) VALUES (
-    $1, $2, $3, $4, $5
+    $1, $2, $3, $4, $5, $6, $7
 ) RETURNING id, variant_code, variant_name, price_import, price_sell, unit, user_created, user_updated, updated_at, created_at
 `
 
 type CreateProductPriceListParams struct {
-	VariantCode string  `json:"variant_code"`
-	VariantName string  `json:"variant_name"`
-	Unit        int32   `json:"unit"`
-	PriceImport float64 `json:"price_import"`
-	PriceSell   float64 `json:"price_sell"`
+	VariantCode string        `json:"variant_code"`
+	VariantName string        `json:"variant_name"`
+	Unit        int32         `json:"unit"`
+	PriceImport float64       `json:"price_import"`
+	PriceSell   float64       `json:"price_sell"`
+	UserCreated int32         `json:"user_created"`
+	UserUpdated sql.NullInt32 `json:"user_updated"`
 }
 
 func (q *Queries) CreateProductPriceList(ctx context.Context, arg CreateProductPriceListParams) (PriceList, error) {
@@ -34,6 +36,8 @@ func (q *Queries) CreateProductPriceList(ctx context.Context, arg CreateProductP
 		arg.Unit,
 		arg.PriceImport,
 		arg.PriceSell,
+		arg.UserCreated,
+		arg.UserUpdated,
 	)
 	var i PriceList
 	err := row.Scan(

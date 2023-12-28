@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package pb;
+
+import "entities/order.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message OrderListRequest {
+  int32 company = 1;
+  optional int32 warehouse = 2;
+  optional string search = 3;
+  optional int32 page = 4;
+  optional int32 limit = 5;
+}
+
+message OrderListResponse {
+  int32 code = 1;
+  string message = 2;
+  repeated OrderPreview details = 3;
+}
