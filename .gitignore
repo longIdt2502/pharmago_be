@@ -5,7 +5,7 @@ bin/
 .vscode
 
 # Ignore all .xlsx files
-*.xlsx
+#*.xlsx
 
 # Ignore all .xlsx files in subdirectories
 **/*.xlsx
