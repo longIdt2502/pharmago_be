@@ -8,4 +8,4 @@ bin/
 #*.xlsx
 
 # Ignore all .xlsx files in subdirectories
-**/*.xlsx
+#**/*.xlsx
