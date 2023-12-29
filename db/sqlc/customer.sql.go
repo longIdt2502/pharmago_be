@@ -10,6 +10,59 @@ import (
 	"database/sql"
 )
 
+const createCustomer = `-- name: CreateCustomer :one
+INSERT INTO customers (
+    full_name, code, company, address, email, phone ,license, birthday, user_updated, user_created
+) VALUES (
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
+) RETURNING id, full_name, code, company, address, email, phone, license, birthday, user_created, user_updated, updated_at, created_at
+`
+
+type CreateCustomerParams struct {
+	FullName    string         `json:"full_name"`
+	Code        string         `json:"code"`
+	Company     int32          `json:"company"`
+	Address     sql.NullInt32  `json:"address"`
+	Email       sql.NullString `json:"email"`
+	Phone       sql.NullString `json:"phone"`
+	License     sql.NullString `json:"license"`
+	Birthday    sql.NullTime   `json:"birthday"`
+	UserUpdated sql.NullInt32  `json:"user_updated"`
+	UserCreated int32          `json:"user_created"`
+}
+
+func (q *Queries) CreateCustomer(ctx context.Context, arg CreateCustomerParams) (Customer, error) {
+	row := q.db.QueryRowContext(ctx, createCustomer,
+		arg.FullName,
+		arg.Code,
+		arg.Company,
+		arg.Address,
+		arg.Email,
+		arg.Phone,
+		arg.License,
+		arg.Birthday,
+		arg.UserUpdated,
+		arg.UserCreated,
+	)
+	var i Customer
+	err := row.Scan(
+		&i.ID,
+		&i.FullName,
+		&i.Code,
+		&i.Company,
+		&i.Address,
+		&i.Email,
+		&i.Phone,
+		&i.License,
+		&i.Birthday,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.UpdatedAt,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const getCustomer = `-- name: GetCustomer :one
 SELECT id, full_name, code, company, address, email, phone, license, birthday, user_created, user_updated, updated_at, created_at FROM customers
 WHERE id = $1

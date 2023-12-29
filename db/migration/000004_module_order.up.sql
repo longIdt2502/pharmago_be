@@ -65,6 +65,8 @@ CREATE TABLE "orders" (
     "updated_at" timestamptz
 );
 
+ALTER TABLE "orders" ALTER COLUMN "address" DROP NOT NULL;
+
 CREATE TABLE "order_items" (
     "id" serial PRIMARY KEY,
     "order" serial NOT NULL,

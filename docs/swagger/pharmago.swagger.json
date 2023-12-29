@@ -2551,6 +2551,9 @@
         "company": {
           "type": "integer",
           "format": "int32"
+        },
+        "customerPhone": {
+          "type": "string"
         }
       }
     },
