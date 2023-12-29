@@ -681,13 +681,20 @@ func (q *Queries) ListWarehouse(ctx context.Context, arg ListWarehouseParams) ([
 
 const suggestConsignmentForVariant = `-- name: SuggestConsignmentForVariant :one
 SELECT id, code, quantity, inventory, ticket, expired_at, producted_at, is_available, user_created, user_updated, updated_at, created_at, variant FROM consignment c
-WHERE c.variant = $1 AND inventory = (SELECT MIN(inventory) FROM consignment) AND is_available = true
+WHERE c.variant = $1
+AND is_available = true
+AND inventory > $2
 ORDER BY ABS(EXTRACT(EPOCH FROM (expired_at - NOW()))) ASC
 LIMIT 1
 `
 
-func (q *Queries) SuggestConsignmentForVariant(ctx context.Context, variant sql.NullInt32) (Consignment, error) {
-	row := q.db.QueryRowContext(ctx, suggestConsignmentForVariant, variant)
+type SuggestConsignmentForVariantParams struct {
+	Variant   sql.NullInt32 `json:"variant"`
+	Inventory int32         `json:"inventory"`
+}
+
+func (q *Queries) SuggestConsignmentForVariant(ctx context.Context, arg SuggestConsignmentForVariantParams) (Consignment, error) {
+	row := q.db.QueryRowContext(ctx, suggestConsignmentForVariant, arg.Variant, arg.Inventory)
 	var i Consignment
 	err := row.Scan(
 		&i.ID,
