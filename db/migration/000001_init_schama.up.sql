@@ -375,6 +375,8 @@ CREATE TABLE "customers" (
                              "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
+ALTER TABLE "customers" ALTER COLUMN "address" DROP NOT NULL;
+
 CREATE TABLE "medias" (
                           "id" serial PRIMARY KEY,
                           "media_url" varchar NOT NULL
@@ -402,6 +404,8 @@ CREATE TABLE "tickets" (
                            "updated_at" timestamptz,
                            "created_at" timestamptz NOT NULL DEFAULT (now())
 );
+
+ALTER TABLE "tickets" ALTER COLUMN "export_to" DROP NOT NULL;
 
 CREATE TABLE "ticket_type" (
                                "id" serial PRIMARY KEY,

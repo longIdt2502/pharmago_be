@@ -120,7 +120,7 @@ func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRe
 		},
 		ExportTo: sql.NullInt32{
 			Int32: addressOrder,
-			Valid: true,
+			Valid: req.Order.Customer != nil,
 		},
 		ImportFrom: sql.NullInt32{
 			Int32: warehouse.Address.Int32,
@@ -159,6 +159,35 @@ func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRe
 
 	qrOrder, err := server.store.CreateMedia(ctx, urlQrOrder)
 
+	var customerId int32
+	if req.Order.Customer == nil {
+		code := fmt.Sprintf("CUSTOMER-%s", utils.RandomString(6))
+		customer, err := server.store.CreateCustomer(ctx, db.CreateCustomerParams{
+			FullName: "Khách lẻ",
+			Code:     code,
+			Company:  req.Order.Company,
+			Address:  sql.NullInt32{},
+			Email:    sql.NullString{},
+			Phone: sql.NullString{
+				String: req.Order.GetCustomerPhone(),
+				Valid:  req.Order.CustomerPhone != nil,
+			},
+			License:  sql.NullString{},
+			Birthday: sql.NullTime{},
+			UserUpdated: sql.NullInt32{
+				Int32: tokenPayload.UserID,
+				Valid: true,
+			},
+			UserCreated: tokenPayload.UserID,
+		})
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to create customer retail: ", err.Error())
+		}
+		customerId = customer.ID
+	} else {
+		customerId = req.Order.GetCustomer()
+	}
+
 	order, err := server.store.CreateOrder(ctx, db.CreateOrderParams{
 		Code:       orderCode,
 		TotalPrice: float64(req.Order.GetTotalPrice()),
@@ -171,12 +200,12 @@ func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRe
 		ServicePrice: float64(req.Order.GetServicePrice()),
 		MustPaid:     float64(req.Order.GetMustPaid()),
 		Customer: sql.NullInt32{
-			Int32: req.Order.GetCustomer(),
-			Valid: req.Order.Customer != nil,
+			Int32: customerId,
+			Valid: true,
 		},
 		Address: sql.NullInt32{
 			Int32: addressOrder,
-			Valid: true,
+			Valid: req.Order.Customer != nil,
 		},
 		Status: sql.NullString{
 			String: req.Order.GetStatus(),
