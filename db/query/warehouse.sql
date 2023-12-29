@@ -105,7 +105,9 @@ RETURNING *;
 
 -- name: SuggestConsignmentForVariant :one
 SELECT * FROM consignment c
-WHERE c.variant = $1 AND inventory = (SELECT MIN(inventory) FROM consignment) AND is_available = true
+WHERE c.variant = $1
+AND is_available = true
+AND inventory > $2
 ORDER BY ABS(EXTRACT(EPOCH FROM (expired_at - NOW()))) ASC
 LIMIT 1;
 
