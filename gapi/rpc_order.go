@@ -242,12 +242,9 @@ func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRe
 		var consignmentLog db.ConsignmentLog
 		var consignment db.Consignment
 		if value.Consignment != nil {
-			consignment, err = server.store.GetConsignment(ctx, db.GetConsignmentParams{
-				ID: value.GetConsignment(),
-				Variant: sql.NullInt32{
-					Int32: value.GetVariant(),
-					Valid: true,
-				},
+			consignment, err = server.store.SuggestConsignmentForVariant(ctx, sql.NullInt32{
+				Int32: value.GetVariant(),
+				Valid: true,
 			})
 			if err != nil {
 				if errors.Is(err, sql.ErrNoRows) {
