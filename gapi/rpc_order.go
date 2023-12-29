@@ -337,5 +337,13 @@ func (server *ServerGRPC) OrderList(ctx context.Context, req *pb.OrderListReques
 }
 
 func (server *ServerGRPC) OrderDetail(ctx context.Context, req *pb.OrderDetailRequest) (*pb.OrderDetailResponse, error) {
+	_, err := server.store.DetailOrder(ctx, req.Id)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, status.Errorf(codes.NotFound, "order not exists")
+		}
+		return nil, status.Errorf(codes.Internal, "failed to get order: ", err.Error())
+	}
+
 	return nil, nil
 }

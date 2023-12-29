@@ -62,6 +62,23 @@ func (server *ServerGRPC) TicketCreate(ctx context.Context, req *pb.TicketCreate
 
 	qr, err := server.store.CreateMedia(ctx, urlQr)
 
+	var idAddressExportTo int32
+	if req.Ticket.ExportTo == nil {
+		warehouse, err := server.store.GetWarehouse(ctx, req.Ticket.GetWarehouse())
+		if err != nil {
+			if errors.Is(err, sql.ErrNoRows) {
+				return nil, status.Errorf(codes.NotFound, "warehouse not exists: ", err.Error())
+			}
+			return nil, status.Errorf(codes.Internal, "fail to get warehouse: ", err.Error())
+		}
+		if !warehouse.Address.Valid {
+			return nil, status.Errorf(codes.InvalidArgument, "warehouse address not exists")
+		}
+		idAddressExportTo = warehouse.Address.Int32
+	} else {
+		idAddressExportTo = req.Ticket.GetExportTo()
+	}
+
 	ticket, err := server.store.CreateTicket(ctx, db.CreateTicketParams{
 		Code: codeTicket,
 		Type: sql.NullInt32{
@@ -81,7 +98,7 @@ func (server *ServerGRPC) TicketCreate(ctx context.Context, req *pb.TicketCreate
 			Valid: true,
 		},
 		ExportTo: sql.NullInt32{
-			Int32: req.Ticket.GetExportTo(),
+			Int32: idAddressExportTo,
 			Valid: true,
 		},
 		ImportFrom: sql.NullInt32{
@@ -137,6 +154,42 @@ func (server *ServerGRPC) TicketCreate(ctx context.Context, req *pb.TicketCreate
 		Code:    200,
 		Message: "success",
 		Details: ticket.ID,
+	}, nil
+}
+
+func (server *ServerGRPC) TicketList(ctx context.Context, req *pb.TicketListRequest) (*pb.TicketListResponse, error) {
+	tickets, err := server.store.GetListTicket(ctx, db.GetListTicketParams{
+		Company: sql.NullInt32{
+			Int32: req.GetCompany(),
+			Valid: true,
+		},
+		Search: sql.NullString{
+			String: req.GetSearch(),
+			Valid:  req.Search != nil,
+		},
+		Page: sql.NullInt32{
+			Int32: req.GetPage(),
+			Valid: req.Page != nil,
+		},
+		Limit: sql.NullInt32{
+			Int32: req.GetLimit(),
+			Valid: req.Limit != nil,
+		},
+	})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get list tickets: ", err.Error())
+	}
+
+	var ticketsPb []*pb.TicketPreview
+	for _, value := range tickets {
+		dataPb := mapper.TicketMapper(value)
+		ticketsPb = append(ticketsPb, dataPb)
+	}
+
+	return &pb.TicketListResponse{
+		Code:    200,
+		Message: "success",
+		Details: ticketsPb,
 	}, nil
 }
 

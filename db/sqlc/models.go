@@ -391,7 +391,6 @@ type Suplier struct {
 	Phone      string         `json:"phone"`
 	Email      sql.NullString `json:"email"`
 	Address    sql.NullInt32  `json:"address"`
-	Warehouses sql.NullInt32  `json:"warehouses"`
 	Company    sql.NullInt32  `json:"company"`
 }
 

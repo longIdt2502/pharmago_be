@@ -9,3 +9,4 @@ bin/
 
 # Ignore all .xlsx files in subdirectories
 #**/*.xlsx
+*.sh

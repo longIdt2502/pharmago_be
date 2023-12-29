@@ -13,7 +13,7 @@ message TicketCreateRequestInfo {
   string status = 3;
   string note = 4;
   float total_price = 5;
-  int32 export_to = 6;
+  optional int32 export_to = 6;
   int32 import_from = 7;
   int32 warehouse = 8;
 }

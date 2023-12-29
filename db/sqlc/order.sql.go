@@ -126,6 +126,118 @@ func (q *Queries) CreateOrderItem(ctx context.Context, arg CreateOrderItemParams
 	return i, err
 }
 
+const detailOrder = `-- name: DetailOrder :one
+SELECT o.id, o.code, total_price, description, vat, discount, service_price, must_paid, customer, address, status, o.type, ticket, qr, company, payment, user_created, user_updated, o.created_at, updated_at, m.id, media_url, ot.id, ot.code, ot.title, os.id, os.code, os.title, a.id, username, hashed_password, full_name, email, a.type, is_verify, password_changed_at, a.created_at, m.media_url AS qr_url, ot.id AS ot_id, ot.code AS ot_code, ot.title AS ot_title,
+       os.id AS os_id, os.code AS os_code, os.title AS os_title,
+       a.full_name AS a_full_name FROM orders o
+JOIN medias m ON o.qr = m.id
+JOIN order_type ot ON o.type = ot.code
+JOIN order_status os ON o.status = os.code
+JOIN accounts a ON o.user_created = a.id
+WHERE o.id = $1
+`
+
+type DetailOrderRow struct {
+	ID                int32          `json:"id"`
+	Code              string         `json:"code"`
+	TotalPrice        float64        `json:"total_price"`
+	Description       sql.NullString `json:"description"`
+	Vat               float64        `json:"vat"`
+	Discount          string         `json:"discount"`
+	ServicePrice      float64        `json:"service_price"`
+	MustPaid          float64        `json:"must_paid"`
+	Customer          sql.NullInt32  `json:"customer"`
+	Address           sql.NullInt32  `json:"address"`
+	Status            sql.NullString `json:"status"`
+	Type              sql.NullString `json:"type"`
+	Ticket            sql.NullInt32  `json:"ticket"`
+	Qr                sql.NullInt32  `json:"qr"`
+	Company           int32          `json:"company"`
+	Payment           int32          `json:"payment"`
+	UserCreated       sql.NullInt32  `json:"user_created"`
+	UserUpdated       sql.NullInt32  `json:"user_updated"`
+	CreatedAt         time.Time      `json:"created_at"`
+	UpdatedAt         sql.NullTime   `json:"updated_at"`
+	ID_2              int32          `json:"id_2"`
+	MediaUrl          string         `json:"media_url"`
+	ID_3              int32          `json:"id_3"`
+	Code_2            string         `json:"code_2"`
+	Title             string         `json:"title"`
+	ID_4              int32          `json:"id_4"`
+	Code_3            string         `json:"code_3"`
+	Title_2           string         `json:"title_2"`
+	ID_5              int32          `json:"id_5"`
+	Username          string         `json:"username"`
+	HashedPassword    string         `json:"hashed_password"`
+	FullName          string         `json:"full_name"`
+	Email             string         `json:"email"`
+	Type_2            int32          `json:"type_2"`
+	IsVerify          bool           `json:"is_verify"`
+	PasswordChangedAt time.Time      `json:"password_changed_at"`
+	CreatedAt_2       time.Time      `json:"created_at_2"`
+	QrUrl             string         `json:"qr_url"`
+	OtID              int32          `json:"ot_id"`
+	OtCode            string         `json:"ot_code"`
+	OtTitle           string         `json:"ot_title"`
+	OsID              int32          `json:"os_id"`
+	OsCode            string         `json:"os_code"`
+	OsTitle           string         `json:"os_title"`
+	AFullName         string         `json:"a_full_name"`
+}
+
+func (q *Queries) DetailOrder(ctx context.Context, id int32) (DetailOrderRow, error) {
+	row := q.db.QueryRowContext(ctx, detailOrder, id)
+	var i DetailOrderRow
+	err := row.Scan(
+		&i.ID,
+		&i.Code,
+		&i.TotalPrice,
+		&i.Description,
+		&i.Vat,
+		&i.Discount,
+		&i.ServicePrice,
+		&i.MustPaid,
+		&i.Customer,
+		&i.Address,
+		&i.Status,
+		&i.Type,
+		&i.Ticket,
+		&i.Qr,
+		&i.Company,
+		&i.Payment,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.ID_2,
+		&i.MediaUrl,
+		&i.ID_3,
+		&i.Code_2,
+		&i.Title,
+		&i.ID_4,
+		&i.Code_3,
+		&i.Title_2,
+		&i.ID_5,
+		&i.Username,
+		&i.HashedPassword,
+		&i.FullName,
+		&i.Email,
+		&i.Type_2,
+		&i.IsVerify,
+		&i.PasswordChangedAt,
+		&i.CreatedAt_2,
+		&i.QrUrl,
+		&i.OtID,
+		&i.OtCode,
+		&i.OtTitle,
+		&i.OsID,
+		&i.OsCode,
+		&i.OsTitle,
+		&i.AFullName,
+	)
+	return i, err
+}
+
 const listOrder = `-- name: ListOrder :many
 SELECT o.id, o.code, o.total_price, description, vat, discount, service_price, must_paid, customer, o.address, o.status, o.type, ticket, o.qr, o.company, payment, o.user_created, o.user_updated, o.created_at, o.updated_at, c.id, c.full_name, c.code, c.company, c.address, c.email, phone, license, birthday, c.user_created, c.user_updated, c.updated_at, c.created_at, t.id, t.code, t.type, t.status, note, t.qr, export_to, import_from, t.total_price, warehouse, t.user_created, t.user_updated, t.updated_at, t.created_at, os.id, os.code, title, a.id, username, hashed_password, a.full_name, a.email, a.type, is_verify, password_changed_at, a.created_at, c.full_name AS c_full_name, os.title AS os_title, os.id AS os_id, a.full_name AS a_full_name FROM orders o
 JOIN customers c ON o.customer = c.id

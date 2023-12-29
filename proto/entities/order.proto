@@ -2,9 +2,12 @@ syntax = "proto3";
 
 package pb;
 
-import "entities/address.proto";
 import "entities/company.proto";
+import "entities/customer.proto";
+import "entities/address.proto";
 import "entities/simple_data.proto";
+import "entities/payment.proto";
+
 import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
@@ -14,13 +17,21 @@ message Order {
   string code = 2;
   float total_price = 3;
   string description = 4;
-  string decision_number = 5;
-  string register_number = 6;
-  string longevity = 7;
-  float vat = 8;
-  int32 product = 9;
-  string media = 10;
-  optional int32 quantity_in_stock = 11;
+  float vat = 5;
+  string discount = 6;
+  float service_price = 7;
+  float must_paid = 8;
+  Customer customer = 9;
+  Address address = 10;
+  SimpleData type = 11;
+  SimpleData status = 12;
+  string qr = 13;
+  int32 company = 14;
+  string user_created = 15;
+  string user_updated = 16;
+  google.protobuf.Timestamp created_at = 17;
+  google.protobuf.Timestamp updated_at = 18;
+  Payment payment = 19;
 }
 
 message OrderPreview {

@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package pb;
+
+import "entities/simple_data.proto";
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+
+message PaymentItem {
+  int32 id = 1;
+  SimpleData type = 2;
+  float value = 3;
+  float is_paid = 4;
+  string extra_note = 5;
+}
+
+message Payment {
+  int32 id = 1;
+  string code = 2;
+  float must_paid = 3;
+  float had_paid = 4;
+  float need_pay = 5;
+  repeated PaymentItem items = 6;
+}

@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package pb;
+
+import "entities/simple_data.proto";
+import "entities/address.proto";
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+
+message Supplier {
+  int32 id = 1;
+  string code = 2;
+  string name = 3;
+  string deputy_name = 4;
+  string phone = 5;
+  string email = 6;
+  Address address = 7;
+  int32 company = 8;
+}
