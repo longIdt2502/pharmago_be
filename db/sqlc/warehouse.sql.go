@@ -336,6 +336,244 @@ func (q *Queries) GetConsignments(ctx context.Context, arg GetConsignmentsParams
 	return items, nil
 }
 
+const getListSupplier = `-- name: GetListSupplier :many
+SELECT id, code, name, deputy_name, phone, email, address, company FROM suplier
+WHERE company = $1::int
+AND (
+    name ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
+    code ILIKE '%' || COALESCE($2::varchar, '') || '%'
+)
+ORDER BY -id
+LIMIT COALESCE($4::int, 10)
+OFFSET (COALESCE($3::int, 1) - 1) * COALESCE($4::int, 10)
+`
+
+type GetListSupplierParams struct {
+	Company int32          `json:"company"`
+	Search  sql.NullString `json:"search"`
+	Page    sql.NullInt32  `json:"page"`
+	Limit   sql.NullInt32  `json:"limit"`
+}
+
+func (q *Queries) GetListSupplier(ctx context.Context, arg GetListSupplierParams) ([]Suplier, error) {
+	rows, err := q.db.QueryContext(ctx, getListSupplier,
+		arg.Company,
+		arg.Search,
+		arg.Page,
+		arg.Limit,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Suplier{}
+	for rows.Next() {
+		var i Suplier
+		if err := rows.Scan(
+			&i.ID,
+			&i.Code,
+			&i.Name,
+			&i.DeputyName,
+			&i.Phone,
+			&i.Email,
+			&i.Address,
+			&i.Company,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getListTicket = `-- name: GetListTicket :many
+SELECT t.id, t.code, t.type, status, note, qr, export_to, import_from, total_price, warehouse, t.user_created, t.user_updated, t.updated_at, t.created_at, w.id, address, companies, name, w.code, a.id, username, hashed_password, full_name, email, a.type, is_verify, password_changed_at, a.created_at, m.id, media_url, tt.id, tt.code, tt.title, ts.id, ts.code, ts.title, c.id, c.code, quantity, inventory, ticket, expired_at, producted_at, is_available, c.user_created, c.user_updated, c.updated_at, c.created_at, variant, w.name AS w_name, a.full_name AS a_full_name, m.media_url AS qr_url,
+    tt.id AS tt_id, tt.code AS tt_code, tt.title AS tt_title,
+    ts.id AS ts_id, ts.code AS ts_code, ts.title AS ts_title,
+    COALESCE(SUM(c.quantity), 0)::int AS total_products
+FROM tickets t
+JOIN warehouses w ON t.warehouse = w.id
+JOIN accounts a ON t.user_created = a.id
+JOIN medias m ON t.qr = m.id
+JOIN ticket_type tt ON t.type = tt.id
+JOIN ticket_status ts ON t.status = ts.id
+LEFT JOIN consignment c ON t.id = c.ticket
+WHERE w.companies = $1
+AND (
+    t.code ILIKE '%' || COALESCE($2::varchar, '') || '%'
+)
+GROUP BY
+    t.id, t.code, t.type, t.status, t.note, t.qr, t.total_price, t.warehouse, t.user_created, t.created_at,
+    w.id, a.id, m.id, tt.id, ts.id, c.ticket, c.id,
+    w.name, a.full_name, m.media_url, tt.id, tt.code, tt.title, ts.id, ts.code, ts.title
+ORDER BY -t.id
+LIMIT COALESCE($4::int, 10)
+OFFSET (COALESCE($3::int, 1) - 1) * COALESCE($4::int, 10)
+`
+
+type GetListTicketParams struct {
+	Company sql.NullInt32  `json:"company"`
+	Search  sql.NullString `json:"search"`
+	Page    sql.NullInt32  `json:"page"`
+	Limit   sql.NullInt32  `json:"limit"`
+}
+
+type GetListTicketRow struct {
+	ID                int32          `json:"id"`
+	Code              string         `json:"code"`
+	Type              sql.NullInt32  `json:"type"`
+	Status            sql.NullInt32  `json:"status"`
+	Note              sql.NullString `json:"note"`
+	Qr                sql.NullInt32  `json:"qr"`
+	ExportTo          sql.NullInt32  `json:"export_to"`
+	ImportFrom        sql.NullInt32  `json:"import_from"`
+	TotalPrice        float64        `json:"total_price"`
+	Warehouse         int32          `json:"warehouse"`
+	UserCreated       int32          `json:"user_created"`
+	UserUpdated       sql.NullInt32  `json:"user_updated"`
+	UpdatedAt         sql.NullTime   `json:"updated_at"`
+	CreatedAt         time.Time      `json:"created_at"`
+	ID_2              int32          `json:"id_2"`
+	Address           sql.NullInt32  `json:"address"`
+	Companies         sql.NullInt32  `json:"companies"`
+	Name              string         `json:"name"`
+	Code_2            string         `json:"code_2"`
+	ID_3              int32          `json:"id_3"`
+	Username          string         `json:"username"`
+	HashedPassword    string         `json:"hashed_password"`
+	FullName          string         `json:"full_name"`
+	Email             string         `json:"email"`
+	Type_2            int32          `json:"type_2"`
+	IsVerify          bool           `json:"is_verify"`
+	PasswordChangedAt time.Time      `json:"password_changed_at"`
+	CreatedAt_2       time.Time      `json:"created_at_2"`
+	ID_4              int32          `json:"id_4"`
+	MediaUrl          string         `json:"media_url"`
+	ID_5              int32          `json:"id_5"`
+	Code_3            string         `json:"code_3"`
+	Title             string         `json:"title"`
+	ID_6              int32          `json:"id_6"`
+	Code_4            string         `json:"code_4"`
+	Title_2           string         `json:"title_2"`
+	ID_7              sql.NullInt32  `json:"id_7"`
+	Code_5            sql.NullString `json:"code_5"`
+	Quantity          sql.NullInt32  `json:"quantity"`
+	Inventory         sql.NullInt32  `json:"inventory"`
+	Ticket            sql.NullInt32  `json:"ticket"`
+	ExpiredAt         sql.NullTime   `json:"expired_at"`
+	ProductedAt       sql.NullTime   `json:"producted_at"`
+	IsAvailable       sql.NullBool   `json:"is_available"`
+	UserCreated_2     sql.NullInt32  `json:"user_created_2"`
+	UserUpdated_2     sql.NullInt32  `json:"user_updated_2"`
+	UpdatedAt_2       sql.NullTime   `json:"updated_at_2"`
+	CreatedAt_3       sql.NullTime   `json:"created_at_3"`
+	Variant           sql.NullInt32  `json:"variant"`
+	WName             string         `json:"w_name"`
+	AFullName         string         `json:"a_full_name"`
+	QrUrl             string         `json:"qr_url"`
+	TtID              int32          `json:"tt_id"`
+	TtCode            string         `json:"tt_code"`
+	TtTitle           string         `json:"tt_title"`
+	TsID              int32          `json:"ts_id"`
+	TsCode            string         `json:"ts_code"`
+	TsTitle           string         `json:"ts_title"`
+	TotalProducts     int32          `json:"total_products"`
+}
+
+func (q *Queries) GetListTicket(ctx context.Context, arg GetListTicketParams) ([]GetListTicketRow, error) {
+	rows, err := q.db.QueryContext(ctx, getListTicket,
+		arg.Company,
+		arg.Search,
+		arg.Page,
+		arg.Limit,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GetListTicketRow{}
+	for rows.Next() {
+		var i GetListTicketRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Code,
+			&i.Type,
+			&i.Status,
+			&i.Note,
+			&i.Qr,
+			&i.ExportTo,
+			&i.ImportFrom,
+			&i.TotalPrice,
+			&i.Warehouse,
+			&i.UserCreated,
+			&i.UserUpdated,
+			&i.UpdatedAt,
+			&i.CreatedAt,
+			&i.ID_2,
+			&i.Address,
+			&i.Companies,
+			&i.Name,
+			&i.Code_2,
+			&i.ID_3,
+			&i.Username,
+			&i.HashedPassword,
+			&i.FullName,
+			&i.Email,
+			&i.Type_2,
+			&i.IsVerify,
+			&i.PasswordChangedAt,
+			&i.CreatedAt_2,
+			&i.ID_4,
+			&i.MediaUrl,
+			&i.ID_5,
+			&i.Code_3,
+			&i.Title,
+			&i.ID_6,
+			&i.Code_4,
+			&i.Title_2,
+			&i.ID_7,
+			&i.Code_5,
+			&i.Quantity,
+			&i.Inventory,
+			&i.Ticket,
+			&i.ExpiredAt,
+			&i.ProductedAt,
+			&i.IsAvailable,
+			&i.UserCreated_2,
+			&i.UserUpdated_2,
+			&i.UpdatedAt_2,
+			&i.CreatedAt_3,
+			&i.Variant,
+			&i.WName,
+			&i.AFullName,
+			&i.QrUrl,
+			&i.TtID,
+			&i.TtCode,
+			&i.TtTitle,
+			&i.TsID,
+			&i.TsCode,
+			&i.TsTitle,
+			&i.TotalProducts,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getTicketStatus = `-- name: GetTicketStatus :one
 SELECT id, code, title FROM ticket_status
 WHERE id = $1 OR code = $2

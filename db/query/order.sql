@@ -31,3 +31,13 @@ AND (
 ORDER BY -o.id
 LIMIT COALESCE(sqlc.narg('limit')::int, 10)
 OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10);
+
+-- name: DetailOrder :one
+SELECT *, m.media_url AS qr_url, ot.id AS ot_id, ot.code AS ot_code, ot.title AS ot_title,
+       os.id AS os_id, os.code AS os_code, os.title AS os_title,
+       a.full_name AS a_full_name FROM orders o
+JOIN medias m ON o.qr = m.id
+JOIN order_type ot ON o.type = ot.code
+JOIN order_status os ON o.status = os.code
+JOIN accounts a ON o.user_created = a.id
+WHERE o.id = $1;

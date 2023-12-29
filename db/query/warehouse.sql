@@ -49,6 +49,30 @@ WHERE id = sqlc.narg('id') OR code = sqlc.narg('code');
 SELECT * FROM ticket_status
 WHERE id = sqlc.narg('id') OR code = sqlc.narg('code');
 
+-- name: GetListTicket :many
+SELECT *, w.name AS w_name, a.full_name AS a_full_name, m.media_url AS qr_url,
+    tt.id AS tt_id, tt.code AS tt_code, tt.title AS tt_title,
+    ts.id AS ts_id, ts.code AS ts_code, ts.title AS ts_title,
+    COALESCE(SUM(c.quantity), 0)::int AS total_products
+FROM tickets t
+JOIN warehouses w ON t.warehouse = w.id
+JOIN accounts a ON t.user_created = a.id
+JOIN medias m ON t.qr = m.id
+JOIN ticket_type tt ON t.type = tt.id
+JOIN ticket_status ts ON t.status = ts.id
+LEFT JOIN consignment c ON t.id = c.ticket
+WHERE w.companies = sqlc.arg('company')
+AND (
+    t.code ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%'
+)
+GROUP BY
+    t.id, t.code, t.type, t.status, t.note, t.qr, t.total_price, t.warehouse, t.user_created, t.created_at,
+    w.id, a.id, m.id, tt.id, ts.id, c.ticket, c.id,
+    w.name, a.full_name, m.media_url, tt.id, tt.code, tt.title, ts.id, ts.code, ts.title
+ORDER BY -t.id
+LIMIT COALESCE(sqlc.narg('limit')::int, 10)
+OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10);
+
 -- name: UpdateTicketStatus :one
 UPDATE tickets
 SET status = $1
@@ -90,3 +114,14 @@ UPDATE consignment
 SET is_available = true
 WHERE ticket = $1
 RETURNING *;
+
+-- name: GetListSupplier :many
+SELECT * FROM suplier
+WHERE company = sqlc.arg('company')::int
+AND (
+    name ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
+    code ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%'
+)
+ORDER BY -id
+LIMIT COALESCE(sqlc.narg('limit')::int, 10)
+OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10);

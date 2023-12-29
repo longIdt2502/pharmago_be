@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package pb;
+
+import "entities/simple_data.proto";
+import "entities/address.proto";
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+
+message Ticket {
+  int32 id = 1;
+  string code = 2;
+  SimpleData type = 3;
+  SimpleData status = 4;
+  string note = 5;
+  string qr = 6;
+  Address export_to = 7;
+  Address import_from = 8;
+  float total_price = 9;
+  int32 warehouse = 10;
+  string user_created = 11;
+  string user_updated = 12;
+  google.protobuf.Timestamp updated_at = 13;
+  google.protobuf.Timestamp created_at = 14;
+}
+
+message TicketPreview {
+  int32 id = 1;
+  string code = 2;
+  SimpleData type = 3;
+  SimpleData status = 4;
+  string note = 5;
+  string qr = 6;
+  int32 totalItems = 7;
+  int32 totalItemsType = 8;
+  float total_price = 9;
+  string warehouse_name = 10;
+  string user_created = 11;
+  google.protobuf.Timestamp created_at = 14;
+}

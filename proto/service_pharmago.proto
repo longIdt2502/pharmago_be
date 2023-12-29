@@ -28,10 +28,12 @@ import "rpc/product/rpc_company_pharma_list.proto";
 import "rpc/product/rpc_variant_list.proto";
 
 import "rpc/warehouse/rpc_ticket_create.proto";
+import "rpc/warehouse/rpc_ticker_list.proto";
 import "rpc/warehouse/rpc_consignment_list.proto";
 import "rpc/warehouse/rpc_warehouse_create.proto";
 import "rpc/warehouse/rpc_warehouse_list.proto";
 import "rpc/warehouse/rpc_ticket_update_status.proto";
+import "rpc/warehouse/rpc_suplier_list.proto";
 
 import "rpc/order/rpc_order_create.proto";
 import "rpc/order/rpc_order_list.proto";
@@ -335,6 +337,15 @@ service Pharmago {
       tags: "Warehouse";
     };
   };
+  rpc TicketList (TicketListRequest) returns (TicketListResponse) {
+    option (google.api.http) = {
+      get: "/warehouse/v1/ticket/list"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "list ticket";
+      tags: "Warehouse";
+    };
+  };
   rpc TicketUpdateStatus (TicketUpdateStatusRequest) returns (TicketUpdateStatusResponse) {
     option (google.api.http) = {
       patch: "/warehouse/v1/ticket/update_status"
@@ -352,6 +363,15 @@ service Pharmago {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "get list consignment";
+      tags: "Warehouse";
+    };
+  };
+  rpc SupplierList (SupplierListRequest) returns (SupplierListResponse) {
+    option (google.api.http) = {
+      get: "/warehouse/v1/supplier/list"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List supplier";
       tags: "Warehouse";
     };
   };
@@ -386,7 +406,7 @@ service Pharmago {
     };
   };
 
-  // ================== ORDER ===================
+  // ================== CUSTOMER ===================
   rpc CustomerList (CustomerListRequest) returns (CustomerListResponse) {
     option (google.api.http) = {
       get: "/customer/v1/list"

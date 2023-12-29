@@ -448,7 +448,6 @@ CREATE TABLE "suplier" (
                            "phone" varchar(255) NOT NULL,
                            "email" varchar(255),
                            "address" serial,
-                           "warehouses" serial,
                            "company" serial
 );
 
@@ -679,8 +678,6 @@ ALTER TABLE "consignment" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts"
 ALTER TABLE "consignment_log" ADD FOREIGN KEY ("consignment") REFERENCES "consignment" ("id") ON DELETE CASCADE;
 
 ALTER TABLE "consignment_log" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id") ON DELETE SET NULL;
-
-ALTER TABLE "suplier" ADD FOREIGN KEY ("warehouses") REFERENCES "warehouses" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "suplier" ADD FOREIGN KEY ("address") REFERENCES "address" ("id") ON DELETE SET NULL;
 
