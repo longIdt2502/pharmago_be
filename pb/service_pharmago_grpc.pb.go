@@ -55,6 +55,7 @@ type PharmagoClient interface {
 	WarehouseList(ctx context.Context, in *WarehouseListRequest, opts ...grpc.CallOption) (*WarehouseListResponse, error)
 	TicketCreate(ctx context.Context, in *TicketCreateRequest, opts ...grpc.CallOption) (*TicketCreateResponse, error)
 	TicketList(ctx context.Context, in *TicketListRequest, opts ...grpc.CallOption) (*TicketListResponse, error)
+	TicketDetail(ctx context.Context, in *TicketDetailRequest, opts ...grpc.CallOption) (*TicketDetailResponse, error)
 	TicketUpdateStatus(ctx context.Context, in *TicketUpdateStatusRequest, opts ...grpc.CallOption) (*TicketUpdateStatusResponse, error)
 	ConsignmentList(ctx context.Context, in *ConsignmentListRequest, opts ...grpc.CallOption) (*ConsignmentListResponse, error)
 	SupplierList(ctx context.Context, in *SupplierListRequest, opts ...grpc.CallOption) (*SupplierListResponse, error)
@@ -62,6 +63,7 @@ type PharmagoClient interface {
 	OrderCreate(ctx context.Context, in *OrderCreateRequest, opts ...grpc.CallOption) (*OrderCreateResponse, error)
 	OrderList(ctx context.Context, in *OrderListRequest, opts ...grpc.CallOption) (*OrderListResponse, error)
 	OrderDetail(ctx context.Context, in *OrderDetailRequest, opts ...grpc.CallOption) (*OrderDetailResponse, error)
+	OrderUpdateStatus(ctx context.Context, in *OrderUpdateStatusRequest, opts ...grpc.CallOption) (*OrderUpdateStatusResponse, error)
 	// ================== CUSTOMER ===================
 	CustomerList(ctx context.Context, in *CustomerListRequest, opts ...grpc.CallOption) (*CustomerListResponse, error)
 	// ================== IMPORT ===================
@@ -303,6 +305,15 @@ func (c *pharmagoClient) TicketList(ctx context.Context, in *TicketListRequest, 
 	return out, nil
 }
 
+func (c *pharmagoClient) TicketDetail(ctx context.Context, in *TicketDetailRequest, opts ...grpc.CallOption) (*TicketDetailResponse, error) {
+	out := new(TicketDetailResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/TicketDetail", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *pharmagoClient) TicketUpdateStatus(ctx context.Context, in *TicketUpdateStatusRequest, opts ...grpc.CallOption) (*TicketUpdateStatusResponse, error) {
 	out := new(TicketUpdateStatusResponse)
 	err := c.cc.Invoke(ctx, "/pb.Pharmago/TicketUpdateStatus", in, out, opts...)
@@ -351,6 +362,15 @@ func (c *pharmagoClient) OrderList(ctx context.Context, in *OrderListRequest, op
 func (c *pharmagoClient) OrderDetail(ctx context.Context, in *OrderDetailRequest, opts ...grpc.CallOption) (*OrderDetailResponse, error) {
 	out := new(OrderDetailResponse)
 	err := c.cc.Invoke(ctx, "/pb.Pharmago/OrderDetail", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) OrderUpdateStatus(ctx context.Context, in *OrderUpdateStatusRequest, opts ...grpc.CallOption) (*OrderUpdateStatusResponse, error) {
+	out := new(OrderUpdateStatusResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/OrderUpdateStatus", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -430,6 +450,7 @@ type PharmagoServer interface {
 	WarehouseList(context.Context, *WarehouseListRequest) (*WarehouseListResponse, error)
 	TicketCreate(context.Context, *TicketCreateRequest) (*TicketCreateResponse, error)
 	TicketList(context.Context, *TicketListRequest) (*TicketListResponse, error)
+	TicketDetail(context.Context, *TicketDetailRequest) (*TicketDetailResponse, error)
 	TicketUpdateStatus(context.Context, *TicketUpdateStatusRequest) (*TicketUpdateStatusResponse, error)
 	ConsignmentList(context.Context, *ConsignmentListRequest) (*ConsignmentListResponse, error)
 	SupplierList(context.Context, *SupplierListRequest) (*SupplierListResponse, error)
@@ -437,6 +458,7 @@ type PharmagoServer interface {
 	OrderCreate(context.Context, *OrderCreateRequest) (*OrderCreateResponse, error)
 	OrderList(context.Context, *OrderListRequest) (*OrderListResponse, error)
 	OrderDetail(context.Context, *OrderDetailRequest) (*OrderDetailResponse, error)
+	OrderUpdateStatus(context.Context, *OrderUpdateStatusRequest) (*OrderUpdateStatusResponse, error)
 	// ================== CUSTOMER ===================
 	CustomerList(context.Context, *CustomerListRequest) (*CustomerListResponse, error)
 	// ================== IMPORT ===================
@@ -525,6 +547,9 @@ func (UnimplementedPharmagoServer) TicketCreate(context.Context, *TicketCreateRe
 func (UnimplementedPharmagoServer) TicketList(context.Context, *TicketListRequest) (*TicketListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TicketList not implemented")
 }
+func (UnimplementedPharmagoServer) TicketDetail(context.Context, *TicketDetailRequest) (*TicketDetailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TicketDetail not implemented")
+}
 func (UnimplementedPharmagoServer) TicketUpdateStatus(context.Context, *TicketUpdateStatusRequest) (*TicketUpdateStatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TicketUpdateStatus not implemented")
 }
@@ -542,6 +567,9 @@ func (UnimplementedPharmagoServer) OrderList(context.Context, *OrderListRequest)
 }
 func (UnimplementedPharmagoServer) OrderDetail(context.Context, *OrderDetailRequest) (*OrderDetailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OrderDetail not implemented")
+}
+func (UnimplementedPharmagoServer) OrderUpdateStatus(context.Context, *OrderUpdateStatusRequest) (*OrderUpdateStatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OrderUpdateStatus not implemented")
 }
 func (UnimplementedPharmagoServer) CustomerList(context.Context, *CustomerListRequest) (*CustomerListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CustomerList not implemented")
@@ -1018,6 +1046,24 @@ func _Pharmago_TicketList_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Pharmago_TicketDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TicketDetailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).TicketDetail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/TicketDetail",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).TicketDetail(ctx, req.(*TicketDetailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Pharmago_TicketUpdateStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(TicketUpdateStatusRequest)
 	if err := dec(in); err != nil {
@@ -1122,6 +1168,24 @@ func _Pharmago_OrderDetail_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PharmagoServer).OrderDetail(ctx, req.(*OrderDetailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_OrderUpdateStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OrderUpdateStatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).OrderUpdateStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/OrderUpdateStatus",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).OrderUpdateStatus(ctx, req.(*OrderUpdateStatusRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1306,6 +1370,10 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Pharmago_TicketList_Handler,
 		},
 		{
+			MethodName: "TicketDetail",
+			Handler:    _Pharmago_TicketDetail_Handler,
+		},
+		{
 			MethodName: "TicketUpdateStatus",
 			Handler:    _Pharmago_TicketUpdateStatus_Handler,
 		},
@@ -1328,6 +1396,10 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "OrderDetail",
 			Handler:    _Pharmago_OrderDetail_Handler,
+		},
+		{
+			MethodName: "OrderUpdateStatus",
+			Handler:    _Pharmago_OrderUpdateStatus_Handler,
 		},
 		{
 			MethodName: "CustomerList",

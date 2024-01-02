@@ -336,6 +336,266 @@ func (q *Queries) GetConsignments(ctx context.Context, arg GetConsignmentsParams
 	return items, nil
 }
 
+const getDetailTicket = `-- name: GetDetailTicket :one
+SELECT t.id, t.code, t.type, status, note, qr, export_to, import_from, total_price, warehouse, t.user_created, t.user_updated, t.updated_at, t.created_at, s.id, s.code, s.name, deputy_name, s.phone, s.email, s.address, s.company, c.id, c.full_name, c.code, c.company, c.address, c.email, c.phone, license, birthday, c.user_created, c.user_updated, c.updated_at, c.created_at, w.id, w.address, companies, w.name, w.code, tt.id, tt.code, tt.title, ts.id, ts.code, ts.title, m.id, media_url, a_uc.id, a_uc.username, a_uc.hashed_password, a_uc.full_name, a_uc.email, a_uc.type, a_uc.is_verify, a_uc.password_changed_at, a_uc.created_at, a_uu.id, a_uu.username, a_uu.hashed_password, a_uu.full_name, a_uu.email, a_uu.type, a_uu.is_verify, a_uu.password_changed_at, a_uu.created_at , m.media_url AS qr_url, a_uc.full_name AS user_created_name, a_uu.full_name AS user_updated_name,
+       w.id AS w_id, w.name AS w_name, w.code AS w_code, w.address AS w_address,
+        c.id AS c_id, c.full_name AS c_name, c.code AS c_code, c.address AS c_address, c.email AS c_email, c.phone AS c_phone, c.company AS c_company,
+        s.id AS s_id, s.code AS s_code, s.name AS s_name, s.deputy_name AS s_deputy, s.phone AS s_phone, s.email AS s_email, s.address AS s_address, s.company AS s_company,
+       tt.id AS tt_id, tt.code AS tt_code, tt.title AS tt_title,
+       ts.id AS ts_id, ts.code AS ts_code, ts.title AS ts_title
+FROM tickets t
+LEFT JOIN suplier s ON t.import_from = s.address AND t.type = 1
+LEFT JOIN customers c ON t.export_to = c.address AND t.type = 2
+JOIN warehouses w ON w.id = t.warehouse
+JOIN ticket_type tt ON t.type = tt.id
+JOIN ticket_status ts ON t.status = ts.id
+JOIN medias m ON t.qr = m.id
+JOIN accounts a_uc ON a_uc.id = t.user_created
+JOIN accounts a_uu ON a_uu.id = t.user_updated
+WHERE t.id = $1
+`
+
+type GetDetailTicketRow struct {
+	ID                  int32          `json:"id"`
+	Code                string         `json:"code"`
+	Type                sql.NullInt32  `json:"type"`
+	Status              sql.NullInt32  `json:"status"`
+	Note                sql.NullString `json:"note"`
+	Qr                  sql.NullInt32  `json:"qr"`
+	ExportTo            sql.NullInt32  `json:"export_to"`
+	ImportFrom          sql.NullInt32  `json:"import_from"`
+	TotalPrice          float64        `json:"total_price"`
+	Warehouse           int32          `json:"warehouse"`
+	UserCreated         int32          `json:"user_created"`
+	UserUpdated         sql.NullInt32  `json:"user_updated"`
+	UpdatedAt           sql.NullTime   `json:"updated_at"`
+	CreatedAt           time.Time      `json:"created_at"`
+	ID_2                sql.NullInt32  `json:"id_2"`
+	Code_2              sql.NullString `json:"code_2"`
+	Name                sql.NullString `json:"name"`
+	DeputyName          sql.NullString `json:"deputy_name"`
+	Phone               sql.NullString `json:"phone"`
+	Email               sql.NullString `json:"email"`
+	Address             sql.NullInt32  `json:"address"`
+	Company             sql.NullInt32  `json:"company"`
+	ID_3                sql.NullInt32  `json:"id_3"`
+	FullName            sql.NullString `json:"full_name"`
+	Code_3              sql.NullString `json:"code_3"`
+	Company_2           sql.NullInt32  `json:"company_2"`
+	Address_2           sql.NullInt32  `json:"address_2"`
+	Email_2             sql.NullString `json:"email_2"`
+	Phone_2             sql.NullString `json:"phone_2"`
+	License             sql.NullString `json:"license"`
+	Birthday            sql.NullTime   `json:"birthday"`
+	UserCreated_2       sql.NullInt32  `json:"user_created_2"`
+	UserUpdated_2       sql.NullInt32  `json:"user_updated_2"`
+	UpdatedAt_2         sql.NullTime   `json:"updated_at_2"`
+	CreatedAt_2         sql.NullTime   `json:"created_at_2"`
+	ID_4                int32          `json:"id_4"`
+	Address_3           sql.NullInt32  `json:"address_3"`
+	Companies           sql.NullInt32  `json:"companies"`
+	Name_2              string         `json:"name_2"`
+	Code_4              string         `json:"code_4"`
+	ID_5                int32          `json:"id_5"`
+	Code_5              string         `json:"code_5"`
+	Title               string         `json:"title"`
+	ID_6                int32          `json:"id_6"`
+	Code_6              string         `json:"code_6"`
+	Title_2             string         `json:"title_2"`
+	ID_7                int32          `json:"id_7"`
+	MediaUrl            string         `json:"media_url"`
+	ID_8                int32          `json:"id_8"`
+	Username            string         `json:"username"`
+	HashedPassword      string         `json:"hashed_password"`
+	FullName_2          string         `json:"full_name_2"`
+	Email_3             string         `json:"email_3"`
+	Type_2              int32          `json:"type_2"`
+	IsVerify            bool           `json:"is_verify"`
+	PasswordChangedAt   time.Time      `json:"password_changed_at"`
+	CreatedAt_3         time.Time      `json:"created_at_3"`
+	ID_9                int32          `json:"id_9"`
+	Username_2          string         `json:"username_2"`
+	HashedPassword_2    string         `json:"hashed_password_2"`
+	FullName_3          string         `json:"full_name_3"`
+	Email_4             string         `json:"email_4"`
+	Type_3              int32          `json:"type_3"`
+	IsVerify_2          bool           `json:"is_verify_2"`
+	PasswordChangedAt_2 time.Time      `json:"password_changed_at_2"`
+	CreatedAt_4         time.Time      `json:"created_at_4"`
+	QrUrl               string         `json:"qr_url"`
+	UserCreatedName     string         `json:"user_created_name"`
+	UserUpdatedName     string         `json:"user_updated_name"`
+	WID                 int32          `json:"w_id"`
+	WName               string         `json:"w_name"`
+	WCode               string         `json:"w_code"`
+	WAddress            sql.NullInt32  `json:"w_address"`
+	CID                 sql.NullInt32  `json:"c_id"`
+	CName               sql.NullString `json:"c_name"`
+	CCode               sql.NullString `json:"c_code"`
+	CAddress            sql.NullInt32  `json:"c_address"`
+	CEmail              sql.NullString `json:"c_email"`
+	CPhone              sql.NullString `json:"c_phone"`
+	CCompany            sql.NullInt32  `json:"c_company"`
+	SID                 sql.NullInt32  `json:"s_id"`
+	SCode               sql.NullString `json:"s_code"`
+	SName               sql.NullString `json:"s_name"`
+	SDeputy             sql.NullString `json:"s_deputy"`
+	SPhone              sql.NullString `json:"s_phone"`
+	SEmail              sql.NullString `json:"s_email"`
+	SAddress            sql.NullInt32  `json:"s_address"`
+	SCompany            sql.NullInt32  `json:"s_company"`
+	TtID                int32          `json:"tt_id"`
+	TtCode              string         `json:"tt_code"`
+	TtTitle             string         `json:"tt_title"`
+	TsID                int32          `json:"ts_id"`
+	TsCode              string         `json:"ts_code"`
+	TsTitle             string         `json:"ts_title"`
+}
+
+func (q *Queries) GetDetailTicket(ctx context.Context, id int32) (GetDetailTicketRow, error) {
+	row := q.db.QueryRowContext(ctx, getDetailTicket, id)
+	var i GetDetailTicketRow
+	err := row.Scan(
+		&i.ID,
+		&i.Code,
+		&i.Type,
+		&i.Status,
+		&i.Note,
+		&i.Qr,
+		&i.ExportTo,
+		&i.ImportFrom,
+		&i.TotalPrice,
+		&i.Warehouse,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.UpdatedAt,
+		&i.CreatedAt,
+		&i.ID_2,
+		&i.Code_2,
+		&i.Name,
+		&i.DeputyName,
+		&i.Phone,
+		&i.Email,
+		&i.Address,
+		&i.Company,
+		&i.ID_3,
+		&i.FullName,
+		&i.Code_3,
+		&i.Company_2,
+		&i.Address_2,
+		&i.Email_2,
+		&i.Phone_2,
+		&i.License,
+		&i.Birthday,
+		&i.UserCreated_2,
+		&i.UserUpdated_2,
+		&i.UpdatedAt_2,
+		&i.CreatedAt_2,
+		&i.ID_4,
+		&i.Address_3,
+		&i.Companies,
+		&i.Name_2,
+		&i.Code_4,
+		&i.ID_5,
+		&i.Code_5,
+		&i.Title,
+		&i.ID_6,
+		&i.Code_6,
+		&i.Title_2,
+		&i.ID_7,
+		&i.MediaUrl,
+		&i.ID_8,
+		&i.Username,
+		&i.HashedPassword,
+		&i.FullName_2,
+		&i.Email_3,
+		&i.Type_2,
+		&i.IsVerify,
+		&i.PasswordChangedAt,
+		&i.CreatedAt_3,
+		&i.ID_9,
+		&i.Username_2,
+		&i.HashedPassword_2,
+		&i.FullName_3,
+		&i.Email_4,
+		&i.Type_3,
+		&i.IsVerify_2,
+		&i.PasswordChangedAt_2,
+		&i.CreatedAt_4,
+		&i.QrUrl,
+		&i.UserCreatedName,
+		&i.UserUpdatedName,
+		&i.WID,
+		&i.WName,
+		&i.WCode,
+		&i.WAddress,
+		&i.CID,
+		&i.CName,
+		&i.CCode,
+		&i.CAddress,
+		&i.CEmail,
+		&i.CPhone,
+		&i.CCompany,
+		&i.SID,
+		&i.SCode,
+		&i.SName,
+		&i.SDeputy,
+		&i.SPhone,
+		&i.SEmail,
+		&i.SAddress,
+		&i.SCompany,
+		&i.TtID,
+		&i.TtCode,
+		&i.TtTitle,
+		&i.TsID,
+		&i.TsCode,
+		&i.TsTitle,
+	)
+	return i, err
+}
+
+const getItemsTicket = `-- name: GetItemsTicket :many
+SELECT id, code, quantity, inventory, ticket, expired_at, producted_at, is_available, user_created, user_updated, updated_at, created_at, variant FROM consignment
+WHERE ticket = $1
+`
+
+func (q *Queries) GetItemsTicket(ctx context.Context, ticket sql.NullInt32) ([]Consignment, error) {
+	rows, err := q.db.QueryContext(ctx, getItemsTicket, ticket)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Consignment{}
+	for rows.Next() {
+		var i Consignment
+		if err := rows.Scan(
+			&i.ID,
+			&i.Code,
+			&i.Quantity,
+			&i.Inventory,
+			&i.Ticket,
+			&i.ExpiredAt,
+			&i.ProductedAt,
+			&i.IsAvailable,
+			&i.UserCreated,
+			&i.UserUpdated,
+			&i.UpdatedAt,
+			&i.CreatedAt,
+			&i.Variant,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getListSupplier = `-- name: GetListSupplier :many
 SELECT id, code, name, deputy_name, phone, email, address, company FROM suplier
 WHERE company = $1::int

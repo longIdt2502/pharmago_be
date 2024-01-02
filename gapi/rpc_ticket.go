@@ -193,6 +193,23 @@ func (server *ServerGRPC) TicketList(ctx context.Context, req *pb.TicketListRequ
 	}, nil
 }
 
+func (server *ServerGRPC) TicketDetail(ctx context.Context, req *pb.TicketDetailRequest) (*pb.TicketDetailResponse, error) {
+	ticket, err := server.store.GetDetailTicket(ctx, req.GetId())
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, status.Errorf(codes.NotFound, "ticket not exists")
+		}
+		return nil, status.Errorf(codes.Internal, "failed to get ticket: ", err.Error())
+	}
+
+	ticketPb := mapper.TicketDetailMapper(ctx, server.store, ticket)
+	return &pb.TicketDetailResponse{
+		Code:    200,
+		Message: "success",
+		Details: ticketPb,
+	}, nil
+}
+
 func (server *ServerGRPC) TicketUpdateStatus(ctx context.Context, req *pb.TicketUpdateStatusRequest) (*pb.TicketUpdateStatusResponse, error) {
 	statusTicket, err := server.store.GetTicketStatus(ctx, db.GetTicketStatusParams{
 		Code: sql.NullString{

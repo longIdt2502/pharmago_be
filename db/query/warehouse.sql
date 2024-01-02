@@ -73,6 +73,28 @@ ORDER BY -t.id
 LIMIT COALESCE(sqlc.narg('limit')::int, 10)
 OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10);
 
+-- name: GetDetailTicket :one
+SELECT * , m.media_url AS qr_url, a_uc.full_name AS user_created_name, a_uu.full_name AS user_updated_name,
+       w.id AS w_id, w.name AS w_name, w.code AS w_code, w.address AS w_address,
+        c.id AS c_id, c.full_name AS c_name, c.code AS c_code, c.address AS c_address, c.email AS c_email, c.phone AS c_phone, c.company AS c_company,
+        s.id AS s_id, s.code AS s_code, s.name AS s_name, s.deputy_name AS s_deputy, s.phone AS s_phone, s.email AS s_email, s.address AS s_address, s.company AS s_company,
+       tt.id AS tt_id, tt.code AS tt_code, tt.title AS tt_title,
+       ts.id AS ts_id, ts.code AS ts_code, ts.title AS ts_title
+FROM tickets t
+LEFT JOIN suplier s ON t.import_from = s.address AND t.type = 1
+LEFT JOIN customers c ON t.export_to = c.address AND t.type = 2
+JOIN warehouses w ON w.id = t.warehouse
+JOIN ticket_type tt ON t.type = tt.id
+JOIN ticket_status ts ON t.status = ts.id
+JOIN medias m ON t.qr = m.id
+JOIN accounts a_uc ON a_uc.id = t.user_created
+JOIN accounts a_uu ON a_uu.id = t.user_updated
+WHERE t.id = $1;
+
+-- name: GetItemsTicket :many
+SELECT * FROM consignment
+WHERE ticket = $1;
+
 -- name: UpdateTicketStatus :one
 UPDATE tickets
 SET status = $1

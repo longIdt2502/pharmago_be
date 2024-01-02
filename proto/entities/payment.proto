@@ -13,7 +13,7 @@ message PaymentItem {
   int32 id = 1;
   SimpleData type = 2;
   float value = 3;
-  float is_paid = 4;
+  bool is_paid = 4;
   string extra_note = 5;
 }
 

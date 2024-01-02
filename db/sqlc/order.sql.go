@@ -423,3 +423,155 @@ func (q *Queries) ListOrder(ctx context.Context, arg ListOrderParams) ([]ListOrd
 	}
 	return items, nil
 }
+
+const listOrderItem = `-- name: ListOrderItem :many
+SELECT oi.id, "order", oi.variant, value, total_price, consignment, consignment_log, v.id, name, v.code, barcode, decision_number, register_number, longevity, vat, product, v.user_created, v.user_updated, v.updated_at, v.created_at, c.id, c.code, quantity, inventory, ticket, expired_at, producted_at, is_available, c.user_created, c.user_updated, c.updated_at, c.created_at, c.variant, vm.id, vm.variant, media, m.id, media_url FROM order_items oi
+JOIN variants v ON v.id = oi.variant
+JOIN consignment c ON c.id = oi.consignment
+JOIN variant_media vm ON vm.variant = v.id
+JOIN medias m ON vm.media = m.id
+WHERE oi.order = $1
+`
+
+type ListOrderItemRow struct {
+	ID             int32         `json:"id"`
+	Order          int32         `json:"order"`
+	Variant        int32         `json:"variant"`
+	Value          int32         `json:"value"`
+	TotalPrice     float64       `json:"total_price"`
+	Consignment    sql.NullInt32 `json:"consignment"`
+	ConsignmentLog sql.NullInt32 `json:"consignment_log"`
+	ID_2           int32         `json:"id_2"`
+	Name           string        `json:"name"`
+	Code           string        `json:"code"`
+	Barcode        string        `json:"barcode"`
+	DecisionNumber string        `json:"decision_number"`
+	RegisterNumber string        `json:"register_number"`
+	Longevity      string        `json:"longevity"`
+	Vat            float64       `json:"vat"`
+	Product        int32         `json:"product"`
+	UserCreated    int32         `json:"user_created"`
+	UserUpdated    sql.NullInt32 `json:"user_updated"`
+	UpdatedAt      sql.NullTime  `json:"updated_at"`
+	CreatedAt      time.Time     `json:"created_at"`
+	ID_3           int32         `json:"id_3"`
+	Code_2         string        `json:"code_2"`
+	Quantity       int32         `json:"quantity"`
+	Inventory      int32         `json:"inventory"`
+	Ticket         sql.NullInt32 `json:"ticket"`
+	ExpiredAt      time.Time     `json:"expired_at"`
+	ProductedAt    time.Time     `json:"producted_at"`
+	IsAvailable    bool          `json:"is_available"`
+	UserCreated_2  sql.NullInt32 `json:"user_created_2"`
+	UserUpdated_2  sql.NullInt32 `json:"user_updated_2"`
+	UpdatedAt_2    sql.NullTime  `json:"updated_at_2"`
+	CreatedAt_2    time.Time     `json:"created_at_2"`
+	Variant_2      sql.NullInt32 `json:"variant_2"`
+	ID_4           int32         `json:"id_4"`
+	Variant_3      int32         `json:"variant_3"`
+	Media          int32         `json:"media"`
+	ID_5           int32         `json:"id_5"`
+	MediaUrl       string        `json:"media_url"`
+}
+
+func (q *Queries) ListOrderItem(ctx context.Context, order int32) ([]ListOrderItemRow, error) {
+	rows, err := q.db.QueryContext(ctx, listOrderItem, order)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListOrderItemRow{}
+	for rows.Next() {
+		var i ListOrderItemRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Order,
+			&i.Variant,
+			&i.Value,
+			&i.TotalPrice,
+			&i.Consignment,
+			&i.ConsignmentLog,
+			&i.ID_2,
+			&i.Name,
+			&i.Code,
+			&i.Barcode,
+			&i.DecisionNumber,
+			&i.RegisterNumber,
+			&i.Longevity,
+			&i.Vat,
+			&i.Product,
+			&i.UserCreated,
+			&i.UserUpdated,
+			&i.UpdatedAt,
+			&i.CreatedAt,
+			&i.ID_3,
+			&i.Code_2,
+			&i.Quantity,
+			&i.Inventory,
+			&i.Ticket,
+			&i.ExpiredAt,
+			&i.ProductedAt,
+			&i.IsAvailable,
+			&i.UserCreated_2,
+			&i.UserUpdated_2,
+			&i.UpdatedAt_2,
+			&i.CreatedAt_2,
+			&i.Variant_2,
+			&i.ID_4,
+			&i.Variant_3,
+			&i.Media,
+			&i.ID_5,
+			&i.MediaUrl,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const updateStatusOrder = `-- name: UpdateStatusOrder :one
+UPDATE orders
+SET status = $1::varchar
+WHERE id = $2::int
+RETURNING id, code, total_price, description, vat, discount, service_price, must_paid, customer, address, status, type, ticket, qr, company, payment, user_created, user_updated, created_at, updated_at
+`
+
+type UpdateStatusOrderParams struct {
+	Status string `json:"status"`
+	ID     int32  `json:"id"`
+}
+
+func (q *Queries) UpdateStatusOrder(ctx context.Context, arg UpdateStatusOrderParams) (Order, error) {
+	row := q.db.QueryRowContext(ctx, updateStatusOrder, arg.Status, arg.ID)
+	var i Order
+	err := row.Scan(
+		&i.ID,
+		&i.Code,
+		&i.TotalPrice,
+		&i.Description,
+		&i.Vat,
+		&i.Discount,
+		&i.ServicePrice,
+		&i.MustPaid,
+		&i.Customer,
+		&i.Address,
+		&i.Status,
+		&i.Type,
+		&i.Ticket,
+		&i.Qr,
+		&i.Company,
+		&i.Payment,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}

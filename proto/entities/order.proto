@@ -7,10 +7,20 @@ import "entities/customer.proto";
 import "entities/address.proto";
 import "entities/simple_data.proto";
 import "entities/payment.proto";
+import "entities/variant.proto";
+import "entities/consigment.proto";
 
 import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message OrderItem {
+  int32 id = 1;
+  Variant variant = 2;
+  int32 value = 3;
+  float total_price = 4;
+  Consignment consignment = 5;
+}
 
 message Order {
   int32 id = 1;
@@ -32,6 +42,7 @@ message Order {
   google.protobuf.Timestamp created_at = 17;
   google.protobuf.Timestamp updated_at = 18;
   Payment payment = 19;
+  repeated OrderItem items = 20;
 }
 
 message OrderPreview {

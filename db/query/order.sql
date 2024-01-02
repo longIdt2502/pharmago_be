@@ -41,3 +41,17 @@ JOIN order_type ot ON o.type = ot.code
 JOIN order_status os ON o.status = os.code
 JOIN accounts a ON o.user_created = a.id
 WHERE o.id = $1;
+
+-- name: ListOrderItem :many
+SELECT * FROM order_items oi
+JOIN variants v ON v.id = oi.variant
+JOIN consignment c ON c.id = oi.consignment
+JOIN variant_media vm ON vm.variant = v.id
+JOIN medias m ON vm.media = m.id
+WHERE oi.order = $1;
+
+-- name: UpdateStatusOrder :one
+UPDATE orders
+SET status = sqlc.arg('status')::varchar
+WHERE id = sqlc.arg('id')::int
+RETURNING *;

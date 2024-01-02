@@ -655,38 +655,6 @@
         ]
       }
     },
-    "/order/v1/detail/{id}": {
-      "get": {
-        "summary": "Detail Order",
-        "operationId": "Pharmago_OrderDetail",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbOrderDetailResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "integer",
-            "format": "int32"
-          }
-        ],
-        "tags": [
-          "Order"
-        ]
-      }
-    },
     "/order/v1/list": {
       "get": {
         "summary": "List Order",
@@ -739,6 +707,82 @@
             "required": false,
             "type": "integer",
             "format": "int32"
+          }
+        ],
+        "tags": [
+          "Order"
+        ]
+      }
+    },
+    "/order/v1/order/{id}": {
+      "get": {
+        "summary": "Detail Order",
+        "operationId": "Pharmago_OrderDetail",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbOrderDetailResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Order"
+        ]
+      },
+      "put": {
+        "summary": "Update Status Order",
+        "operationId": "Pharmago_OrderUpdateStatus",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbOrderUpdateStatusResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "$ref": "#/definitions/OrderUpdateStatusRequestStatusEnum",
+                  "description": "Status code enum"
+                }
+              }
+            }
           }
         ],
         "tags": [
@@ -1468,7 +1512,7 @@
       }
     },
     "/warehouse/v1/ticket/update_status": {
-      "patch": {
+      "put": {
         "summary": "update ticket status",
         "description": "type: ['IMPORT', 'EXPORT']\nstatus: ['NEW', 'IN_PROCESS', 'COMPLETE', 'CANCEL']\ncode: optional\nexportTo: id address\nimportFrom: id address",
         "operationId": "Pharmago_TicketUpdateStatus",
@@ -1500,9 +1544,52 @@
           "Warehouse"
         ]
       }
+    },
+    "/warehouse/v1/ticket/{id}": {
+      "get": {
+        "summary": "detail ticket",
+        "operationId": "Pharmago_TicketDetail",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbTicketDetailResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "int32 value field",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Warehouse"
+        ]
+      }
     }
   },
   "definitions": {
+    "OrderUpdateStatusRequestStatusEnum": {
+      "type": "string",
+      "enum": [
+        "DRAFT",
+        "IN_PROCESS",
+        "COMPLETE",
+        "CANCEL"
+      ],
+      "default": "DRAFT"
+    },
     "TicketUpdateStatusRequestSTATUS": {
       "type": "string",
       "enum": [
@@ -2507,6 +2594,13 @@
         },
         "payment": {
           "$ref": "#/definitions/pbPayment"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbOrderItem"
+          }
         }
       }
     },
@@ -2617,6 +2711,29 @@
         }
       }
     },
+    "pbOrderItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "variant": {
+          "$ref": "#/definitions/pbVariant"
+        },
+        "value": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "totalPrice": {
+          "type": "number",
+          "format": "float"
+        },
+        "consignment": {
+          "$ref": "#/definitions/pbConsignment"
+        }
+      }
+    },
     "pbOrderItemCreate": {
       "type": "object",
       "properties": {
@@ -2685,6 +2802,18 @@
         }
       }
     },
+    "pbOrderUpdateStatusResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
     "pbPayment": {
       "type": "object",
       "properties": {
@@ -2748,8 +2877,7 @@
           "format": "float"
         },
         "isPaid": {
-          "type": "number",
-          "format": "float"
+          "type": "boolean"
         },
         "extraNote": {
           "type": "string"
@@ -3121,6 +3249,62 @@
         }
       }
     },
+    "pbTicket": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "code": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/pbSimpleData"
+        },
+        "status": {
+          "$ref": "#/definitions/pbSimpleData"
+        },
+        "note": {
+          "type": "string"
+        },
+        "qr": {
+          "type": "string"
+        },
+        "totalPrice": {
+          "type": "number",
+          "format": "float",
+          "title": "Address export_to = 7;\n Address import_from = 8;"
+        },
+        "supplier": {
+          "$ref": "#/definitions/pbSupplier"
+        },
+        "customer": {
+          "$ref": "#/definitions/pbCustomer"
+        },
+        "consignments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbConsignment"
+          }
+        },
+        "warehouse": {
+          "$ref": "#/definitions/pbWarehouse"
+        },
+        "userCreated": {
+          "type": "string"
+        },
+        "userUpdated": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "google.protobuf.Timestamp updated_at = 16;"
+        }
+      }
+    },
     "pbTicketCreateRequest": {
       "type": "object",
       "properties": {
@@ -3230,6 +3414,21 @@
         "details": {
           "type": "integer",
           "format": "int32"
+        }
+      }
+    },
+    "pbTicketDetailResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "$ref": "#/definitions/pbTicket"
         }
       }
     },
