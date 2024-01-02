@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package pb;
+
+import "entities/order.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+import "protoc-gen-openapiv2/options/annotations.proto";
+message OrderUpdateStatusRequest {
+  int32 id = 1;
+  enum StatusEnum {
+    DRAFT = 0;
+    IN_PROCESS = 1;
+    COMPLETE = 2;
+    CANCEL = 3;
+  }
+  StatusEnum code = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Status code enum"}];
+}
+
+message OrderUpdateStatusResponse {
+  int32 code = 1;
+  string message = 2;
+}

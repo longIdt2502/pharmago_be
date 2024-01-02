@@ -78,3 +78,57 @@ func (q *Queries) CreatePaymentItem(ctx context.Context, arg CreatePaymentItemPa
 	)
 	return i, err
 }
+
+const detailPayment = `-- name: DetailPayment :one
+SELECT id, code, must_paid, had_paid, need_pay FROM payments
+WHERE id = $1
+LIMIT 1
+`
+
+func (q *Queries) DetailPayment(ctx context.Context, id int32) (Payment, error) {
+	row := q.db.QueryRowContext(ctx, detailPayment, id)
+	var i Payment
+	err := row.Scan(
+		&i.ID,
+		&i.Code,
+		&i.MustPaid,
+		&i.HadPaid,
+		&i.NeedPay,
+	)
+	return i, err
+}
+
+const listPaymentItem = `-- name: ListPaymentItem :many
+SELECT id, type, value, is_paid, payment, extra_note FROM payment_items
+WHERE payment = $1
+`
+
+func (q *Queries) ListPaymentItem(ctx context.Context, payment int32) ([]PaymentItem, error) {
+	rows, err := q.db.QueryContext(ctx, listPaymentItem, payment)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []PaymentItem{}
+	for rows.Next() {
+		var i PaymentItem
+		if err := rows.Scan(
+			&i.ID,
+			&i.Type,
+			&i.Value,
+			&i.IsPaid,
+			&i.Payment,
+			&i.ExtraNote,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

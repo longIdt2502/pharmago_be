@@ -34,10 +34,12 @@ import "rpc/warehouse/rpc_warehouse_create.proto";
 import "rpc/warehouse/rpc_warehouse_list.proto";
 import "rpc/warehouse/rpc_ticket_update_status.proto";
 import "rpc/warehouse/rpc_suplier_list.proto";
+import "rpc/warehouse/rpc_ticket_detail.proto";
 
 import "rpc/order/rpc_order_create.proto";
 import "rpc/order/rpc_order_list.proto";
 import "rpc/order/rpc_order_detail.proto";
+import "rpc/order/rpc_order_update_status.proto";
 
 import "rpc/customer/rpc_customer_list.proto";
 
@@ -346,9 +348,18 @@ service Pharmago {
       tags: "Warehouse";
     };
   };
+  rpc TicketDetail (TicketDetailRequest) returns (TicketDetailResponse) {
+    option (google.api.http) = {
+      get: "/warehouse/v1/ticket/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "detail ticket";
+      tags: "Warehouse";
+    };
+  };
   rpc TicketUpdateStatus (TicketUpdateStatusRequest) returns (TicketUpdateStatusResponse) {
     option (google.api.http) = {
-      patch: "/warehouse/v1/ticket/update_status"
+      put: "/warehouse/v1/ticket/update_status"
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -398,10 +409,20 @@ service Pharmago {
   };
   rpc OrderDetail (OrderDetailRequest) returns (OrderDetailResponse) {
     option (google.api.http) = {
-      get: "/order/v1/detail/{id}"
+      get: "/order/v1/order/{id}"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Detail Order";
+      tags: "Order";
+    };
+  };
+  rpc OrderUpdateStatus (OrderUpdateStatusRequest) returns (OrderUpdateStatusResponse) {
+    option (google.api.http) = {
+      put: "/order/v1/order/{id}"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Update Status Order";
       tags: "Order";
     };
   };

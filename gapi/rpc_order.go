@@ -369,7 +369,7 @@ func (server *ServerGRPC) OrderList(ctx context.Context, req *pb.OrderListReques
 }
 
 func (server *ServerGRPC) OrderDetail(ctx context.Context, req *pb.OrderDetailRequest) (*pb.OrderDetailResponse, error) {
-	_, err := server.store.DetailOrder(ctx, req.Id)
+	orderDb, err := server.store.DetailOrder(ctx, req.Id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, status.Errorf(codes.NotFound, "order not exists")
@@ -377,5 +377,42 @@ func (server *ServerGRPC) OrderDetail(ctx context.Context, req *pb.OrderDetailRe
 		return nil, status.Errorf(codes.Internal, "failed to get order: ", err.Error())
 	}
 
-	return nil, nil
+	orderPb := mapper.OrderDetailMapper(ctx, server.store, orderDb)
+
+	return &pb.OrderDetailResponse{
+		Code:    200,
+		Message: "success",
+		Details: orderPb,
+	}, nil
+}
+
+func (server *ServerGRPC) OrderUpdateStatus(ctx context.Context, req *pb.OrderUpdateStatusRequest) (*pb.OrderUpdateStatusResponse, error) {
+	order, err := server.store.DetailOrder(ctx, req.Id)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, status.Errorf(codes.NotFound, "order not exists")
+		}
+		return nil, status.Errorf(codes.Internal, "failed to get order: ", err.Error())
+	}
+
+	if order.OsCode == "COMPLETE" || order.OsCode == "CANCEL" {
+		return nil, status.Errorf(codes.InvalidArgument, "can't update status")
+	}
+
+	if order.OsCode == "COMPLETE" {
+		// TODO: edit order create, when status complete so minus quantity consignment
+	}
+
+	_, err = server.store.UpdateStatusOrder(ctx, db.UpdateStatusOrderParams{
+		ID:     req.Id,
+		Status: req.Code.String(),
+	})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to update status order: ", err.Error())
+	}
+
+	return &pb.OrderUpdateStatusResponse{
+		Code:    200,
+		Message: "success",
+	}, nil
 }

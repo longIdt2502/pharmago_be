@@ -11,3 +11,12 @@ INSERT INTO payment_items (
 ) VALUES (
     $1, $2, $3, $4, $5
 ) RETURNING *;
+
+-- name: ListPaymentItem :many
+SELECT * FROM payment_items
+WHERE payment = $1;
+
+-- name: DetailPayment :one
+SELECT * FROM payments
+WHERE id = $1
+LIMIT 1;
