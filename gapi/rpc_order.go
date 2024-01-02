@@ -13,6 +13,7 @@ import (
 	"github.com/skip2/go-qrcode"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"time"
 )
 
 func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRequest) (*pb.OrderCreateResponse, error) {
@@ -327,15 +328,44 @@ func (server *ServerGRPC) OrderList(ctx context.Context, req *pb.OrderListReques
 	if err != nil {
 		return nil, config.UnauthenticatedError(err)
 	}
-
+	a := time.Unix(req.CreatedStart.GetSeconds(), 0)
+	print(a.String())
 	orders, err := server.store.ListOrder(ctx, db.ListOrderParams{
 		Company: sql.NullInt32{
 			Int32: req.Company,
 			Valid: true,
 		},
+		Status: sql.NullString{
+			String: req.GetStatus(),
+			Valid:  req.Status != nil,
+		},
+		Warehouse: sql.NullInt32{
+			Int32: req.GetWarehouse(),
+			Valid: req.Warehouse != nil,
+		},
 		Search: sql.NullString{
 			String: req.GetSearch(),
 			Valid:  req.Search != nil,
+		},
+		CreatedStart: sql.NullTime{
+			Time:  time.Unix(req.CreatedStart.GetSeconds(), 0),
+			Valid: req.CreatedStart != nil,
+		},
+		CreatedEnd: sql.NullTime{
+			Time:  time.Unix(req.CreatedEnd.GetSeconds(), 0),
+			Valid: req.CreatedEnd != nil,
+		},
+		UpdatedStart: sql.NullTime{
+			Time:  time.Unix(req.UpdatedStart.GetSeconds(), 0),
+			Valid: req.UpdatedStart != nil,
+		},
+		UpdatedEnd: sql.NullTime{
+			Time:  time.Unix(req.UpdatedEnd.GetSeconds(), 0),
+			Valid: req.UpdatedEnd != nil,
+		},
+		OrderBy: sql.NullString{
+			String: req.GetOrderBy(),
+			Valid:  req.OrderBy != nil,
 		},
 		Page: sql.NullInt32{
 			Int32: req.GetPage(),
@@ -344,10 +374,6 @@ func (server *ServerGRPC) OrderList(ctx context.Context, req *pb.OrderListReques
 		Limit: sql.NullInt32{
 			Int32: req.GetLimit(),
 			Valid: req.Limit != nil,
-		},
-		Warehouse: sql.NullInt32{
-			Int32: req.GetWarehouse(),
-			Valid: req.Warehouse != nil,
 		},
 	})
 	if err != nil {

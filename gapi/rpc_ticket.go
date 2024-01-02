@@ -253,8 +253,15 @@ func (server *ServerGRPC) TicketUpdateStatus(ctx context.Context, req *pb.Ticket
 
 func (server *ServerGRPC) ConsignmentList(ctx context.Context, req *pb.ConsignmentListRequest) (*pb.ConsignmentListResponse, error) {
 	consignments, err := server.store.GetConsignments(ctx, db.GetConsignmentsParams{
-		Company:   req.GetCompany(),
-		Warehouse: req.GetWarehouse(),
+		Company: req.GetCompany(),
+		Warehouse: sql.NullInt32{
+			Int32: req.GetWarehouse(),
+			Valid: req.Warehouse != nil,
+		},
+		Available: sql.NullBool{
+			Bool:  req.GetAvailable(),
+			Valid: req.Available != nil,
+		},
 		Search: sql.NullString{
 			String: req.GetSearch(),
 			Valid:  req.Search != nil,
