@@ -1416,41 +1416,7 @@
         ]
       }
     },
-    "/warehouse/v1/ticket/create": {
-      "post": {
-        "summary": "create ticket",
-        "description": "type: ['IMPORT', 'EXPORT']\nstatus: ['NEW', 'IN_PROCESS', 'COMPLETE', 'CANCEL']\ncode: optional\nexportTo: id address\nimportFrom: id address",
-        "operationId": "Pharmago_TicketCreate",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbTicketCreateResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/pbTicketCreateRequest"
-            }
-          }
-        ],
-        "tags": [
-          "Warehouse"
-        ]
-      }
-    },
-    "/warehouse/v1/ticket/list": {
+    "/warehouse/v1/ticket": {
       "get": {
         "summary": "list ticket",
         "operationId": "Pharmago_TicketList",
@@ -1479,9 +1445,8 @@
           },
           {
             "name": "warehouse",
-            "description": "int32 value field",
             "in": "query",
-            "required": true,
+            "required": false,
             "type": "integer",
             "format": "int32"
           },
@@ -1504,6 +1469,40 @@
             "required": false,
             "type": "integer",
             "format": "int32"
+          }
+        ],
+        "tags": [
+          "Warehouse"
+        ]
+      }
+    },
+    "/warehouse/v1/ticket/create": {
+      "post": {
+        "summary": "create ticket",
+        "description": "type: ['IMPORT', 'EXPORT']\nstatus: ['NEW', 'IN_PROCESS', 'COMPLETE', 'CANCEL']\ncode: optional\nexportTo: id address\nimportFrom: id address",
+        "operationId": "Pharmago_TicketCreate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbTicketCreateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbTicketCreateRequest"
+            }
           }
         ],
         "tags": [

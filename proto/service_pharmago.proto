@@ -341,7 +341,7 @@ service Pharmago {
   };
   rpc TicketList (TicketListRequest) returns (TicketListResponse) {
     option (google.api.http) = {
-      get: "/warehouse/v1/ticket/list"
+      get: "/warehouse/v1/ticket"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "list ticket";
