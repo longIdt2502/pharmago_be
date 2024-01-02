@@ -707,6 +707,46 @@
             "required": false,
             "type": "integer",
             "format": "int32"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "createdStart",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "createdEnd",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "updatedStart",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "updatedEnd",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
           }
         ],
         "tags": [
@@ -1244,9 +1284,8 @@
           },
           {
             "name": "warehouse",
-            "description": "int32 value field",
             "in": "query",
-            "required": true,
+            "required": false,
             "type": "integer",
             "format": "int32"
           },
@@ -1269,6 +1308,12 @@
             "required": false,
             "type": "integer",
             "format": "int32"
+          },
+          {
+            "name": "available",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "tags": [

@@ -3,7 +3,7 @@ syntax = "proto3";
 package pb;
 
 import "entities/order.proto";
-
+import "google/protobuf/timestamp.proto";
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
 message OrderListRequest {
@@ -12,6 +12,12 @@ message OrderListRequest {
   optional string search = 3;
   optional int32 page = 4;
   optional int32 limit = 5;
+  optional string status = 6;
+  optional string order_by = 7;
+  optional google.protobuf.Timestamp created_start = 8;
+  optional google.protobuf.Timestamp created_end = 9;
+  optional google.protobuf.Timestamp updated_start = 10;
+  optional google.protobuf.Timestamp updated_end = 11;
 }
 
 message OrderListResponse {

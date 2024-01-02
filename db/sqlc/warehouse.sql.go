@@ -222,18 +222,23 @@ SELECT c.id, c.code, quantity, inventory, ticket, expired_at, producted_at, is_a
 JOIN tickets t ON c.ticket = t.id
 JOIN warehouses w ON t.warehouse = w.id
 WHERE w.companies = $1::int
-AND w.id = $2::int
+AND ($2::bool IS NULL OR c.is_available = $2::bool)
 AND (
-    c.code ILIKE '%' || COALESCE($3::varchar, '') || '%'
+    $3::int IS NULL OR
+    w.id = $3::int
+)
+AND (
+    c.code ILIKE '%' || COALESCE($4::varchar, '') || '%'
 )
 ORDER BY -c.id
-LIMIT COALESCE($5::int, 10)
-OFFSET (COALESCE($4::int, 1) - 1) * COALESCE($5::int, 10)
+LIMIT COALESCE($6::int, 10)
+OFFSET (COALESCE($5::int, 1) - 1) * COALESCE($6::int, 10)
 `
 
 type GetConsignmentsParams struct {
 	Company   int32          `json:"company"`
-	Warehouse int32          `json:"warehouse"`
+	Available sql.NullBool   `json:"available"`
+	Warehouse sql.NullInt32  `json:"warehouse"`
 	Search    sql.NullString `json:"search"`
 	Page      sql.NullInt32  `json:"page"`
 	Limit     sql.NullInt32  `json:"limit"`
@@ -277,6 +282,7 @@ type GetConsignmentsRow struct {
 func (q *Queries) GetConsignments(ctx context.Context, arg GetConsignmentsParams) ([]GetConsignmentsRow, error) {
 	rows, err := q.db.QueryContext(ctx, getConsignments,
 		arg.Company,
+		arg.Available,
 		arg.Warehouse,
 		arg.Search,
 		arg.Page,

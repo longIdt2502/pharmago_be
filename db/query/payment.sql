@@ -13,7 +13,8 @@ INSERT INTO payment_items (
 ) RETURNING *;
 
 -- name: ListPaymentItem :many
-SELECT * FROM payment_items
+SELECT * FROM payment_items pi
+JOIN payment_item_types pit ON pi.type = pit.code
 WHERE payment = $1;
 
 -- name: DetailPayment :one

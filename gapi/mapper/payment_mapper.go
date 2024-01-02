@@ -15,8 +15,12 @@ func PaymentMapper(ctx context.Context, store *db.Store, id int32) *pb.Payment {
 	var items []*pb.PaymentItem
 	for _, value := range paymentItemDb {
 		dataPb := &pb.PaymentItem{
-			Id:        value.ID,
-			Type:      nil,
+			Id: value.ID,
+			Type: &pb.SimpleData{
+				Id:   value.ID_2,
+				Name: value.Title,
+				Code: value.Code,
+			},
 			Value:     float32(value.Value),
 			IsPaid:    value.IsPaid,
 			ExtraNote: value.ExtraNote.String,

@@ -99,19 +99,32 @@ func (q *Queries) DetailPayment(ctx context.Context, id int32) (Payment, error) 
 }
 
 const listPaymentItem = `-- name: ListPaymentItem :many
-SELECT id, type, value, is_paid, payment, extra_note FROM payment_items
+SELECT pi.id, type, value, is_paid, payment, extra_note, pit.id, code, title FROM payment_items pi
+JOIN payment_item_types pit ON pi.type = pit.code
 WHERE payment = $1
 `
 
-func (q *Queries) ListPaymentItem(ctx context.Context, payment int32) ([]PaymentItem, error) {
+type ListPaymentItemRow struct {
+	ID        int32          `json:"id"`
+	Type      string         `json:"type"`
+	Value     float64        `json:"value"`
+	IsPaid    bool           `json:"is_paid"`
+	Payment   int32          `json:"payment"`
+	ExtraNote sql.NullString `json:"extra_note"`
+	ID_2      int32          `json:"id_2"`
+	Code      string         `json:"code"`
+	Title     string         `json:"title"`
+}
+
+func (q *Queries) ListPaymentItem(ctx context.Context, payment int32) ([]ListPaymentItemRow, error) {
 	rows, err := q.db.QueryContext(ctx, listPaymentItem, payment)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []PaymentItem{}
+	items := []ListPaymentItemRow{}
 	for rows.Next() {
-		var i PaymentItem
+		var i ListPaymentItemRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.Type,
@@ -119,6 +132,9 @@ func (q *Queries) ListPaymentItem(ctx context.Context, payment int32) ([]Payment
 			&i.IsPaid,
 			&i.Payment,
 			&i.ExtraNote,
+			&i.ID_2,
+			&i.Code,
+			&i.Title,
 		); err != nil {
 			return nil, err
 		}

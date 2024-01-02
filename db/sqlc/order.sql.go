@@ -246,23 +246,49 @@ JOIN order_status os ON os.code = o.status
 JOIN accounts a ON a.id = o.user_created
 WHERE o.company = $1::int
 AND (
-    $2::int IS NULL OR t.warehouse = $2::int
+    $2::varchar IS NULL OR o.status = $2::varchar
 )
 AND (
-    o.code ILIKE '%' || COALESCE($3::varchar, '') || '%' OR
-    c.full_name ILIKE '%' || COALESCE($3::varchar, '') || '%'
+    $3::int IS NULL OR t.warehouse = $3::int
 )
-ORDER BY -o.id
-LIMIT COALESCE($5::int, 10)
-OFFSET (COALESCE($4::int, 1) - 1) * COALESCE($5::int, 10)
+AND (
+    o.code ILIKE '%' || COALESCE($4::varchar, '') || '%' OR
+    c.full_name ILIKE '%' || COALESCE($4::varchar, '') || '%'
+)
+AND  ((
+    $5::timestamp  IS NULL AND $6::timestamp  IS NULL
+) OR (
+    ($5::timestamp  IS NULL OR o.created_at >= $5::timestamp) AND
+    ($6::timestamp  IS NULL OR o.created_at <= $6::timestamp)
+))
+AND ((
+    $7::timestamp  IS NULL AND $8::timestamp  IS NULL
+) OR (
+    (o.updated_at >= $7::timestamp OR $7::timestamp  IS NULL) AND
+    (o.updated_at <= $8::timestamp OR $8::timestamp  IS NULL)
+))
+ORDER BY
+    CASE WHEN $9::varchar = 'created_at' THEN o.created_at END DESC,
+    CASE WHEN $9::varchar = '-created_at' THEN o.created_at END ASC,
+    CASE WHEN $9::varchar = 'updated_at' THEN o.updated_at END DESC,
+    CASE WHEN $9::varchar = '-updated_at' THEN o.updated_at END ASC,
+    CASE WHEN $9::varchar IS NULL THEN o.id END DESC
+LIMIT COALESCE($11::int, 10)
+OFFSET (COALESCE($10::int, 1) - 1) * COALESCE($11::int, 10)
 `
 
 type ListOrderParams struct {
-	Company   sql.NullInt32  `json:"company"`
-	Warehouse sql.NullInt32  `json:"warehouse"`
-	Search    sql.NullString `json:"search"`
-	Page      sql.NullInt32  `json:"page"`
-	Limit     sql.NullInt32  `json:"limit"`
+	Company      sql.NullInt32  `json:"company"`
+	Status       sql.NullString `json:"status"`
+	Warehouse    sql.NullInt32  `json:"warehouse"`
+	Search       sql.NullString `json:"search"`
+	CreatedStart sql.NullTime   `json:"created_start"`
+	CreatedEnd   sql.NullTime   `json:"created_end"`
+	UpdatedStart sql.NullTime   `json:"updated_start"`
+	UpdatedEnd   sql.NullTime   `json:"updated_end"`
+	OrderBy      sql.NullString `json:"order_by"`
+	Page         sql.NullInt32  `json:"page"`
+	Limit        sql.NullInt32  `json:"limit"`
 }
 
 type ListOrderRow struct {
@@ -334,8 +360,14 @@ type ListOrderRow struct {
 func (q *Queries) ListOrder(ctx context.Context, arg ListOrderParams) ([]ListOrderRow, error) {
 	rows, err := q.db.QueryContext(ctx, listOrder,
 		arg.Company,
+		arg.Status,
 		arg.Warehouse,
 		arg.Search,
+		arg.CreatedStart,
+		arg.CreatedEnd,
+		arg.UpdatedStart,
+		arg.UpdatedEnd,
+		arg.OrderBy,
 		arg.Page,
 		arg.Limit,
 	)

@@ -22,13 +22,33 @@ JOIN order_status os ON os.code = o.status
 JOIN accounts a ON a.id = o.user_created
 WHERE o.company = sqlc.narg(company)::int
 AND (
+    sqlc.narg('status')::varchar IS NULL OR o.status = sqlc.narg('status')::varchar
+)
+AND (
     sqlc.narg('warehouse')::int IS NULL OR t.warehouse = sqlc.narg('warehouse')::int
 )
 AND (
     o.code ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
     c.full_name ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%'
 )
-ORDER BY -o.id
+AND  ((
+    sqlc.narg('created_start')::timestamp  IS NULL AND sqlc.narg('created_end')::timestamp  IS NULL
+) OR (
+    (sqlc.narg('created_start')::timestamp  IS NULL OR o.created_at >= sqlc.narg('created_start')::timestamp) AND
+    (sqlc.narg('created_end')::timestamp  IS NULL OR o.created_at <= sqlc.narg('created_end')::timestamp)
+))
+AND ((
+    sqlc.narg('updated_start')::timestamp  IS NULL AND sqlc.narg('updated_end')::timestamp  IS NULL
+) OR (
+    (o.updated_at >= sqlc.narg('updated_start')::timestamp OR sqlc.narg('updated_start')::timestamp  IS NULL) AND
+    (o.updated_at <= sqlc.narg('updated_end')::timestamp OR sqlc.narg('updated_end')::timestamp  IS NULL)
+))
+ORDER BY
+    CASE WHEN sqlc.narg('order_by')::varchar = 'created_at' THEN o.created_at END DESC,
+    CASE WHEN sqlc.narg('order_by')::varchar = '-created_at' THEN o.created_at END ASC,
+    CASE WHEN sqlc.narg('order_by')::varchar = 'updated_at' THEN o.updated_at END DESC,
+    CASE WHEN sqlc.narg('order_by')::varchar = '-updated_at' THEN o.updated_at END ASC,
+    CASE WHEN sqlc.narg('order_by')::varchar IS NULL THEN o.id END DESC
 LIMIT COALESCE(sqlc.narg('limit')::int, 10)
 OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10);
 

@@ -106,7 +106,11 @@ SELECT * FROM consignment c
 JOIN tickets t ON c.ticket = t.id
 JOIN warehouses w ON t.warehouse = w.id
 WHERE w.companies = sqlc.arg('company')::int
-AND w.id = sqlc.arg('warehouse')::int
+AND (sqlc.narg('available')::bool IS NULL OR c.is_available = sqlc.narg('available')::bool)
+AND (
+    sqlc.narg('warehouse')::int IS NULL OR
+    w.id = sqlc.narg('warehouse')::int
+)
 AND (
     c.code ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%'
 )
