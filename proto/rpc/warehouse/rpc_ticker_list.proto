@@ -15,12 +15,7 @@ message TicketListRequest {
       "company"
     ],
   }];
-  int32 warehouse = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
-    description: "int32 value field",
-    required: [
-      "warehouse"
-    ],
-  }];
+  int32 warehouse = 2;
   optional string search = 3;
   optional int32 page = 4;
   optional int32 limit = 5;

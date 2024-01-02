@@ -1977,7 +1977,7 @@ func RegisterPharmagoHandlerServer(ctx context.Context, mux *runtime.ServeMux, s
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/pb.Pharmago/TicketList", runtime.WithHTTPPathPattern("/warehouse/v1/ticket/list"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/pb.Pharmago/TicketList", runtime.WithHTTPPathPattern("/warehouse/v1/ticket"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2869,7 +2869,7 @@ func RegisterPharmagoHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/pb.Pharmago/TicketList", runtime.WithHTTPPathPattern("/warehouse/v1/ticket/list"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/pb.Pharmago/TicketList", runtime.WithHTTPPathPattern("/warehouse/v1/ticket"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -3201,7 +3201,7 @@ var (
 
 	pattern_Pharmago_TicketCreate_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"warehouse", "v1", "ticket", "create"}, ""))
 
-	pattern_Pharmago_TicketList_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"warehouse", "v1", "ticket", "list"}, ""))
+	pattern_Pharmago_TicketList_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"warehouse", "v1", "ticket"}, ""))
 
 	pattern_Pharmago_TicketDetail_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"warehouse", "v1", "ticket", "id"}, ""))
 
