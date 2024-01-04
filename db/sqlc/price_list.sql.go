@@ -266,7 +266,7 @@ type GetPriceListsRow struct {
 	Code_2            string          `json:"code_2"`
 	ProductCategory   sql.NullInt32   `json:"product_category"`
 	Type_2            sql.NullInt32   `json:"type_2"`
-	Brand             int32           `json:"brand"`
+	Brand             sql.NullInt32   `json:"brand"`
 	Unit_2            int32           `json:"unit_2"`
 	TaDuoc            sql.NullString  `json:"ta_duoc"`
 	NongDo            sql.NullString  `json:"nong_do"`
