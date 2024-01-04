@@ -43,6 +43,10 @@ import "rpc/order/rpc_order_update_status.proto";
 
 import "rpc/customer/rpc_customer_list.proto";
 
+import "rpc/supplier/rpc_supplier_create.proto";
+import "rpc/supplier/rpc_supplier_detail.proto";
+import "rpc/supplier/rpc_supplier_update.proto";
+
 import "rpc/rpc_import_company.proto";
 import "rpc/rpc_import_product.proto";
 import "rpc/rpc_import_product_master_data.proto";
@@ -307,6 +311,46 @@ service Pharmago {
     };
   };
 
+  // TODO: ================== SUPPLIER ===================
+  rpc SupplierCreate (SupplierCreateRequest) returns (SupplierCreateResponse) {
+    option (google.api.http) = {
+      post: "/supplier/v1/create",
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create Supplier";
+      tags: "Supplier";
+    };
+  };
+  rpc SupplierList (SupplierListRequest) returns (SupplierListResponse) {
+    option (google.api.http) = {
+      get: "/supplier/v1/list"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List Supplier";
+      tags: "Supplier";
+    };
+  };
+  rpc SupplierDetail (SupplierDetailRequest) returns (SupplierDetailResponse) {
+    option (google.api.http) = {
+      get: "/supplier/v1/supplier/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Detail Supplier";
+      tags: "Supplier";
+    };
+  };
+  rpc SupplierUpdate (SupplierUpdateRequest) returns (SupplierUpdateResponse) {
+    option (google.api.http) = {
+      put: "/supplier/v1/supplier/{id}",
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Update Supplier";
+      tags: "Supplier";
+    };
+  };
+
   // ================== WAREHOUSE ===================
   rpc WarehouseCreate (WarehouseCreateRequest) returns (WarehouseCreateResponse) {
     option (google.api.http) = {
@@ -374,15 +418,6 @@ service Pharmago {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "get list consignment";
-      tags: "Warehouse";
-    };
-  };
-  rpc SupplierList (SupplierListRequest) returns (SupplierListResponse) {
-    option (google.api.http) = {
-      get: "/warehouse/v1/supplier/list"
-    };
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "List supplier";
       tags: "Warehouse";
     };
   };

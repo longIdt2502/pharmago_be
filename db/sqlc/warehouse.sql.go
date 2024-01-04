@@ -602,64 +602,8 @@ func (q *Queries) GetItemsTicket(ctx context.Context, ticket sql.NullInt32) ([]C
 	return items, nil
 }
 
-const getListSupplier = `-- name: GetListSupplier :many
-SELECT id, code, name, deputy_name, phone, email, address, company FROM suplier
-WHERE company = $1::int
-AND (
-    name ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
-    code ILIKE '%' || COALESCE($2::varchar, '') || '%'
-)
-ORDER BY -id
-LIMIT COALESCE($4::int, 10)
-OFFSET (COALESCE($3::int, 1) - 1) * COALESCE($4::int, 10)
-`
-
-type GetListSupplierParams struct {
-	Company int32          `json:"company"`
-	Search  sql.NullString `json:"search"`
-	Page    sql.NullInt32  `json:"page"`
-	Limit   sql.NullInt32  `json:"limit"`
-}
-
-func (q *Queries) GetListSupplier(ctx context.Context, arg GetListSupplierParams) ([]Suplier, error) {
-	rows, err := q.db.QueryContext(ctx, getListSupplier,
-		arg.Company,
-		arg.Search,
-		arg.Page,
-		arg.Limit,
-	)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []Suplier{}
-	for rows.Next() {
-		var i Suplier
-		if err := rows.Scan(
-			&i.ID,
-			&i.Code,
-			&i.Name,
-			&i.DeputyName,
-			&i.Phone,
-			&i.Email,
-			&i.Address,
-			&i.Company,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const getListTicket = `-- name: GetListTicket :many
-SELECT t.id, t.code, t.type, status, note, qr, export_to, import_from, total_price, warehouse, t.user_created, t.user_updated, t.updated_at, t.created_at, w.id, address, companies, name, w.code, a.id, username, hashed_password, full_name, email, a.type, is_verify, password_changed_at, a.created_at, m.id, media_url, tt.id, tt.code, tt.title, ts.id, ts.code, ts.title, c.id, c.code, quantity, inventory, ticket, expired_at, producted_at, is_available, c.user_created, c.user_updated, c.updated_at, c.created_at, variant, w.name AS w_name, a.full_name AS a_full_name, m.media_url AS qr_url,
+SELECT t.id, t.code, t.type, status, note, qr, export_to, import_from, total_price, warehouse, t.user_created, t.user_updated, t.updated_at, t.created_at, w.id, w.address, companies, w.name, w.code, a.id, username, hashed_password, full_name, a.email, a.type, is_verify, password_changed_at, a.created_at, m.id, media_url, tt.id, tt.code, tt.title, ts.id, ts.code, ts.title, c.id, c.code, quantity, inventory, ticket, expired_at, producted_at, is_available, c.user_created, c.user_updated, c.updated_at, c.created_at, variant, s.id, s.code, s.name, deputy_name, phone, s.email, s.address, company, w.name AS w_name, a.full_name AS a_full_name, m.media_url AS qr_url,
     tt.id AS tt_id, tt.code AS tt_code, tt.title AS tt_title,
     ts.id AS ts_id, ts.code AS ts_code, ts.title AS ts_title,
     COALESCE(SUM(c.quantity), 0)::int AS total_products
@@ -670,24 +614,30 @@ JOIN medias m ON t.qr = m.id
 JOIN ticket_type tt ON t.type = tt.id
 JOIN ticket_status ts ON t.status = ts.id
 LEFT JOIN consignment c ON t.id = c.ticket
+LEFT JOIN suplier s ON s.address = t.import_from
 WHERE w.companies = $1
 AND (
-    t.code ILIKE '%' || COALESCE($2::varchar, '') || '%'
+    $2::int IS NULL OR s.id = $2::int
+)
+AND (
+    t.code ILIKE '%' || COALESCE($3::varchar, '') || '%'
 )
 GROUP BY
     t.id, t.code, t.type, t.status, t.note, t.qr, t.total_price, t.warehouse, t.user_created, t.created_at,
     w.id, a.id, m.id, tt.id, ts.id, c.ticket, c.id,
-    w.name, a.full_name, m.media_url, tt.id, tt.code, tt.title, ts.id, ts.code, ts.title
+    w.name, a.full_name, m.media_url, tt.id, tt.code, tt.title, ts.id, ts.code, ts.title,
+    s.id
 ORDER BY -t.id
-LIMIT COALESCE($4::int, 10)
-OFFSET (COALESCE($3::int, 1) - 1) * COALESCE($4::int, 10)
+LIMIT COALESCE($5::int, 10)
+OFFSET (COALESCE($4::int, 1) - 1) * COALESCE($5::int, 10)
 `
 
 type GetListTicketParams struct {
-	Company sql.NullInt32  `json:"company"`
-	Search  sql.NullString `json:"search"`
-	Page    sql.NullInt32  `json:"page"`
-	Limit   sql.NullInt32  `json:"limit"`
+	Company  sql.NullInt32  `json:"company"`
+	Supplier sql.NullInt32  `json:"supplier"`
+	Search   sql.NullString `json:"search"`
+	Page     sql.NullInt32  `json:"page"`
+	Limit    sql.NullInt32  `json:"limit"`
 }
 
 type GetListTicketRow struct {
@@ -740,6 +690,14 @@ type GetListTicketRow struct {
 	UpdatedAt_2       sql.NullTime   `json:"updated_at_2"`
 	CreatedAt_3       sql.NullTime   `json:"created_at_3"`
 	Variant           sql.NullInt32  `json:"variant"`
+	ID_8              sql.NullInt32  `json:"id_8"`
+	Code_6            sql.NullString `json:"code_6"`
+	Name_2            sql.NullString `json:"name_2"`
+	DeputyName        sql.NullString `json:"deputy_name"`
+	Phone             sql.NullString `json:"phone"`
+	Email_2           sql.NullString `json:"email_2"`
+	Address_2         sql.NullInt32  `json:"address_2"`
+	Company           sql.NullInt32  `json:"company"`
 	WName             string         `json:"w_name"`
 	AFullName         string         `json:"a_full_name"`
 	QrUrl             string         `json:"qr_url"`
@@ -755,6 +713,7 @@ type GetListTicketRow struct {
 func (q *Queries) GetListTicket(ctx context.Context, arg GetListTicketParams) ([]GetListTicketRow, error) {
 	rows, err := q.db.QueryContext(ctx, getListTicket,
 		arg.Company,
+		arg.Supplier,
 		arg.Search,
 		arg.Page,
 		arg.Limit,
@@ -816,6 +775,14 @@ func (q *Queries) GetListTicket(ctx context.Context, arg GetListTicketParams) ([
 			&i.UpdatedAt_2,
 			&i.CreatedAt_3,
 			&i.Variant,
+			&i.ID_8,
+			&i.Code_6,
+			&i.Name_2,
+			&i.DeputyName,
+			&i.Phone,
+			&i.Email_2,
+			&i.Address_2,
+			&i.Company,
 			&i.WName,
 			&i.AFullName,
 			&i.QrUrl,

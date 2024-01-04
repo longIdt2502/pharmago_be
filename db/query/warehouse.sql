@@ -61,14 +61,19 @@ JOIN medias m ON t.qr = m.id
 JOIN ticket_type tt ON t.type = tt.id
 JOIN ticket_status ts ON t.status = ts.id
 LEFT JOIN consignment c ON t.id = c.ticket
+LEFT JOIN suplier s ON s.address = t.import_from
 WHERE w.companies = sqlc.arg('company')
+AND (
+    sqlc.narg('supplier')::int IS NULL OR s.id = sqlc.narg('supplier')::int
+)
 AND (
     t.code ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%'
 )
 GROUP BY
     t.id, t.code, t.type, t.status, t.note, t.qr, t.total_price, t.warehouse, t.user_created, t.created_at,
     w.id, a.id, m.id, tt.id, ts.id, c.ticket, c.id,
-    w.name, a.full_name, m.media_url, tt.id, tt.code, tt.title, ts.id, ts.code, ts.title
+    w.name, a.full_name, m.media_url, tt.id, tt.code, tt.title, ts.id, ts.code, ts.title,
+    s.id
 ORDER BY -t.id
 LIMIT COALESCE(sqlc.narg('limit')::int, 10)
 OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10);
@@ -142,14 +147,3 @@ UPDATE consignment
 SET is_available = true
 WHERE ticket = $1
 RETURNING *;
-
--- name: GetListSupplier :many
-SELECT * FROM suplier
-WHERE company = sqlc.arg('company')::int
-AND (
-    name ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
-    code ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%'
-)
-ORDER BY -id
-LIMIT COALESCE(sqlc.narg('limit')::int, 10)
-OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10);

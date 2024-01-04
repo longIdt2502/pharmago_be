@@ -175,6 +175,10 @@ func (server *ServerGRPC) TicketList(ctx context.Context, req *pb.TicketListRequ
 			Int32: req.GetLimit(),
 			Valid: req.Limit != nil,
 		},
+		Supplier: sql.NullInt32{
+			Int32: req.GetSupplier(),
+			Valid: req.Supplier != nil,
+		},
 	})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get list tickets: ", err.Error())

@@ -248,3 +248,51 @@ func (q *Queries) GetWardByCode(ctx context.Context, code string) (Ward, error) 
 	)
 	return i, err
 }
+
+const updateAddress = `-- name: UpdateAddress :one
+UPDATE address
+SET
+    lat = COALESCE($1, lat),
+    lng = COALESCE($2, lng),
+    province = COALESCE($3, province),
+    district = COALESCE($4, district),
+    ward = COALESCE($5, ward),
+    title = COALESCE($6, title)
+WHERE id = $7
+RETURNING id, lat, lng, province, district, ward, title, user_created, created_at
+`
+
+type UpdateAddressParams struct {
+	Lat      sql.NullFloat64 `json:"lat"`
+	Lng      sql.NullFloat64 `json:"lng"`
+	Province sql.NullString  `json:"province"`
+	District sql.NullString  `json:"district"`
+	Ward     sql.NullString  `json:"ward"`
+	Title    sql.NullString  `json:"title"`
+	ID       int32           `json:"id"`
+}
+
+func (q *Queries) UpdateAddress(ctx context.Context, arg UpdateAddressParams) (Address, error) {
+	row := q.db.QueryRowContext(ctx, updateAddress,
+		arg.Lat,
+		arg.Lng,
+		arg.Province,
+		arg.District,
+		arg.Ward,
+		arg.Title,
+		arg.ID,
+	)
+	var i Address
+	err := row.Scan(
+		&i.ID,
+		&i.Lat,
+		&i.Lng,
+		&i.Province,
+		&i.District,
+		&i.Ward,
+		&i.Title,
+		&i.UserCreated,
+		&i.CreatedAt,
+	)
+	return i, err
+}

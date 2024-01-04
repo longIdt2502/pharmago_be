@@ -1255,6 +1255,183 @@
         ]
       }
     },
+    "/supplier/v1/create": {
+      "post": {
+        "summary": "Create Supplier",
+        "operationId": "Pharmago_SupplierCreate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbSupplierCreateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbSupplierCreateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Supplier"
+        ]
+      }
+    },
+    "/supplier/v1/list": {
+      "get": {
+        "summary": "List Supplier",
+        "operationId": "Pharmago_SupplierList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbSupplierListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "company",
+            "description": "int32 value field",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Supplier"
+        ]
+      }
+    },
+    "/supplier/v1/supplier/{id}": {
+      "get": {
+        "summary": "Detail Supplier",
+        "operationId": "Pharmago_SupplierDetail",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbSupplierDetailResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Supplier"
+        ]
+      },
+      "put": {
+        "summary": "Update Supplier",
+        "operationId": "Pharmago_SupplierUpdate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbSupplierUpdateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "deputy": {
+                  "type": "string"
+                },
+                "phone": {
+                  "type": "string"
+                },
+                "address": {
+                  "$ref": "#/definitions/pbAddressPayload"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "company": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        ],
+        "tags": [
+          "Supplier"
+        ]
+      }
+    },
     "/warehouse/v1/consignment/list": {
       "get": {
         "summary": "get list consignment",
@@ -1408,59 +1585,6 @@
         ]
       }
     },
-    "/warehouse/v1/supplier/list": {
-      "get": {
-        "summary": "List supplier",
-        "operationId": "Pharmago_SupplierList",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbSupplierListResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "company",
-            "description": "int32 value field",
-            "in": "query",
-            "required": true,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "search",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          }
-        ],
-        "tags": [
-          "Warehouse"
-        ]
-      }
-    },
     "/warehouse/v1/ticket": {
       "get": {
         "summary": "list ticket",
@@ -1510,6 +1634,13 @@
           },
           {
             "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "supplier",
             "in": "query",
             "required": false,
             "type": "integer",
@@ -1740,6 +1871,31 @@
           "type": "string"
         },
         "fullNameEn": {
+          "type": "string"
+        }
+      }
+    },
+    "pbAddressPayload": {
+      "type": "object",
+      "properties": {
+        "lat": {
+          "type": "number",
+          "format": "float"
+        },
+        "lng": {
+          "type": "number",
+          "format": "float"
+        },
+        "province": {
+          "type": "string"
+        },
+        "district": {
+          "type": "string"
+        },
+        "ward": {
+          "type": "string"
+        },
+        "title": {
           "type": "string"
         }
       }
@@ -2811,6 +2967,30 @@
             "type": "object",
             "$ref": "#/definitions/pbOrderPreview"
           }
+        },
+        "count": {
+          "$ref": "#/definitions/pbOrderListResponseCount"
+        }
+      }
+    },
+    "pbOrderListResponseCount": {
+      "type": "object",
+      "properties": {
+        "draft": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "inProcess": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "complete": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "cancel": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -3274,6 +3454,64 @@
         }
       }
     },
+    "pbSupplierCreateRequest": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "deputy": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "address": {
+          "$ref": "#/definitions/pbAddressPayload"
+        },
+        "email": {
+          "type": "string"
+        },
+        "company": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbSupplierCreateResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbSupplierDetailResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "$ref": "#/definitions/pbSupplier"
+        }
+      }
+    },
     "pbSupplierListResponse": {
       "type": "object",
       "properties": {
@@ -3290,6 +3528,18 @@
             "type": "object",
             "$ref": "#/definitions/pbSupplier"
           }
+        }
+      }
+    },
+    "pbSupplierUpdateResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
         }
       }
     },
