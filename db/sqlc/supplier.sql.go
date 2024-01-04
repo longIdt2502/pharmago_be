@@ -52,6 +52,27 @@ func (q *Queries) CreateSupplier(ctx context.Context, arg CreateSupplierParams) 
 	return i, err
 }
 
+const deleteSupplier = `-- name: DeleteSupplier :one
+DELETE FROM suplier
+WHERE id = $1 RETURNING id, code, name, deputy_name, phone, email, address, company
+`
+
+func (q *Queries) DeleteSupplier(ctx context.Context, id int32) (Suplier, error) {
+	row := q.db.QueryRowContext(ctx, deleteSupplier, id)
+	var i Suplier
+	err := row.Scan(
+		&i.ID,
+		&i.Code,
+		&i.Name,
+		&i.DeputyName,
+		&i.Phone,
+		&i.Email,
+		&i.Address,
+		&i.Company,
+	)
+	return i, err
+}
+
 const detailSupplier = `-- name: DetailSupplier :one
 SELECT id, code, name, deputy_name, phone, email, address, company FROM suplier
 WHERE id = $1

@@ -29,3 +29,7 @@ SET
     email = COALESCE(sqlc.narg(email), email)
 WHERE id = sqlc.arg(id)
 RETURNING *;
+
+-- name: DeleteSupplier :one
+DELETE FROM suplier
+WHERE id = $1 RETURNING *;

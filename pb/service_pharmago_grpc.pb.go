@@ -55,6 +55,7 @@ type PharmagoClient interface {
 	SupplierList(ctx context.Context, in *SupplierListRequest, opts ...grpc.CallOption) (*SupplierListResponse, error)
 	SupplierDetail(ctx context.Context, in *SupplierDetailRequest, opts ...grpc.CallOption) (*SupplierDetailResponse, error)
 	SupplierUpdate(ctx context.Context, in *SupplierUpdateRequest, opts ...grpc.CallOption) (*SupplierUpdateResponse, error)
+	SupplierDelete(ctx context.Context, in *SupplierDeleteRequest, opts ...grpc.CallOption) (*SupplierDeleteResponse, error)
 	// ================== WAREHOUSE ===================
 	WarehouseCreate(ctx context.Context, in *WarehouseCreateRequest, opts ...grpc.CallOption) (*WarehouseCreateResponse, error)
 	WarehouseList(ctx context.Context, in *WarehouseListRequest, opts ...grpc.CallOption) (*WarehouseListResponse, error)
@@ -309,6 +310,15 @@ func (c *pharmagoClient) SupplierUpdate(ctx context.Context, in *SupplierUpdateR
 	return out, nil
 }
 
+func (c *pharmagoClient) SupplierDelete(ctx context.Context, in *SupplierDeleteRequest, opts ...grpc.CallOption) (*SupplierDeleteResponse, error) {
+	out := new(SupplierDeleteResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/SupplierDelete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *pharmagoClient) WarehouseCreate(ctx context.Context, in *WarehouseCreateRequest, opts ...grpc.CallOption) (*WarehouseCreateResponse, error) {
 	out := new(WarehouseCreateResponse)
 	err := c.cc.Invoke(ctx, "/pb.Pharmago/WarehouseCreate", in, out, opts...)
@@ -481,6 +491,7 @@ type PharmagoServer interface {
 	SupplierList(context.Context, *SupplierListRequest) (*SupplierListResponse, error)
 	SupplierDetail(context.Context, *SupplierDetailRequest) (*SupplierDetailResponse, error)
 	SupplierUpdate(context.Context, *SupplierUpdateRequest) (*SupplierUpdateResponse, error)
+	SupplierDelete(context.Context, *SupplierDeleteRequest) (*SupplierDeleteResponse, error)
 	// ================== WAREHOUSE ===================
 	WarehouseCreate(context.Context, *WarehouseCreateRequest) (*WarehouseCreateResponse, error)
 	WarehouseList(context.Context, *WarehouseListRequest) (*WarehouseListResponse, error)
@@ -581,6 +592,9 @@ func (UnimplementedPharmagoServer) SupplierDetail(context.Context, *SupplierDeta
 }
 func (UnimplementedPharmagoServer) SupplierUpdate(context.Context, *SupplierUpdateRequest) (*SupplierUpdateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SupplierUpdate not implemented")
+}
+func (UnimplementedPharmagoServer) SupplierDelete(context.Context, *SupplierDeleteRequest) (*SupplierDeleteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SupplierDelete not implemented")
 }
 func (UnimplementedPharmagoServer) WarehouseCreate(context.Context, *WarehouseCreateRequest) (*WarehouseCreateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method WarehouseCreate not implemented")
@@ -1090,6 +1104,24 @@ func _Pharmago_SupplierUpdate_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Pharmago_SupplierDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SupplierDeleteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).SupplierDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/SupplierDelete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).SupplierDelete(ctx, req.(*SupplierDeleteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Pharmago_WarehouseCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(WarehouseCreateRequest)
 	if err := dec(in); err != nil {
@@ -1466,6 +1498,10 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SupplierUpdate",
 			Handler:    _Pharmago_SupplierUpdate_Handler,
+		},
+		{
+			MethodName: "SupplierDelete",
+			Handler:    _Pharmago_SupplierDelete_Handler,
 		},
 		{
 			MethodName: "WarehouseCreate",
