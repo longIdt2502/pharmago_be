@@ -387,10 +387,36 @@ func (server *ServerGRPC) OrderList(ctx context.Context, req *pb.OrderListReques
 		ordersPb = append(ordersPb, dataPb)
 	}
 
+	draftCount, _ := server.store.CountOrderByStatus(ctx, sql.NullString{
+		String: "DRAFT",
+		Valid:  true,
+	})
+
+	inProcessCount, _ := server.store.CountOrderByStatus(ctx, sql.NullString{
+		String: "IN_PROCESS",
+		Valid:  true,
+	})
+
+	completeCount, _ := server.store.CountOrderByStatus(ctx, sql.NullString{
+		String: "COMPLETE",
+		Valid:  true,
+	})
+
+	cancelCount, _ := server.store.CountOrderByStatus(ctx, sql.NullString{
+		String: "CANCEL",
+		Valid:  true,
+	})
+
 	return &pb.OrderListResponse{
 		Code:    200,
 		Message: "success",
 		Details: ordersPb,
+		Count: &pb.OrderListResponseCount{
+			Draft:     int32(draftCount),
+			InProcess: int32(inProcessCount),
+			Complete:  int32(completeCount),
+			Cancel:    int32(cancelCount),
+		},
 	}, nil
 }
 

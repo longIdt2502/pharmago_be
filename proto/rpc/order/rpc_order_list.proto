@@ -24,4 +24,12 @@ message OrderListResponse {
   int32 code = 1;
   string message = 2;
   repeated OrderPreview details = 3;
+  OrderListResponseCount count = 4;
+}
+
+message OrderListResponseCount {
+  int32 draft = 1;
+  int32 in_process = 2;
+  int32 complete = 3;
+  int32 cancel = 4;
 }

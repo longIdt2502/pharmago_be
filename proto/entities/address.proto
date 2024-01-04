@@ -6,6 +6,15 @@ import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
+message AddressPayload {
+  float lat = 1;
+  float lng = 2;
+  string province = 3;
+  string district = 4;
+  optional string ward = 5;
+  string title = 6;
+}
+
 message AddressItem {
   string code = 1;
   string name = 2;

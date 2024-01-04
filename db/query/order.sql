@@ -32,13 +32,13 @@ AND (
     c.full_name ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%'
 )
 AND  ((
-    sqlc.narg('created_start')::timestamp  IS NULL AND sqlc.narg('created_end')::timestamp  IS NULL
+    sqlc.narg('created_start')::timestamp IS NULL AND sqlc.narg('created_end')::timestamp  IS NULL
 ) OR (
-    (sqlc.narg('created_start')::timestamp  IS NULL OR o.created_at >= sqlc.narg('created_start')::timestamp) AND
-    (sqlc.narg('created_end')::timestamp  IS NULL OR o.created_at <= sqlc.narg('created_end')::timestamp)
+    (sqlc.narg('created_start')::timestamp IS NULL OR o.created_at >= sqlc.narg('created_start')::timestamp) AND
+    (sqlc.narg('created_end')::timestamp IS NULL OR o.created_at <= sqlc.narg('created_end')::timestamp)
 ))
 AND ((
-    sqlc.narg('updated_start')::timestamp  IS NULL AND sqlc.narg('updated_end')::timestamp  IS NULL
+    sqlc.narg('updated_start')::timestamp IS NULL AND sqlc.narg('updated_end')::timestamp  IS NULL
 ) OR (
     (o.updated_at >= sqlc.narg('updated_start')::timestamp OR sqlc.narg('updated_start')::timestamp  IS NULL) AND
     (o.updated_at <= sqlc.narg('updated_end')::timestamp OR sqlc.narg('updated_end')::timestamp  IS NULL)
@@ -75,3 +75,7 @@ UPDATE orders
 SET status = sqlc.arg('status')::varchar
 WHERE id = sqlc.arg('id')::int
 RETURNING *;
+
+-- name: CountOrderByStatus :one
+SELECT COUNT(*) FROM orders
+WHERE status = $1;

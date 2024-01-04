@@ -32,3 +32,15 @@ INSERT INTO address (
 SELECT * FROM address
 WHERE id = $1
 LIMIT 1;
+
+-- name: UpdateAddress :one
+UPDATE address
+SET
+    lat = COALESCE(sqlc.narg(lat), lat),
+    lng = COALESCE(sqlc.narg(lng), lng),
+    province = COALESCE(sqlc.narg(province), province),
+    district = COALESCE(sqlc.narg(district), district),
+    ward = COALESCE(sqlc.narg(ward), ward),
+    title = COALESCE(sqlc.narg(title), title)
+WHERE id = sqlc.arg(id)
+RETURNING *;

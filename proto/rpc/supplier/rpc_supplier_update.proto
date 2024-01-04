@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package pb;
+
+import "entities/address.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message SupplierUpdateRequest {
+  int32 id = 1;
+  string name = 2;
+  string deputy = 3;
+  string phone = 4;
+  AddressPayload address = 5;
+  optional string email = 6;
+  int32 company = 7;
+}
+
+message SupplierUpdateResponse {
+  int32 code = 1;
+  string message = 2;
+}
+

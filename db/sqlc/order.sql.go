@@ -11,6 +11,18 @@ import (
 	"time"
 )
 
+const countOrderByStatus = `-- name: CountOrderByStatus :one
+SELECT COUNT(*) FROM orders
+WHERE status = $1
+`
+
+func (q *Queries) CountOrderByStatus(ctx context.Context, status sql.NullString) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countOrderByStatus, status)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createOrder = `-- name: CreateOrder :one
 INSERT INTO orders (
     code, total_price, description, vat, discount, service_price,
@@ -256,13 +268,13 @@ AND (
     c.full_name ILIKE '%' || COALESCE($4::varchar, '') || '%'
 )
 AND  ((
-    $5::timestamp  IS NULL AND $6::timestamp  IS NULL
+    $5::timestamp IS NULL AND $6::timestamp  IS NULL
 ) OR (
-    ($5::timestamp  IS NULL OR o.created_at >= $5::timestamp) AND
-    ($6::timestamp  IS NULL OR o.created_at <= $6::timestamp)
+    ($5::timestamp IS NULL OR o.created_at >= $5::timestamp) AND
+    ($6::timestamp IS NULL OR o.created_at <= $6::timestamp)
 ))
 AND ((
-    $7::timestamp  IS NULL AND $8::timestamp  IS NULL
+    $7::timestamp IS NULL AND $8::timestamp  IS NULL
 ) OR (
     (o.updated_at >= $7::timestamp OR $7::timestamp  IS NULL) AND
     (o.updated_at <= $8::timestamp OR $8::timestamp  IS NULL)

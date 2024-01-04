@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "entities/consigment.proto";
+import "entities/supplier.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message SupplierDetailRequest {
+  int32 id = 1;
+}
+
+message SupplierDetailResponse {
+  int32 code = 1;
+  string message = 2;
+  Supplier details = 3;
+}
