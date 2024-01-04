@@ -1645,6 +1645,20 @@
             "required": false,
             "type": "integer",
             "format": "int32"
+          },
+          {
+            "name": "status",
+            "description": "NEW | IN_PROCESS | COMPLETE | CANCEL",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "description": "IMPORT | EXPORT",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -3742,6 +3756,30 @@
             "type": "object",
             "$ref": "#/definitions/pbTicketPreview"
           }
+        },
+        "count": {
+          "$ref": "#/definitions/pbTicketListResponseCount"
+        }
+      }
+    },
+    "pbTicketListResponseCount": {
+      "type": "object",
+      "properties": {
+        "new": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "inProcess": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "complete": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "cancel": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },

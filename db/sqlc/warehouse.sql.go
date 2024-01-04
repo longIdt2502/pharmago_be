@@ -11,6 +11,19 @@ import (
 	"time"
 )
 
+const countTicketByStatus = `-- name: CountTicketByStatus :one
+SELECT COUNT(*) FROM tickets t
+JOIN ticket_status ts ON t.status = ts.id
+WHERE ts.code = $1
+`
+
+func (q *Queries) CountTicketByStatus(ctx context.Context, code string) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countTicketByStatus, code)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createConsignment = `-- name: CreateConsignment :one
 INSERT INTO consignment (
     code, quantity, inventory, ticket, variant, expired_at, producted_at, user_created, user_updated
@@ -617,10 +630,16 @@ LEFT JOIN consignment c ON t.id = c.ticket
 LEFT JOIN suplier s ON s.address = t.import_from
 WHERE w.companies = $1
 AND (
-    $2::int IS NULL OR s.id = $2::int
+    $2::varchar IS NULL OR ts.code = $2::varchar
 )
 AND (
-    t.code ILIKE '%' || COALESCE($3::varchar, '') || '%'
+    $3::varchar IS NULL OR tt.code = $3::varchar
+)
+AND (
+    $4::int IS NULL OR s.id = $4::int
+)
+AND (
+    t.code ILIKE '%' || COALESCE($5::varchar, '') || '%'
 )
 GROUP BY
     t.id, t.code, t.type, t.status, t.note, t.qr, t.total_price, t.warehouse, t.user_created, t.created_at,
@@ -628,12 +647,14 @@ GROUP BY
     w.name, a.full_name, m.media_url, tt.id, tt.code, tt.title, ts.id, ts.code, ts.title,
     s.id
 ORDER BY -t.id
-LIMIT COALESCE($5::int, 10)
-OFFSET (COALESCE($4::int, 1) - 1) * COALESCE($5::int, 10)
+LIMIT COALESCE($7::int, 10)
+OFFSET (COALESCE($6::int, 1) - 1) * COALESCE($7::int, 10)
 `
 
 type GetListTicketParams struct {
 	Company  sql.NullInt32  `json:"company"`
+	Status   sql.NullString `json:"status"`
+	Type     sql.NullString `json:"type"`
 	Supplier sql.NullInt32  `json:"supplier"`
 	Search   sql.NullString `json:"search"`
 	Page     sql.NullInt32  `json:"page"`
@@ -713,6 +734,8 @@ type GetListTicketRow struct {
 func (q *Queries) GetListTicket(ctx context.Context, arg GetListTicketParams) ([]GetListTicketRow, error) {
 	rows, err := q.db.QueryContext(ctx, getListTicket,
 		arg.Company,
+		arg.Status,
+		arg.Type,
 		arg.Supplier,
 		arg.Search,
 		arg.Page,
