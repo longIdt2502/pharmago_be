@@ -1372,6 +1372,36 @@
           "Supplier"
         ]
       },
+      "delete": {
+        "summary": "Delete Supplier",
+        "operationId": "Pharmago_SupplierDelete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbSupplierDeleteResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Supplier"
+        ]
+      },
       "put": {
         "summary": "Update Supplier",
         "operationId": "Pharmago_SupplierUpdate",
@@ -3508,6 +3538,18 @@
         "details": {
           "type": "integer",
           "format": "int32"
+        }
+      }
+    },
+    "pbSupplierDeleteResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
         }
       }
     },

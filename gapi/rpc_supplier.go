@@ -201,3 +201,23 @@ func (server *ServerGRPC) SupplierUpdate(ctx context.Context, req *pb.SupplierUp
 		Message: "success",
 	}, nil
 }
+
+func (server *ServerGRPC) SupplierDelete(ctx context.Context, req *pb.SupplierDeleteRequest) (*pb.SupplierDeleteResponse, error) {
+	_, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	_, err = server.store.DeleteSupplier(ctx, req.GetId())
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, status.Errorf(codes.NotFound, "supplier not exists")
+		}
+		return nil, status.Errorf(codes.Internal, "")
+	}
+
+	return &pb.SupplierDeleteResponse{
+		Code:    200,
+		Message: "success",
+	}, nil
+}
