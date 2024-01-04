@@ -64,6 +64,12 @@ LEFT JOIN consignment c ON t.id = c.ticket
 LEFT JOIN suplier s ON s.address = t.import_from
 WHERE w.companies = sqlc.arg('company')
 AND (
+    sqlc.narg('status')::varchar IS NULL OR ts.code = sqlc.narg('status')::varchar
+)
+AND (
+    sqlc.narg('type')::varchar IS NULL OR tt.code = sqlc.narg('type')::varchar
+)
+AND (
     sqlc.narg('supplier')::int IS NULL OR s.id = sqlc.narg('supplier')::int
 )
 AND (
@@ -77,6 +83,11 @@ GROUP BY
 ORDER BY -t.id
 LIMIT COALESCE(sqlc.narg('limit')::int, 10)
 OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10);
+
+-- name: CountTicketByStatus :one
+SELECT COUNT(*) FROM tickets t
+JOIN ticket_status ts ON t.status = ts.id
+WHERE ts.code = $1;
 
 -- name: GetDetailTicket :one
 SELECT * , m.media_url AS qr_url, a_uc.full_name AS user_created_name, a_uu.full_name AS user_updated_name,

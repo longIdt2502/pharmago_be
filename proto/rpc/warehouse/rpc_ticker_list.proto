@@ -20,10 +20,24 @@ message TicketListRequest {
   optional int32 page = 4;
   optional int32 limit = 5;
   optional int32 supplier = 6;
+  optional string status = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "NEW | IN_PROCESS | COMPLETE | CANCEL",
+  }];
+  optional string type = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "IMPORT | EXPORT",
+  }];
+}
+
+message TicketListResponseCount {
+  int32 new = 1;
+  int32 in_process = 2;
+  int32 complete = 3;
+  int32 cancel = 4;
 }
 
 message TicketListResponse {
   int32 code = 1;
   string message = 2;
   repeated TicketPreview details = 3;
+  TicketListResponseCount count = 4;
 }

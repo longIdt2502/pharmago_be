@@ -160,6 +160,10 @@ CREATE TABLE "products" (
                             "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
+ALTER TABLE "products" ALTER COLUMN "brand" DROP NOT NULL;
+ALTER TABLE "products" ALTER COLUMN "product_category" DROP NOT NULL;
+ALTER TABLE "products" ALTER COLUMN "type" DROP NOT NULL;
+
 CREATE TABLE "products_bank" (
                                  "id" serial PRIMARY KEY,
                                  "name" varchar NOT NULL,

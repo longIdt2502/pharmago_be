@@ -163,6 +163,18 @@ func (server *ServerGRPC) TicketList(ctx context.Context, req *pb.TicketListRequ
 			Int32: req.GetCompany(),
 			Valid: true,
 		},
+		Status: sql.NullString{
+			String: req.GetStatus(),
+			Valid:  req.Status != nil,
+		},
+		Type: sql.NullString{
+			String: req.GetType(),
+			Valid:  req.Type != nil,
+		},
+		Supplier: sql.NullInt32{
+			Int32: req.GetSupplier(),
+			Valid: req.Supplier != nil,
+		},
 		Search: sql.NullString{
 			String: req.GetSearch(),
 			Valid:  req.Search != nil,
@@ -175,10 +187,6 @@ func (server *ServerGRPC) TicketList(ctx context.Context, req *pb.TicketListRequ
 			Int32: req.GetLimit(),
 			Valid: req.Limit != nil,
 		},
-		Supplier: sql.NullInt32{
-			Int32: req.GetSupplier(),
-			Valid: req.Supplier != nil,
-		},
 	})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get list tickets: ", err.Error())
@@ -190,10 +198,21 @@ func (server *ServerGRPC) TicketList(ctx context.Context, req *pb.TicketListRequ
 		ticketsPb = append(ticketsPb, dataPb)
 	}
 
+	newCount, _ := server.store.CountTicketByStatus(ctx, "NEW")
+	processCount, _ := server.store.CountTicketByStatus(ctx, "IN_PROCESS")
+	completeCount, _ := server.store.CountTicketByStatus(ctx, "COMPLETE")
+	cancelCount, _ := server.store.CountTicketByStatus(ctx, "CANCEL")
+
 	return &pb.TicketListResponse{
 		Code:    200,
 		Message: "success",
 		Details: ticketsPb,
+		Count: &pb.TicketListResponseCount{
+			New:       int32(newCount),
+			InProcess: int32(processCount),
+			Complete:  int32(completeCount),
+			Cancel:    int32(cancelCount),
+		},
 	}, nil
 }
 

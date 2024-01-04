@@ -12,7 +12,7 @@ message CreateProductRequestData {
   string code = 2;
   optional int32 category = 3;
   optional int32 type = 4;
-  int32 brand = 5;
+  optional int32 brand = 5;
   optional string taDuoc = 6;
   optional string nongDo = 7;
   string lieuDung = 8;
