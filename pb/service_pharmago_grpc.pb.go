@@ -25,6 +25,9 @@ type PharmagoClient interface {
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	CreateAccount(ctx context.Context, in *CreateAccountRequest, opts ...grpc.CallOption) (*CreateAccountResponse, error)
 	VerifyAccount(ctx context.Context, in *VerifyAccountRequest, opts ...grpc.CallOption) (*VerifyAccountResponse, error)
+	// TODO: ==================== REPORT ==========================
+	HomeData(ctx context.Context, in *HomeDataRequest, opts ...grpc.CallOption) (*HomeDataResponse, error)
+	// TODO: ==================== COMPANY ==========================
 	CreateCompany(ctx context.Context, in *CreateCompanyRequest, opts ...grpc.CallOption) (*CreateCompanyResponse, error)
 	ListCompanies(ctx context.Context, in *GetCompaniesRequest, opts ...grpc.CallOption) (*GetCompaniesResponse, error)
 	ListProvinces(ctx context.Context, in *ProvincesRequest, opts ...grpc.CallOption) (*ProvincesResponse, error)
@@ -71,6 +74,9 @@ type PharmagoClient interface {
 	OrderUpdateStatus(ctx context.Context, in *OrderUpdateStatusRequest, opts ...grpc.CallOption) (*OrderUpdateStatusResponse, error)
 	// ================== CUSTOMER ===================
 	CustomerList(ctx context.Context, in *CustomerListRequest, opts ...grpc.CallOption) (*CustomerListResponse, error)
+	CustomerCreate(ctx context.Context, in *CustomerCreateRequest, opts ...grpc.CallOption) (*CustomerCreateResponse, error)
+	CustomerDetail(ctx context.Context, in *CustomerDetailRequest, opts ...grpc.CallOption) (*CustomerDetailResponse, error)
+	CustomerUpdate(ctx context.Context, in *CustomerUpdateRequest, opts ...grpc.CallOption) (*CustomerUpdateResponse, error)
 	// ================== IMPORT ===================
 	ImportCompany(ctx context.Context, in *ImportCompanyRequest, opts ...grpc.CallOption) (*ImportCompanyResponse, error)
 	ImportProduct(ctx context.Context, in *ImportProductRequest, opts ...grpc.CallOption) (*ImportProductResponse, error)
@@ -106,6 +112,15 @@ func (c *pharmagoClient) CreateAccount(ctx context.Context, in *CreateAccountReq
 func (c *pharmagoClient) VerifyAccount(ctx context.Context, in *VerifyAccountRequest, opts ...grpc.CallOption) (*VerifyAccountResponse, error) {
 	out := new(VerifyAccountResponse)
 	err := c.cc.Invoke(ctx, "/pb.Pharmago/VerifyAccount", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) HomeData(ctx context.Context, in *HomeDataRequest, opts ...grpc.CallOption) (*HomeDataResponse, error) {
+	out := new(HomeDataResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/HomeData", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -427,6 +442,33 @@ func (c *pharmagoClient) CustomerList(ctx context.Context, in *CustomerListReque
 	return out, nil
 }
 
+func (c *pharmagoClient) CustomerCreate(ctx context.Context, in *CustomerCreateRequest, opts ...grpc.CallOption) (*CustomerCreateResponse, error) {
+	out := new(CustomerCreateResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/CustomerCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) CustomerDetail(ctx context.Context, in *CustomerDetailRequest, opts ...grpc.CallOption) (*CustomerDetailResponse, error) {
+	out := new(CustomerDetailResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/CustomerDetail", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) CustomerUpdate(ctx context.Context, in *CustomerUpdateRequest, opts ...grpc.CallOption) (*CustomerUpdateResponse, error) {
+	out := new(CustomerUpdateResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/CustomerUpdate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *pharmagoClient) ImportCompany(ctx context.Context, in *ImportCompanyRequest, opts ...grpc.CallOption) (*ImportCompanyResponse, error) {
 	out := new(ImportCompanyResponse)
 	err := c.cc.Invoke(ctx, "/pb.Pharmago/ImportCompany", in, out, opts...)
@@ -461,6 +503,9 @@ type PharmagoServer interface {
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	CreateAccount(context.Context, *CreateAccountRequest) (*CreateAccountResponse, error)
 	VerifyAccount(context.Context, *VerifyAccountRequest) (*VerifyAccountResponse, error)
+	// TODO: ==================== REPORT ==========================
+	HomeData(context.Context, *HomeDataRequest) (*HomeDataResponse, error)
+	// TODO: ==================== COMPANY ==========================
 	CreateCompany(context.Context, *CreateCompanyRequest) (*CreateCompanyResponse, error)
 	ListCompanies(context.Context, *GetCompaniesRequest) (*GetCompaniesResponse, error)
 	ListProvinces(context.Context, *ProvincesRequest) (*ProvincesResponse, error)
@@ -507,6 +552,9 @@ type PharmagoServer interface {
 	OrderUpdateStatus(context.Context, *OrderUpdateStatusRequest) (*OrderUpdateStatusResponse, error)
 	// ================== CUSTOMER ===================
 	CustomerList(context.Context, *CustomerListRequest) (*CustomerListResponse, error)
+	CustomerCreate(context.Context, *CustomerCreateRequest) (*CustomerCreateResponse, error)
+	CustomerDetail(context.Context, *CustomerDetailRequest) (*CustomerDetailResponse, error)
+	CustomerUpdate(context.Context, *CustomerUpdateRequest) (*CustomerUpdateResponse, error)
 	// ================== IMPORT ===================
 	ImportCompany(context.Context, *ImportCompanyRequest) (*ImportCompanyResponse, error)
 	ImportProduct(context.Context, *ImportProductRequest) (*ImportProductResponse, error)
@@ -526,6 +574,9 @@ func (UnimplementedPharmagoServer) CreateAccount(context.Context, *CreateAccount
 }
 func (UnimplementedPharmagoServer) VerifyAccount(context.Context, *VerifyAccountRequest) (*VerifyAccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyAccount not implemented")
+}
+func (UnimplementedPharmagoServer) HomeData(context.Context, *HomeDataRequest) (*HomeDataResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method HomeData not implemented")
 }
 func (UnimplementedPharmagoServer) CreateCompany(context.Context, *CreateCompanyRequest) (*CreateCompanyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateCompany not implemented")
@@ -632,6 +683,15 @@ func (UnimplementedPharmagoServer) OrderUpdateStatus(context.Context, *OrderUpda
 func (UnimplementedPharmagoServer) CustomerList(context.Context, *CustomerListRequest) (*CustomerListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CustomerList not implemented")
 }
+func (UnimplementedPharmagoServer) CustomerCreate(context.Context, *CustomerCreateRequest) (*CustomerCreateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CustomerCreate not implemented")
+}
+func (UnimplementedPharmagoServer) CustomerDetail(context.Context, *CustomerDetailRequest) (*CustomerDetailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CustomerDetail not implemented")
+}
+func (UnimplementedPharmagoServer) CustomerUpdate(context.Context, *CustomerUpdateRequest) (*CustomerUpdateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CustomerUpdate not implemented")
+}
 func (UnimplementedPharmagoServer) ImportCompany(context.Context, *ImportCompanyRequest) (*ImportCompanyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ImportCompany not implemented")
 }
@@ -704,6 +764,24 @@ func _Pharmago_VerifyAccount_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PharmagoServer).VerifyAccount(ctx, req.(*VerifyAccountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_HomeData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HomeDataRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).HomeData(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/HomeData",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).HomeData(ctx, req.(*HomeDataRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1338,6 +1416,60 @@ func _Pharmago_CustomerList_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Pharmago_CustomerCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CustomerCreateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).CustomerCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/CustomerCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).CustomerCreate(ctx, req.(*CustomerCreateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_CustomerDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CustomerDetailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).CustomerDetail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/CustomerDetail",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).CustomerDetail(ctx, req.(*CustomerDetailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_CustomerUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CustomerUpdateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).CustomerUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/CustomerUpdate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).CustomerUpdate(ctx, req.(*CustomerUpdateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Pharmago_ImportCompany_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ImportCompanyRequest)
 	if err := dec(in); err != nil {
@@ -1410,6 +1542,10 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "VerifyAccount",
 			Handler:    _Pharmago_VerifyAccount_Handler,
+		},
+		{
+			MethodName: "HomeData",
+			Handler:    _Pharmago_HomeData_Handler,
 		},
 		{
 			MethodName: "CreateCompany",
@@ -1550,6 +1686,18 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CustomerList",
 			Handler:    _Pharmago_CustomerList_Handler,
+		},
+		{
+			MethodName: "CustomerCreate",
+			Handler:    _Pharmago_CustomerCreate_Handler,
+		},
+		{
+			MethodName: "CustomerDetail",
+			Handler:    _Pharmago_CustomerDetail_Handler,
+		},
+		{
+			MethodName: "CustomerUpdate",
+			Handler:    _Pharmago_CustomerUpdate_Handler,
 		},
 		{
 			MethodName: "ImportCompany",

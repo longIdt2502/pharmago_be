@@ -63,6 +63,33 @@ func (q *Queries) CreateCustomer(ctx context.Context, arg CreateCustomerParams) 
 	return i, err
 }
 
+const detailCustomer = `-- name: DetailCustomer :one
+SELECT id, full_name, code, company, address, email, phone, license, birthday, user_created, user_updated, updated_at, created_at FROM customers
+WHERE id = $1
+LIMIT 1
+`
+
+func (q *Queries) DetailCustomer(ctx context.Context, id int32) (Customer, error) {
+	row := q.db.QueryRowContext(ctx, detailCustomer, id)
+	var i Customer
+	err := row.Scan(
+		&i.ID,
+		&i.FullName,
+		&i.Code,
+		&i.Company,
+		&i.Address,
+		&i.Email,
+		&i.Phone,
+		&i.License,
+		&i.Birthday,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.UpdatedAt,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const getCustomer = `-- name: GetCustomer :one
 SELECT id, full_name, code, company, address, email, phone, license, birthday, user_created, user_updated, updated_at, created_at FROM customers
 WHERE id = $1
@@ -149,4 +176,59 @@ func (q *Queries) ListCustomer(ctx context.Context, arg ListCustomerParams) ([]C
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateCustomer = `-- name: UpdateCustomer :one
+UPDATE customers
+SET
+    full_name = COALESCE($1::varchar, full_name),
+    code = COALESCE($2::varchar, code),
+    email = COALESCE($3::varchar, email),
+    phone = COALESCE($4::varchar, phone),
+    license = COALESCE($5::varchar, license),
+    birthday = COALESCE($6::timestamp, birthday),
+    user_updated = COALESCE($7::int, user_updated)
+WHERE id = $8
+RETURNING id, full_name, code, company, address, email, phone, license, birthday, user_created, user_updated, updated_at, created_at
+`
+
+type UpdateCustomerParams struct {
+	FullName    sql.NullString `json:"full_name"`
+	Code        sql.NullString `json:"code"`
+	Email       sql.NullString `json:"email"`
+	Phone       sql.NullString `json:"phone"`
+	License     sql.NullString `json:"license"`
+	Birthday    sql.NullTime   `json:"birthday"`
+	UserUpdated sql.NullInt32  `json:"user_updated"`
+	ID          int32          `json:"id"`
+}
+
+func (q *Queries) UpdateCustomer(ctx context.Context, arg UpdateCustomerParams) (Customer, error) {
+	row := q.db.QueryRowContext(ctx, updateCustomer,
+		arg.FullName,
+		arg.Code,
+		arg.Email,
+		arg.Phone,
+		arg.License,
+		arg.Birthday,
+		arg.UserUpdated,
+		arg.ID,
+	)
+	var i Customer
+	err := row.Scan(
+		&i.ID,
+		&i.FullName,
+		&i.Code,
+		&i.Company,
+		&i.Address,
+		&i.Email,
+		&i.Phone,
+		&i.License,
+		&i.Birthday,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.UpdatedAt,
+		&i.CreatedAt,
+	)
+	return i, err
 }

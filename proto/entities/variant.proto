@@ -22,6 +22,7 @@ message Variant {
   repeated Unit units = 12;
   float price_sell = 13;
   float price_import = 14;
+  optional float revenue = 15;
 }
 
 message Unit {
