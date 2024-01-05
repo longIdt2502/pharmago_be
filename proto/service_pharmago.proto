@@ -8,6 +8,9 @@ import "protoc-gen-openapiv2/options/annotations.proto";
 import "rpc/rpc_login.proto";
 import "rpc/rpc_create_account.proto";
 import "rpc/rpc_verify_account.proto";
+
+import "rpc/report/rpc_home_data.proto";
+
 import "rpc/address/rpc_provinces.proto";
 import "rpc/address/rpc_districts.proto";
 import "rpc/address/rpc_wards.proto";
@@ -42,6 +45,9 @@ import "rpc/order/rpc_order_detail.proto";
 import "rpc/order/rpc_order_update_status.proto";
 
 import "rpc/customer/rpc_customer_list.proto";
+import "rpc/customer/rpc_customer_detail.proto";
+import "rpc/customer/rpc_customer_create.proto";
+import "rpc/customer/rpc_customer_update.proto";
 
 import "rpc/supplier/rpc_supplier_create.proto";
 import "rpc/supplier/rpc_supplier_detail.proto";
@@ -118,6 +124,18 @@ service Pharmago {
     };
   };
 
+  // TODO: ==================== REPORT ==========================
+  rpc HomeData (HomeDataRequest) returns (HomeDataResponse) {
+    option (google.api.http) = {
+      get: "/report/v1/home"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Home data";
+      tags: "Report";
+    };
+  }
+
+  // TODO: ==================== COMPANY ==========================
   rpc CreateCompany (CreateCompanyRequest) returns (CreateCompanyResponse) {
     option (google.api.http) = {
       post: "/company/v1/create"
@@ -479,6 +497,35 @@ service Pharmago {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "List customer";
+      tags: "Customer";
+    };
+  };
+  rpc CustomerCreate (CustomerCreateRequest) returns (CustomerCreateResponse) {
+    option (google.api.http) = {
+      post: "/customer/v1/create"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create customer";
+      tags: "Customer";
+    };
+  };
+  rpc CustomerDetail (CustomerDetailRequest) returns (CustomerDetailResponse) {
+    option (google.api.http) = {
+      get: "/customer/v1/customer/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Detail customer";
+      tags: "Customer";
+    };
+  };
+  rpc CustomerUpdate (CustomerUpdateRequest) returns (CustomerUpdateResponse) {
+    option (google.api.http) = {
+      put: "/customer/v1/customer/{id}"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Update customer";
       tags: "Customer";
     };
   };

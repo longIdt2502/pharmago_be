@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package pb;
+
+import "entities/company.proto";
+import "entities/variant.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message HomeDataRequest {
+  int32 company = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    required: [
+      "company"
+    ]
+  }];
+}
+
+message HomeDataResponse {
+  Company company = 1;
+  float revenue = 2;
+  int32 order_complete = 3;
+  repeated Variant variant_best_sale = 4;
+}

@@ -20,3 +20,21 @@ INSERT INTO customers (
 ) VALUES (
     $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
 ) RETURNING *;
+
+-- name: DetailCustomer :one
+SELECT * FROM customers
+WHERE id = $1
+LIMIT 1;
+
+-- name: UpdateCustomer :one
+UPDATE customers
+SET
+    full_name = COALESCE(sqlc.narg(full_name)::varchar, full_name),
+    code = COALESCE(sqlc.narg(code)::varchar, code),
+    email = COALESCE(sqlc.narg(email)::varchar, email),
+    phone = COALESCE(sqlc.narg(phone)::varchar, phone),
+    license = COALESCE(sqlc.narg(license)::varchar, license),
+    birthday = COALESCE(sqlc.narg(birthday)::timestamp, birthday),
+    user_updated = COALESCE(sqlc.narg(user_updated)::int, user_updated)
+WHERE id = sqlc.arg(id)
+RETURNING *;

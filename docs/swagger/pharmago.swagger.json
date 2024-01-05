@@ -500,6 +500,139 @@
         ]
       }
     },
+    "/customer/v1/create": {
+      "post": {
+        "summary": "Create customer",
+        "operationId": "Pharmago_CustomerCreate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCustomerCreateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbCustomerCreateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Customer"
+        ]
+      }
+    },
+    "/customer/v1/customer/{id}": {
+      "get": {
+        "summary": "Detail customer",
+        "operationId": "Pharmago_CustomerDetail",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCustomerDetailResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Customer"
+        ]
+      },
+      "put": {
+        "summary": "Update customer",
+        "operationId": "Pharmago_CustomerUpdate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCustomerUpdateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "phone": {
+                  "type": "string"
+                },
+                "address": {
+                  "$ref": "#/definitions/pbAddressPayload"
+                },
+                "birthday": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "gender": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "group": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "company": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        ],
+        "tags": [
+          "Customer"
+        ]
+      }
+    },
     "/customer/v1/list": {
       "get": {
         "summary": "List customer",
@@ -1252,6 +1385,38 @@
         ],
         "tags": [
           "Product Master Data"
+        ]
+      }
+    },
+    "/report/v1/home": {
+      "get": {
+        "summary": "Home data",
+        "operationId": "Pharmago_HomeData",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbHomeDataResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "company",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Report"
         ]
       }
     },
@@ -2521,6 +2686,102 @@
         }
       }
     },
+    "pbCustomerCreateRequest": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "address": {
+          "$ref": "#/definitions/pbAddressPayload"
+        },
+        "birthday": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "gender": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "group": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "company": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbCustomerCreateResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbCustomerDetail": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "code": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "company": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "address": {
+          "$ref": "#/definitions/pbAddress"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "birthday": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "pbCustomerDetailResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "$ref": "#/definitions/pbCustomerDetail"
+        }
+      }
+    },
     "pbCustomerListResponse": {
       "type": "object",
       "properties": {
@@ -2537,6 +2798,18 @@
             "type": "object",
             "$ref": "#/definitions/pbCustomer"
           }
+        }
+      }
+    },
+    "pbCustomerUpdateResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
         }
       }
     },
@@ -2642,6 +2915,29 @@
           "items": {
             "type": "object",
             "$ref": "#/definitions/pbCompany"
+          }
+        }
+      }
+    },
+    "pbHomeDataResponse": {
+      "type": "object",
+      "properties": {
+        "company": {
+          "$ref": "#/definitions/pbCompany"
+        },
+        "revenue": {
+          "type": "number",
+          "format": "float"
+        },
+        "orderComplete": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "variantBestSale": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbVariant"
           }
         }
       }
@@ -4020,6 +4316,10 @@
           "format": "float"
         },
         "priceImport": {
+          "type": "number",
+          "format": "float"
+        },
+        "revenue": {
           "type": "number",
           "format": "float"
         }

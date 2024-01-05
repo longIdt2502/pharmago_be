@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "entities/customer.proto";
+import "entities/address.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message CustomerUpdateRequest {
+  optional string code = 1;
+  string name = 2;
+  string phone = 4;
+  AddressPayload address = 5;
+  optional google.protobuf.Timestamp birthday = 6;
+  optional int32 gender = 7;
+  optional int32 group = 8;
+  int32 company = 9;
+  int32 id = 10;
+}
+
+message CustomerUpdateResponse {
+  int32 code = 1;
+  string message = 2;
+}
