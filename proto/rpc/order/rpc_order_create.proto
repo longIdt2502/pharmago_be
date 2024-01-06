@@ -21,6 +21,7 @@ message OrderItemCreate {
   int32 variant = 1;
   int32 value = 2;
   optional int32 consignment = 3;
+  float total_price = 4;
 }
 
 message OrderCreate {

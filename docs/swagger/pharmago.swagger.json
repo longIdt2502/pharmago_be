@@ -3398,6 +3398,10 @@
         "consignment": {
           "type": "integer",
           "format": "int32"
+        },
+        "totalPrice": {
+          "type": "number",
+          "format": "float"
         }
       }
     },

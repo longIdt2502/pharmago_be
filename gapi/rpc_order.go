@@ -272,7 +272,7 @@ func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRe
 			Order:      order.ID,
 			Variant:    value.GetVariant(),
 			Value:      value.GetValue(),
-			TotalPrice: 0,
+			TotalPrice: float64(value.GetTotalPrice()),
 			Consignment: sql.NullInt32{
 				Int32: consignment.ID,
 				Valid: true,
