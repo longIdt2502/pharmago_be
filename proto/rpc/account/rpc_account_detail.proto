@@ -1,0 +1,22 @@
+syntax = "proto3";
+package pb;
+
+import "entities/account.proto";
+import "entities/company.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message AccountDetailRequest {
+  int32 id = 1;
+}
+
+message AccountDetailResponse {
+  int32 code = 1;
+  string message = 2;
+  AccountDetailResponseDetail details = 3;
+}
+
+message AccountDetailResponseDetail {
+  Account account = 1;
+  repeated Company company = 2;
+}
