@@ -25,6 +25,9 @@ type PharmagoClient interface {
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	CreateAccount(ctx context.Context, in *CreateAccountRequest, opts ...grpc.CallOption) (*CreateAccountResponse, error)
 	VerifyAccount(ctx context.Context, in *VerifyAccountRequest, opts ...grpc.CallOption) (*VerifyAccountResponse, error)
+	// TODO: ==================== Account ==========================
+	AccountDetail(ctx context.Context, in *AccountDetailRequest, opts ...grpc.CallOption) (*AccountDetailResponse, error)
+	AccountInactive(ctx context.Context, in *AccountInactiveRequest, opts ...grpc.CallOption) (*AccountInactiveResponse, error)
 	// TODO: ==================== REPORT ==========================
 	HomeData(ctx context.Context, in *HomeDataRequest, opts ...grpc.CallOption) (*HomeDataResponse, error)
 	// TODO: ==================== COMPANY ==========================
@@ -112,6 +115,24 @@ func (c *pharmagoClient) CreateAccount(ctx context.Context, in *CreateAccountReq
 func (c *pharmagoClient) VerifyAccount(ctx context.Context, in *VerifyAccountRequest, opts ...grpc.CallOption) (*VerifyAccountResponse, error) {
 	out := new(VerifyAccountResponse)
 	err := c.cc.Invoke(ctx, "/pb.Pharmago/VerifyAccount", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) AccountDetail(ctx context.Context, in *AccountDetailRequest, opts ...grpc.CallOption) (*AccountDetailResponse, error) {
+	out := new(AccountDetailResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/AccountDetail", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) AccountInactive(ctx context.Context, in *AccountInactiveRequest, opts ...grpc.CallOption) (*AccountInactiveResponse, error) {
+	out := new(AccountInactiveResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/AccountInactive", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -503,6 +524,9 @@ type PharmagoServer interface {
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	CreateAccount(context.Context, *CreateAccountRequest) (*CreateAccountResponse, error)
 	VerifyAccount(context.Context, *VerifyAccountRequest) (*VerifyAccountResponse, error)
+	// TODO: ==================== Account ==========================
+	AccountDetail(context.Context, *AccountDetailRequest) (*AccountDetailResponse, error)
+	AccountInactive(context.Context, *AccountInactiveRequest) (*AccountInactiveResponse, error)
 	// TODO: ==================== REPORT ==========================
 	HomeData(context.Context, *HomeDataRequest) (*HomeDataResponse, error)
 	// TODO: ==================== COMPANY ==========================
@@ -574,6 +598,12 @@ func (UnimplementedPharmagoServer) CreateAccount(context.Context, *CreateAccount
 }
 func (UnimplementedPharmagoServer) VerifyAccount(context.Context, *VerifyAccountRequest) (*VerifyAccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyAccount not implemented")
+}
+func (UnimplementedPharmagoServer) AccountDetail(context.Context, *AccountDetailRequest) (*AccountDetailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AccountDetail not implemented")
+}
+func (UnimplementedPharmagoServer) AccountInactive(context.Context, *AccountInactiveRequest) (*AccountInactiveResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AccountInactive not implemented")
 }
 func (UnimplementedPharmagoServer) HomeData(context.Context, *HomeDataRequest) (*HomeDataResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method HomeData not implemented")
@@ -764,6 +794,42 @@ func _Pharmago_VerifyAccount_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PharmagoServer).VerifyAccount(ctx, req.(*VerifyAccountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_AccountDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AccountDetailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).AccountDetail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/AccountDetail",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).AccountDetail(ctx, req.(*AccountDetailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_AccountInactive_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AccountInactiveRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).AccountInactive(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/AccountInactive",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).AccountInactive(ctx, req.(*AccountInactiveRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1542,6 +1608,14 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "VerifyAccount",
 			Handler:    _Pharmago_VerifyAccount_Handler,
+		},
+		{
+			MethodName: "AccountDetail",
+			Handler:    _Pharmago_AccountDetail_Handler,
+		},
+		{
+			MethodName: "AccountInactive",
+			Handler:    _Pharmago_AccountInactive_Handler,
 		},
 		{
 			MethodName: "HomeData",

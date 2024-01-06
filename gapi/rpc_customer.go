@@ -40,9 +40,9 @@ func (server *ServerGRPC) CustomerList(ctx context.Context, req *pb.CustomerList
 		return nil, status.Errorf(codes.Internal, "failed to get customer: ", err.Error())
 	}
 
-	var customersPb []*pb.Customer
+	var customersPb []*pb.CustomerDetail
 	for _, value := range customers {
-		dataPb := mapper.CustomerMapper(value)
+		dataPb, _ := mapper.CustomerDetailMapper(ctx, server.store, value)
 		customersPb = append(customersPb, dataPb)
 	}
 

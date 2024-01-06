@@ -21,6 +21,74 @@
     "application/json"
   ],
   "paths": {
+    "/account/v1/account/{id}": {
+      "get": {
+        "summary": "Detail Account",
+        "operationId": "Pharmago_AccountDetail",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbAccountDetailResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Account"
+        ]
+      },
+      "patch": {
+        "summary": "Inactive Account",
+        "operationId": "Pharmago_AccountInactive",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbAccountInactiveResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "tags": [
+          "Account"
+        ]
+      }
+    },
     "/account/v1/login": {
       "post": {
         "summary": "Login User",
@@ -2010,6 +2078,48 @@
         }
       }
     },
+    "pbAccountDetailResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "$ref": "#/definitions/pbAccountDetailResponseDetail"
+        }
+      }
+    },
+    "pbAccountDetailResponseDetail": {
+      "type": "object",
+      "properties": {
+        "account": {
+          "$ref": "#/definitions/pbAccount"
+        },
+        "company": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbCompany"
+          }
+        }
+      }
+    },
+    "pbAccountInactiveResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
     "pbAddress": {
       "type": "object",
       "properties": {
@@ -2796,7 +2906,7 @@
           "type": "array",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/pbCustomer"
+            "$ref": "#/definitions/pbCustomerDetail"
           }
         }
       }

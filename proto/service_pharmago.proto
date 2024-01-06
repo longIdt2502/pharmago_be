@@ -9,6 +9,9 @@ import "rpc/rpc_login.proto";
 import "rpc/rpc_create_account.proto";
 import "rpc/rpc_verify_account.proto";
 
+import "rpc/account/rpc_account_detail.proto";
+import "rpc/account/rpc_account_inactive.proto";
+
 import "rpc/report/rpc_home_data.proto";
 
 import "rpc/address/rpc_provinces.proto";
@@ -123,6 +126,26 @@ service Pharmago {
       security: {};
     };
   };
+
+  // TODO: ==================== Account ==========================
+  rpc AccountDetail (AccountDetailRequest) returns (AccountDetailResponse) {
+    option (google.api.http) = {
+      get: "/account/v1/account/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Detail Account";
+      tags: "Account";
+    };
+  }
+  rpc AccountInactive (AccountInactiveRequest) returns (AccountInactiveResponse) {
+    option (google.api.http) = {
+      patch: "/account/v1/account/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Inactive Account";
+      tags: "Account";
+    };
+  }
 
   // TODO: ==================== REPORT ==========================
   rpc HomeData (HomeDataRequest) returns (HomeDataResponse) {
