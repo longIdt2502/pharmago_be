@@ -130,7 +130,7 @@ service Pharmago {
   // TODO: ==================== Account ==========================
   rpc AccountDetail (AccountDetailRequest) returns (AccountDetailResponse) {
     option (google.api.http) = {
-      get: "/account/v1/account/{id}"
+      get: "/account/v1/detail"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Detail Account";

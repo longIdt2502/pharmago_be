@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
+	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/gapi/mapper"
 	"github.com/longIdt2502/pharmago_be/pb"
 	"golang.org/x/net/context"
@@ -11,8 +12,13 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (server *ServerGRPC) AccountDetail(ctx context.Context, req *pb.AccountDetailRequest) (*pb.AccountDetailResponse, error) {
-	account, err := server.store.GetAccount(ctx, req.GetId())
+func (server *ServerGRPC) AccountDetail(ctx context.Context, _ *pb.AccountDetailRequest) (*pb.AccountDetailResponse, error) {
+	tokenPayload, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	account, err := server.store.GetAccount(ctx, tokenPayload.UserID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, status.Errorf(codes.NotFound, "account not exists")
