@@ -7,7 +7,6 @@ import "entities/company.proto";
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
 message AccountDetailRequest {
-  int32 id = 1;
 }
 
 message AccountDetailResponse {
