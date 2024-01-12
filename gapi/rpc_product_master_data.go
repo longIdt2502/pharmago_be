@@ -3,11 +3,16 @@ package gapi
 import (
 	"context"
 	"database/sql"
+	"errors"
+	"fmt"
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
+	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/gapi/mapper"
 	"github.com/longIdt2502/pharmago_be/pb"
+	"github.com/longIdt2502/pharmago_be/utils"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func (server *ServerGRPC) ClassifyList(ctx context.Context, req *pb.ClassifyListRequest) (*pb.ClassifyListResponse, error) {
@@ -47,7 +52,7 @@ func (server *ServerGRPC) ClassifyList(ctx context.Context, req *pb.ClassifyList
 }
 
 func (server *ServerGRPC) ProductionStandardList(ctx context.Context, req *pb.ProductionStandardListRequest) (*pb.ProductionStandardListResponse, error) {
-	productionStandard, err := server.store.GetListProductionStandard(ctx, db.GetListProductionStandardParams{
+	productionStandard, err := server.store.ListProductionStandard(ctx, db.ListProductionStandardParams{
 		Search: sql.NullString{
 			String: req.GetSearch(),
 			Valid:  req.Search != nil,
@@ -60,6 +65,7 @@ func (server *ServerGRPC) ProductionStandardList(ctx context.Context, req *pb.Pr
 			Int32: req.GetLimit(),
 			Valid: req.Limit != nil,
 		},
+		Company: req.GetCompany(),
 	})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get list production standard: %w", err)
@@ -67,10 +73,21 @@ func (server *ServerGRPC) ProductionStandardList(ctx context.Context, req *pb.Pr
 
 	var productionStandardPb []*pb.SimpleData
 	for _, value := range productionStandard {
+		var userCreatedName *string
+		if value.FullName.Valid {
+			name := value.FullName.String
+			userCreatedName = &name
+		}
+
+		quantity := value.Quantity
+
 		dataPb := &pb.SimpleData{
-			Id:   value.ID,
-			Name: value.Name,
-			Code: value.Code,
+			Id:              value.ID,
+			Name:            value.Name,
+			Code:            value.Code,
+			UserCreatedName: userCreatedName,
+			CreatedAt:       timestamppb.New(value.CreatedAt),
+			ValueExtra:      &quantity,
 		}
 		productionStandardPb = append(productionStandardPb, dataPb)
 	}
@@ -79,6 +96,110 @@ func (server *ServerGRPC) ProductionStandardList(ctx context.Context, req *pb.Pr
 		Code:    200,
 		Message: "success",
 		Details: productionStandardPb,
+	}, nil
+}
+
+func (server *ServerGRPC) ProductionStandardCreate(ctx context.Context, req *pb.ProductionStandardCreateRequest) (*pb.ProductionStandardCreateResponse, error) {
+	tokenPayload, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	code := fmt.Sprintf("PS-%s-%d", utils.RandomString(3), utils.RandomInt(100, 999))
+	if req.Code != nil {
+		code = req.GetCode()
+	}
+	data, err := server.store.CreateProductionStandard(ctx, db.CreateProductionStandardParams{
+		Code: code,
+		Name: req.GetName(),
+		Company: sql.NullInt32{
+			Int32: req.GetCompany(),
+			Valid: true,
+		},
+		UserCreated: sql.NullInt32{
+			Int32: tokenPayload.UserID,
+			Valid: true,
+		},
+	})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to record production standard: ", err.Error())
+	}
+
+	return &pb.ProductionStandardCreateResponse{
+		Code:    200,
+		Message: "success",
+		Details: data.ID,
+	}, nil
+}
+
+func (server *ServerGRPC) ProductionStandardDetail(ctx context.Context, req *pb.ProductionStandardDetailRequest) (*pb.ProductionStandardDetailResponse, error) {
+	_, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	data, err := server.store.DetailProductionStandard(ctx, req.GetId())
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get detail production standard: ", err.Error())
+	}
+
+	var userCreatedName *string
+	if data.FullName.Valid {
+		name := data.FullName.String
+		userCreatedName = &name
+	}
+
+	return &pb.ProductionStandardDetailResponse{
+		Code:    200,
+		Message: "success",
+		Details: &pb.SimpleData{
+			Id:              data.ID,
+			Name:            data.Name,
+			Code:            data.Code,
+			UserCreatedName: userCreatedName,
+			CreatedAt:       timestamppb.New(data.CreatedAt),
+			ValueExtra:      nil,
+		},
+	}, nil
+}
+
+func (server *ServerGRPC) ProductionStandardUpdate(ctx context.Context, req *pb.ProductionStandardUpdateRequest) (*pb.ProductionStandardUpdateResponse, error) {
+	_, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	ps, err := server.store.DetailProductionStandard(ctx, req.GetId())
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, status.Errorf(codes.NotFound, "production standard not exists")
+		}
+		return nil, status.Errorf(codes.Internal, "failed to get production standard: ", err.Error())
+	}
+	if !ps.UserCreated.Valid {
+		return nil, status.Errorf(codes.PermissionDenied, "failed to update production standard: ", err.Error())
+	}
+
+	data, err := server.store.UpdateProductionStandard(ctx, db.UpdateProductionStandardParams{
+		Name: req.GetName(),
+		Code: sql.NullString{
+			String: req.GetCode(),
+			Valid:  req.Code != nil,
+		},
+		Description: sql.NullString{
+			String: req.GetDescription(),
+			Valid:  req.Description != nil,
+		},
+		ID: req.GetId(),
+	})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to update production standard: ", err.Error())
+	}
+
+	return &pb.ProductionStandardUpdateResponse{
+		Code:    200,
+		Message: "success",
+		Details: data.ID,
 	}, nil
 }
 

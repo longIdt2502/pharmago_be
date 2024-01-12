@@ -102,7 +102,7 @@ AND (
     code ILIKE '%' || COALESCE($2::varchar, '') || '%'
 )
 ORDER BY -id
-    LIMIT COALESCE($4::int, 10)
+LIMIT COALESCE($4::int, 10)
 OFFSET (COALESCE($3::int, 1) - 1) * COALESCE($4::int, 10)
 `
 

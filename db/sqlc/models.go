@@ -334,9 +334,13 @@ type ProductType struct {
 }
 
 type ProductionStandard struct {
-	ID   int32  `json:"id"`
-	Code string `json:"code"`
-	Name string `json:"name"`
+	ID          int32          `json:"id"`
+	Code        string         `json:"code"`
+	Name        string         `json:"name"`
+	Company     sql.NullInt32  `json:"company"`
+	UserCreated sql.NullInt32  `json:"user_created"`
+	CreatedAt   time.Time      `json:"created_at"`
+	Description sql.NullString `json:"description"`
 }
 
 type ProductsBank struct {
