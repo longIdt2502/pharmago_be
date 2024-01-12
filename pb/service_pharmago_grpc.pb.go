@@ -45,9 +45,12 @@ type PharmagoClient interface {
 	GetPriceList(ctx context.Context, in *PriceListRequest, opts ...grpc.CallOption) (*PriceListResponse, error)
 	DetailPriceList(ctx context.Context, in *DetailPriceListRequest, opts ...grpc.CallOption) (*DetailPriceListResponse, error)
 	UpdatePriceList(ctx context.Context, in *UpdatePriceListRequest, opts ...grpc.CallOption) (*UpdatePriceListResponse, error)
-	// ================== PRODUCT MASTER DATA ===================
+	// TODO ================== PRODUCT MASTER DATA ===================
 	ClassifyList(ctx context.Context, in *ClassifyListRequest, opts ...grpc.CallOption) (*ClassifyListResponse, error)
 	ProductionStandardList(ctx context.Context, in *ProductionStandardListRequest, opts ...grpc.CallOption) (*ProductionStandardListResponse, error)
+	ProductionStandardCreate(ctx context.Context, in *ProductionStandardCreateRequest, opts ...grpc.CallOption) (*ProductionStandardCreateResponse, error)
+	ProductionStandardDetail(ctx context.Context, in *ProductionStandardDetailRequest, opts ...grpc.CallOption) (*ProductionStandardDetailResponse, error)
+	ProductionStandardUpdate(ctx context.Context, in *ProductionStandardUpdateRequest, opts ...grpc.CallOption) (*ProductionStandardUpdateResponse, error)
 	PreparationTypeList(ctx context.Context, in *PreparationTypeListRequest, opts ...grpc.CallOption) (*PreparationTypeListResponse, error)
 	CompanyPharmaList(ctx context.Context, in *CompanyPharmaListRequest, opts ...grpc.CallOption) (*CompanyPharmaListResponse, error)
 	// ================== BRAND ===================
@@ -62,7 +65,7 @@ type PharmagoClient interface {
 	SupplierDetail(ctx context.Context, in *SupplierDetailRequest, opts ...grpc.CallOption) (*SupplierDetailResponse, error)
 	SupplierUpdate(ctx context.Context, in *SupplierUpdateRequest, opts ...grpc.CallOption) (*SupplierUpdateResponse, error)
 	SupplierDelete(ctx context.Context, in *SupplierDeleteRequest, opts ...grpc.CallOption) (*SupplierDeleteResponse, error)
-	// ================== WAREHOUSE ===================
+	// TODO ================== WAREHOUSE ===================
 	WarehouseCreate(ctx context.Context, in *WarehouseCreateRequest, opts ...grpc.CallOption) (*WarehouseCreateResponse, error)
 	WarehouseList(ctx context.Context, in *WarehouseListRequest, opts ...grpc.CallOption) (*WarehouseListResponse, error)
 	TicketCreate(ctx context.Context, in *TicketCreateRequest, opts ...grpc.CallOption) (*TicketCreateResponse, error)
@@ -259,6 +262,33 @@ func (c *pharmagoClient) ClassifyList(ctx context.Context, in *ClassifyListReque
 func (c *pharmagoClient) ProductionStandardList(ctx context.Context, in *ProductionStandardListRequest, opts ...grpc.CallOption) (*ProductionStandardListResponse, error) {
 	out := new(ProductionStandardListResponse)
 	err := c.cc.Invoke(ctx, "/pb.Pharmago/ProductionStandardList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) ProductionStandardCreate(ctx context.Context, in *ProductionStandardCreateRequest, opts ...grpc.CallOption) (*ProductionStandardCreateResponse, error) {
+	out := new(ProductionStandardCreateResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/ProductionStandardCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) ProductionStandardDetail(ctx context.Context, in *ProductionStandardDetailRequest, opts ...grpc.CallOption) (*ProductionStandardDetailResponse, error) {
+	out := new(ProductionStandardDetailResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/ProductionStandardDetail", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) ProductionStandardUpdate(ctx context.Context, in *ProductionStandardUpdateRequest, opts ...grpc.CallOption) (*ProductionStandardUpdateResponse, error) {
+	out := new(ProductionStandardUpdateResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/ProductionStandardUpdate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -544,9 +574,12 @@ type PharmagoServer interface {
 	GetPriceList(context.Context, *PriceListRequest) (*PriceListResponse, error)
 	DetailPriceList(context.Context, *DetailPriceListRequest) (*DetailPriceListResponse, error)
 	UpdatePriceList(context.Context, *UpdatePriceListRequest) (*UpdatePriceListResponse, error)
-	// ================== PRODUCT MASTER DATA ===================
+	// TODO ================== PRODUCT MASTER DATA ===================
 	ClassifyList(context.Context, *ClassifyListRequest) (*ClassifyListResponse, error)
 	ProductionStandardList(context.Context, *ProductionStandardListRequest) (*ProductionStandardListResponse, error)
+	ProductionStandardCreate(context.Context, *ProductionStandardCreateRequest) (*ProductionStandardCreateResponse, error)
+	ProductionStandardDetail(context.Context, *ProductionStandardDetailRequest) (*ProductionStandardDetailResponse, error)
+	ProductionStandardUpdate(context.Context, *ProductionStandardUpdateRequest) (*ProductionStandardUpdateResponse, error)
 	PreparationTypeList(context.Context, *PreparationTypeListRequest) (*PreparationTypeListResponse, error)
 	CompanyPharmaList(context.Context, *CompanyPharmaListRequest) (*CompanyPharmaListResponse, error)
 	// ================== BRAND ===================
@@ -561,7 +594,7 @@ type PharmagoServer interface {
 	SupplierDetail(context.Context, *SupplierDetailRequest) (*SupplierDetailResponse, error)
 	SupplierUpdate(context.Context, *SupplierUpdateRequest) (*SupplierUpdateResponse, error)
 	SupplierDelete(context.Context, *SupplierDeleteRequest) (*SupplierDeleteResponse, error)
-	// ================== WAREHOUSE ===================
+	// TODO ================== WAREHOUSE ===================
 	WarehouseCreate(context.Context, *WarehouseCreateRequest) (*WarehouseCreateResponse, error)
 	WarehouseList(context.Context, *WarehouseListRequest) (*WarehouseListResponse, error)
 	TicketCreate(context.Context, *TicketCreateRequest) (*TicketCreateResponse, error)
@@ -646,6 +679,15 @@ func (UnimplementedPharmagoServer) ClassifyList(context.Context, *ClassifyListRe
 }
 func (UnimplementedPharmagoServer) ProductionStandardList(context.Context, *ProductionStandardListRequest) (*ProductionStandardListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductionStandardList not implemented")
+}
+func (UnimplementedPharmagoServer) ProductionStandardCreate(context.Context, *ProductionStandardCreateRequest) (*ProductionStandardCreateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductionStandardCreate not implemented")
+}
+func (UnimplementedPharmagoServer) ProductionStandardDetail(context.Context, *ProductionStandardDetailRequest) (*ProductionStandardDetailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductionStandardDetail not implemented")
+}
+func (UnimplementedPharmagoServer) ProductionStandardUpdate(context.Context, *ProductionStandardUpdateRequest) (*ProductionStandardUpdateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductionStandardUpdate not implemented")
 }
 func (UnimplementedPharmagoServer) PreparationTypeList(context.Context, *PreparationTypeListRequest) (*PreparationTypeListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PreparationTypeList not implemented")
@@ -1082,6 +1124,60 @@ func _Pharmago_ProductionStandardList_Handler(srv interface{}, ctx context.Conte
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PharmagoServer).ProductionStandardList(ctx, req.(*ProductionStandardListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_ProductionStandardCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductionStandardCreateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ProductionStandardCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/ProductionStandardCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ProductionStandardCreate(ctx, req.(*ProductionStandardCreateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_ProductionStandardDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductionStandardDetailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ProductionStandardDetail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/ProductionStandardDetail",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ProductionStandardDetail(ctx, req.(*ProductionStandardDetailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_ProductionStandardUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductionStandardUpdateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ProductionStandardUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/ProductionStandardUpdate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ProductionStandardUpdate(ctx, req.(*ProductionStandardUpdateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1672,6 +1768,18 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ProductionStandardList",
 			Handler:    _Pharmago_ProductionStandardList_Handler,
+		},
+		{
+			MethodName: "ProductionStandardCreate",
+			Handler:    _Pharmago_ProductionStandardCreate_Handler,
+		},
+		{
+			MethodName: "ProductionStandardDetail",
+			Handler:    _Pharmago_ProductionStandardDetail_Handler,
+		},
+		{
+			MethodName: "ProductionStandardUpdate",
+			Handler:    _Pharmago_ProductionStandardUpdate_Handler,
 		},
 		{
 			MethodName: "PreparationTypeList",

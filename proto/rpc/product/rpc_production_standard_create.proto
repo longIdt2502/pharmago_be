@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+import "entities/simple_data.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message ProductionStandardCreateRequest {
+  int32 company = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "int32 value field",
+    required: [
+      "company"
+    ],
+  }];
+  optional string code = 2;
+  string name = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "string value field",
+    required: [
+      "name"
+    ],
+  }];
+  string description = 4;
+}
+
+message ProductionStandardCreateResponse {
+  int32 code = 1;
+  string message = 2;
+  int32 details = 3;
+}

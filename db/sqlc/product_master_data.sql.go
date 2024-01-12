@@ -146,7 +146,7 @@ func (q *Queries) GetListPreparation(ctx context.Context, arg GetListPreparation
 }
 
 const getListProductionStandard = `-- name: GetListProductionStandard :many
-SELECT id, code, name FROM production_standard
+SELECT id, code, name, company, user_created, created_at, description FROM production_standard
 WHERE (
     name ILIKE '%' || COALESCE($1::varchar, '') || '%' OR
     code ILIKE '%' || COALESCE($1::varchar, '') || '%'
@@ -171,7 +171,15 @@ func (q *Queries) GetListProductionStandard(ctx context.Context, arg GetListProd
 	items := []ProductionStandard{}
 	for rows.Next() {
 		var i ProductionStandard
-		if err := rows.Scan(&i.ID, &i.Code, &i.Name); err != nil {
+		if err := rows.Scan(
+			&i.ID,
+			&i.Code,
+			&i.Name,
+			&i.Company,
+			&i.UserCreated,
+			&i.CreatedAt,
+			&i.Description,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

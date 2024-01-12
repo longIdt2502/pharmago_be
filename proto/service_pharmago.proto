@@ -29,6 +29,9 @@ import "rpc/product/rpc_category_list.proto";
 import "rpc/product/rpc_product_type_list.proto";
 import "rpc/product/rpc_classify_list.proto";
 import "rpc/product/rpc_production_standard_list.proto";
+import "rpc/product/rpc_production_standard_create.proto";
+import "rpc/product/rpc_production_standard_detail.proto";
+import "rpc/product/rpc_production_standard_update.proto";
 import "rpc/product/rpc_preparation_type_list.proto";
 import "rpc/product/rpc_company_pharma_list.proto";
 import "rpc/product/rpc_variant_list.proto";
@@ -279,7 +282,7 @@ service Pharmago {
     };
   };
 
-  // ================== PRODUCT MASTER DATA ===================
+  // TODO ================== PRODUCT MASTER DATA ===================
   rpc ClassifyList (ClassifyListRequest) returns (ClassifyListResponse) {
     option (google.api.http) = {
       get: "/classify/v1/list"
@@ -296,6 +299,38 @@ service Pharmago {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "List production standard";
+      tags: "Product Master Data";
+    };
+  };
+
+  rpc ProductionStandardCreate (ProductionStandardCreateRequest) returns (ProductionStandardCreateResponse) {
+    option (google.api.http) = {
+      post: "/production_standard/v1/create"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Production standard create";
+      tags: "Product Master Data";
+    };
+  };
+
+  rpc ProductionStandardDetail (ProductionStandardDetailRequest) returns (ProductionStandardDetailResponse) {
+    option (google.api.http) = {
+      get: "/production_standard/v1/detail/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Production standard detail";
+      tags: "Product Master Data";
+    };
+  };
+
+  rpc ProductionStandardUpdate (ProductionStandardUpdateRequest) returns (ProductionStandardUpdateResponse) {
+    option (google.api.http) = {
+      put: "/production_standard/v1/detail/{id}"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Production standard update";
       tags: "Product Master Data";
     };
   };
@@ -402,7 +437,7 @@ service Pharmago {
     };
   };
 
-  // ================== WAREHOUSE ===================
+  // TODO ================== WAREHOUSE ===================
   rpc WarehouseCreate (WarehouseCreateRequest) returns (WarehouseCreateResponse) {
     option (google.api.http) = {
       post: "/warehouse/v1/create"

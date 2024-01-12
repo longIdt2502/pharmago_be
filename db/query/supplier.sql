@@ -6,7 +6,7 @@ AND (
     code ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%'
 )
 ORDER BY -id
-    LIMIT COALESCE(sqlc.narg('limit')::int, 10)
+LIMIT COALESCE(sqlc.narg('limit')::int, 10)
 OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10);
 
 -- name: CreateSupplier :one

@@ -4,8 +4,13 @@ package pb;
 
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
+import "google/protobuf/timestamp.proto";
+
 message SimpleData {
   int32 id = 1;
   string name = 2;
   string code = 3;
+  optional string user_created_name = 4;
+  optional google.protobuf.Timestamp created_at = 5;
+  optional int32 value_extra = 6;
 }

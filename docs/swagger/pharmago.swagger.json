@@ -1404,6 +1404,126 @@
         ]
       }
     },
+    "/production_standard/v1/create": {
+      "post": {
+        "summary": "Production standard create",
+        "operationId": "Pharmago_ProductionStandardCreate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbProductionStandardCreateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbProductionStandardCreateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Product Master Data"
+        ]
+      }
+    },
+    "/production_standard/v1/detail/{id}": {
+      "get": {
+        "summary": "Production standard detail",
+        "operationId": "Pharmago_ProductionStandardDetail",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbProductionStandardDetailResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "int32 value field",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Product Master Data"
+        ]
+      },
+      "put": {
+        "summary": "Production standard update",
+        "operationId": "Pharmago_ProductionStandardUpdate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbProductionStandardUpdateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "string value field",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "string value field"
+                },
+                "description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          }
+        ],
+        "tags": [
+          "Product Master Data"
+        ]
+      }
+    },
     "/production_standard/v1/list": {
       "get": {
         "summary": "List production standard",
@@ -1423,6 +1543,14 @@
           }
         },
         "parameters": [
+          {
+            "name": "company",
+            "description": "int32 value field",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
           {
             "name": "page",
             "in": "query",
@@ -3766,6 +3894,61 @@
         }
       }
     },
+    "pbProductionStandardCreateRequest": {
+      "type": "object",
+      "properties": {
+        "company": {
+          "type": "integer",
+          "format": "int32",
+          "description": "int32 value field"
+        },
+        "code": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string",
+          "description": "string value field"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "company",
+        "name"
+      ]
+    },
+    "pbProductionStandardCreateResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbProductionStandardDetailResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "$ref": "#/definitions/pbSimpleData"
+        }
+      }
+    },
     "pbProductionStandardListResponse": {
       "type": "object",
       "properties": {
@@ -3782,6 +3965,22 @@
             "type": "object",
             "$ref": "#/definitions/pbSimpleData"
           }
+        }
+      }
+    },
+    "pbProductionStandardUpdateResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -3867,6 +4066,17 @@
         },
         "code": {
           "type": "string"
+        },
+        "userCreatedName": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "valueExtra": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
