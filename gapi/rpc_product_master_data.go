@@ -81,6 +81,12 @@ func (server *ServerGRPC) ProductionStandardList(ctx context.Context, req *pb.Pr
 
 		quantity := value.Quantity
 
+		var description *string
+		if value.Description.Valid {
+			data := value.Description.String
+			description = &data
+		}
+
 		dataPb := &pb.SimpleData{
 			Id:              value.ID,
 			Name:            value.Name,
@@ -88,6 +94,7 @@ func (server *ServerGRPC) ProductionStandardList(ctx context.Context, req *pb.Pr
 			UserCreatedName: userCreatedName,
 			CreatedAt:       timestamppb.New(value.CreatedAt),
 			ValueExtra:      &quantity,
+			Description:     description,
 		}
 		productionStandardPb = append(productionStandardPb, dataPb)
 	}
@@ -120,6 +127,7 @@ func (server *ServerGRPC) ProductionStandardCreate(ctx context.Context, req *pb.
 			Int32: tokenPayload.UserID,
 			Valid: true,
 		},
+		UserUpdated: sql.NullInt32{},
 	})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to record production standard: ", err.Error())
@@ -149,6 +157,18 @@ func (server *ServerGRPC) ProductionStandardDetail(ctx context.Context, req *pb.
 		userCreatedName = &name
 	}
 
+	var userUpdatedName *string
+	if data.UserUpdatedName.Valid {
+		nameUd := data.UserUpdatedName.String
+		userUpdatedName = &nameUd
+	}
+
+	var description *string
+	if data.Description.Valid {
+		data := data.Description.String
+		description = &data
+	}
+
 	return &pb.ProductionStandardDetailResponse{
 		Code:    200,
 		Message: "success",
@@ -158,13 +178,16 @@ func (server *ServerGRPC) ProductionStandardDetail(ctx context.Context, req *pb.
 			Code:            data.Code,
 			UserCreatedName: userCreatedName,
 			CreatedAt:       timestamppb.New(data.CreatedAt),
+			UserUpdatedName: userUpdatedName,
+			UpdatedAt:       timestamppb.New(data.UpdatedAt.Time),
 			ValueExtra:      nil,
+			Description:     description,
 		},
 	}, nil
 }
 
 func (server *ServerGRPC) ProductionStandardUpdate(ctx context.Context, req *pb.ProductionStandardUpdateRequest) (*pb.ProductionStandardUpdateResponse, error) {
-	_, err := server.authorizeUser(ctx)
+	tokenPayload, err := server.authorizeUser(ctx)
 	if err != nil {
 		return nil, config.UnauthenticatedError(err)
 	}
@@ -191,6 +214,10 @@ func (server *ServerGRPC) ProductionStandardUpdate(ctx context.Context, req *pb.
 			Valid:  req.Description != nil,
 		},
 		ID: req.GetId(),
+		UserUpdated: sql.NullInt32{
+			Int32: tokenPayload.UserID,
+			Valid: true,
+		},
 	})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to update production standard: ", err.Error())

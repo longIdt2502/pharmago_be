@@ -339,7 +339,9 @@ type ProductionStandard struct {
 	Name        string         `json:"name"`
 	Company     sql.NullInt32  `json:"company"`
 	UserCreated sql.NullInt32  `json:"user_created"`
+	UserUpdated sql.NullInt32  `json:"user_updated"`
 	CreatedAt   time.Time      `json:"created_at"`
+	UpdatedAt   sql.NullTime   `json:"updated_at"`
 	Description sql.NullString `json:"description"`
 }
 
