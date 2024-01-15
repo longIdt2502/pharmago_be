@@ -9,9 +9,9 @@ FROM alpine:3.18
 WORKDIR /app
 COPY --from=builder /app/main .
 COPY app.env .
-COPY start.sh .
+#COPY start.sh .
 COPY db/migration ./db/migration
 
 EXPOSE 8080 9090
-CMD [ "/app/main" ]
-ENTRYPOINT [ "/app/start.sh" ]
+#CMD [ "/app/main" ]
+ENTRYPOINT [ "/app/main" ]

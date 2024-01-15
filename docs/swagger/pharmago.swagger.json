@@ -4074,9 +4074,19 @@
           "type": "string",
           "format": "date-time"
         },
+        "userUpdatedName": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
         "valueExtra": {
           "type": "integer",
           "format": "int32"
+        },
+        "description": {
+          "type": "string"
         }
       }
     },

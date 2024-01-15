@@ -146,7 +146,7 @@ func (q *Queries) GetListPreparation(ctx context.Context, arg GetListPreparation
 }
 
 const getListProductionStandard = `-- name: GetListProductionStandard :many
-SELECT id, code, name, company, user_created, created_at, description FROM production_standard
+SELECT id, code, name, company, user_created, user_updated, created_at, updated_at, description FROM production_standard
 WHERE (
     name ILIKE '%' || COALESCE($1::varchar, '') || '%' OR
     code ILIKE '%' || COALESCE($1::varchar, '') || '%'
@@ -177,7 +177,9 @@ func (q *Queries) GetListProductionStandard(ctx context.Context, arg GetListProd
 			&i.Name,
 			&i.Company,
 			&i.UserCreated,
+			&i.UserUpdated,
 			&i.CreatedAt,
+			&i.UpdatedAt,
 			&i.Description,
 		); err != nil {
 			return nil, err

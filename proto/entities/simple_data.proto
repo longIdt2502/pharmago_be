@@ -12,5 +12,8 @@ message SimpleData {
   string code = 3;
   optional string user_created_name = 4;
   optional google.protobuf.Timestamp created_at = 5;
-  optional int32 value_extra = 6;
+  optional string user_updated_name = 6;
+  optional google.protobuf.Timestamp updated_at = 7;
+  optional int32 value_extra = 8;
+  optional string description = 9;
 }

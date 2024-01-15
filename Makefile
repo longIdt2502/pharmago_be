@@ -84,6 +84,10 @@ new_service:
 	mkdir gapi
 	touch main.go
 
+docker_build:
+	docker build -t pharmago_be .
 
+docker_run:
+	docker run --name pharmago_be --network pharmago-network -p 8080:8080 -p 9090:9090 -e DB_SOURCE="postgresql://root:Hoanglong2502@pharmago_be-postgres-1:5432/simple_bank?sslmode=disable" -e REDIS_ADDRESS="redis:6379" pharmago_be
 
 .PHONY: postgres createdb dropdb migrateup migrateup1 migratedown migratedown1 new_migration server sqlc proto evans new_service
