@@ -3,6 +3,7 @@ package gapi
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
@@ -105,5 +106,117 @@ func (server *ServerGRPC) WarehouseList(ctx context.Context, req *pb.WarehouseLi
 		Code:    200,
 		Message: "success",
 		Details: warehousesPb,
+	}, nil
+}
+
+func (server *ServerGRPC) WarehouseDetail(ctx context.Context, req *pb.WarehouseDetailRequest) (*pb.WarehouseDetailResponse, error) {
+	_, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	warehouse, err := server.store.DetailWarehouse(ctx, req.GetId())
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, status.Errorf(codes.NotFound, "warehouse not exists")
+		}
+		return nil, status.Errorf(codes.Internal, "failed to get warehouse list: %w", err)
+	}
+
+	warehousesPb, err := mapper.WarehouseMapper(ctx, server.store, warehouse)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to mapper warehouse: %w", err)
+	}
+
+	return &pb.WarehouseDetailResponse{
+		Code:    200,
+		Message: "success",
+		Details: warehousesPb,
+	}, nil
+}
+
+func (server *ServerGRPC) WarehouseUpdate(ctx context.Context, req *pb.WarehouseUpdateRequest) (*pb.WarehouseUpdateResponse, error) {
+	_, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	warehouse, err := server.store.DetailWarehouse(ctx, req.GetId())
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, status.Errorf(codes.NotFound, "warehouse not exists")
+		}
+		return nil, status.Errorf(codes.Internal, "failed to get warehouse: %w", err)
+	}
+
+	_, err = server.store.UpdateAddress(ctx, db.UpdateAddressParams{
+		Lat: sql.NullFloat64{
+			Float64: float64(req.Address.GetLat()),
+			Valid:   true,
+		},
+		Lng: sql.NullFloat64{
+			Float64: float64(req.Address.GetLng()),
+			Valid:   true,
+		},
+		Province: sql.NullString{
+			String: req.Address.GetProvince(),
+			Valid:  true,
+		},
+		District: sql.NullString{
+			String: req.Address.GetProvince(),
+			Valid:  true,
+		},
+		Ward: sql.NullString{
+			String: req.Address.GetProvince(),
+			Valid:  true,
+		},
+		Title: sql.NullString{
+			String: req.Address.GetProvince(),
+			Valid:  true,
+		},
+		ID: warehouse.Address.Int32,
+	})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to update address: %w", err)
+	}
+
+	_, err = server.store.UpdateWarehouse(ctx, db.UpdateWarehouseParams{
+		ID: req.GetId(),
+		Name: sql.NullString{
+			String: req.GetName(),
+			Valid:  req.Name != nil,
+		},
+		Code: sql.NullString{
+			String: req.GetCode(),
+			Valid:  req.Code != nil,
+		},
+	})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to update warehouse: %w", err)
+	}
+
+	return &pb.WarehouseUpdateResponse{
+		Code:    200,
+		Message: "success",
+	}, nil
+}
+
+func (server *ServerGRPC) WarehouseDelete(ctx context.Context, req *pb.WarehouseDeleteRequest) (*pb.WarehouseDeleteResponse, error) {
+	_, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	_, err = server.store.DeleteWarehouse(ctx, req.GetId())
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, status.Errorf(codes.NotFound, "warehouse not exists")
+		}
+		return nil, status.Errorf(codes.Internal, "failed to delete warehouse: %w", err)
+	}
+
+	return &pb.WarehouseDeleteResponse{
+		Code:    200,
+		Message: "success",
 	}, nil
 }

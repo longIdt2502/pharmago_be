@@ -198,6 +198,42 @@ func (q *Queries) CreateWarehouse(ctx context.Context, arg CreateWarehouseParams
 	return i, err
 }
 
+const deleteWarehouse = `-- name: DeleteWarehouse :one
+DELETE FROM warehouses
+WHERE id = $1 RETURNING id, address, companies, name, code
+`
+
+func (q *Queries) DeleteWarehouse(ctx context.Context, id int32) (Warehouse, error) {
+	row := q.db.QueryRowContext(ctx, deleteWarehouse, id)
+	var i Warehouse
+	err := row.Scan(
+		&i.ID,
+		&i.Address,
+		&i.Companies,
+		&i.Name,
+		&i.Code,
+	)
+	return i, err
+}
+
+const detailWarehouse = `-- name: DetailWarehouse :one
+SELECT id, address, companies, name, code FROM warehouses
+WHERE id = $1
+`
+
+func (q *Queries) DetailWarehouse(ctx context.Context, id int32) (Warehouse, error) {
+	row := q.db.QueryRowContext(ctx, detailWarehouse, id)
+	var i Warehouse
+	err := row.Scan(
+		&i.ID,
+		&i.Address,
+		&i.Companies,
+		&i.Name,
+		&i.Code,
+	)
+	return i, err
+}
+
 const getConsignment = `-- name: GetConsignment :one
 SELECT id, code, quantity, inventory, ticket, expired_at, producted_at, is_available, user_created, user_updated, updated_at, created_at, variant FROM consignment
 WHERE id = $1 AND variant = $2
@@ -1077,6 +1113,33 @@ func (q *Queries) UpdateTicketStatus(ctx context.Context, arg UpdateTicketStatus
 		&i.UserUpdated,
 		&i.UpdatedAt,
 		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const updateWarehouse = `-- name: UpdateWarehouse :one
+UPDATE warehouses
+SET
+    name = COALESCE($2, name),
+    code = COALESCE($3, code)
+WHERE id = $1 RETURNING id, address, companies, name, code
+`
+
+type UpdateWarehouseParams struct {
+	ID   int32          `json:"id"`
+	Name sql.NullString `json:"name"`
+	Code sql.NullString `json:"code"`
+}
+
+func (q *Queries) UpdateWarehouse(ctx context.Context, arg UpdateWarehouseParams) (Warehouse, error) {
+	row := q.db.QueryRowContext(ctx, updateWarehouse, arg.ID, arg.Name, arg.Code)
+	var i Warehouse
+	err := row.Scan(
+		&i.ID,
+		&i.Address,
+		&i.Companies,
+		&i.Name,
+		&i.Code,
 	)
 	return i, err
 }

@@ -68,6 +68,9 @@ type PharmagoClient interface {
 	// TODO ================== WAREHOUSE ===================
 	WarehouseCreate(ctx context.Context, in *WarehouseCreateRequest, opts ...grpc.CallOption) (*WarehouseCreateResponse, error)
 	WarehouseList(ctx context.Context, in *WarehouseListRequest, opts ...grpc.CallOption) (*WarehouseListResponse, error)
+	WarehouseDetail(ctx context.Context, in *WarehouseDetailRequest, opts ...grpc.CallOption) (*WarehouseDetailResponse, error)
+	WarehouseUpdate(ctx context.Context, in *WarehouseUpdateRequest, opts ...grpc.CallOption) (*WarehouseUpdateResponse, error)
+	WarehouseDelete(ctx context.Context, in *WarehouseDeleteRequest, opts ...grpc.CallOption) (*WarehouseDeleteResponse, error)
 	TicketCreate(ctx context.Context, in *TicketCreateRequest, opts ...grpc.CallOption) (*TicketCreateResponse, error)
 	TicketList(ctx context.Context, in *TicketListRequest, opts ...grpc.CallOption) (*TicketListResponse, error)
 	TicketDetail(ctx context.Context, in *TicketDetailRequest, opts ...grpc.CallOption) (*TicketDetailResponse, error)
@@ -403,6 +406,33 @@ func (c *pharmagoClient) WarehouseList(ctx context.Context, in *WarehouseListReq
 	return out, nil
 }
 
+func (c *pharmagoClient) WarehouseDetail(ctx context.Context, in *WarehouseDetailRequest, opts ...grpc.CallOption) (*WarehouseDetailResponse, error) {
+	out := new(WarehouseDetailResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/WarehouseDetail", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) WarehouseUpdate(ctx context.Context, in *WarehouseUpdateRequest, opts ...grpc.CallOption) (*WarehouseUpdateResponse, error) {
+	out := new(WarehouseUpdateResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/WarehouseUpdate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) WarehouseDelete(ctx context.Context, in *WarehouseDeleteRequest, opts ...grpc.CallOption) (*WarehouseDeleteResponse, error) {
+	out := new(WarehouseDeleteResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/WarehouseDelete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *pharmagoClient) TicketCreate(ctx context.Context, in *TicketCreateRequest, opts ...grpc.CallOption) (*TicketCreateResponse, error) {
 	out := new(TicketCreateResponse)
 	err := c.cc.Invoke(ctx, "/pb.Pharmago/TicketCreate", in, out, opts...)
@@ -597,6 +627,9 @@ type PharmagoServer interface {
 	// TODO ================== WAREHOUSE ===================
 	WarehouseCreate(context.Context, *WarehouseCreateRequest) (*WarehouseCreateResponse, error)
 	WarehouseList(context.Context, *WarehouseListRequest) (*WarehouseListResponse, error)
+	WarehouseDetail(context.Context, *WarehouseDetailRequest) (*WarehouseDetailResponse, error)
+	WarehouseUpdate(context.Context, *WarehouseUpdateRequest) (*WarehouseUpdateResponse, error)
+	WarehouseDelete(context.Context, *WarehouseDeleteRequest) (*WarehouseDeleteResponse, error)
 	TicketCreate(context.Context, *TicketCreateRequest) (*TicketCreateResponse, error)
 	TicketList(context.Context, *TicketListRequest) (*TicketListResponse, error)
 	TicketDetail(context.Context, *TicketDetailRequest) (*TicketDetailResponse, error)
@@ -724,6 +757,15 @@ func (UnimplementedPharmagoServer) WarehouseCreate(context.Context, *WarehouseCr
 }
 func (UnimplementedPharmagoServer) WarehouseList(context.Context, *WarehouseListRequest) (*WarehouseListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method WarehouseList not implemented")
+}
+func (UnimplementedPharmagoServer) WarehouseDetail(context.Context, *WarehouseDetailRequest) (*WarehouseDetailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WarehouseDetail not implemented")
+}
+func (UnimplementedPharmagoServer) WarehouseUpdate(context.Context, *WarehouseUpdateRequest) (*WarehouseUpdateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WarehouseUpdate not implemented")
+}
+func (UnimplementedPharmagoServer) WarehouseDelete(context.Context, *WarehouseDeleteRequest) (*WarehouseDeleteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WarehouseDelete not implemented")
 }
 func (UnimplementedPharmagoServer) TicketCreate(context.Context, *TicketCreateRequest) (*TicketCreateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TicketCreate not implemented")
@@ -1398,6 +1440,60 @@ func _Pharmago_WarehouseList_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Pharmago_WarehouseDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WarehouseDetailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).WarehouseDetail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/WarehouseDetail",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).WarehouseDetail(ctx, req.(*WarehouseDetailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_WarehouseUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WarehouseUpdateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).WarehouseUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/WarehouseUpdate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).WarehouseUpdate(ctx, req.(*WarehouseUpdateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_WarehouseDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WarehouseDeleteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).WarehouseDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/WarehouseDelete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).WarehouseDelete(ctx, req.(*WarehouseDeleteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Pharmago_TicketCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(TicketCreateRequest)
 	if err := dec(in); err != nil {
@@ -1828,6 +1924,18 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "WarehouseList",
 			Handler:    _Pharmago_WarehouseList_Handler,
+		},
+		{
+			MethodName: "WarehouseDetail",
+			Handler:    _Pharmago_WarehouseDetail_Handler,
+		},
+		{
+			MethodName: "WarehouseUpdate",
+			Handler:    _Pharmago_WarehouseUpdate_Handler,
+		},
+		{
+			MethodName: "WarehouseDelete",
+			Handler:    _Pharmago_WarehouseDelete_Handler,
 		},
 		{
 			MethodName: "TicketCreate",

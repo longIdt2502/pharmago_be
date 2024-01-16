@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+import "entities/address.proto";
+
+message WarehouseUpdateRequest {
+  optional string code = 1;
+  optional string name = 2;
+  optional AddressPayload address = 3;
+  int32 id = 4;
+}
+
+message WarehouseUpdateResponse {
+  int32 code = 1;
+  string message = 2;
+}

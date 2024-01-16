@@ -1916,6 +1916,117 @@
         ]
       }
     },
+    "/warehouse/v1/detail/{id}": {
+      "get": {
+        "summary": "detail warehouses",
+        "operationId": "Pharmago_WarehouseDetail",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbWarehouseDetailResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Warehouse"
+        ]
+      },
+      "delete": {
+        "summary": "delete warehouses",
+        "operationId": "Pharmago_WarehouseDelete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbWarehouseDeleteResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Warehouse"
+        ]
+      },
+      "put": {
+        "summary": "update warehouses",
+        "operationId": "Pharmago_WarehouseUpdate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbWarehouseUpdateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "address": {
+                  "$ref": "#/definitions/pbAddressPayload"
+                }
+              }
+            }
+          }
+        ],
+        "tags": [
+          "Warehouse"
+        ]
+      }
+    },
     "/warehouse/v1/list": {
       "get": {
         "summary": "list warehouses",
@@ -4806,6 +4917,33 @@
         }
       }
     },
+    "pbWarehouseDeleteResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "pbWarehouseDetailResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "$ref": "#/definitions/pbWarehouse"
+        }
+      }
+    },
     "pbWarehouseListResponse": {
       "type": "object",
       "properties": {
@@ -4822,6 +4960,18 @@
             "type": "object",
             "$ref": "#/definitions/pbWarehouse"
           }
+        }
+      }
+    },
+    "pbWarehouseUpdateResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
         }
       }
     },

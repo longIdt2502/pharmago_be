@@ -41,6 +41,9 @@ import "rpc/warehouse/rpc_ticker_list.proto";
 import "rpc/warehouse/rpc_consignment_list.proto";
 import "rpc/warehouse/rpc_warehouse_create.proto";
 import "rpc/warehouse/rpc_warehouse_list.proto";
+import "rpc/warehouse/rpc_warehouse_detail.proto";
+import "rpc/warehouse/rpc_warehouse_update.proto";
+import "rpc/warehouse/rpc_warehouse_delete.proto";
 import "rpc/warehouse/rpc_ticket_update_status.proto";
 import "rpc/warehouse/rpc_suplier_list.proto";
 import "rpc/warehouse/rpc_ticket_detail.proto";
@@ -455,6 +458,34 @@ service Pharmago {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "list warehouses";
+      tags: "Warehouse";
+    };
+  };
+  rpc WarehouseDetail (WarehouseDetailRequest) returns (WarehouseDetailResponse) {
+    option (google.api.http) = {
+      get: "/warehouse/v1/detail/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "detail warehouses";
+      tags: "Warehouse";
+    };
+  };
+  rpc WarehouseUpdate (WarehouseUpdateRequest) returns (WarehouseUpdateResponse) {
+    option (google.api.http) = {
+      put: "/warehouse/v1/detail/{id}"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "update warehouses";
+      tags: "Warehouse";
+    };
+  };
+  rpc WarehouseDelete (WarehouseDeleteRequest) returns (WarehouseDeleteResponse) {
+    option (google.api.http) = {
+      delete: "/warehouse/v1/detail/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "delete warehouses";
       tags: "Warehouse";
     };
   };
