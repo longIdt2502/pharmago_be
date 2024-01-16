@@ -3048,8 +3048,7 @@
           "format": "int32"
         },
         "address": {
-          "type": "integer",
-          "format": "int32"
+          "$ref": "#/definitions/pbAddress"
         },
         "phone": {
           "type": "string"
@@ -3473,7 +3472,7 @@
           "format": "float"
         },
         "customer": {
-          "$ref": "#/definitions/pbCustomer"
+          "$ref": "#/definitions/pbCustomerDetail"
         },
         "address": {
           "$ref": "#/definitions/pbAddress"

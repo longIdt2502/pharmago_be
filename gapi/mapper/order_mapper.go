@@ -28,7 +28,7 @@ func OrderPreviewMapper(order db.ListOrderRow) *pb.OrderPreview {
 func OrderDetailMapper(ctx context.Context, store *db.Store, data db.DetailOrderRow) *pb.Order {
 
 	customerDb, _ := store.GetCustomer(ctx, data.Customer.Int32)
-	customer := CustomerMapper(customerDb)
+	customer, _ := CustomerDetailMapper(ctx, store, customerDb)
 
 	var address *pb.Address
 	if data.Address.Valid {

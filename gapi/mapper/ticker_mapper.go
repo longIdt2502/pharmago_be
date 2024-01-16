@@ -69,7 +69,7 @@ func TicketDetailMapper(ctx context.Context, store *db.Store, data db.GetDetailT
 			Code:     data.CCode.String,
 			FullName: data.CName.String,
 			Company:  data.CCompany.Int32,
-			Address:  addressPb.Id,
+			Address:  addressPb,
 			Phone:    data.CPhone.String,
 			Email:    email,
 		}
