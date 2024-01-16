@@ -20,6 +20,21 @@ ORDER BY -id
 LIMIT COALESCE(sqlc.narg('limit')::int, 10)
 OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10);
 
+-- name: DetailWarehouse :one
+SELECT * FROM warehouses
+WHERE id = $1;
+
+-- name: DeleteWarehouse :one
+DELETE FROM warehouses
+WHERE id = $1 RETURNING *;
+
+-- name: UpdateWarehouse :one
+UPDATE warehouses
+SET
+    name = COALESCE(sqlc.narg(name), name),
+    code = COALESCE(sqlc.narg(code), code)
+WHERE id = $1 RETURNING *;
+
 -- name: CreateTicket :one
 INSERT INTO tickets (
     code, type, status, note, qr, export_to, import_from, total_price, warehouse, user_created, user_updated
