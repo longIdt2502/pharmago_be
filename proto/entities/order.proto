@@ -31,7 +31,7 @@ message Order {
   string discount = 6;
   float service_price = 7;
   float must_paid = 8;
-  Customer customer = 9;
+  CustomerDetail customer = 9;
   Address address = 10;
   SimpleData type = 11;
   SimpleData status = 12;

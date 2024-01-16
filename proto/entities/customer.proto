@@ -11,7 +11,7 @@ message Customer {
   string code = 2;
   string full_name = 3;
   int32 company = 4;
-  int32 address = 5;
+  Address address = 5;
   string phone = 6;
   optional string email = 7;
 }
