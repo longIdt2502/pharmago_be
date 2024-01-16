@@ -163,15 +163,15 @@ func (server *ServerGRPC) WarehouseUpdate(ctx context.Context, req *pb.Warehouse
 			Valid:  true,
 		},
 		District: sql.NullString{
-			String: req.Address.GetProvince(),
+			String: req.Address.GetDistrict(),
 			Valid:  true,
 		},
 		Ward: sql.NullString{
-			String: req.Address.GetProvince(),
-			Valid:  true,
+			String: req.Address.GetWard(),
+			Valid:  req.Address.Ward != nil,
 		},
 		Title: sql.NullString{
-			String: req.Address.GetProvince(),
+			String: req.Address.GetTitle(),
 			Valid:  true,
 		},
 		ID: warehouse.Address.Int32,
