@@ -32,6 +32,7 @@ import "rpc/product/rpc_production_standard_list.proto";
 import "rpc/product/rpc_production_standard_create.proto";
 import "rpc/product/rpc_production_standard_detail.proto";
 import "rpc/product/rpc_production_standard_update.proto";
+import "rpc/product/rpc_production_standard_delete.proto";
 import "rpc/product/rpc_preparation_type_list.proto";
 import "rpc/product/rpc_company_pharma_list.proto";
 import "rpc/product/rpc_variant_list.proto";
@@ -334,6 +335,16 @@ service Pharmago {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Production standard update";
+      tags: "Product Master Data";
+    };
+  };
+
+  rpc ProductionStandardDelete (ProductionStandardDeleteRequest) returns (ProductionStandardDeleteResponse) {
+    option (google.api.http) = {
+      delete: "/production_standard/v1/detail/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Production standard delete";
       tags: "Product Master Data";
     };
   };

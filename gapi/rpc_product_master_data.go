@@ -230,6 +230,26 @@ func (server *ServerGRPC) ProductionStandardUpdate(ctx context.Context, req *pb.
 	}, nil
 }
 
+func (server *ServerGRPC) ProductionStandardDelete(ctx context.Context, req *pb.ProductionStandardDeleteRequest) (*pb.ProductionStandardDeleteResponse, error) {
+	_, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	_, err = server.store.DeleteProductionStandard(ctx, req.GetId())
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, status.Errorf(codes.NotFound, "production standard not exists")
+		}
+		return nil, status.Errorf(codes.Internal, "failed to delete production standard: ", err.Error())
+	}
+
+	return &pb.ProductionStandardDeleteResponse{
+		Code:    200,
+		Message: "success",
+	}, nil
+}
+
 func (server *ServerGRPC) PreparationTypeList(ctx context.Context, req *pb.PreparationTypeListRequest) (*pb.PreparationTypeListResponse, error) {
 	preparationType, err := server.store.GetListPreparation(ctx, db.GetListPreparationParams{
 		Search: sql.NullString{

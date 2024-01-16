@@ -1469,6 +1469,37 @@
           "Product Master Data"
         ]
       },
+      "delete": {
+        "summary": "Production standard delete",
+        "operationId": "Pharmago_ProductionStandardDelete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbProductionStandardDeleteResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "int32 value field",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Product Master Data"
+        ]
+      },
       "put": {
         "summary": "Production standard update",
         "operationId": "Pharmago_ProductionStandardUpdate",
@@ -4042,6 +4073,18 @@
         "details": {
           "type": "integer",
           "format": "int32"
+        }
+      }
+    },
+    "pbProductionStandardDeleteResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
         }
       }
     },

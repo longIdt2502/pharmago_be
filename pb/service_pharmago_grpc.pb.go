@@ -51,6 +51,7 @@ type PharmagoClient interface {
 	ProductionStandardCreate(ctx context.Context, in *ProductionStandardCreateRequest, opts ...grpc.CallOption) (*ProductionStandardCreateResponse, error)
 	ProductionStandardDetail(ctx context.Context, in *ProductionStandardDetailRequest, opts ...grpc.CallOption) (*ProductionStandardDetailResponse, error)
 	ProductionStandardUpdate(ctx context.Context, in *ProductionStandardUpdateRequest, opts ...grpc.CallOption) (*ProductionStandardUpdateResponse, error)
+	ProductionStandardDelete(ctx context.Context, in *ProductionStandardDeleteRequest, opts ...grpc.CallOption) (*ProductionStandardDeleteResponse, error)
 	PreparationTypeList(ctx context.Context, in *PreparationTypeListRequest, opts ...grpc.CallOption) (*PreparationTypeListResponse, error)
 	CompanyPharmaList(ctx context.Context, in *CompanyPharmaListRequest, opts ...grpc.CallOption) (*CompanyPharmaListResponse, error)
 	// ================== BRAND ===================
@@ -292,6 +293,15 @@ func (c *pharmagoClient) ProductionStandardDetail(ctx context.Context, in *Produ
 func (c *pharmagoClient) ProductionStandardUpdate(ctx context.Context, in *ProductionStandardUpdateRequest, opts ...grpc.CallOption) (*ProductionStandardUpdateResponse, error) {
 	out := new(ProductionStandardUpdateResponse)
 	err := c.cc.Invoke(ctx, "/pb.Pharmago/ProductionStandardUpdate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) ProductionStandardDelete(ctx context.Context, in *ProductionStandardDeleteRequest, opts ...grpc.CallOption) (*ProductionStandardDeleteResponse, error) {
+	out := new(ProductionStandardDeleteResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/ProductionStandardDelete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -610,6 +620,7 @@ type PharmagoServer interface {
 	ProductionStandardCreate(context.Context, *ProductionStandardCreateRequest) (*ProductionStandardCreateResponse, error)
 	ProductionStandardDetail(context.Context, *ProductionStandardDetailRequest) (*ProductionStandardDetailResponse, error)
 	ProductionStandardUpdate(context.Context, *ProductionStandardUpdateRequest) (*ProductionStandardUpdateResponse, error)
+	ProductionStandardDelete(context.Context, *ProductionStandardDeleteRequest) (*ProductionStandardDeleteResponse, error)
 	PreparationTypeList(context.Context, *PreparationTypeListRequest) (*PreparationTypeListResponse, error)
 	CompanyPharmaList(context.Context, *CompanyPharmaListRequest) (*CompanyPharmaListResponse, error)
 	// ================== BRAND ===================
@@ -721,6 +732,9 @@ func (UnimplementedPharmagoServer) ProductionStandardDetail(context.Context, *Pr
 }
 func (UnimplementedPharmagoServer) ProductionStandardUpdate(context.Context, *ProductionStandardUpdateRequest) (*ProductionStandardUpdateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductionStandardUpdate not implemented")
+}
+func (UnimplementedPharmagoServer) ProductionStandardDelete(context.Context, *ProductionStandardDeleteRequest) (*ProductionStandardDeleteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductionStandardDelete not implemented")
 }
 func (UnimplementedPharmagoServer) PreparationTypeList(context.Context, *PreparationTypeListRequest) (*PreparationTypeListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PreparationTypeList not implemented")
@@ -1220,6 +1234,24 @@ func _Pharmago_ProductionStandardUpdate_Handler(srv interface{}, ctx context.Con
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PharmagoServer).ProductionStandardUpdate(ctx, req.(*ProductionStandardUpdateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_ProductionStandardDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductionStandardDeleteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ProductionStandardDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/ProductionStandardDelete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ProductionStandardDelete(ctx, req.(*ProductionStandardDeleteRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1876,6 +1908,10 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ProductionStandardUpdate",
 			Handler:    _Pharmago_ProductionStandardUpdate_Handler,
+		},
+		{
+			MethodName: "ProductionStandardDelete",
+			Handler:    _Pharmago_ProductionStandardDelete_Handler,
 		},
 		{
 			MethodName: "PreparationTypeList",

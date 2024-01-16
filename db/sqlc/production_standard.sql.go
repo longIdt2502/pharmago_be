@@ -50,6 +50,28 @@ func (q *Queries) CreateProductionStandard(ctx context.Context, arg CreateProduc
 	return i, err
 }
 
+const deleteProductionStandard = `-- name: DeleteProductionStandard :one
+DELETE FROM production_standard
+WHERE id = $1 RETURNING id, code, name, company, user_created, user_updated, created_at, updated_at, description
+`
+
+func (q *Queries) DeleteProductionStandard(ctx context.Context, id int32) (ProductionStandard, error) {
+	row := q.db.QueryRowContext(ctx, deleteProductionStandard, id)
+	var i ProductionStandard
+	err := row.Scan(
+		&i.ID,
+		&i.Code,
+		&i.Name,
+		&i.Company,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Description,
+	)
+	return i, err
+}
+
 const detailProductionStandard = `-- name: DetailProductionStandard :one
 SELECT ps.id, ps.code, ps.name, ps.company, ps.user_created, ps.user_updated, ps.created_at, ps.updated_at, ps.description, a.id, a.username, a.hashed_password, a.full_name, a.email, a.type, a.is_verify, a.password_changed_at, a.created_at, au.full_name AS user_updated_name FROM production_standard ps
 LEFT JOIN accounts a ON a.id = ps.user_created
