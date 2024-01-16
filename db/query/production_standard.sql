@@ -44,3 +44,7 @@ SET
     updated_at = now()
 WHERE id = sqlc.arg(id)
 RETURNING *;
+
+-- name: DeleteProductionStandard :one
+DELETE FROM production_standard
+WHERE id = $1 RETURNING *;
