@@ -7,8 +7,10 @@ import (
 	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/gapi/mapper"
 	"github.com/longIdt2502/pharmago_be/pb"
+	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"io"
 )
 
 func (server *ServerGRPC) ListVariant(ctx context.Context, req *pb.ListVariantRequest) (*pb.ListVariantResponse, error) {
@@ -47,4 +49,51 @@ func (server *ServerGRPC) ListVariant(ctx context.Context, req *pb.ListVariantRe
 		Message: "success",
 		Details: variantsPb,
 	}, nil
+}
+
+func (server *ServerGRPC) ScanVariant(srv pb.Pharmago_ScanVariantServer) error {
+	//_, err := server.authorizeUser(ctx)
+	//if err != nil {
+	//	return nil, config.UnauthenticatedError(err)
+	//}
+	ctx := srv.Context()
+	for {
+		// receive data from stream
+		req, err := srv.Recv()
+		if err == io.EOF {
+			// return will close stream from server side
+			log.Debug().Msgf("exit")
+			return nil
+		}
+		if err != nil {
+			log.Debug().Msgf("receive error %v", err)
+			continue
+		}
+
+		code := req.GetCode()
+		company := req.GetCompany()
+		variants, _ := server.store.GetVariants(ctx, db.GetVariantsParams{
+			Company: company,
+			Search: sql.NullString{
+				String: code,
+				Valid:  true,
+			},
+		})
+
+		var variantsPb []*pb.Variant
+		for _, value := range variants {
+			data := mapper.VariantMapper(ctx, server.store, value)
+			variantsPb = append(variantsPb, data)
+		}
+
+		resp := pb.VariantScanResponse{
+			Code:    200,
+			Message: "success",
+			Details: variantsPb,
+		}
+		if err := srv.Send(&resp); err != nil {
+			log.Debug().Msgf("send new response failed: ", err.Error())
+		}
+		log.Info().Msg("send new response success")
+	}
 }

@@ -19,7 +19,7 @@ func VariantMapper(ctx context.Context, store *db.Store, data db.GetVariantsRow)
 		Valid: true,
 	})
 	log.Print(err)
-	inventory32 := int32(inventory)
+	inventory32 := inventory
 	totalInventory = &inventory32
 
 	var units []*pb.Unit

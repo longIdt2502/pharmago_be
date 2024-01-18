@@ -12,14 +12,14 @@ import (
 )
 
 const getInventoryVariant = `-- name: GetInventoryVariant :one
-SELECT SUM(inventory) AS total_inventory
+SELECT COALESCE(SUM(inventory), 0)::int AS total_inventory
 FROM consignment
 WHERE variant = $1 AND is_available = true
 `
 
-func (q *Queries) GetInventoryVariant(ctx context.Context, variant sql.NullInt32) (int64, error) {
+func (q *Queries) GetInventoryVariant(ctx context.Context, variant sql.NullInt32) (int32, error) {
 	row := q.db.QueryRowContext(ctx, getInventoryVariant, variant)
-	var total_inventory int64
+	var total_inventory int32
 	err := row.Scan(&total_inventory)
 	return total_inventory, err
 }

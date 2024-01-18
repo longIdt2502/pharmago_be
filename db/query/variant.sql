@@ -24,6 +24,6 @@ LIMIT COALESCE(sqlc.narg('limit')::int, 10)
 OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10);
 
 -- name: GetInventoryVariant :one
-SELECT SUM(inventory) AS total_inventory
+SELECT COALESCE(SUM(inventory), 0)::int AS total_inventory
 FROM consignment
 WHERE variant = $1 AND is_available = true;

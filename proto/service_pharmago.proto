@@ -36,6 +36,7 @@ import "rpc/product/rpc_production_standard_delete.proto";
 import "rpc/product/rpc_preparation_type_list.proto";
 import "rpc/product/rpc_company_pharma_list.proto";
 import "rpc/product/rpc_variant_list.proto";
+import "rpc/product/rpc_variant_scan.proto";
 
 import "rpc/warehouse/rpc_ticket_create.proto";
 import "rpc/warehouse/rpc_ticker_list.proto";
@@ -242,7 +243,7 @@ service Pharmago {
     };
   };
 
-  // -------- VARIANT --------
+  // TODO -------- VARIANT --------
   rpc ListVariant (ListVariantRequest) returns (ListVariantResponse) {
     option (google.api.http) = {
       get: "/product/v1/variant/list"
@@ -252,9 +253,10 @@ service Pharmago {
       tags: "Product";
     };
   };
+  rpc ScanVariant (stream VariantScanRequest) returns (stream VariantScanResponse) {};
 
 
-  // -------- PRICE_LIST --------
+  // TODO -------- PRICE_LIST --------
   rpc GetPriceList (PriceListRequest) returns (PriceListResponse) {
     option (google.api.http) = {
       get: "/price_list/v1/list"
