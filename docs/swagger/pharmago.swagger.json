@@ -4805,6 +4805,25 @@
         }
       }
     },
+    "pbVariantScanResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbVariant"
+          }
+        }
+      }
+    },
     "pbVerifyAccountRequest": {
       "type": "object",
       "properties": {

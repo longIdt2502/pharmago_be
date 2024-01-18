@@ -39,9 +39,10 @@ type PharmagoClient interface {
 	// ==================== PRODUCT ========================
 	CreateProduct(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*CreateProductResponse, error)
 	ListProduct(ctx context.Context, in *ListProductRequest, opts ...grpc.CallOption) (*ListProductResponse, error)
-	// -------- VARIANT --------
+	// TODO -------- VARIANT --------
 	ListVariant(ctx context.Context, in *ListVariantRequest, opts ...grpc.CallOption) (*ListVariantResponse, error)
-	// -------- PRICE_LIST --------
+	ScanVariant(ctx context.Context, opts ...grpc.CallOption) (Pharmago_ScanVariantClient, error)
+	// TODO -------- PRICE_LIST --------
 	GetPriceList(ctx context.Context, in *PriceListRequest, opts ...grpc.CallOption) (*PriceListResponse, error)
 	DetailPriceList(ctx context.Context, in *DetailPriceListRequest, opts ...grpc.CallOption) (*DetailPriceListResponse, error)
 	UpdatePriceList(ctx context.Context, in *UpdatePriceListRequest, opts ...grpc.CallOption) (*UpdatePriceListResponse, error)
@@ -225,6 +226,37 @@ func (c *pharmagoClient) ListVariant(ctx context.Context, in *ListVariantRequest
 		return nil, err
 	}
 	return out, nil
+}
+
+func (c *pharmagoClient) ScanVariant(ctx context.Context, opts ...grpc.CallOption) (Pharmago_ScanVariantClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Pharmago_ServiceDesc.Streams[0], "/pb.Pharmago/ScanVariant", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &pharmagoScanVariantClient{stream}
+	return x, nil
+}
+
+type Pharmago_ScanVariantClient interface {
+	Send(*VariantScanRequest) error
+	Recv() (*VariantScanResponse, error)
+	grpc.ClientStream
+}
+
+type pharmagoScanVariantClient struct {
+	grpc.ClientStream
+}
+
+func (x *pharmagoScanVariantClient) Send(m *VariantScanRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *pharmagoScanVariantClient) Recv() (*VariantScanResponse, error) {
+	m := new(VariantScanResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 func (c *pharmagoClient) GetPriceList(ctx context.Context, in *PriceListRequest, opts ...grpc.CallOption) (*PriceListResponse, error) {
@@ -608,9 +640,10 @@ type PharmagoServer interface {
 	// ==================== PRODUCT ========================
 	CreateProduct(context.Context, *CreateProductRequest) (*CreateProductResponse, error)
 	ListProduct(context.Context, *ListProductRequest) (*ListProductResponse, error)
-	// -------- VARIANT --------
+	// TODO -------- VARIANT --------
 	ListVariant(context.Context, *ListVariantRequest) (*ListVariantResponse, error)
-	// -------- PRICE_LIST --------
+	ScanVariant(Pharmago_ScanVariantServer) error
+	// TODO -------- PRICE_LIST --------
 	GetPriceList(context.Context, *PriceListRequest) (*PriceListResponse, error)
 	DetailPriceList(context.Context, *DetailPriceListRequest) (*DetailPriceListResponse, error)
 	UpdatePriceList(context.Context, *UpdatePriceListRequest) (*UpdatePriceListResponse, error)
@@ -708,6 +741,9 @@ func (UnimplementedPharmagoServer) ListProduct(context.Context, *ListProductRequ
 }
 func (UnimplementedPharmagoServer) ListVariant(context.Context, *ListVariantRequest) (*ListVariantResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListVariant not implemented")
+}
+func (UnimplementedPharmagoServer) ScanVariant(Pharmago_ScanVariantServer) error {
+	return status.Errorf(codes.Unimplemented, "method ScanVariant not implemented")
 }
 func (UnimplementedPharmagoServer) GetPriceList(context.Context, *PriceListRequest) (*PriceListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPriceList not implemented")
@@ -1092,6 +1128,32 @@ func _Pharmago_ListVariant_Handler(srv interface{}, ctx context.Context, dec fun
 		return srv.(PharmagoServer).ListVariant(ctx, req.(*ListVariantRequest))
 	}
 	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_ScanVariant_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(PharmagoServer).ScanVariant(&pharmagoScanVariantServer{stream})
+}
+
+type Pharmago_ScanVariantServer interface {
+	Send(*VariantScanResponse) error
+	Recv() (*VariantScanRequest, error)
+	grpc.ServerStream
+}
+
+type pharmagoScanVariantServer struct {
+	grpc.ServerStream
+}
+
+func (x *pharmagoScanVariantServer) Send(m *VariantScanResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *pharmagoScanVariantServer) Recv() (*VariantScanRequest, error) {
+	m := new(VariantScanRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 func _Pharmago_GetPriceList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -2038,6 +2100,13 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Pharmago_ImportProductMasterData_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "ScanVariant",
+			Handler:       _Pharmago_ScanVariant_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
+		},
+	},
 	Metadata: "service_pharmago.proto",
 }
