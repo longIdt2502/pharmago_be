@@ -80,16 +80,15 @@ func (server *ServerGRPC) ScanVariant(srv pb.Pharmago_ScanVariantServer) error {
 			},
 		})
 
-		var variantsPb []*pb.Variant
-		for _, value := range variants {
-			data := mapper.VariantMapper(ctx, server.store, value)
-			variantsPb = append(variantsPb, data)
+		var variantPb *pb.Variant
+		if len(variants) != 0 {
+			variantPb = mapper.VariantMapper(ctx, server.store, variants[0])
 		}
 
 		resp := pb.VariantScanResponse{
 			Code:    200,
 			Message: "success",
-			Details: variantsPb,
+			Details: variantPb,
 		}
 		if err := srv.Send(&resp); err != nil {
 			log.Debug().Msgf("send new response failed: ", err.Error())

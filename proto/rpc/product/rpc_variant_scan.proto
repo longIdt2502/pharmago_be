@@ -26,5 +26,5 @@ message VariantScanRequest {
 message VariantScanResponse {
   int32 code = 1;
   string message = 2;
-  repeated Variant details = 3;
+  optional Variant details = 3;
 }

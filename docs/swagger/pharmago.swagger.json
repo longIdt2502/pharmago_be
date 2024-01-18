@@ -4816,11 +4816,7 @@
           "type": "string"
         },
         "details": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/pbVariant"
-          }
+          "$ref": "#/definitions/pbVariant"
         }
       }
     },
