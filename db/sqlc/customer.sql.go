@@ -122,7 +122,8 @@ SELECT id, full_name, code, company, address, email, phone, license, birthday, u
 WHERE company = $1::int
 AND (
     full_name ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
-    code ILIKE '%' || COALESCE($2::varchar, '') || '%'
+    code ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
+    phone ILIKE '%' || COALESCE($2::varchar, '') || '%'
 )
 ORDER BY -id
 LIMIT COALESCE($4::int, 10)
