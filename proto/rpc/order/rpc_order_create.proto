@@ -37,6 +37,7 @@ message OrderCreate {
   string type = 10;
   int32 company = 11;
   optional string customer_phone = 12;
+  optional string customer_name = 13;
 }
 
 message OrderCreateRequest {

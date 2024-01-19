@@ -3560,6 +3560,9 @@
         },
         "customerPhone": {
           "type": "string"
+        },
+        "customerName": {
+          "type": "string"
         }
       }
     },

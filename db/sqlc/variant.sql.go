@@ -66,15 +66,18 @@ AND (
     v.name ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
     v.code ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
     v.barcode ILIKE '%' || COALESCE($2::varchar, '') || '%'
+) AND (
+    $3::int IS NULL OR v.id = $3::int
 )
 ORDER BY -v.id
-LIMIT COALESCE($4::int, 10)
-OFFSET (COALESCE($3::int, 1) - 1) * COALESCE($4::int, 10)
+LIMIT COALESCE($5::int, 10)
+OFFSET (COALESCE($4::int, 1) - 1) * COALESCE($5::int, 10)
 `
 
 type GetVariantsParams struct {
 	Company int32          `json:"company"`
 	Search  sql.NullString `json:"search"`
+	ID      sql.NullInt32  `json:"id"`
 	Page    sql.NullInt32  `json:"page"`
 	Limit   sql.NullInt32  `json:"limit"`
 }
@@ -161,6 +164,7 @@ func (q *Queries) GetVariants(ctx context.Context, arg GetVariantsParams) ([]Get
 	rows, err := q.db.QueryContext(ctx, getVariants,
 		arg.Company,
 		arg.Search,
+		arg.ID,
 		arg.Page,
 		arg.Limit,
 	)
