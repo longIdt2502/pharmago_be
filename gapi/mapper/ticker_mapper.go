@@ -85,7 +85,7 @@ func TicketDetailMapper(ctx context.Context, store *db.Store, data db.GetDetailT
 		Valid: true,
 	})
 	for _, value := range consignmentsDb {
-		dataPb := ConsignmentMapper(ctx, store, value)
+		dataPb := ConsignmentMapper(ctx, store, value, warehouseDb.Companies.Int32)
 		consignments = append(consignments, dataPb)
 	}
 

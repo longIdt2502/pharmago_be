@@ -319,7 +319,7 @@ func (server *ServerGRPC) ConsignmentList(ctx context.Context, req *pb.Consignme
 			UpdatedAt:   value.UpdatedAt,
 			CreatedAt:   value.CreatedAt,
 			Variant:     value.Variant,
-		})
+		}, req.GetCompany())
 
 		consignmentsPb = append(consignmentsPb, data)
 	}
