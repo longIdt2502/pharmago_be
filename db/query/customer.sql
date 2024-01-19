@@ -8,7 +8,8 @@ SELECT * FROM customers
 WHERE company = sqlc.arg(company)::int
 AND (
     full_name ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
-    code ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%'
+    code ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
+    phone ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%'
 )
 ORDER BY -id
 LIMIT COALESCE(sqlc.narg('limit')::int, 10)
