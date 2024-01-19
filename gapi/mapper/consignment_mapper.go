@@ -2,6 +2,7 @@ package mapper
 
 import (
 	"context"
+	"database/sql"
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/pb"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -9,8 +10,17 @@ import (
 
 func ConsignmentMapper(ctx context.Context, store *db.Store, data db.Consignment) *pb.Consignment {
 
-	variant, _ := store.GetVariantById(ctx, data.Variant.Int32)
-	variantPb := VariantPreviewMapper(ctx, store, variant)
+	variant, _ := store.GetVariants(ctx, db.GetVariantsParams{
+		ID: sql.NullInt32{
+			Int32: data.Variant.Int32,
+			Valid: true,
+		},
+	})
+
+	var variantPb *pb.Variant
+	if len(variant) != 0 {
+		variantPb = VariantMapper(ctx, store, variant[0])
+	}
 
 	return &pb.Consignment{
 		Id:          data.ID,

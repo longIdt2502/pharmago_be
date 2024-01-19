@@ -18,6 +18,8 @@ AND (
     v.name ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
     v.code ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
     v.barcode ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%'
+) AND (
+    sqlc.narg('id')::int IS NULL OR v.id = sqlc.narg('id')::int
 )
 ORDER BY -v.id
 LIMIT COALESCE(sqlc.narg('limit')::int, 10)
