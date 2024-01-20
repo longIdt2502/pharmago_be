@@ -392,7 +392,12 @@ func (server *ServerGRPC) OrderList(ctx context.Context, req *pb.OrderListReques
 }
 
 func (server *ServerGRPC) OrderDetail(ctx context.Context, req *pb.OrderDetailRequest) (*pb.OrderDetailResponse, error) {
-	orderDb, err := server.store.DetailOrder(ctx, req.Id)
+	orderDb, err := server.store.DetailOrder(ctx, db.DetailOrderParams{
+		ID: sql.NullInt32{
+			Int32: req.GetId(),
+			Valid: true,
+		},
+	})
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, status.Errorf(codes.NotFound, "order not exists")
@@ -410,7 +415,12 @@ func (server *ServerGRPC) OrderDetail(ctx context.Context, req *pb.OrderDetailRe
 }
 
 func (server *ServerGRPC) OrderUpdateStatus(ctx context.Context, req *pb.OrderUpdateStatusRequest) (*pb.OrderUpdateStatusResponse, error) {
-	order, err := server.store.DetailOrder(ctx, req.Id)
+	order, err := server.store.DetailOrder(ctx, db.DetailOrderParams{
+		ID: sql.NullInt32{
+			Int32: req.GetId(),
+			Valid: true,
+		},
+	})
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, status.Errorf(codes.NotFound, "order not exists")
@@ -437,5 +447,28 @@ func (server *ServerGRPC) OrderUpdateStatus(ctx context.Context, req *pb.OrderUp
 	return &pb.OrderUpdateStatusResponse{
 		Code:    200,
 		Message: "success",
+	}, nil
+}
+
+func (server *ServerGRPC) OrderScan(ctx context.Context, req *pb.OrderScanRequest) (*pb.OrderScanResponse, error) {
+	orderDb, err := server.store.DetailOrder(ctx, db.DetailOrderParams{
+		Code: sql.NullString{
+			String: req.GetCode(),
+			Valid:  true,
+		},
+	})
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, status.Errorf(codes.NotFound, "order not exists")
+		}
+		return nil, status.Errorf(codes.Internal, "failed to get order: ", err.Error())
+	}
+
+	orderPb := mapper.OrderDetailMapper(ctx, server.store, orderDb)
+
+	return &pb.OrderScanResponse{
+		Code:    200,
+		Message: "success",
+		Details: orderPb,
 	}, nil
 }

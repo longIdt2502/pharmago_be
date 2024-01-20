@@ -83,6 +83,7 @@ type PharmagoClient interface {
 	OrderList(ctx context.Context, in *OrderListRequest, opts ...grpc.CallOption) (*OrderListResponse, error)
 	OrderDetail(ctx context.Context, in *OrderDetailRequest, opts ...grpc.CallOption) (*OrderDetailResponse, error)
 	OrderUpdateStatus(ctx context.Context, in *OrderUpdateStatusRequest, opts ...grpc.CallOption) (*OrderUpdateStatusResponse, error)
+	OrderScan(ctx context.Context, in *OrderScanRequest, opts ...grpc.CallOption) (*OrderScanResponse, error)
 	// ================== CUSTOMER ===================
 	CustomerList(ctx context.Context, in *CustomerListRequest, opts ...grpc.CallOption) (*CustomerListResponse, error)
 	CustomerCreate(ctx context.Context, in *CustomerCreateRequest, opts ...grpc.CallOption) (*CustomerCreateResponse, error)
@@ -556,6 +557,15 @@ func (c *pharmagoClient) OrderUpdateStatus(ctx context.Context, in *OrderUpdateS
 	return out, nil
 }
 
+func (c *pharmagoClient) OrderScan(ctx context.Context, in *OrderScanRequest, opts ...grpc.CallOption) (*OrderScanResponse, error) {
+	out := new(OrderScanResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/OrderScan", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *pharmagoClient) CustomerList(ctx context.Context, in *CustomerListRequest, opts ...grpc.CallOption) (*CustomerListResponse, error) {
 	out := new(CustomerListResponse)
 	err := c.cc.Invoke(ctx, "/pb.Pharmago/CustomerList", in, out, opts...)
@@ -684,6 +694,7 @@ type PharmagoServer interface {
 	OrderList(context.Context, *OrderListRequest) (*OrderListResponse, error)
 	OrderDetail(context.Context, *OrderDetailRequest) (*OrderDetailResponse, error)
 	OrderUpdateStatus(context.Context, *OrderUpdateStatusRequest) (*OrderUpdateStatusResponse, error)
+	OrderScan(context.Context, *OrderScanRequest) (*OrderScanResponse, error)
 	// ================== CUSTOMER ===================
 	CustomerList(context.Context, *CustomerListRequest) (*CustomerListResponse, error)
 	CustomerCreate(context.Context, *CustomerCreateRequest) (*CustomerCreateResponse, error)
@@ -843,6 +854,9 @@ func (UnimplementedPharmagoServer) OrderDetail(context.Context, *OrderDetailRequ
 }
 func (UnimplementedPharmagoServer) OrderUpdateStatus(context.Context, *OrderUpdateStatusRequest) (*OrderUpdateStatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OrderUpdateStatus not implemented")
+}
+func (UnimplementedPharmagoServer) OrderScan(context.Context, *OrderScanRequest) (*OrderScanResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OrderScan not implemented")
 }
 func (UnimplementedPharmagoServer) CustomerList(context.Context, *CustomerListRequest) (*CustomerListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CustomerList not implemented")
@@ -1750,6 +1764,24 @@ func _Pharmago_OrderUpdateStatus_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Pharmago_OrderScan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OrderScanRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).OrderScan(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/OrderScan",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).OrderScan(ctx, req.(*OrderScanRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Pharmago_CustomerList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CustomerListRequest)
 	if err := dec(in); err != nil {
@@ -2070,6 +2102,10 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "OrderUpdateStatus",
 			Handler:    _Pharmago_OrderUpdateStatus_Handler,
+		},
+		{
+			MethodName: "OrderScan",
+			Handler:    _Pharmago_OrderScan_Handler,
 		},
 		{
 			MethodName: "CustomerList",
