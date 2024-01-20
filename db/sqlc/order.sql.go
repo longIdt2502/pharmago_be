@@ -146,8 +146,13 @@ JOIN medias m ON o.qr = m.id
 JOIN order_type ot ON o.type = ot.code
 JOIN order_status os ON o.status = os.code
 JOIN accounts a ON o.user_created = a.id
-WHERE o.id = $1
+WHERE (o.id = $1 OR o.code = $2)
 `
+
+type DetailOrderParams struct {
+	ID   sql.NullInt32  `json:"id"`
+	Code sql.NullString `json:"code"`
+}
 
 type DetailOrderRow struct {
 	ID                int32          `json:"id"`
@@ -197,8 +202,8 @@ type DetailOrderRow struct {
 	AFullName         string         `json:"a_full_name"`
 }
 
-func (q *Queries) DetailOrder(ctx context.Context, id int32) (DetailOrderRow, error) {
-	row := q.db.QueryRowContext(ctx, detailOrder, id)
+func (q *Queries) DetailOrder(ctx context.Context, arg DetailOrderParams) (DetailOrderRow, error) {
+	row := q.db.QueryRowContext(ctx, detailOrder, arg.ID, arg.Code)
 	var i DetailOrderRow
 	err := row.Scan(
 		&i.ID,

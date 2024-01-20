@@ -60,7 +60,7 @@ JOIN medias m ON o.qr = m.id
 JOIN order_type ot ON o.type = ot.code
 JOIN order_status os ON o.status = os.code
 JOIN accounts a ON o.user_created = a.id
-WHERE o.id = $1;
+WHERE (o.id = sqlc.narg(id) OR o.code = sqlc.narg(code));
 
 -- name: ListOrderItem :many
 SELECT * FROM order_items oi
