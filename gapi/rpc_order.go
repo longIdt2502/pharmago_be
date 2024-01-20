@@ -464,6 +464,10 @@ func (server *ServerGRPC) OrderScan(ctx context.Context, req *pb.OrderScanReques
 		return nil, status.Errorf(codes.Internal, "failed to get order: ", err.Error())
 	}
 
+	if orderDb.OtCode != "PRESCRIPTION" {
+		return nil, status.Errorf(codes.NotFound, "order not exists")
+	}
+
 	orderPb := mapper.OrderDetailMapper(ctx, server.store, orderDb)
 
 	return &pb.OrderScanResponse{

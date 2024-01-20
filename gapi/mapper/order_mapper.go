@@ -2,6 +2,7 @@ package mapper
 
 import (
 	"context"
+	"database/sql"
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/pb"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -42,24 +43,17 @@ func OrderDetailMapper(ctx context.Context, store *db.Store, data db.DetailOrder
 	var orderItems []*pb.OrderItem
 	orderItemsDb, _ := store.ListOrderItem(ctx, data.ID)
 	for _, value := range orderItemsDb {
-		orderItems = append(orderItems, &pb.OrderItem{
-			Id: value.ID,
-			Variant: &pb.Variant{
-				Id:              value.ID_2,
-				Code:            value.Code,
-				Name:            value.Name,
-				Barcode:         value.Barcode,
-				DecisionNumber:  value.DecisionNumber,
-				RegisterNumber:  value.RegisterNumber,
-				Longevity:       value.Longevity,
-				Vat:             float32(value.Vat),
-				Product:         value.Product,
-				Media:           value.MediaUrl,
-				QuantityInStock: nil,
-				Units:           nil,
-				PriceSell:       0,
-				PriceImport:     0,
+
+		variant, _ := store.GetVariants(ctx, db.GetVariantsParams{
+			Company: data.Company,
+			ID: sql.NullInt32{
+				Int32: value.ID_2,
 			},
+		})
+		variantDb := VariantMapper(ctx, store, variant[0])
+		orderItems = append(orderItems, &pb.OrderItem{
+			Id:         value.ID,
+			Variant:    variantDb,
 			Value:      value.Value,
 			TotalPrice: float32(value.TotalPrice),
 			Consignment: &pb.Consignment{
