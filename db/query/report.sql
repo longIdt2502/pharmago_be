@@ -11,6 +11,8 @@ WITH variant_total AS (
            COALESCE(SUM(oi.total_price), 0)::float AS total_revenue
     FROM variants v
     LEFT JOIN order_items oi ON v.id = oi.variant
+    LEFT JOIN orders o ON o.id = oi.order
+    WHERE o.status = 'COMPLETE'
     GROUP BY v.id
 )
 SELECT v.*, vt.total_revenue AS revenue, m.media_url AS imageUrl FROM variant_total vt
