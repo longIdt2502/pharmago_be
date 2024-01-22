@@ -239,9 +239,15 @@ type PaymentItemType struct {
 }
 
 type PreparationType struct {
-	ID   int32  `json:"id"`
-	Code string `json:"code"`
-	Name string `json:"name"`
+	ID          int32          `json:"id"`
+	Code        string         `json:"code"`
+	Name        string         `json:"name"`
+	Company     sql.NullInt32  `json:"company"`
+	UserCreated sql.NullInt32  `json:"user_created"`
+	UserUpdated sql.NullInt32  `json:"user_updated"`
+	CreatedAt   time.Time      `json:"created_at"`
+	UpdatedAt   sql.NullTime   `json:"updated_at"`
+	Description sql.NullString `json:"description"`
 }
 
 type PriceList struct {

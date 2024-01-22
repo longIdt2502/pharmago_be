@@ -236,6 +236,17 @@ func (server *ServerGRPC) ProductionStandardDelete(ctx context.Context, req *pb.
 		return nil, config.UnauthenticatedError(err)
 	}
 
+	ps, err := server.store.DetailProductionStandard(ctx, req.GetId())
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, status.Errorf(codes.NotFound, "production standard not exists")
+		}
+		return nil, status.Errorf(codes.Internal, "failed to get production standard: ", err.Error())
+	}
+	if !ps.UserCreated.Valid {
+		return nil, status.Errorf(codes.PermissionDenied, "failed to update production standard: ", err.Error())
+	}
+
 	_, err = server.store.DeleteProductionStandard(ctx, req.GetId())
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -283,6 +294,161 @@ func (server *ServerGRPC) PreparationTypeList(ctx context.Context, req *pb.Prepa
 		Code:    200,
 		Message: "success",
 		Details: preparationTypePb,
+	}, nil
+}
+
+func (server *ServerGRPC) PreparationTypeCreate(ctx context.Context, req *pb.PreparationTypeCreateRequest) (*pb.PreparationTypeCreateResponse, error) {
+	tokenPayload, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	code := fmt.Sprintf("PS-%s-%d", utils.RandomString(3), utils.RandomInt(100, 999))
+	if req.Code != nil {
+		code = req.GetCode()
+	}
+	data, err := server.store.CreatePreparationType(ctx, db.CreatePreparationTypeParams{
+		Code: code,
+		Name: req.GetName(),
+		Company: sql.NullInt32{
+			Int32: req.GetCompany(),
+			Valid: true,
+		},
+		UserCreated: sql.NullInt32{
+			Int32: tokenPayload.UserID,
+			Valid: true,
+		},
+		UserUpdated: sql.NullInt32{},
+	})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to record production standard: ", err.Error())
+	}
+
+	return &pb.PreparationTypeCreateResponse{
+		Code:    200,
+		Message: "success",
+		Details: data.ID,
+	}, nil
+}
+
+func (server *ServerGRPC) PreparationTypeDetail(ctx context.Context, req *pb.PreparationTypeDetailRequest) (*pb.PreparationTypeDetailResponse, error) {
+	_, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	data, err := server.store.DetailPreparationType(ctx, req.GetId())
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get detail production standard: ", err.Error())
+	}
+
+	var userCreatedName *string
+	if data.FullName.Valid {
+		name := data.FullName.String
+		userCreatedName = &name
+	}
+
+	var userUpdatedName *string
+	if data.UserUpdatedName.Valid {
+		nameUd := data.UserUpdatedName.String
+		userUpdatedName = &nameUd
+	}
+
+	var description *string
+	if data.Description.Valid {
+		data := data.Description.String
+		description = &data
+	}
+
+	return &pb.PreparationTypeDetailResponse{
+		Code:    200,
+		Message: "success",
+		Details: &pb.SimpleData{
+			Id:              data.ID,
+			Name:            data.Name,
+			Code:            data.Code,
+			UserCreatedName: userCreatedName,
+			CreatedAt:       timestamppb.New(data.CreatedAt),
+			UserUpdatedName: userUpdatedName,
+			UpdatedAt:       timestamppb.New(data.UpdatedAt.Time),
+			ValueExtra:      nil,
+			Description:     description,
+		},
+	}, nil
+}
+
+func (server *ServerGRPC) PreparationTypeUpdate(ctx context.Context, req *pb.PreparationTypeUpdateRequest) (*pb.PreparationTypeUpdateResponse, error) {
+	tokenPayload, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	ps, err := server.store.DetailPreparationType(ctx, req.GetId())
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, status.Errorf(codes.NotFound, "production standard not exists")
+		}
+		return nil, status.Errorf(codes.Internal, "failed to get production standard: ", err.Error())
+	}
+	if !ps.UserCreated.Valid {
+		return nil, status.Errorf(codes.PermissionDenied, "failed to update production standard: ", err.Error())
+	}
+
+	data, err := server.store.UpdatePreparationType(ctx, db.UpdatePreparationTypeParams{
+		Name: req.GetName(),
+		Code: sql.NullString{
+			String: req.GetCode(),
+			Valid:  req.Code != nil,
+		},
+		Description: sql.NullString{
+			String: req.GetDescription(),
+			Valid:  req.Description != nil,
+		},
+		ID: req.GetId(),
+		UserUpdated: sql.NullInt32{
+			Int32: tokenPayload.UserID,
+			Valid: true,
+		},
+	})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to update production standard: ", err.Error())
+	}
+
+	return &pb.PreparationTypeUpdateResponse{
+		Code:    200,
+		Message: "success",
+		Details: data.ID,
+	}, nil
+}
+
+func (server *ServerGRPC) PreparationTypeDelete(ctx context.Context, req *pb.PreparationTypeDeleteRequest) (*pb.PreparationTypeDeleteResponse, error) {
+	_, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	pt, err := server.store.DetailPreparationType(ctx, req.GetId())
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, status.Errorf(codes.NotFound, "production standard not exists")
+		}
+		return nil, status.Errorf(codes.Internal, "failed to get production standard: ", err.Error())
+	}
+	if !pt.UserCreated.Valid {
+		return nil, status.Errorf(codes.PermissionDenied, "failed to update production standard: ", err.Error())
+	}
+
+	_, err = server.store.DeletePreparationType(ctx, req.GetId())
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, status.Errorf(codes.NotFound, "production standard not exists")
+		}
+		return nil, status.Errorf(codes.Internal, "failed to delete production standard: ", err.Error())
+	}
+
+	return &pb.PreparationTypeDeleteResponse{
+		Code:    200,
+		Message: "success",
 	}, nil
 }
 

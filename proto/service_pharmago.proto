@@ -34,6 +34,10 @@ import "rpc/product/rpc_production_standard_detail.proto";
 import "rpc/product/rpc_production_standard_update.proto";
 import "rpc/product/rpc_production_standard_delete.proto";
 import "rpc/product/rpc_preparation_type_list.proto";
+import "rpc/product/rpc_preparation_type_create.proto";
+import "rpc/product/rpc_preparation_type_detail.proto";
+import "rpc/product/rpc_preparation_type_update.proto";
+import "rpc/product/rpc_preparation_type_delete.proto";
 import "rpc/product/rpc_company_pharma_list.proto";
 import "rpc/product/rpc_variant_list.proto";
 import "rpc/product/rpc_variant_scan.proto";
@@ -358,6 +362,48 @@ service Pharmago {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "List preparation type";
+      tags: "Product Master Data";
+    };
+  };
+
+  rpc PreparationTypeCreate (PreparationTypeCreateRequest) returns (PreparationTypeCreateResponse) {
+    option (google.api.http) = {
+      post: "/preparation_type/v1/create"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "preparation type create";
+      tags: "Product Master Data";
+    };
+  };
+
+  rpc PreparationTypeDetail (PreparationTypeDetailRequest) returns (PreparationTypeDetailResponse) {
+    option (google.api.http) = {
+      get: "/preparation_type/v1/detail/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "preparation type detail";
+      tags: "Product Master Data";
+    };
+  };
+
+  rpc PreparationTypeUpdate (PreparationTypeUpdateRequest) returns (PreparationTypeUpdateResponse) {
+    option (google.api.http) = {
+      put: "/preparation_type/v1/detail/{id}"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "preparation type update";
+      tags: "Product Master Data";
+    };
+  };
+
+  rpc PreparationTypeDelete (PreparationTypeDeleteRequest) returns (PreparationTypeDeleteResponse) {
+    option (google.api.http) = {
+      delete: "/preparation_type/v1/detail/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "preparation type delete";
       tags: "Product Master Data";
     };
   };
