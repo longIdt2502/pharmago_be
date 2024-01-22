@@ -106,7 +106,7 @@ func (q *Queries) GetListCompanyPharma(ctx context.Context, arg GetListCompanyPh
 }
 
 const getListPreparation = `-- name: GetListPreparation :many
-SELECT id, code, name FROM preparation_type
+SELECT id, code, name, company, user_created, user_updated, created_at, updated_at, description FROM preparation_type
 WHERE (
     name ILIKE '%' || COALESCE($1::varchar, '') || '%' OR
     code ILIKE '%' || COALESCE($1::varchar, '') || '%'
@@ -131,7 +131,17 @@ func (q *Queries) GetListPreparation(ctx context.Context, arg GetListPreparation
 	items := []PreparationType{}
 	for rows.Next() {
 		var i PreparationType
-		if err := rows.Scan(&i.ID, &i.Code, &i.Name); err != nil {
+		if err := rows.Scan(
+			&i.ID,
+			&i.Code,
+			&i.Name,
+			&i.Company,
+			&i.UserCreated,
+			&i.UserUpdated,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.Description,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

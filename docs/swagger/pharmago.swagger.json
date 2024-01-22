@@ -1057,6 +1057,157 @@
         ]
       }
     },
+    "/preparation_type/v1/create": {
+      "post": {
+        "summary": "preparation type create",
+        "operationId": "Pharmago_PreparationTypeCreate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbPreparationTypeCreateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbPreparationTypeCreateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Product Master Data"
+        ]
+      }
+    },
+    "/preparation_type/v1/detail/{id}": {
+      "get": {
+        "summary": "preparation type detail",
+        "operationId": "Pharmago_PreparationTypeDetail",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbPreparationTypeDetailResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "int32 value field",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Product Master Data"
+        ]
+      },
+      "delete": {
+        "summary": "preparation type delete",
+        "operationId": "Pharmago_PreparationTypeDelete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbPreparationTypeDeleteResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "int32 value field",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Product Master Data"
+        ]
+      },
+      "put": {
+        "summary": "preparation type update",
+        "operationId": "Pharmago_PreparationTypeUpdate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbPreparationTypeUpdateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "string value field",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "string value field"
+                },
+                "description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          }
+        ],
+        "tags": [
+          "Product Master Data"
+        ]
+      }
+    },
     "/preparation_type/v1/list": {
       "get": {
         "summary": "List preparation type",
@@ -3901,6 +4052,73 @@
         }
       }
     },
+    "pbPreparationTypeCreateRequest": {
+      "type": "object",
+      "properties": {
+        "company": {
+          "type": "integer",
+          "format": "int32",
+          "description": "int32 value field"
+        },
+        "code": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string",
+          "description": "string value field"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "company",
+        "name"
+      ]
+    },
+    "pbPreparationTypeCreateResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbPreparationTypeDeleteResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "pbPreparationTypeDetailResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "$ref": "#/definitions/pbSimpleData"
+        }
+      }
+    },
     "pbPreparationTypeListResponse": {
       "type": "object",
       "properties": {
@@ -3917,6 +4135,22 @@
             "type": "object",
             "$ref": "#/definitions/pbSimpleData"
           }
+        }
+      }
+    },
+    "pbPreparationTypeUpdateResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },

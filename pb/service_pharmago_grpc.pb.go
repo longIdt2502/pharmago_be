@@ -54,6 +54,10 @@ type PharmagoClient interface {
 	ProductionStandardUpdate(ctx context.Context, in *ProductionStandardUpdateRequest, opts ...grpc.CallOption) (*ProductionStandardUpdateResponse, error)
 	ProductionStandardDelete(ctx context.Context, in *ProductionStandardDeleteRequest, opts ...grpc.CallOption) (*ProductionStandardDeleteResponse, error)
 	PreparationTypeList(ctx context.Context, in *PreparationTypeListRequest, opts ...grpc.CallOption) (*PreparationTypeListResponse, error)
+	PreparationTypeCreate(ctx context.Context, in *PreparationTypeCreateRequest, opts ...grpc.CallOption) (*PreparationTypeCreateResponse, error)
+	PreparationTypeDetail(ctx context.Context, in *PreparationTypeDetailRequest, opts ...grpc.CallOption) (*PreparationTypeDetailResponse, error)
+	PreparationTypeUpdate(ctx context.Context, in *PreparationTypeUpdateRequest, opts ...grpc.CallOption) (*PreparationTypeUpdateResponse, error)
+	PreparationTypeDelete(ctx context.Context, in *PreparationTypeDeleteRequest, opts ...grpc.CallOption) (*PreparationTypeDeleteResponse, error)
 	CompanyPharmaList(ctx context.Context, in *CompanyPharmaListRequest, opts ...grpc.CallOption) (*CompanyPharmaListResponse, error)
 	// ================== BRAND ===================
 	BrandList(ctx context.Context, in *BrandListRequest, opts ...grpc.CallOption) (*BrandListResponse, error)
@@ -344,6 +348,42 @@ func (c *pharmagoClient) ProductionStandardDelete(ctx context.Context, in *Produ
 func (c *pharmagoClient) PreparationTypeList(ctx context.Context, in *PreparationTypeListRequest, opts ...grpc.CallOption) (*PreparationTypeListResponse, error) {
 	out := new(PreparationTypeListResponse)
 	err := c.cc.Invoke(ctx, "/pb.Pharmago/PreparationTypeList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) PreparationTypeCreate(ctx context.Context, in *PreparationTypeCreateRequest, opts ...grpc.CallOption) (*PreparationTypeCreateResponse, error) {
+	out := new(PreparationTypeCreateResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/PreparationTypeCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) PreparationTypeDetail(ctx context.Context, in *PreparationTypeDetailRequest, opts ...grpc.CallOption) (*PreparationTypeDetailResponse, error) {
+	out := new(PreparationTypeDetailResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/PreparationTypeDetail", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) PreparationTypeUpdate(ctx context.Context, in *PreparationTypeUpdateRequest, opts ...grpc.CallOption) (*PreparationTypeUpdateResponse, error) {
+	out := new(PreparationTypeUpdateResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/PreparationTypeUpdate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) PreparationTypeDelete(ctx context.Context, in *PreparationTypeDeleteRequest, opts ...grpc.CallOption) (*PreparationTypeDeleteResponse, error) {
+	out := new(PreparationTypeDeleteResponse)
+	err := c.cc.Invoke(ctx, "/pb.Pharmago/PreparationTypeDelete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -665,6 +705,10 @@ type PharmagoServer interface {
 	ProductionStandardUpdate(context.Context, *ProductionStandardUpdateRequest) (*ProductionStandardUpdateResponse, error)
 	ProductionStandardDelete(context.Context, *ProductionStandardDeleteRequest) (*ProductionStandardDeleteResponse, error)
 	PreparationTypeList(context.Context, *PreparationTypeListRequest) (*PreparationTypeListResponse, error)
+	PreparationTypeCreate(context.Context, *PreparationTypeCreateRequest) (*PreparationTypeCreateResponse, error)
+	PreparationTypeDetail(context.Context, *PreparationTypeDetailRequest) (*PreparationTypeDetailResponse, error)
+	PreparationTypeUpdate(context.Context, *PreparationTypeUpdateRequest) (*PreparationTypeUpdateResponse, error)
+	PreparationTypeDelete(context.Context, *PreparationTypeDeleteRequest) (*PreparationTypeDeleteResponse, error)
 	CompanyPharmaList(context.Context, *CompanyPharmaListRequest) (*CompanyPharmaListResponse, error)
 	// ================== BRAND ===================
 	BrandList(context.Context, *BrandListRequest) (*BrandListResponse, error)
@@ -785,6 +829,18 @@ func (UnimplementedPharmagoServer) ProductionStandardDelete(context.Context, *Pr
 }
 func (UnimplementedPharmagoServer) PreparationTypeList(context.Context, *PreparationTypeListRequest) (*PreparationTypeListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PreparationTypeList not implemented")
+}
+func (UnimplementedPharmagoServer) PreparationTypeCreate(context.Context, *PreparationTypeCreateRequest) (*PreparationTypeCreateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PreparationTypeCreate not implemented")
+}
+func (UnimplementedPharmagoServer) PreparationTypeDetail(context.Context, *PreparationTypeDetailRequest) (*PreparationTypeDetailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PreparationTypeDetail not implemented")
+}
+func (UnimplementedPharmagoServer) PreparationTypeUpdate(context.Context, *PreparationTypeUpdateRequest) (*PreparationTypeUpdateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PreparationTypeUpdate not implemented")
+}
+func (UnimplementedPharmagoServer) PreparationTypeDelete(context.Context, *PreparationTypeDeleteRequest) (*PreparationTypeDeleteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PreparationTypeDelete not implemented")
 }
 func (UnimplementedPharmagoServer) CompanyPharmaList(context.Context, *CompanyPharmaListRequest) (*CompanyPharmaListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CompanyPharmaList not implemented")
@@ -1346,6 +1402,78 @@ func _Pharmago_PreparationTypeList_Handler(srv interface{}, ctx context.Context,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PharmagoServer).PreparationTypeList(ctx, req.(*PreparationTypeListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_PreparationTypeCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PreparationTypeCreateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).PreparationTypeCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/PreparationTypeCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).PreparationTypeCreate(ctx, req.(*PreparationTypeCreateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_PreparationTypeDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PreparationTypeDetailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).PreparationTypeDetail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/PreparationTypeDetail",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).PreparationTypeDetail(ctx, req.(*PreparationTypeDetailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_PreparationTypeUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PreparationTypeUpdateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).PreparationTypeUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/PreparationTypeUpdate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).PreparationTypeUpdate(ctx, req.(*PreparationTypeUpdateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_PreparationTypeDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PreparationTypeDeleteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).PreparationTypeDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.Pharmago/PreparationTypeDelete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).PreparationTypeDelete(ctx, req.(*PreparationTypeDeleteRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2010,6 +2138,22 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PreparationTypeList",
 			Handler:    _Pharmago_PreparationTypeList_Handler,
+		},
+		{
+			MethodName: "PreparationTypeCreate",
+			Handler:    _Pharmago_PreparationTypeCreate_Handler,
+		},
+		{
+			MethodName: "PreparationTypeDetail",
+			Handler:    _Pharmago_PreparationTypeDetail_Handler,
+		},
+		{
+			MethodName: "PreparationTypeUpdate",
+			Handler:    _Pharmago_PreparationTypeUpdate_Handler,
+		},
+		{
+			MethodName: "PreparationTypeDelete",
+			Handler:    _Pharmago_PreparationTypeDelete_Handler,
 		},
 		{
 			MethodName: "CompanyPharmaList",
