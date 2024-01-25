@@ -505,6 +505,105 @@
         ]
       }
     },
+    "/company_pharma/v1/create": {
+      "post": {
+        "summary": "Create company pharma",
+        "operationId": "Pharmago_CompanyPharmaCreate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCompanyPharmaCreateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbCompanyPharmaCreateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Product Master Data"
+        ]
+      }
+    },
+    "/company_pharma/v1/delete/{id}": {
+      "delete": {
+        "summary": "Delete company pharma",
+        "operationId": "Pharmago_CompanyPharmaDelete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCompanyPharmaDeleteResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "int32 value field",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Product Master Data"
+        ]
+      }
+    },
+    "/company_pharma/v1/detail/{id}": {
+      "get": {
+        "summary": "Detail company pharma",
+        "operationId": "Pharmago_CompanyPharmaDetail",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCompanyPharmaDetailResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "int32 value field",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Product Master Data"
+        ]
+      }
+    },
     "/company_pharma/v1/list": {
       "get": {
         "summary": "List company pharma",
@@ -549,6 +648,47 @@
             "in": "query",
             "required": false,
             "type": "string"
+          }
+        ],
+        "tags": [
+          "Product Master Data"
+        ]
+      }
+    },
+    "/company_pharma/v1/update/{id}": {
+      "put": {
+        "summary": "Update company pharma",
+        "operationId": "Pharmago_CompanyPharmaUpdate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCompanyPharmaUpdateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "string value field",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PharmagoCompanyPharmaUpdateBody"
+            }
           }
         ],
         "tags": [
@@ -2376,6 +2516,14 @@
     }
   },
   "definitions": {
+    "CompanyPharmaCreateRequestTypeEnum": {
+      "type": "string",
+      "enum": [
+        "PRODUCTION",
+        "REGISTERED"
+      ],
+      "default": "PRODUCTION"
+    },
     "OrderUpdateStatusRequestStatusEnum": {
       "type": "string",
       "enum": [
@@ -2385,6 +2533,37 @@
         "CANCEL"
       ],
       "default": "DRAFT"
+    },
+    "PharmagoCompanyPharmaUpdateBody": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "string value field"
+        },
+        "name": {
+          "type": "string",
+          "description": "string value field"
+        },
+        "country": {
+          "type": "string",
+          "description": "string value field"
+        },
+        "address": {
+          "type": "string",
+          "description": "string value field"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "title": "TODO: Update",
+      "required": [
+        "code",
+        "name",
+        "country",
+        "address"
+      ]
     },
     "PharmagoCustomerUpdateBody": {
       "type": "object",
@@ -2841,6 +3020,89 @@
         }
       }
     },
+    "pbCompanyPharmaCreateRequest": {
+      "type": "object",
+      "properties": {
+        "company": {
+          "type": "integer",
+          "format": "int32",
+          "description": "int32 value field"
+        },
+        "code": {
+          "type": "string",
+          "description": "string value field"
+        },
+        "name": {
+          "type": "string",
+          "description": "string value field"
+        },
+        "country": {
+          "type": "string",
+          "description": "string value field"
+        },
+        "address": {
+          "type": "string",
+          "description": "string value field"
+        },
+        "description": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/CompanyPharmaCreateRequestTypeEnum"
+        }
+      },
+      "title": "TODO: Create",
+      "required": [
+        "company",
+        "code",
+        "name",
+        "country",
+        "address"
+      ]
+    },
+    "pbCompanyPharmaCreateResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbCompanyPharmaDeleteResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "pbCompanyPharmaDetailResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "$ref": "#/definitions/pbCompanyPharma"
+        }
+      }
+    },
     "pbCompanyPharmaListResponse": {
       "type": "object",
       "properties": {
@@ -2857,6 +3119,22 @@
             "type": "object",
             "$ref": "#/definitions/pbCompanyPharma"
           }
+        }
+      }
+    },
+    "pbCompanyPharmaUpdateResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },

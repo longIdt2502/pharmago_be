@@ -7,7 +7,6 @@ import (
 	"fmt"
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
-	"github.com/longIdt2502/pharmago_be/gapi/mapper"
 	"github.com/longIdt2502/pharmago_be/pb"
 	"github.com/longIdt2502/pharmago_be/utils"
 	"google.golang.org/grpc/codes"
@@ -449,37 +448,5 @@ func (server *ServerGRPC) PreparationTypeDelete(ctx context.Context, req *pb.Pre
 	return &pb.PreparationTypeDeleteResponse{
 		Code:    200,
 		Message: "success",
-	}, nil
-}
-
-func (server *ServerGRPC) CompanyPharmaList(ctx context.Context, req *pb.CompanyPharmaListRequest) (*pb.CompanyPharmaListResponse, error) {
-	companyPharma, err := server.store.GetListCompanyPharma(ctx, db.GetListCompanyPharmaParams{
-		Search: sql.NullString{
-			String: req.GetSearch(),
-			Valid:  req.Search != nil,
-		},
-		Page: sql.NullInt32{
-			Int32: req.GetPage(),
-			Valid: req.Page != nil,
-		},
-		Limit: sql.NullInt32{
-			Int32: req.GetLimit(),
-			Valid: req.Limit != nil,
-		},
-		Type: req.GetType(),
-	})
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to get list preparation type: %w", err)
-	}
-
-	var companyPharmaPb []*pb.CompanyPharma
-	for _, value := range companyPharma {
-		companyPharmaPb = append(companyPharmaPb, mapper.CompanyPharmaMapper(value))
-	}
-
-	return &pb.CompanyPharmaListResponse{
-		Code:    200,
-		Message: "success",
-		Details: companyPharmaPb,
 	}, nil
 }
