@@ -7,7 +7,7 @@ import "entities/company.proto";
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
 message AccountInactiveRequest {
-  int32 id = 1;
+  optional int32 id = 1;
   bool status = 2;
 }
 

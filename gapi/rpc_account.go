@@ -53,22 +53,33 @@ func (server *ServerGRPC) AccountDetail(ctx context.Context, _ *pb.AccountDetail
 }
 
 func (server *ServerGRPC) AccountInactive(ctx context.Context, req *pb.AccountInactiveRequest) (*pb.AccountInactiveResponse, error) {
-	_, err := server.authorizeUser(ctx)
+	tokenPayload, err := server.authorizeUser(ctx)
 	if err != nil {
 		return nil, config.UnauthenticatedError(err)
 	}
 
-	account, err := server.store.GetAccount(ctx, req.GetId())
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, status.Errorf(codes.NotFound, "account not exists")
+	var accountId int32
+
+	if req.Id != nil {
+		account, err := server.store.GetAccount(ctx, req.GetId())
+		if err != nil {
+			if errors.Is(err, sql.ErrNoRows) {
+				return nil, status.Errorf(codes.NotFound, "account not exists")
+			}
+			return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to get account: %v", err))
 		}
-		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to get account: %v", err))
+		accountId = account.ID
+
+		if account.Type == 3 && req.GetId() != tokenPayload.UserID {
+			return nil, status.Errorf(codes.PermissionDenied, "permission denied")
+		}
+	} else {
+		accountId = tokenPayload.UserID
 	}
 
 	_, err = server.store.UpdateAccount(ctx, db.UpdateAccountParams{
 		ID: sql.NullInt32{
-			Int32: account.ID,
+			Int32: accountId,
 			Valid: true,
 		},
 		IsVerify: sql.NullBool{
