@@ -48,6 +48,26 @@ func (q *Queries) CreateCompanyPharma(ctx context.Context, arg CreateCompanyPhar
 	return i, err
 }
 
+const deleteCompanyPharma = `-- name: DeleteCompanyPharma :one
+DELETE FROM company_pharma
+WHERE id = $1 RETURNING id, name, code, country, address, company_pharma_type, created_at
+`
+
+func (q *Queries) DeleteCompanyPharma(ctx context.Context, id int32) (CompanyPharma, error) {
+	row := q.db.QueryRowContext(ctx, deleteCompanyPharma, id)
+	var i CompanyPharma
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Code,
+		&i.Country,
+		&i.Address,
+		&i.CompanyPharmaType,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const getCompanyPharmaByName = `-- name: GetCompanyPharmaByName :one
 SELECT id, name, code, country, address, company_pharma_type, created_at FROM company_pharma
 WHERE name = $1
@@ -56,6 +76,67 @@ LIMIT 1
 
 func (q *Queries) GetCompanyPharmaByName(ctx context.Context, name string) (CompanyPharma, error) {
 	row := q.db.QueryRowContext(ctx, getCompanyPharmaByName, name)
+	var i CompanyPharma
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Code,
+		&i.Country,
+		&i.Address,
+		&i.CompanyPharmaType,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const getCompanyPharmaDetail = `-- name: GetCompanyPharmaDetail :one
+SELECT id, name, code, country, address, company_pharma_type, created_at FROM company_pharma
+WHERE id = $1
+LIMIT 1
+`
+
+func (q *Queries) GetCompanyPharmaDetail(ctx context.Context, id int32) (CompanyPharma, error) {
+	row := q.db.QueryRowContext(ctx, getCompanyPharmaDetail, id)
+	var i CompanyPharma
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Code,
+		&i.Country,
+		&i.Address,
+		&i.CompanyPharmaType,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const updateCompanyPharma = `-- name: UpdateCompanyPharma :one
+UPDATE company_pharma
+SET
+    name = COALESCE($1::varchar, name),
+    code = COALESCE($2::varchar, code),
+    country = COALESCE($3::varchar, country),
+    address = COALESCE($4::varchar, address)
+WHERE id = $5
+RETURNING id, name, code, country, address, company_pharma_type, created_at
+`
+
+type UpdateCompanyPharmaParams struct {
+	Name    sql.NullString `json:"name"`
+	Code    sql.NullString `json:"code"`
+	Country sql.NullString `json:"country"`
+	Address sql.NullString `json:"address"`
+	ID      int32          `json:"id"`
+}
+
+func (q *Queries) UpdateCompanyPharma(ctx context.Context, arg UpdateCompanyPharmaParams) (CompanyPharma, error) {
+	row := q.db.QueryRowContext(ctx, updateCompanyPharma,
+		arg.Name,
+		arg.Code,
+		arg.Country,
+		arg.Address,
+		arg.ID,
+	)
 	var i CompanyPharma
 	err := row.Scan(
 		&i.ID,

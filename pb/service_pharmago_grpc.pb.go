@@ -49,6 +49,10 @@ const (
 	Pharmago_PreparationTypeUpdate_FullMethodName    = "/pb.Pharmago/PreparationTypeUpdate"
 	Pharmago_PreparationTypeDelete_FullMethodName    = "/pb.Pharmago/PreparationTypeDelete"
 	Pharmago_CompanyPharmaList_FullMethodName        = "/pb.Pharmago/CompanyPharmaList"
+	Pharmago_CompanyPharmaCreate_FullMethodName      = "/pb.Pharmago/CompanyPharmaCreate"
+	Pharmago_CompanyPharmaDetail_FullMethodName      = "/pb.Pharmago/CompanyPharmaDetail"
+	Pharmago_CompanyPharmaUpdate_FullMethodName      = "/pb.Pharmago/CompanyPharmaUpdate"
+	Pharmago_CompanyPharmaDelete_FullMethodName      = "/pb.Pharmago/CompanyPharmaDelete"
 	Pharmago_BrandList_FullMethodName                = "/pb.Pharmago/BrandList"
 	Pharmago_CategoryList_FullMethodName             = "/pb.Pharmago/CategoryList"
 	Pharmago_ProductTypeList_FullMethodName          = "/pb.Pharmago/ProductTypeList"
@@ -121,7 +125,12 @@ type PharmagoClient interface {
 	PreparationTypeDetail(ctx context.Context, in *PreparationTypeDetailRequest, opts ...grpc.CallOption) (*PreparationTypeDetailResponse, error)
 	PreparationTypeUpdate(ctx context.Context, in *PreparationTypeUpdateRequest, opts ...grpc.CallOption) (*PreparationTypeUpdateResponse, error)
 	PreparationTypeDelete(ctx context.Context, in *PreparationTypeDeleteRequest, opts ...grpc.CallOption) (*PreparationTypeDeleteResponse, error)
+	// ================== Company Pharma ===================
 	CompanyPharmaList(ctx context.Context, in *CompanyPharmaListRequest, opts ...grpc.CallOption) (*CompanyPharmaListResponse, error)
+	CompanyPharmaCreate(ctx context.Context, in *CompanyPharmaCreateRequest, opts ...grpc.CallOption) (*CompanyPharmaCreateResponse, error)
+	CompanyPharmaDetail(ctx context.Context, in *CompanyPharmaDetailRequest, opts ...grpc.CallOption) (*CompanyPharmaDetailResponse, error)
+	CompanyPharmaUpdate(ctx context.Context, in *CompanyPharmaUpdateRequest, opts ...grpc.CallOption) (*CompanyPharmaUpdateResponse, error)
+	CompanyPharmaDelete(ctx context.Context, in *CompanyPharmaDeleteRequest, opts ...grpc.CallOption) (*CompanyPharmaDeleteResponse, error)
 	// ================== BRAND ===================
 	BrandList(ctx context.Context, in *BrandListRequest, opts ...grpc.CallOption) (*BrandListResponse, error)
 	// ================== CATEGORY ===================
@@ -462,6 +471,42 @@ func (c *pharmagoClient) CompanyPharmaList(ctx context.Context, in *CompanyPharm
 	return out, nil
 }
 
+func (c *pharmagoClient) CompanyPharmaCreate(ctx context.Context, in *CompanyPharmaCreateRequest, opts ...grpc.CallOption) (*CompanyPharmaCreateResponse, error) {
+	out := new(CompanyPharmaCreateResponse)
+	err := c.cc.Invoke(ctx, Pharmago_CompanyPharmaCreate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) CompanyPharmaDetail(ctx context.Context, in *CompanyPharmaDetailRequest, opts ...grpc.CallOption) (*CompanyPharmaDetailResponse, error) {
+	out := new(CompanyPharmaDetailResponse)
+	err := c.cc.Invoke(ctx, Pharmago_CompanyPharmaDetail_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) CompanyPharmaUpdate(ctx context.Context, in *CompanyPharmaUpdateRequest, opts ...grpc.CallOption) (*CompanyPharmaUpdateResponse, error) {
+	out := new(CompanyPharmaUpdateResponse)
+	err := c.cc.Invoke(ctx, Pharmago_CompanyPharmaUpdate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) CompanyPharmaDelete(ctx context.Context, in *CompanyPharmaDeleteRequest, opts ...grpc.CallOption) (*CompanyPharmaDeleteResponse, error) {
+	out := new(CompanyPharmaDeleteResponse)
+	err := c.cc.Invoke(ctx, Pharmago_CompanyPharmaDelete_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *pharmagoClient) BrandList(ctx context.Context, in *BrandListRequest, opts ...grpc.CallOption) (*BrandListResponse, error) {
 	out := new(BrandListResponse)
 	err := c.cc.Invoke(ctx, Pharmago_BrandList_FullMethodName, in, out, opts...)
@@ -772,7 +817,12 @@ type PharmagoServer interface {
 	PreparationTypeDetail(context.Context, *PreparationTypeDetailRequest) (*PreparationTypeDetailResponse, error)
 	PreparationTypeUpdate(context.Context, *PreparationTypeUpdateRequest) (*PreparationTypeUpdateResponse, error)
 	PreparationTypeDelete(context.Context, *PreparationTypeDeleteRequest) (*PreparationTypeDeleteResponse, error)
+	// ================== Company Pharma ===================
 	CompanyPharmaList(context.Context, *CompanyPharmaListRequest) (*CompanyPharmaListResponse, error)
+	CompanyPharmaCreate(context.Context, *CompanyPharmaCreateRequest) (*CompanyPharmaCreateResponse, error)
+	CompanyPharmaDetail(context.Context, *CompanyPharmaDetailRequest) (*CompanyPharmaDetailResponse, error)
+	CompanyPharmaUpdate(context.Context, *CompanyPharmaUpdateRequest) (*CompanyPharmaUpdateResponse, error)
+	CompanyPharmaDelete(context.Context, *CompanyPharmaDeleteRequest) (*CompanyPharmaDeleteResponse, error)
 	// ================== BRAND ===================
 	BrandList(context.Context, *BrandListRequest) (*BrandListResponse, error)
 	// ================== CATEGORY ===================
@@ -907,6 +957,18 @@ func (UnimplementedPharmagoServer) PreparationTypeDelete(context.Context, *Prepa
 }
 func (UnimplementedPharmagoServer) CompanyPharmaList(context.Context, *CompanyPharmaListRequest) (*CompanyPharmaListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CompanyPharmaList not implemented")
+}
+func (UnimplementedPharmagoServer) CompanyPharmaCreate(context.Context, *CompanyPharmaCreateRequest) (*CompanyPharmaCreateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CompanyPharmaCreate not implemented")
+}
+func (UnimplementedPharmagoServer) CompanyPharmaDetail(context.Context, *CompanyPharmaDetailRequest) (*CompanyPharmaDetailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CompanyPharmaDetail not implemented")
+}
+func (UnimplementedPharmagoServer) CompanyPharmaUpdate(context.Context, *CompanyPharmaUpdateRequest) (*CompanyPharmaUpdateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CompanyPharmaUpdate not implemented")
+}
+func (UnimplementedPharmagoServer) CompanyPharmaDelete(context.Context, *CompanyPharmaDeleteRequest) (*CompanyPharmaDeleteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CompanyPharmaDelete not implemented")
 }
 func (UnimplementedPharmagoServer) BrandList(context.Context, *BrandListRequest) (*BrandListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BrandList not implemented")
@@ -1555,6 +1617,78 @@ func _Pharmago_CompanyPharmaList_Handler(srv interface{}, ctx context.Context, d
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PharmagoServer).CompanyPharmaList(ctx, req.(*CompanyPharmaListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_CompanyPharmaCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CompanyPharmaCreateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).CompanyPharmaCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_CompanyPharmaCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).CompanyPharmaCreate(ctx, req.(*CompanyPharmaCreateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_CompanyPharmaDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CompanyPharmaDetailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).CompanyPharmaDetail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_CompanyPharmaDetail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).CompanyPharmaDetail(ctx, req.(*CompanyPharmaDetailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_CompanyPharmaUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CompanyPharmaUpdateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).CompanyPharmaUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_CompanyPharmaUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).CompanyPharmaUpdate(ctx, req.(*CompanyPharmaUpdateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_CompanyPharmaDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CompanyPharmaDeleteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).CompanyPharmaDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_CompanyPharmaDelete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).CompanyPharmaDelete(ctx, req.(*CompanyPharmaDeleteRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2221,6 +2355,22 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CompanyPharmaList",
 			Handler:    _Pharmago_CompanyPharmaList_Handler,
+		},
+		{
+			MethodName: "CompanyPharmaCreate",
+			Handler:    _Pharmago_CompanyPharmaCreate_Handler,
+		},
+		{
+			MethodName: "CompanyPharmaDetail",
+			Handler:    _Pharmago_CompanyPharmaDetail_Handler,
+		},
+		{
+			MethodName: "CompanyPharmaUpdate",
+			Handler:    _Pharmago_CompanyPharmaUpdate_Handler,
+		},
+		{
+			MethodName: "CompanyPharmaDelete",
+			Handler:    _Pharmago_CompanyPharmaDelete_Handler,
 		},
 		{
 			MethodName: "BrandList",

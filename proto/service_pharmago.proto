@@ -38,7 +38,7 @@ import "rpc/product/rpc_preparation_type_create.proto";
 import "rpc/product/rpc_preparation_type_detail.proto";
 import "rpc/product/rpc_preparation_type_update.proto";
 import "rpc/product/rpc_preparation_type_delete.proto";
-import "rpc/product/rpc_company_pharma_list.proto";
+import "rpc/product/rpc_company_pharma.proto";
 import "rpc/product/rpc_variant_list.proto";
 import "rpc/product/rpc_variant_scan.proto";
 
@@ -409,12 +409,51 @@ service Pharmago {
     };
   };
 
+  // ================== Company Pharma ===================
   rpc CompanyPharmaList (CompanyPharmaListRequest) returns (CompanyPharmaListResponse) {
     option (google.api.http) = {
       get: "/company_pharma/v1/list"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "List company pharma";
+      tags: "Product Master Data";
+    };
+  };
+  rpc CompanyPharmaCreate (CompanyPharmaCreateRequest) returns (CompanyPharmaCreateResponse) {
+    option (google.api.http) = {
+      post: "/company_pharma/v1/create"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create company pharma";
+      tags: "Product Master Data";
+    };
+  };
+  rpc CompanyPharmaDetail (CompanyPharmaDetailRequest) returns (CompanyPharmaDetailResponse) {
+    option (google.api.http) = {
+      get: "/company_pharma/v1/detail/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Detail company pharma";
+      tags: "Product Master Data";
+    };
+  };
+  rpc CompanyPharmaUpdate (CompanyPharmaUpdateRequest) returns (CompanyPharmaUpdateResponse) {
+    option (google.api.http) = {
+      put: "/company_pharma/v1/update/{id}"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Update company pharma";
+      tags: "Product Master Data";
+    };
+  };
+  rpc CompanyPharmaDelete (CompanyPharmaDeleteRequest) returns (CompanyPharmaDeleteResponse) {
+    option (google.api.http) = {
+      delete: "/company_pharma/v1/delete/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Delete company pharma";
       tags: "Product Master Data";
     };
   };
