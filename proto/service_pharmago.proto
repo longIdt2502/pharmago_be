@@ -152,7 +152,8 @@ service Pharmago {
   }
   rpc AccountInactive (AccountInactiveRequest) returns (AccountInactiveResponse) {
     option (google.api.http) = {
-      patch: "/account/v1/account/{id}"
+      patch: "/account/v1/inactive"
+      body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Inactive Account";

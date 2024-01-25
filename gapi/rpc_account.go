@@ -3,6 +3,7 @@ package gapi
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/gapi/mapper"
@@ -52,5 +53,35 @@ func (server *ServerGRPC) AccountDetail(ctx context.Context, _ *pb.AccountDetail
 }
 
 func (server *ServerGRPC) AccountInactive(ctx context.Context, req *pb.AccountInactiveRequest) (*pb.AccountInactiveResponse, error) {
-	return nil, nil
+	_, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	account, err := server.store.GetAccount(ctx, req.GetId())
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, status.Errorf(codes.NotFound, "account not exists")
+		}
+		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to get account: %v", err))
+	}
+
+	_, err = server.store.UpdateAccount(ctx, db.UpdateAccountParams{
+		ID: sql.NullInt32{
+			Int32: account.ID,
+			Valid: true,
+		},
+		IsVerify: sql.NullBool{
+			Bool:  req.GetStatus(),
+			Valid: true,
+		},
+	})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to inactive user: %v", err))
+	}
+
+	return &pb.AccountInactiveResponse{
+		Code:    200,
+		Message: "success",
+	}, nil
 }
