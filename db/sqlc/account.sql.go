@@ -12,7 +12,7 @@ import (
 
 const createAccount = `-- name: CreateAccount :one
 INSERT INTO accounts (username, hashed_password, full_name, email, type)
-VALUES ($1, $2, $3, $4, $5) RETURNING id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, created_at
+VALUES ($1, $2, $3, $4, $5) RETURNING id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, created_at, role
 `
 
 type CreateAccountParams struct {
@@ -42,12 +42,13 @@ func (q *Queries) CreateAccount(ctx context.Context, arg CreateAccountParams) (A
 		&i.IsVerify,
 		&i.PasswordChangedAt,
 		&i.CreatedAt,
+		&i.Role,
 	)
 	return i, err
 }
 
 const getAccount = `-- name: GetAccount :one
-SELECT id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, created_at FROM accounts
+SELECT id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, created_at, role FROM accounts
 WHERE id = $1 LIMIT 1
 `
 
@@ -64,12 +65,13 @@ func (q *Queries) GetAccount(ctx context.Context, id int32) (Account, error) {
 		&i.IsVerify,
 		&i.PasswordChangedAt,
 		&i.CreatedAt,
+		&i.Role,
 	)
 	return i, err
 }
 
 const getAccountByUseName = `-- name: GetAccountByUseName :one
-SELECT id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, created_at FROM accounts
+SELECT id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, created_at, role FROM accounts
 WHERE username = $1 LIMIT 1
 `
 
@@ -86,6 +88,7 @@ func (q *Queries) GetAccountByUseName(ctx context.Context, username string) (Acc
 		&i.IsVerify,
 		&i.PasswordChangedAt,
 		&i.CreatedAt,
+		&i.Role,
 	)
 	return i, err
 }
@@ -97,7 +100,7 @@ SET
 WHERE
     id = $2
     OR username = $3
-RETURNING id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, created_at
+RETURNING id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, created_at, role
 `
 
 type UpdateAccountParams struct {
@@ -119,6 +122,7 @@ func (q *Queries) UpdateAccount(ctx context.Context, arg UpdateAccountParams) (A
 		&i.IsVerify,
 		&i.PasswordChangedAt,
 		&i.CreatedAt,
+		&i.Role,
 	)
 	return i, err
 }

@@ -56,7 +56,7 @@ func (q *Queries) CreateProductPriceList(ctx context.Context, arg CreateProductP
 }
 
 const detailPriceList = `-- name: DetailPriceList :one
-SELECT pl.id, variant_code, variant_name, price_import, price_sell, unit, pl.user_created, pl.user_updated, pl.updated_at, pl.created_at, u.id, u.name, sell_price, import_price, weight, weight_unit, u.user_created, u.user_updated, u.updated_at, u.created_at, v.id, v.name, code, barcode, decision_number, register_number, longevity, vat, product, v.user_created, v.user_updated, v.updated_at, v.created_at, a.id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, a.created_at, vm.id, variant, media, m.id, media_url, u.name AS unit_name, m.media_url AS variant_media,
+SELECT pl.id, variant_code, variant_name, price_import, price_sell, unit, pl.user_created, pl.user_updated, pl.updated_at, pl.created_at, u.id, u.name, sell_price, import_price, weight, weight_unit, u.user_created, u.user_updated, u.updated_at, u.created_at, v.id, v.name, code, barcode, decision_number, register_number, longevity, vat, product, v.user_created, v.user_updated, v.updated_at, v.created_at, a.id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, a.created_at, role, vm.id, variant, media, m.id, media_url, u.name AS unit_name, m.media_url AS variant_media,
        a.full_name AS user_created_name FROM price_list pl
 JOIN units u ON pl.unit = u.id
 JOIN variants v ON pl.variant_code = v.code
@@ -109,6 +109,7 @@ type DetailPriceListRow struct {
 	IsVerify          bool            `json:"is_verify"`
 	PasswordChangedAt time.Time       `json:"password_changed_at"`
 	CreatedAt_4       time.Time       `json:"created_at_4"`
+	Role              sql.NullInt32   `json:"role"`
 	ID_5              sql.NullInt32   `json:"id_5"`
 	Variant           sql.NullInt32   `json:"variant"`
 	Media             sql.NullInt32   `json:"media"`
@@ -165,6 +166,7 @@ func (q *Queries) DetailPriceList(ctx context.Context, id int32) (DetailPriceLis
 		&i.IsVerify,
 		&i.PasswordChangedAt,
 		&i.CreatedAt_4,
+		&i.Role,
 		&i.ID_5,
 		&i.Variant,
 		&i.Media,
@@ -178,7 +180,7 @@ func (q *Queries) DetailPriceList(ctx context.Context, id int32) (DetailPriceLis
 }
 
 const getPriceLists = `-- name: GetPriceLists :many
-SELECT pl.id, variant_code, variant_name, price_import, price_sell, pl.unit, pl.user_created, pl.user_updated, pl.updated_at, pl.created_at, u.id, u.name, sell_price, import_price, weight, weight_unit, u.user_created, u.user_updated, u.updated_at, u.created_at, v.id, v.name, v.code, barcode, decision_number, register_number, longevity, vat, product, v.user_created, v.user_updated, v.updated_at, v.created_at, a.id, username, hashed_password, full_name, email, a.type, is_verify, password_changed_at, a.created_at, vm.id, variant, media, m.id, media_url, p.id, p.name, p.code, product_category, p.type, brand, p.unit, ta_duoc, nong_do, lieu_dung, chi_dinh, chong_chi_dinh, cong_dung, tac_dung_phu, than_trong, tuong_tac, bao_quan, dong_goi, phan_loai, dang_bao_che, tieu_chuan_sx, cong_ty_sx, cong_ty_dk, active, company, p.user_created, p.user_updated, p.updated_at, p.created_at, u.name AS unit_name, p.company AS company, m.media_url AS variant_media,
+SELECT pl.id, variant_code, variant_name, price_import, price_sell, pl.unit, pl.user_created, pl.user_updated, pl.updated_at, pl.created_at, u.id, u.name, sell_price, import_price, weight, weight_unit, u.user_created, u.user_updated, u.updated_at, u.created_at, v.id, v.name, v.code, barcode, decision_number, register_number, longevity, vat, product, v.user_created, v.user_updated, v.updated_at, v.created_at, a.id, username, hashed_password, full_name, email, a.type, is_verify, password_changed_at, a.created_at, role, vm.id, variant, media, m.id, media_url, p.id, p.name, p.code, product_category, p.type, brand, p.unit, ta_duoc, nong_do, lieu_dung, chi_dinh, chong_chi_dinh, cong_dung, tac_dung_phu, than_trong, tuong_tac, bao_quan, dong_goi, phan_loai, dang_bao_che, tieu_chuan_sx, cong_ty_sx, cong_ty_dk, active, company, p.user_created, p.user_updated, p.updated_at, p.created_at, u.name AS unit_name, p.company AS company, m.media_url AS variant_media,
        a.full_name AS user_created_name FROM price_list pl
 JOIN units u ON pl.unit = u.id
 JOIN variants v ON pl.variant_code = v.code
@@ -256,6 +258,7 @@ type GetPriceListsRow struct {
 	IsVerify          bool            `json:"is_verify"`
 	PasswordChangedAt time.Time       `json:"password_changed_at"`
 	CreatedAt_4       time.Time       `json:"created_at_4"`
+	Role              sql.NullInt32   `json:"role"`
 	ID_5              sql.NullInt32   `json:"id_5"`
 	Variant           sql.NullInt32   `json:"variant"`
 	Media             sql.NullInt32   `json:"media"`
@@ -357,6 +360,7 @@ func (q *Queries) GetPriceLists(ctx context.Context, arg GetPriceListsParams) ([
 			&i.IsVerify,
 			&i.PasswordChangedAt,
 			&i.CreatedAt_4,
+			&i.Role,
 			&i.ID_5,
 			&i.Variant,
 			&i.Media,

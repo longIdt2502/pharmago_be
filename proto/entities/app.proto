@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message App {
+  int32 id = 1;
+  string title = 2;
+  string code = 3;
+  repeated App sub_app = 4;
+  int32 level = 5;
+}
