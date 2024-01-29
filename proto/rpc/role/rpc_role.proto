@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+import "google/protobuf/timestamp.proto";
+import "entities/role.proto";
+
+message RoleCreateItem {
+  string app_code = 1;
+  bool checked = 2;
+}
+
+// TODO: Create
+message RoleCreateRequest {
+  optional string code = 1;
+  string title = 2;
+  optional string note = 3;
+  int32 company = 4;
+  repeated RoleCreateItem items = 5;
+}
+
+message RoleCreateResponse {
+  int32 code = 1;
+  string message = 2;
+  int32 details = 3;
+}
+
+// TODO: List
+message RoleListRequest {
+  int32 page = 1;
+  int32 limit = 2;
+  int32 company = 3;
+  optional string search = 4;
+  optional google.protobuf.Timestamp created_at_start = 5;
+  optional google.protobuf.Timestamp created_at_end = 6;
+  optional google.protobuf.Timestamp updated_at_start = 7;
+  optional google.protobuf.Timestamp updated_at_end = 8;
+}
+
+message RoleListResponse {
+  int32 code = 1;
+  string message = 2;
+  repeated Role details = 3;
+}

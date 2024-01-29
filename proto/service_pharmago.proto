@@ -11,6 +11,8 @@ import "rpc/rpc_verify_account.proto";
 
 import "rpc/account/rpc_account_detail.proto";
 import "rpc/account/rpc_account_inactive.proto";
+import "rpc/role/rpc_role.proto";
+import "rpc/role/rpc_app.proto";
 
 import "rpc/report/rpc_home_data.proto";
 
@@ -160,6 +162,38 @@ service Pharmago {
       tags: "Account";
     };
   }
+
+  // TODO ================== APP ===================
+  rpc AppList (AppListRequest) returns (AppListResponse) {
+    option (google.api.http) = {
+      get: "/app/v1/list"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "App List";
+      tags: "Role";
+    };
+  };
+
+  // TODO ================== ROLE ===================
+  rpc RoleCreate (RoleCreateRequest) returns (RoleCreateResponse) {
+    option (google.api.http) = {
+      post: "/role/v1/create"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Role create";
+      tags: "Role";
+    };
+  };
+  rpc RoleList (RoleListRequest) returns (RoleListResponse) {
+    option (google.api.http) = {
+      get: "/role/v1/list"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Role List";
+      tags: "Role";
+    };
+  };
 
   // TODO: ==================== REPORT ==========================
   rpc HomeData (HomeDataRequest) returns (HomeDataResponse) {

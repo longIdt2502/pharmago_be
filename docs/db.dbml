@@ -13,11 +13,13 @@ Table accounts as A {
   email varchar [unique, not null]
   type serial [not null]
   is_verify boolean [not null, default: false]
+  role serial
   password_changed_at timestamptz [not null, default: '0001-01-01 00:00:00Z']
   created_at timestamptz [not null, default: `now()`]
 }
 
 Ref: A.type > account_type.id [delete: cascade]
+Ref: A.role > roles.id [delete: set null]
 
 Table account_media {
   id serial [pk]
@@ -41,6 +43,38 @@ Table account_type {
   id serial [pk]
   code varchar [not null]
   title varchar [not null]
+}
+
+Table roles as R {
+  id serial [pk]
+  code varchar [not null]
+  title varchar [not null]
+  note varchar
+  company serial
+  user_created serial [not null]
+  user_updated serial
+  updated_at timestamptz
+  created_at timestamptz [not null, default: `now()`]
+}
+
+Ref: R.company > C.id [delete: cascade]
+
+Table role_item {
+  id serial [pk]
+  roles serial [not null]
+  app varchar [not null]
+  value bool [default: false]
+}
+
+Ref: role_item.roles > R.id [delete: cascade]
+Ref: role_item.app > apps.code [delete: cascade]
+
+Table apps {
+  id serial [pk]
+  title varchar [not null]
+  code varchar [not null]
+  parent varchar
+  level int [default: 1]
 }
 
 Table sessions {

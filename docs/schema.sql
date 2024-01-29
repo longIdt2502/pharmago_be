@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml-lang.org)
 -- Database: PostgreSQL
--- Generated at: 2023-12-26T03:30:06.862Z
+-- Generated at: 2024-01-25T10:08:14.202Z
 
 CREATE TABLE "accounts" (
   "id" serial PRIMARY KEY,
@@ -10,6 +10,7 @@ CREATE TABLE "accounts" (
   "email" varchar UNIQUE NOT NULL,
   "type" serial NOT NULL,
   "is_verify" boolean NOT NULL DEFAULT false,
+  "role" serial,
   "password_changed_at" timestamptz NOT NULL DEFAULT '0001-01-01 00:00:00Z',
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
@@ -30,6 +31,33 @@ CREATE TABLE "account_type" (
   "id" serial PRIMARY KEY,
   "code" varchar NOT NULL,
   "title" varchar NOT NULL
+);
+
+CREATE TABLE "roles" (
+  "id" serial PRIMARY KEY,
+  "code" varchar NOT NULL,
+  "title" varchar NOT NULL,
+  "note" varchar,
+  "company" serial,
+  "user_created" serial NOT NULL,
+  "user_updated" serial,
+  "updated_at" timestamptz,
+  "created_at" timestamptz NOT NULL DEFAULT (now())
+);
+
+CREATE TABLE "role_item" (
+  "id" serial PRIMARY KEY,
+  "roles" serial NOT NULL,
+  "app" varchar NOT NULL,
+  "value" bool DEFAULT false
+);
+
+CREATE TABLE "apps" (
+  "id" serial PRIMARY KEY,
+  "title" varchar NOT NULL,
+  "code" varchar NOT NULL,
+  "parent" varchar,
+  "level" int DEFAULT 1
 );
 
 CREATE TABLE "sessions" (
@@ -472,7 +500,7 @@ CREATE TABLE "consignment" (
 
 CREATE TABLE "consignment_log" (
   "id" serial PRIMARY KEY,
-  "consignment" serial UNIQUE NOT NULL,
+  "consignment" serial NOT NULL,
   "inventory" int NOT NULL DEFAULT 0,
   "amount_change" int NOT NULL DEFAULT 0,
   "user_created" serial,
@@ -543,6 +571,8 @@ CREATE UNIQUE INDEX ON "tickets" ("id", "qr");
 
 ALTER TABLE "accounts" ADD FOREIGN KEY ("type") REFERENCES "account_type" ("id") ON DELETE CASCADE;
 
+ALTER TABLE "accounts" ADD FOREIGN KEY ("role") REFERENCES "roles" ("id") ON DELETE SET NULL;
+
 ALTER TABLE "account_media" ADD FOREIGN KEY ("account") REFERENCES "accounts" ("id") ON DELETE CASCADE;
 
 ALTER TABLE "account_media" ADD FOREIGN KEY ("media") REFERENCES "medias" ("id") ON DELETE CASCADE;
@@ -550,6 +580,12 @@ ALTER TABLE "account_media" ADD FOREIGN KEY ("media") REFERENCES "medias" ("id")
 ALTER TABLE "account_company" ADD FOREIGN KEY ("account") REFERENCES "accounts" ("id") ON DELETE CASCADE;
 
 ALTER TABLE "account_company" ADD FOREIGN KEY ("company") REFERENCES "companies" ("id") ON DELETE CASCADE;
+
+ALTER TABLE "roles" ADD FOREIGN KEY ("company") REFERENCES "companies" ("id") ON DELETE CASCADE;
+
+ALTER TABLE "role_item" ADD FOREIGN KEY ("roles") REFERENCES "roles" ("id") ON DELETE CASCADE;
+
+ALTER TABLE "role_item" ADD FOREIGN KEY ("app") REFERENCES "apps" ("code") ON DELETE CASCADE;
 
 ALTER TABLE "sessions" ADD FOREIGN KEY ("username") REFERENCES "accounts" ("username") ON DELETE CASCADE;
 

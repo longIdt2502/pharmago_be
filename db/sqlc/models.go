@@ -12,15 +12,16 @@ import (
 )
 
 type Account struct {
-	ID                int32     `json:"id"`
-	Username          string    `json:"username"`
-	HashedPassword    string    `json:"hashed_password"`
-	FullName          string    `json:"full_name"`
-	Email             string    `json:"email"`
-	Type              int32     `json:"type"`
-	IsVerify          bool      `json:"is_verify"`
-	PasswordChangedAt time.Time `json:"password_changed_at"`
-	CreatedAt         time.Time `json:"created_at"`
+	ID                int32         `json:"id"`
+	Username          string        `json:"username"`
+	HashedPassword    string        `json:"hashed_password"`
+	FullName          string        `json:"full_name"`
+	Email             string        `json:"email"`
+	Type              int32         `json:"type"`
+	IsVerify          bool          `json:"is_verify"`
+	PasswordChangedAt time.Time     `json:"password_changed_at"`
+	CreatedAt         time.Time     `json:"created_at"`
+	Role              sql.NullInt32 `json:"role"`
 }
 
 type AccountCompany struct {
@@ -69,6 +70,14 @@ type AdministrativeUnit struct {
 	ShortNameEn string `json:"short_name_en"`
 	CodeName    string `json:"code_name"`
 	CodeNameEn  string `json:"code_name_en"`
+}
+
+type App struct {
+	ID     int32          `json:"id"`
+	Title  string         `json:"title"`
+	Code   string         `json:"code"`
+	Parent sql.NullString `json:"parent"`
+	Level  sql.NullInt32  `json:"level"`
 }
 
 type Classify struct {
@@ -382,6 +391,25 @@ type Province struct {
 	CodeName               string        `json:"code_name"`
 	AdministrativeUnitID   sql.NullInt32 `json:"administrative_unit_id"`
 	AdministrativeRegionID sql.NullInt32 `json:"administrative_region_id"`
+}
+
+type Role struct {
+	ID          int32          `json:"id"`
+	Code        string         `json:"code"`
+	Title       string         `json:"title"`
+	Note        sql.NullString `json:"note"`
+	Company     sql.NullInt32  `json:"company"`
+	UserCreated int32          `json:"user_created"`
+	UserUpdated sql.NullInt32  `json:"user_updated"`
+	UpdatedAt   sql.NullTime   `json:"updated_at"`
+	CreatedAt   time.Time      `json:"created_at"`
+}
+
+type RoleItem struct {
+	ID    int32        `json:"id"`
+	Roles int32        `json:"roles"`
+	App   string       `json:"app"`
+	Value sql.NullBool `json:"value"`
 }
 
 type Session struct {

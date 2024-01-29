@@ -24,6 +24,9 @@ const (
 	Pharmago_VerifyAccount_FullMethodName            = "/pb.Pharmago/VerifyAccount"
 	Pharmago_AccountDetail_FullMethodName            = "/pb.Pharmago/AccountDetail"
 	Pharmago_AccountInactive_FullMethodName          = "/pb.Pharmago/AccountInactive"
+	Pharmago_AppList_FullMethodName                  = "/pb.Pharmago/AppList"
+	Pharmago_RoleCreate_FullMethodName               = "/pb.Pharmago/RoleCreate"
+	Pharmago_RoleList_FullMethodName                 = "/pb.Pharmago/RoleList"
 	Pharmago_HomeData_FullMethodName                 = "/pb.Pharmago/HomeData"
 	Pharmago_CreateCompany_FullMethodName            = "/pb.Pharmago/CreateCompany"
 	Pharmago_ListCompanies_FullMethodName            = "/pb.Pharmago/ListCompanies"
@@ -95,6 +98,11 @@ type PharmagoClient interface {
 	// TODO: ==================== Account ==========================
 	AccountDetail(ctx context.Context, in *AccountDetailRequest, opts ...grpc.CallOption) (*AccountDetailResponse, error)
 	AccountInactive(ctx context.Context, in *AccountInactiveRequest, opts ...grpc.CallOption) (*AccountInactiveResponse, error)
+	// TODO ================== APP ===================
+	AppList(ctx context.Context, in *AppListRequest, opts ...grpc.CallOption) (*AppListResponse, error)
+	// TODO ================== ROLE ===================
+	RoleCreate(ctx context.Context, in *RoleCreateRequest, opts ...grpc.CallOption) (*RoleCreateResponse, error)
+	RoleList(ctx context.Context, in *RoleListRequest, opts ...grpc.CallOption) (*RoleListResponse, error)
 	// TODO: ==================== REPORT ==========================
 	HomeData(ctx context.Context, in *HomeDataRequest, opts ...grpc.CallOption) (*HomeDataResponse, error)
 	// TODO: ==================== COMPANY ==========================
@@ -218,6 +226,33 @@ func (c *pharmagoClient) AccountDetail(ctx context.Context, in *AccountDetailReq
 func (c *pharmagoClient) AccountInactive(ctx context.Context, in *AccountInactiveRequest, opts ...grpc.CallOption) (*AccountInactiveResponse, error) {
 	out := new(AccountInactiveResponse)
 	err := c.cc.Invoke(ctx, Pharmago_AccountInactive_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) AppList(ctx context.Context, in *AppListRequest, opts ...grpc.CallOption) (*AppListResponse, error) {
+	out := new(AppListResponse)
+	err := c.cc.Invoke(ctx, Pharmago_AppList_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) RoleCreate(ctx context.Context, in *RoleCreateRequest, opts ...grpc.CallOption) (*RoleCreateResponse, error) {
+	out := new(RoleCreateResponse)
+	err := c.cc.Invoke(ctx, Pharmago_RoleCreate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) RoleList(ctx context.Context, in *RoleListRequest, opts ...grpc.CallOption) (*RoleListResponse, error) {
+	out := new(RoleListResponse)
+	err := c.cc.Invoke(ctx, Pharmago_RoleList_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -787,6 +822,11 @@ type PharmagoServer interface {
 	// TODO: ==================== Account ==========================
 	AccountDetail(context.Context, *AccountDetailRequest) (*AccountDetailResponse, error)
 	AccountInactive(context.Context, *AccountInactiveRequest) (*AccountInactiveResponse, error)
+	// TODO ================== APP ===================
+	AppList(context.Context, *AppListRequest) (*AppListResponse, error)
+	// TODO ================== ROLE ===================
+	RoleCreate(context.Context, *RoleCreateRequest) (*RoleCreateResponse, error)
+	RoleList(context.Context, *RoleListRequest) (*RoleListResponse, error)
 	// TODO: ==================== REPORT ==========================
 	HomeData(context.Context, *HomeDataRequest) (*HomeDataResponse, error)
 	// TODO: ==================== COMPANY ==========================
@@ -882,6 +922,15 @@ func (UnimplementedPharmagoServer) AccountDetail(context.Context, *AccountDetail
 }
 func (UnimplementedPharmagoServer) AccountInactive(context.Context, *AccountInactiveRequest) (*AccountInactiveResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AccountInactive not implemented")
+}
+func (UnimplementedPharmagoServer) AppList(context.Context, *AppListRequest) (*AppListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AppList not implemented")
+}
+func (UnimplementedPharmagoServer) RoleCreate(context.Context, *RoleCreateRequest) (*RoleCreateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RoleCreate not implemented")
+}
+func (UnimplementedPharmagoServer) RoleList(context.Context, *RoleListRequest) (*RoleListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RoleList not implemented")
 }
 func (UnimplementedPharmagoServer) HomeData(context.Context, *HomeDataRequest) (*HomeDataResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method HomeData not implemented")
@@ -1159,6 +1208,60 @@ func _Pharmago_AccountInactive_Handler(srv interface{}, ctx context.Context, dec
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PharmagoServer).AccountInactive(ctx, req.(*AccountInactiveRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_AppList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AppListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).AppList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_AppList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).AppList(ctx, req.(*AppListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_RoleCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RoleCreateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).RoleCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_RoleCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).RoleCreate(ctx, req.(*RoleCreateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_RoleList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RoleListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).RoleList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_RoleList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).RoleList(ctx, req.(*RoleListRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2259,6 +2362,18 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AccountInactive",
 			Handler:    _Pharmago_AccountInactive_Handler,
+		},
+		{
+			MethodName: "AppList",
+			Handler:    _Pharmago_AppList_Handler,
+		},
+		{
+			MethodName: "RoleCreate",
+			Handler:    _Pharmago_RoleCreate_Handler,
+		},
+		{
+			MethodName: "RoleList",
+			Handler:    _Pharmago_RoleList_Handler,
 		},
 		{
 			MethodName: "HomeData",
