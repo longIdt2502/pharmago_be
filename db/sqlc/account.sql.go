@@ -93,6 +93,47 @@ func (q *Queries) GetAccountByUseName(ctx context.Context, username string) (Acc
 	return i, err
 }
 
+const listAccount = `-- name: ListAccount :many
+SELECT id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, created_at, role FROM accounts
+WHERE (
+    role = $1
+)
+`
+
+func (q *Queries) ListAccount(ctx context.Context, role sql.NullInt32) ([]Account, error) {
+	rows, err := q.db.QueryContext(ctx, listAccount, role)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Account{}
+	for rows.Next() {
+		var i Account
+		if err := rows.Scan(
+			&i.ID,
+			&i.Username,
+			&i.HashedPassword,
+			&i.FullName,
+			&i.Email,
+			&i.Type,
+			&i.IsVerify,
+			&i.PasswordChangedAt,
+			&i.CreatedAt,
+			&i.Role,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateAccount = `-- name: UpdateAccount :one
 UPDATE accounts
 SET

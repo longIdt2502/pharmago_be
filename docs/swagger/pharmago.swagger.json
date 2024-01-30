@@ -301,6 +301,139 @@
         ]
       }
     },
+    "/brand/v1/create": {
+      "post": {
+        "summary": "Create brand",
+        "operationId": "Pharmago_BrandCreate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbBrandCreateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbBrandCreateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Product Brand"
+        ]
+      }
+    },
+    "/brand/v1/detail/{id}": {
+      "get": {
+        "summary": "Detail brand",
+        "operationId": "Pharmago_BrandDetail",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbBrandDetailResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Product Brand"
+        ]
+      },
+      "delete": {
+        "summary": "Delete brand",
+        "operationId": "Pharmago_BrandDelete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbBrandDeleteResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Product Brand"
+        ]
+      },
+      "put": {
+        "summary": "Update brand",
+        "operationId": "Pharmago_BrandUpdate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbBrandUpdateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PharmagoBrandUpdateBody"
+            }
+          }
+        ],
+        "tags": [
+          "Product Brand"
+        ]
+      }
+    },
     "/brand/v1/list": {
       "get": {
         "summary": "List brand",
@@ -2770,6 +2903,28 @@
       ],
       "default": "DRAFT"
     },
+    "PharmagoBrandUpdateBody": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "products": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "title": "TODO: Update"
+    },
     "PharmagoCompanyPharmaUpdateBody": {
       "type": "object",
       "properties": {
@@ -3195,6 +3350,75 @@
         }
       }
     },
+    "pbBrandCreateRequest": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "products": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "company": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "TODO: Create"
+    },
+    "pbBrandCreateResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbBrandDeleteResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "pbBrandDetailResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "$ref": "#/definitions/pbSimpleData"
+        }
+      }
+    },
     "pbBrandListResponse": {
       "type": "object",
       "properties": {
@@ -3211,6 +3435,22 @@
             "type": "object",
             "$ref": "#/definitions/pbBrand"
           }
+        }
+      }
+    },
+    "pbBrandUpdateResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },

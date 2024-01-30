@@ -26,7 +26,7 @@ import "rpc/product/rpc_list_product.proto";
 import "rpc/product/rpc_price_list.proto";
 import "rpc/product/rpc_detail_price_list.proto";
 import "rpc/product/rpc_update_price_list.proto";
-import "rpc/product/rpc_brand_list.proto";
+import "rpc/product/rpc_brand.proto";
 import "rpc/product/rpc_category_list.proto";
 import "rpc/product/rpc_product_type_list.proto";
 import "rpc/product/rpc_classify_list.proto";
@@ -520,13 +520,51 @@ service Pharmago {
     };
   };
 
-  // ================== BRAND ===================
+  // TODO: ================== BRAND ===================
   rpc BrandList (BrandListRequest) returns (BrandListResponse) {
     option (google.api.http) = {
       get: "/brand/v1/list"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "List brand";
+      tags: "Product Brand";
+    };
+  };
+  rpc BrandCreate (BrandCreateRequest) returns (BrandCreateResponse) {
+    option (google.api.http) = {
+      post: "/brand/v1/create"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create brand";
+      tags: "Product Brand";
+    };
+  };
+  rpc BrandUpdate (BrandUpdateRequest) returns (BrandUpdateResponse) {
+    option (google.api.http) = {
+      put: "/brand/v1/detail/{id}"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Update brand";
+      tags: "Product Brand";
+    };
+  };
+  rpc BrandDetail (BrandDetailRequest) returns (BrandDetailResponse) {
+    option (google.api.http) = {
+      get: "/brand/v1/detail/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Detail brand";
+      tags: "Product Brand";
+    };
+  };
+  rpc BrandDelete (BrandDeleteRequest) returns (BrandDeleteResponse) {
+    option (google.api.http) = {
+      delete: "/brand/v1/detail/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Delete brand";
       tags: "Product Brand";
     };
   };

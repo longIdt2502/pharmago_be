@@ -1,0 +1,74 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+import "entities/brand.proto";
+import "entities/simple_data.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+// TODO: List
+message BrandListRequest {
+  optional int32 page = 1;
+  optional int32 limit = 2;
+  optional string search = 3;
+  optional int32 company = 4;
+}
+
+message BrandListResponse {
+  int32 code = 1;
+  string message = 2;
+  repeated Brand details = 3;
+}
+
+// TODO: Create
+message BrandCreateRequest {
+  optional string code = 1;
+  string name = 2;
+  optional string description = 3;
+  repeated int32 products = 4;
+  int32 company = 5;
+}
+
+message BrandCreateResponse {
+  int32 code = 1;
+  string message = 2;
+  int32 details = 3;
+}
+
+// TODO: Detail
+message BrandDetailRequest {
+  int32 id = 1;
+}
+
+message BrandDetailResponse {
+  int32 code = 1;
+  string message = 2;
+  SimpleData details = 3;
+}
+
+// TODO: Update
+message BrandUpdateRequest {
+  optional string code = 1;
+  string name = 2;
+  optional string description = 3;
+  repeated int32 products = 4;
+  int32 id = 5;
+}
+
+message BrandUpdateResponse {
+  int32 code = 1;
+  string message = 2;
+  int32 details = 3;
+}
+
+// TODO: Delete
+message BrandDeleteRequest {
+  int32 id = 1;
+}
+
+message BrandDeleteResponse {
+  int32 code = 1;
+  string message = 2;
+}

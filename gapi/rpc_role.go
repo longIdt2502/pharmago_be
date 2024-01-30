@@ -100,7 +100,7 @@ func (server *ServerGRPC) RoleList(ctx context.Context, req *pb.RoleListRequest)
 			note = &(item.Note.String)
 		}
 
-		data := &pb.Role{
+		data := pb.Role{
 			Id:              item.ID,
 			Code:            item.Code,
 			Title:           item.Title,
@@ -111,7 +111,7 @@ func (server *ServerGRPC) RoleList(ctx context.Context, req *pb.RoleListRequest)
 			CreatedAt:       timestamppb.New(item.CreatedAt),
 			UpdatedAt:       timestamppb.New(item.UpdatedAt.Time),
 		}
-		rolesPb = append(rolesPb, data)
+		rolesPb = append(rolesPb, &data)
 	}
 
 	return &pb.RoleListResponse{
@@ -339,6 +339,14 @@ func (server *ServerGRPC) RoleDelete(ctx context.Context, req *pb.RoleDeleteRequ
 	_, err := server.authorizeUser(ctx)
 	if err != nil {
 		return nil, config.UnauthenticatedError(err)
+	}
+
+	users, _ := server.store.ListAccount(ctx, sql.NullInt32{
+		Int32: req.GetId(),
+		Valid: true,
+	})
+	if len(users) != 0 {
+		return nil, status.Errorf(codes.Unavailable, "role has account implement")
 	}
 
 	_, err = server.store.DeleteRole(ctx, req.GetId())
