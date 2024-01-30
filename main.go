@@ -127,7 +127,9 @@ func runGatewayServer(config utils.Config, store *db.Store, taskDistributor woke
 
 	option := runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{
 		MarshalOptions: protojson.MarshalOptions{
-			UseProtoNames: true,
+			UseProtoNames:   true,
+			EmitUnpopulated: true,
+			AllowPartial:    true,
 		},
 		UnmarshalOptions: protojson.UnmarshalOptions{
 			DiscardUnknown: true,

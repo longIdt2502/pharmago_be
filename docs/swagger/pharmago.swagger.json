@@ -1949,6 +1949,106 @@
         ]
       }
     },
+    "/role/v1/detail/{id}": {
+      "get": {
+        "summary": "Role detail",
+        "operationId": "Pharmago_RoleDetail",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbRoleDetailResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Role"
+        ]
+      },
+      "delete": {
+        "summary": "Role delete",
+        "operationId": "Pharmago_RoleDelete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbRoleDeleteResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Role"
+        ]
+      },
+      "put": {
+        "summary": "Role update",
+        "operationId": "Pharmago_RoleUpdate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbRoleUpdateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PharmagoRoleUpdateBody"
+            }
+          }
+        ],
+        "tags": [
+          "Role"
+        ]
+      }
+    },
     "/role/v1/list": {
       "get": {
         "summary": "Role List",
@@ -2779,6 +2879,28 @@
         "name"
       ]
     },
+    "PharmagoRoleUpdateBody": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbRoleCreateItem"
+          }
+        }
+      },
+      "title": "TODO: Update"
+    },
     "PharmagoSupplierUpdateBody": {
       "type": "object",
       "properties": {
@@ -3029,6 +3151,9 @@
         "level": {
           "type": "integer",
           "format": "int32"
+        },
+        "value": {
+          "type": "boolean"
         }
       }
     },
@@ -5073,6 +5198,48 @@
         }
       }
     },
+    "pbRoleDeleteResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "pbRoleDetailResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "$ref": "#/definitions/pbRoleDetailResponseDetail"
+        }
+      }
+    },
+    "pbRoleDetailResponseDetail": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "$ref": "#/definitions/pbRole"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbApp"
+          }
+        }
+      }
+    },
     "pbRoleListResponse": {
       "type": "object",
       "properties": {
@@ -5089,6 +5256,18 @@
             "type": "object",
             "$ref": "#/definitions/pbRole"
           }
+        }
+      }
+    },
+    "pbRoleUpdateResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
         }
       }
     },

@@ -194,6 +194,34 @@ service Pharmago {
       tags: "Role";
     };
   };
+  rpc RoleDetail (RoleDetailRequest) returns (RoleDetailResponse) {
+    option (google.api.http) = {
+      get: "/role/v1/detail/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Role detail";
+      tags: "Role";
+    };
+  }
+  rpc RoleUpdate (RoleUpdateRequest) returns (RoleUpdateResponse) {
+    option (google.api.http) = {
+      put: "/role/v1/detail/{id}"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Role update";
+      tags: "Role";
+    };
+  }
+  rpc RoleDelete (RoleDeleteRequest) returns (RoleDeleteResponse) {
+    option (google.api.http) = {
+      delete: "/role/v1/detail/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Role delete";
+      tags: "Role";
+    };
+  }
 
   // TODO: ==================== REPORT ==========================
   rpc HomeData (HomeDataRequest) returns (HomeDataResponse) {
