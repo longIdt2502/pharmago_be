@@ -64,6 +64,10 @@ Table role_item {
   roles serial [not null]
   app varchar [not null]
   value bool [default: false]
+
+  Indexes {
+    (roles, app) [unique]
+  }
 }
 
 Ref: role_item.roles > R.id [delete: cascade]

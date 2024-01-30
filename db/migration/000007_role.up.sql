@@ -25,6 +25,8 @@ CREATE TABLE IF NOT EXISTS "apps" (
     "level" int DEFAULT 1
 );
 
+CREATE UNIQUE INDEX ON "role_item" ("roles", "app");
+
 ALTER TABLE "accounts" ADD COLUMN IF NOT EXISTS "role" INTEGER;
 
 ALTER TABLE "accounts" ADD FOREIGN KEY ("role") REFERENCES "roles" ("id") ON DELETE SET NULL;

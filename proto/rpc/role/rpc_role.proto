@@ -6,6 +6,7 @@ option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
 import "google/protobuf/timestamp.proto";
 import "entities/role.proto";
+import "entities/app.proto";
 
 message RoleCreateItem {
   string app_code = 1;
@@ -43,4 +44,44 @@ message RoleListResponse {
   int32 code = 1;
   string message = 2;
   repeated Role details = 3;
+}
+
+// TODO: Detail
+message RoleDetailRequest {
+  int32 id = 1;
+}
+
+message RoleDetailResponseDetail {
+  Role role = 1;
+  repeated App items = 2;
+}
+
+message RoleDetailResponse {
+  int32 code = 1;
+  string message = 2;
+  RoleDetailResponseDetail details = 3;
+}
+
+// TODO: Update
+message RoleUpdateRequest {
+  optional string code = 1;
+  string title = 2;
+  optional string note = 3;
+  repeated RoleCreateItem items = 4;
+  int32 id = 5;
+}
+
+message RoleUpdateResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+// TODO: Delete
+message RoleDeleteRequest {
+  int32 id = 1;
+}
+
+message RoleDeleteResponse {
+  int32 code = 1;
+  string message = 2;
 }

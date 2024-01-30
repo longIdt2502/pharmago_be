@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml-lang.org)
 -- Database: PostgreSQL
--- Generated at: 2024-01-25T10:08:14.202Z
+-- Generated at: 2024-01-29T07:35:00.292Z
 
 CREATE TABLE "accounts" (
   "id" serial PRIMARY KEY,
@@ -518,6 +518,8 @@ CREATE TABLE "suplier" (
   "warehouses" serial,
   "company" serial
 );
+
+CREATE UNIQUE INDEX ON "role_item" ("roles", "app");
 
 CREATE INDEX ON "address" ("province");
 

@@ -27,6 +27,9 @@ const (
 	Pharmago_AppList_FullMethodName                  = "/pb.Pharmago/AppList"
 	Pharmago_RoleCreate_FullMethodName               = "/pb.Pharmago/RoleCreate"
 	Pharmago_RoleList_FullMethodName                 = "/pb.Pharmago/RoleList"
+	Pharmago_RoleDetail_FullMethodName               = "/pb.Pharmago/RoleDetail"
+	Pharmago_RoleUpdate_FullMethodName               = "/pb.Pharmago/RoleUpdate"
+	Pharmago_RoleDelete_FullMethodName               = "/pb.Pharmago/RoleDelete"
 	Pharmago_HomeData_FullMethodName                 = "/pb.Pharmago/HomeData"
 	Pharmago_CreateCompany_FullMethodName            = "/pb.Pharmago/CreateCompany"
 	Pharmago_ListCompanies_FullMethodName            = "/pb.Pharmago/ListCompanies"
@@ -103,6 +106,9 @@ type PharmagoClient interface {
 	// TODO ================== ROLE ===================
 	RoleCreate(ctx context.Context, in *RoleCreateRequest, opts ...grpc.CallOption) (*RoleCreateResponse, error)
 	RoleList(ctx context.Context, in *RoleListRequest, opts ...grpc.CallOption) (*RoleListResponse, error)
+	RoleDetail(ctx context.Context, in *RoleDetailRequest, opts ...grpc.CallOption) (*RoleDetailResponse, error)
+	RoleUpdate(ctx context.Context, in *RoleUpdateRequest, opts ...grpc.CallOption) (*RoleUpdateResponse, error)
+	RoleDelete(ctx context.Context, in *RoleDeleteRequest, opts ...grpc.CallOption) (*RoleDeleteResponse, error)
 	// TODO: ==================== REPORT ==========================
 	HomeData(ctx context.Context, in *HomeDataRequest, opts ...grpc.CallOption) (*HomeDataResponse, error)
 	// TODO: ==================== COMPANY ==========================
@@ -253,6 +259,33 @@ func (c *pharmagoClient) RoleCreate(ctx context.Context, in *RoleCreateRequest, 
 func (c *pharmagoClient) RoleList(ctx context.Context, in *RoleListRequest, opts ...grpc.CallOption) (*RoleListResponse, error) {
 	out := new(RoleListResponse)
 	err := c.cc.Invoke(ctx, Pharmago_RoleList_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) RoleDetail(ctx context.Context, in *RoleDetailRequest, opts ...grpc.CallOption) (*RoleDetailResponse, error) {
+	out := new(RoleDetailResponse)
+	err := c.cc.Invoke(ctx, Pharmago_RoleDetail_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) RoleUpdate(ctx context.Context, in *RoleUpdateRequest, opts ...grpc.CallOption) (*RoleUpdateResponse, error) {
+	out := new(RoleUpdateResponse)
+	err := c.cc.Invoke(ctx, Pharmago_RoleUpdate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) RoleDelete(ctx context.Context, in *RoleDeleteRequest, opts ...grpc.CallOption) (*RoleDeleteResponse, error) {
+	out := new(RoleDeleteResponse)
+	err := c.cc.Invoke(ctx, Pharmago_RoleDelete_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -827,6 +860,9 @@ type PharmagoServer interface {
 	// TODO ================== ROLE ===================
 	RoleCreate(context.Context, *RoleCreateRequest) (*RoleCreateResponse, error)
 	RoleList(context.Context, *RoleListRequest) (*RoleListResponse, error)
+	RoleDetail(context.Context, *RoleDetailRequest) (*RoleDetailResponse, error)
+	RoleUpdate(context.Context, *RoleUpdateRequest) (*RoleUpdateResponse, error)
+	RoleDelete(context.Context, *RoleDeleteRequest) (*RoleDeleteResponse, error)
 	// TODO: ==================== REPORT ==========================
 	HomeData(context.Context, *HomeDataRequest) (*HomeDataResponse, error)
 	// TODO: ==================== COMPANY ==========================
@@ -931,6 +967,15 @@ func (UnimplementedPharmagoServer) RoleCreate(context.Context, *RoleCreateReques
 }
 func (UnimplementedPharmagoServer) RoleList(context.Context, *RoleListRequest) (*RoleListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RoleList not implemented")
+}
+func (UnimplementedPharmagoServer) RoleDetail(context.Context, *RoleDetailRequest) (*RoleDetailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RoleDetail not implemented")
+}
+func (UnimplementedPharmagoServer) RoleUpdate(context.Context, *RoleUpdateRequest) (*RoleUpdateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RoleUpdate not implemented")
+}
+func (UnimplementedPharmagoServer) RoleDelete(context.Context, *RoleDeleteRequest) (*RoleDeleteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RoleDelete not implemented")
 }
 func (UnimplementedPharmagoServer) HomeData(context.Context, *HomeDataRequest) (*HomeDataResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method HomeData not implemented")
@@ -1262,6 +1307,60 @@ func _Pharmago_RoleList_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PharmagoServer).RoleList(ctx, req.(*RoleListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_RoleDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RoleDetailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).RoleDetail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_RoleDetail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).RoleDetail(ctx, req.(*RoleDetailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_RoleUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RoleUpdateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).RoleUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_RoleUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).RoleUpdate(ctx, req.(*RoleUpdateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_RoleDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RoleDeleteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).RoleDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_RoleDelete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).RoleDelete(ctx, req.(*RoleDeleteRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2374,6 +2473,18 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RoleList",
 			Handler:    _Pharmago_RoleList_Handler,
+		},
+		{
+			MethodName: "RoleDetail",
+			Handler:    _Pharmago_RoleDetail_Handler,
+		},
+		{
+			MethodName: "RoleUpdate",
+			Handler:    _Pharmago_RoleUpdate_Handler,
+		},
+		{
+			MethodName: "RoleDelete",
+			Handler:    _Pharmago_RoleDelete_Handler,
 		},
 		{
 			MethodName: "HomeData",

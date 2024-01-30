@@ -3,10 +3,12 @@ package gapi
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/pb"
+	"github.com/thoas/go-funk"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -119,7 +121,7 @@ func (server *ServerGRPC) RoleList(ctx context.Context, req *pb.RoleListRequest)
 	}, nil
 }
 
-func (server *ServerGRPC) AppList(ctx context.Context, req *pb.AppListRequest) (*pb.AppListResponse, error) {
+func (server *ServerGRPC) AppList(ctx context.Context, _ *pb.AppListRequest) (*pb.AppListResponse, error) {
 	_, err := server.authorizeUser(ctx)
 	if err != nil {
 		return nil, config.UnauthenticatedError(err)
@@ -176,5 +178,179 @@ func (server *ServerGRPC) AppList(ctx context.Context, req *pb.AppListRequest) (
 		Code:    200,
 		Message: "success",
 		Details: appsPb,
+	}, nil
+}
+
+func (server *ServerGRPC) RoleDetail(ctx context.Context, req *pb.RoleDetailRequest) (*pb.RoleDetailResponse, error) {
+	_, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	role, err := server.store.RoleDetail(ctx, req.GetId())
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, status.Errorf(codes.NotFound, "role not exists")
+		}
+		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to get role: %v", err))
+	}
+
+	roleItem, err := server.store.ListRoleItem(ctx, req.GetId())
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to get role item: %v", err))
+	}
+
+	var roleItemPb []*pb.RoleItem
+	for _, item := range roleItem {
+		data := &pb.RoleItem{
+			Id: item.ID,
+			App: &pb.App{
+				Id:     item.ID_2,
+				Title:  item.Title,
+				Code:   item.Code,
+				SubApp: nil,
+				Level:  item.Level.Int32,
+			},
+			Value: item.Value.Bool,
+		}
+		roleItemPb = append(roleItemPb, data)
+	}
+
+	var note *string
+	if role.Note.Valid {
+		note = &(role.Note.String)
+	}
+
+	apps, err := server.AppList(ctx, nil)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to get app: %v", err))
+	}
+
+	var appsRes []*pb.App
+	for _, item := range apps.Details {
+		for _, y := range item.SubApp {
+			a := funk.Find(roleItem, func(x db.ListRoleItemRow) bool {
+				return x.App == y.Code
+			})
+			if a != nil {
+				if foundItem, ok := a.(db.ListRoleItemRow); ok {
+					y.Value = &(foundItem.Value.Bool)
+				} else {
+					v := false
+					y.Value = &v
+				}
+			} else {
+				v := false
+				y.Value = &v
+			}
+		}
+		appsRes = append(appsRes, item)
+	}
+
+	return &pb.RoleDetailResponse{
+		Code:    200,
+		Message: "success",
+		Details: &pb.RoleDetailResponseDetail{
+			Role: &pb.Role{
+				Id:              role.ID,
+				Code:            role.Code,
+				Title:           role.Title,
+				Note:            note,
+				Company:         role.Company.Int32,
+				UserCreatedName: role.CreatedName,
+				UserUpdatedName: role.UpdatedName,
+				CreatedAt:       timestamppb.New(role.CreatedAt),
+				UpdatedAt:       timestamppb.New(role.UpdatedAt.Time),
+			},
+			Items: appsRes,
+		},
+	}, nil
+}
+
+func (server *ServerGRPC) RoleUpdate(ctx context.Context, req *pb.RoleUpdateRequest) (*pb.RoleUpdateResponse, error) {
+	tokenPayload, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	params := db.UpdateRoleParams{
+		Code: sql.NullString{
+			String: req.GetCode(),
+			Valid:  req.Code != nil,
+		},
+		Title: sql.NullString{
+			String: req.GetTitle(),
+			Valid:  true,
+		},
+		Note: sql.NullString{
+			String: req.GetNote(),
+			Valid:  req.Note != nil,
+		},
+		UserUpdated: sql.NullInt32{
+			Int32: tokenPayload.UserID,
+			Valid: true,
+		},
+		ID: req.GetId(),
+	}
+
+	_, err = server.store.UpdateRole(ctx, params)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, status.Errorf(codes.NotFound, "role not exists")
+		}
+		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to updated record: %v", err))
+	}
+
+	for _, item := range req.GetItems() {
+
+		_, err = server.store.UpdateRoleItem(ctx, db.UpdateRoleItemParams{
+			Value: sql.NullBool{
+				Bool:  item.GetChecked(),
+				Valid: true,
+			},
+			Roles: req.GetId(),
+			App:   item.GetAppCode(),
+		})
+		if err != nil {
+			if errors.Is(err, sql.ErrNoRows) {
+				_, err := server.store.CreateRoleItem(ctx, db.CreateRoleItemParams{
+					Roles: req.GetId(),
+					App:   item.GetAppCode(),
+					Value: sql.NullBool{
+						Bool:  item.GetChecked(),
+						Valid: true,
+					},
+				})
+				if err != nil {
+					return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to record role item: %v", err))
+				}
+			}
+			return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to updated role item: %v", err))
+		}
+	}
+
+	return &pb.RoleUpdateResponse{
+		Code:    200,
+		Message: "success",
+	}, nil
+}
+
+func (server *ServerGRPC) RoleDelete(ctx context.Context, req *pb.RoleDeleteRequest) (*pb.RoleDeleteResponse, error) {
+	_, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	_, err = server.store.DeleteRole(ctx, req.GetId())
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, status.Errorf(codes.NotFound, "role not exists")
+		}
+		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to delete record: %v", err))
+	}
+
+	return &pb.RoleDeleteResponse{
+		Code:    200,
+		Message: "success",
 	}, nil
 }

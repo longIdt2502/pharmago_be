@@ -78,6 +78,28 @@ func (q *Queries) CreateRoleItem(ctx context.Context, arg CreateRoleItemParams) 
 	return i, err
 }
 
+const deleteRole = `-- name: DeleteRole :one
+DELETE FROM roles
+WHERE id = $1 RETURNING id, code, title, note, company, user_created, user_updated, updated_at, created_at
+`
+
+func (q *Queries) DeleteRole(ctx context.Context, id int32) (Role, error) {
+	row := q.db.QueryRowContext(ctx, deleteRole, id)
+	var i Role
+	err := row.Scan(
+		&i.ID,
+		&i.Code,
+		&i.Title,
+		&i.Note,
+		&i.Company,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.UpdatedAt,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const listApp = `-- name: ListApp :many
 SELECT id, title, code, parent, level FROM apps
 WHERE (parent = $1::varchar
@@ -269,4 +291,222 @@ func (q *Queries) ListRole(ctx context.Context, arg ListRoleParams) ([]ListRoleR
 		return nil, err
 	}
 	return items, nil
+}
+
+const listRoleItem = `-- name: ListRoleItem :many
+SELECT ri.id, roles, app, value, a.id, title, code, parent, level FROM role_item ri
+JOIN apps a ON ri.app = a.code
+WHERE ri.roles = $1
+`
+
+type ListRoleItemRow struct {
+	ID     int32          `json:"id"`
+	Roles  int32          `json:"roles"`
+	App    string         `json:"app"`
+	Value  sql.NullBool   `json:"value"`
+	ID_2   int32          `json:"id_2"`
+	Title  string         `json:"title"`
+	Code   string         `json:"code"`
+	Parent sql.NullString `json:"parent"`
+	Level  sql.NullInt32  `json:"level"`
+}
+
+func (q *Queries) ListRoleItem(ctx context.Context, roles int32) ([]ListRoleItemRow, error) {
+	rows, err := q.db.QueryContext(ctx, listRoleItem, roles)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListRoleItemRow{}
+	for rows.Next() {
+		var i ListRoleItemRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Roles,
+			&i.App,
+			&i.Value,
+			&i.ID_2,
+			&i.Title,
+			&i.Code,
+			&i.Parent,
+			&i.Level,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const roleDetail = `-- name: RoleDetail :one
+SELECT r.id, r.code, title, note, company, user_created, user_updated, updated_at, r.created_at, c.id, name, c.code, tax_code, phone, description, address, c.created_at, owner, ac.id, ac.username, ac.hashed_password, ac.full_name, ac.email, ac.type, ac.is_verify, ac.password_changed_at, ac.created_at, ac.role, au.id, au.username, au.hashed_password, au.full_name, au.email, au.type, au.is_verify, au.password_changed_at, au.created_at, au.role, ac.full_name AS created_name, au.full_name AS updated_name FROM roles r
+JOIN companies c ON c.id = r.company
+JOIN accounts ac ON ac.id = r.user_created
+JOIN accounts au ON ac.id = r.user_updated
+WHERE r.id = $1
+`
+
+type RoleDetailRow struct {
+	ID                  int32          `json:"id"`
+	Code                string         `json:"code"`
+	Title               string         `json:"title"`
+	Note                sql.NullString `json:"note"`
+	Company             sql.NullInt32  `json:"company"`
+	UserCreated         int32          `json:"user_created"`
+	UserUpdated         sql.NullInt32  `json:"user_updated"`
+	UpdatedAt           sql.NullTime   `json:"updated_at"`
+	CreatedAt           time.Time      `json:"created_at"`
+	ID_2                int32          `json:"id_2"`
+	Name                string         `json:"name"`
+	Code_2              string         `json:"code_2"`
+	TaxCode             sql.NullString `json:"tax_code"`
+	Phone               sql.NullString `json:"phone"`
+	Description         sql.NullString `json:"description"`
+	Address             sql.NullInt32  `json:"address"`
+	CreatedAt_2         time.Time      `json:"created_at_2"`
+	Owner               int32          `json:"owner"`
+	ID_3                int32          `json:"id_3"`
+	Username            string         `json:"username"`
+	HashedPassword      string         `json:"hashed_password"`
+	FullName            string         `json:"full_name"`
+	Email               string         `json:"email"`
+	Type                int32          `json:"type"`
+	IsVerify            bool           `json:"is_verify"`
+	PasswordChangedAt   time.Time      `json:"password_changed_at"`
+	CreatedAt_3         time.Time      `json:"created_at_3"`
+	Role                sql.NullInt32  `json:"role"`
+	ID_4                int32          `json:"id_4"`
+	Username_2          string         `json:"username_2"`
+	HashedPassword_2    string         `json:"hashed_password_2"`
+	FullName_2          string         `json:"full_name_2"`
+	Email_2             string         `json:"email_2"`
+	Type_2              int32          `json:"type_2"`
+	IsVerify_2          bool           `json:"is_verify_2"`
+	PasswordChangedAt_2 time.Time      `json:"password_changed_at_2"`
+	CreatedAt_4         time.Time      `json:"created_at_4"`
+	Role_2              sql.NullInt32  `json:"role_2"`
+	CreatedName         string         `json:"created_name"`
+	UpdatedName         string         `json:"updated_name"`
+}
+
+func (q *Queries) RoleDetail(ctx context.Context, id int32) (RoleDetailRow, error) {
+	row := q.db.QueryRowContext(ctx, roleDetail, id)
+	var i RoleDetailRow
+	err := row.Scan(
+		&i.ID,
+		&i.Code,
+		&i.Title,
+		&i.Note,
+		&i.Company,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.UpdatedAt,
+		&i.CreatedAt,
+		&i.ID_2,
+		&i.Name,
+		&i.Code_2,
+		&i.TaxCode,
+		&i.Phone,
+		&i.Description,
+		&i.Address,
+		&i.CreatedAt_2,
+		&i.Owner,
+		&i.ID_3,
+		&i.Username,
+		&i.HashedPassword,
+		&i.FullName,
+		&i.Email,
+		&i.Type,
+		&i.IsVerify,
+		&i.PasswordChangedAt,
+		&i.CreatedAt_3,
+		&i.Role,
+		&i.ID_4,
+		&i.Username_2,
+		&i.HashedPassword_2,
+		&i.FullName_2,
+		&i.Email_2,
+		&i.Type_2,
+		&i.IsVerify_2,
+		&i.PasswordChangedAt_2,
+		&i.CreatedAt_4,
+		&i.Role_2,
+		&i.CreatedName,
+		&i.UpdatedName,
+	)
+	return i, err
+}
+
+const updateRole = `-- name: UpdateRole :one
+UPDATE roles
+SET
+    code = COALESCE($1, code),
+    title = COALESCE($2, title),
+    note = COALESCE($3, note),
+    user_updated = COALESCE($4, user_updated)
+WHERE id = $5
+RETURNING id, code, title, note, company, user_created, user_updated, updated_at, created_at
+`
+
+type UpdateRoleParams struct {
+	Code        sql.NullString `json:"code"`
+	Title       sql.NullString `json:"title"`
+	Note        sql.NullString `json:"note"`
+	UserUpdated sql.NullInt32  `json:"user_updated"`
+	ID          int32          `json:"id"`
+}
+
+func (q *Queries) UpdateRole(ctx context.Context, arg UpdateRoleParams) (Role, error) {
+	row := q.db.QueryRowContext(ctx, updateRole,
+		arg.Code,
+		arg.Title,
+		arg.Note,
+		arg.UserUpdated,
+		arg.ID,
+	)
+	var i Role
+	err := row.Scan(
+		&i.ID,
+		&i.Code,
+		&i.Title,
+		&i.Note,
+		&i.Company,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.UpdatedAt,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const updateRoleItem = `-- name: UpdateRoleItem :one
+UPDATE role_item
+SET
+    value = COALESCE($1, value)
+WHERE roles = $2 AND app = $3
+RETURNING id, roles, app, value
+`
+
+type UpdateRoleItemParams struct {
+	Value sql.NullBool `json:"value"`
+	Roles int32        `json:"roles"`
+	App   string       `json:"app"`
+}
+
+func (q *Queries) UpdateRoleItem(ctx context.Context, arg UpdateRoleItemParams) (RoleItem, error) {
+	row := q.db.QueryRowContext(ctx, updateRoleItem, arg.Value, arg.Roles, arg.App)
+	var i RoleItem
+	err := row.Scan(
+		&i.ID,
+		&i.Roles,
+		&i.App,
+		&i.Value,
+	)
+	return i, err
 }
