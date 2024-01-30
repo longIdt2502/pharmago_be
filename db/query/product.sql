@@ -63,8 +63,16 @@ WHERE product = sqlc.arg(product);
 SELECT * FROM products
 WHERE company = sqlc.narg(company)::int AND (
     name ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
-    code ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%'
+    code ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
+    (sqlc.narg(brand)::int IS NULL OR brand = sqlc.narg(brand)::int)
 )
 ORDER BY -id
 LIMIT COALESCE(sqlc.narg('limit')::int, 10)
 OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10);
+
+-- name: UpdateProduct :one
+UPDATE products
+SET
+    brand = sqlc.narg(brand)
+WHERE id = sqlc.arg(id)
+RETURNING *;

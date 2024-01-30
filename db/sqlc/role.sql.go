@@ -144,7 +144,7 @@ const listRole = `-- name: ListRole :many
 SELECT r.id, r.code, title, note, company, user_created, user_updated, updated_at, r.created_at, c.id, name, c.code, tax_code, phone, description, address, c.created_at, owner, ac.id, ac.username, ac.hashed_password, ac.full_name, ac.email, ac.type, ac.is_verify, ac.password_changed_at, ac.created_at, ac.role, au.id, au.username, au.hashed_password, au.full_name, au.email, au.type, au.is_verify, au.password_changed_at, au.created_at, au.role, ac.full_name AS created_name, au.full_name AS updated_name FROM roles r
 JOIN companies c ON c.id = r.company
 JOIN accounts ac ON ac.id = r.user_created
-JOIN accounts au ON ac.id = r.user_updated
+JOIN accounts au ON au.id = r.user_updated
 WHERE company = $1
 AND (
     r.code ILIKE '%' || COALESCE($2::varchar, '') || '%' OR

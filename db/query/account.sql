@@ -18,3 +18,10 @@ WHERE
     id = sqlc.narg(id)
     OR username = sqlc.narg(username)
 RETURNING *;
+
+-- name: ListAccount :many
+SELECT * FROM accounts
+WHERE (
+    role = sqlc.narg(role)
+);
+

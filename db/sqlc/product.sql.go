@@ -366,16 +366,18 @@ const getProducts = `-- name: GetProducts :many
 SELECT id, name, code, product_category, type, brand, unit, ta_duoc, nong_do, lieu_dung, chi_dinh, chong_chi_dinh, cong_dung, tac_dung_phu, than_trong, tuong_tac, bao_quan, dong_goi, phan_loai, dang_bao_che, tieu_chuan_sx, cong_ty_sx, cong_ty_dk, active, company, user_created, user_updated, updated_at, created_at FROM products
 WHERE company = $1::int AND (
     name ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
-    code ILIKE '%' || COALESCE($2::varchar, '') || '%'
+    code ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
+    ($3::int IS NULL OR brand = $3::int)
 )
 ORDER BY -id
-LIMIT COALESCE($4::int, 10)
-OFFSET (COALESCE($3::int, 1) - 1) * COALESCE($4::int, 10)
+LIMIT COALESCE($5::int, 10)
+OFFSET (COALESCE($4::int, 1) - 1) * COALESCE($5::int, 10)
 `
 
 type GetProductsParams struct {
 	Company sql.NullInt32  `json:"company"`
 	Search  sql.NullString `json:"search"`
+	Brand   sql.NullInt32  `json:"brand"`
 	Page    sql.NullInt32  `json:"page"`
 	Limit   sql.NullInt32  `json:"limit"`
 }
@@ -384,6 +386,7 @@ func (q *Queries) GetProducts(ctx context.Context, arg GetProductsParams) ([]Pro
 	rows, err := q.db.QueryContext(ctx, getProducts,
 		arg.Company,
 		arg.Search,
+		arg.Brand,
 		arg.Page,
 		arg.Limit,
 	)
@@ -436,4 +439,54 @@ func (q *Queries) GetProducts(ctx context.Context, arg GetProductsParams) ([]Pro
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateProduct = `-- name: UpdateProduct :one
+UPDATE products
+SET
+    brand = $1
+WHERE id = $2
+RETURNING id, name, code, product_category, type, brand, unit, ta_duoc, nong_do, lieu_dung, chi_dinh, chong_chi_dinh, cong_dung, tac_dung_phu, than_trong, tuong_tac, bao_quan, dong_goi, phan_loai, dang_bao_che, tieu_chuan_sx, cong_ty_sx, cong_ty_dk, active, company, user_created, user_updated, updated_at, created_at
+`
+
+type UpdateProductParams struct {
+	Brand sql.NullInt32 `json:"brand"`
+	ID    int32         `json:"id"`
+}
+
+func (q *Queries) UpdateProduct(ctx context.Context, arg UpdateProductParams) (Product, error) {
+	row := q.db.QueryRowContext(ctx, updateProduct, arg.Brand, arg.ID)
+	var i Product
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Code,
+		&i.ProductCategory,
+		&i.Type,
+		&i.Brand,
+		&i.Unit,
+		&i.TaDuoc,
+		&i.NongDo,
+		&i.LieuDung,
+		&i.ChiDinh,
+		&i.ChongChiDinh,
+		&i.CongDung,
+		&i.TacDungPhu,
+		&i.ThanTrong,
+		&i.TuongTac,
+		&i.BaoQuan,
+		&i.DongGoi,
+		&i.PhanLoai,
+		&i.DangBaoChe,
+		&i.TieuChuanSx,
+		&i.CongTySx,
+		&i.CongTyDk,
+		&i.Active,
+		&i.Company,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.UpdatedAt,
+		&i.CreatedAt,
+	)
+	return i, err
 }

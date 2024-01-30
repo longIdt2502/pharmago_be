@@ -16,7 +16,7 @@ INSERT INTO role_item (
 SELECT *, ac.full_name AS created_name, au.full_name AS updated_name FROM roles r
 JOIN companies c ON c.id = r.company
 JOIN accounts ac ON ac.id = r.user_created
-JOIN accounts au ON ac.id = r.user_updated
+JOIN accounts au ON au.id = r.user_updated
 WHERE company = sqlc.arg(company)
 AND (
     r.code ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
