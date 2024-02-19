@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+import "entities/simple_data.proto";
+
+message SendCodeRequest {
+  string email = 1;
+}
+
+message SendCodeResponse {
+  int32 code = 1;
+  string message = 2;
+  int32 details = 3;
+}
+
+message VerifyCodeRequest {
+  int32 id = 1;
+  string code = 2;
+}
+
+message VerifyCodeResponse {
+  int32 code = 1;
+  string message = 2;
+}

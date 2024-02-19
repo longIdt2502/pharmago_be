@@ -11,6 +11,8 @@ import "rpc/rpc_verify_account.proto";
 
 import "rpc/account/rpc_account_detail.proto";
 import "rpc/account/rpc_account_inactive.proto";
+import "rpc/account/rpc_send_code.proto";
+import "rpc/account/rpc_reset_password.proto";
 import "rpc/role/rpc_role.proto";
 import "rpc/role/rpc_app.proto";
 
@@ -108,6 +110,8 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 };
 
 service Pharmago {
+
+  // TODO: ==================== Authentication ==========================
   rpc Login (LoginRequest) returns (LoginResponse) {
     option (google.api.http) = {
       post: "/account/v1/login"
@@ -141,6 +145,39 @@ service Pharmago {
       security: {};
     };
   };
+  rpc SendCode (SendCodeRequest) returns (SendCodeResponse) {
+    option (google.api.http) = {
+      post: "/auth/v1/send-code"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Send code to email";
+      tags: "Account";
+      security: {};
+    };
+  };rpc VerifyCode (VerifyCodeRequest) returns (VerifyCodeResponse) {
+    option (google.api.http) = {
+      post: "/auth/v1/verify-code"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Verify Code";
+      tags: "Account";
+      security: {};
+    };
+  };
+  rpc ResetPassword (ResetPasswordRequest) returns (ResetPasswordResponse) {
+    option (google.api.http) = {
+      post: "/auth/v1/reset-password"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Reset password";
+      tags: "Account";
+      security: {};
+    };
+  };
+
 
   // TODO: ==================== Account ==========================
   rpc AccountDetail (AccountDetailRequest) returns (AccountDetailResponse) {

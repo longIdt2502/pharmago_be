@@ -301,6 +301,108 @@
         ]
       }
     },
+    "/auth/v1/reset-password": {
+      "post": {
+        "summary": "Reset password",
+        "operationId": "Pharmago_ResetPassword",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbResetPasswordResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbResetPasswordRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Account"
+        ],
+        "security": []
+      }
+    },
+    "/auth/v1/send-code": {
+      "post": {
+        "summary": "Send code to email",
+        "operationId": "Pharmago_SendCode",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbSendCodeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbSendCodeRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Account"
+        ],
+        "security": []
+      }
+    },
+    "/auth/v1/verify-code": {
+      "post": {
+        "summary": "Verify Code",
+        "operationId": "Pharmago_VerifyCode",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbVerifyCodeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbVerifyCodeRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Account"
+        ],
+        "security": []
+      }
+    },
     "/brand/v1/create": {
       "post": {
         "summary": "Create brand",
@@ -5349,6 +5451,33 @@
         }
       }
     },
+    "pbResetPasswordRequest": {
+      "type": "object",
+      "properties": {
+        "password": {
+          "type": "string"
+        },
+        "codeVerify": {
+          "type": "string"
+        },
+        "idVerify": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbResetPasswordResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
     "pbRole": {
       "type": "object",
       "properties": {
@@ -5508,6 +5637,30 @@
         },
         "message": {
           "type": "string"
+        }
+      }
+    },
+    "pbSendCodeRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        }
+      }
+    },
+    "pbSendCodeResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -6148,6 +6301,30 @@
         },
         "details": {
           "type": "boolean"
+        }
+      }
+    },
+    "pbVerifyCodeRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "code": {
+          "type": "string"
+        }
+      }
+    },
+    "pbVerifyCodeResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
         }
       }
     },
