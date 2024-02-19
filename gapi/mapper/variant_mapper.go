@@ -26,7 +26,7 @@ func VariantMapper(ctx context.Context, store *db.Store, data db.GetVariantsRow)
 	units = append(units, &pb.Unit{
 		Id:          data.UnitID,
 		Name:        data.UnitName,
-		Value:       0,
+		Value:       1,
 		SellPrice:   float32(data.UnitSellPrice),
 		ImportPrice: 0,
 		Weight:      float32(data.UnitWeight.Float64),

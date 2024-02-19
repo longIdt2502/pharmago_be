@@ -122,9 +122,10 @@ func (server *ServerGRPC) BrandUpdate(ctx context.Context, req *pb.BrandUpdateRe
 			Int32: tokenPayload.UserID,
 			Valid: true,
 		},
+		ID: req.GetId(),
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to create brand: %v", err))
+		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to update brand: %v", err))
 	}
 
 	products, err := server.store.GetProducts(ctx, db.GetProductsParams{

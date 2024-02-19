@@ -22,6 +22,9 @@ const (
 	Pharmago_Login_FullMethodName                    = "/pb.Pharmago/Login"
 	Pharmago_CreateAccount_FullMethodName            = "/pb.Pharmago/CreateAccount"
 	Pharmago_VerifyAccount_FullMethodName            = "/pb.Pharmago/VerifyAccount"
+	Pharmago_SendCode_FullMethodName                 = "/pb.Pharmago/SendCode"
+	Pharmago_VerifyCode_FullMethodName               = "/pb.Pharmago/VerifyCode"
+	Pharmago_ResetPassword_FullMethodName            = "/pb.Pharmago/ResetPassword"
 	Pharmago_AccountDetail_FullMethodName            = "/pb.Pharmago/AccountDetail"
 	Pharmago_AccountInactive_FullMethodName          = "/pb.Pharmago/AccountInactive"
 	Pharmago_AppList_FullMethodName                  = "/pb.Pharmago/AppList"
@@ -99,9 +102,13 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PharmagoClient interface {
+	// TODO: ==================== Authentication ==========================
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	CreateAccount(ctx context.Context, in *CreateAccountRequest, opts ...grpc.CallOption) (*CreateAccountResponse, error)
 	VerifyAccount(ctx context.Context, in *VerifyAccountRequest, opts ...grpc.CallOption) (*VerifyAccountResponse, error)
+	SendCode(ctx context.Context, in *SendCodeRequest, opts ...grpc.CallOption) (*SendCodeResponse, error)
+	VerifyCode(ctx context.Context, in *VerifyCodeRequest, opts ...grpc.CallOption) (*VerifyCodeResponse, error)
+	ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*ResetPasswordResponse, error)
 	// TODO: ==================== Account ==========================
 	AccountDetail(ctx context.Context, in *AccountDetailRequest, opts ...grpc.CallOption) (*AccountDetailResponse, error)
 	AccountInactive(ctx context.Context, in *AccountInactiveRequest, opts ...grpc.CallOption) (*AccountInactiveResponse, error)
@@ -222,6 +229,33 @@ func (c *pharmagoClient) CreateAccount(ctx context.Context, in *CreateAccountReq
 func (c *pharmagoClient) VerifyAccount(ctx context.Context, in *VerifyAccountRequest, opts ...grpc.CallOption) (*VerifyAccountResponse, error) {
 	out := new(VerifyAccountResponse)
 	err := c.cc.Invoke(ctx, Pharmago_VerifyAccount_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) SendCode(ctx context.Context, in *SendCodeRequest, opts ...grpc.CallOption) (*SendCodeResponse, error) {
+	out := new(SendCodeResponse)
+	err := c.cc.Invoke(ctx, Pharmago_SendCode_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) VerifyCode(ctx context.Context, in *VerifyCodeRequest, opts ...grpc.CallOption) (*VerifyCodeResponse, error) {
+	out := new(VerifyCodeResponse)
+	err := c.cc.Invoke(ctx, Pharmago_VerifyCode_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*ResetPasswordResponse, error) {
+	out := new(ResetPasswordResponse)
+	err := c.cc.Invoke(ctx, Pharmago_ResetPassword_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -893,9 +927,13 @@ func (c *pharmagoClient) ImportProductMasterData(ctx context.Context, in *Import
 // All implementations must embed UnimplementedPharmagoServer
 // for forward compatibility
 type PharmagoServer interface {
+	// TODO: ==================== Authentication ==========================
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	CreateAccount(context.Context, *CreateAccountRequest) (*CreateAccountResponse, error)
 	VerifyAccount(context.Context, *VerifyAccountRequest) (*VerifyAccountResponse, error)
+	SendCode(context.Context, *SendCodeRequest) (*SendCodeResponse, error)
+	VerifyCode(context.Context, *VerifyCodeRequest) (*VerifyCodeResponse, error)
+	ResetPassword(context.Context, *ResetPasswordRequest) (*ResetPasswordResponse, error)
 	// TODO: ==================== Account ==========================
 	AccountDetail(context.Context, *AccountDetailRequest) (*AccountDetailResponse, error)
 	AccountInactive(context.Context, *AccountInactiveRequest) (*AccountInactiveResponse, error)
@@ -1000,6 +1038,15 @@ func (UnimplementedPharmagoServer) CreateAccount(context.Context, *CreateAccount
 }
 func (UnimplementedPharmagoServer) VerifyAccount(context.Context, *VerifyAccountRequest) (*VerifyAccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyAccount not implemented")
+}
+func (UnimplementedPharmagoServer) SendCode(context.Context, *SendCodeRequest) (*SendCodeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendCode not implemented")
+}
+func (UnimplementedPharmagoServer) VerifyCode(context.Context, *VerifyCodeRequest) (*VerifyCodeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyCode not implemented")
+}
+func (UnimplementedPharmagoServer) ResetPassword(context.Context, *ResetPasswordRequest) (*ResetPasswordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ResetPassword not implemented")
 }
 func (UnimplementedPharmagoServer) AccountDetail(context.Context, *AccountDetailRequest) (*AccountDetailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AccountDetail not implemented")
@@ -1277,6 +1324,60 @@ func _Pharmago_VerifyAccount_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PharmagoServer).VerifyAccount(ctx, req.(*VerifyAccountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_SendCode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SendCodeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).SendCode(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_SendCode_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).SendCode(ctx, req.(*SendCodeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_VerifyCode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyCodeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).VerifyCode(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_VerifyCode_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).VerifyCode(ctx, req.(*VerifyCodeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_ResetPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ResetPasswordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ResetPassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_ResetPassword_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ResetPassword(ctx, req.(*ResetPasswordRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2585,6 +2686,18 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "VerifyAccount",
 			Handler:    _Pharmago_VerifyAccount_Handler,
+		},
+		{
+			MethodName: "SendCode",
+			Handler:    _Pharmago_SendCode_Handler,
+		},
+		{
+			MethodName: "VerifyCode",
+			Handler:    _Pharmago_VerifyCode_Handler,
+		},
+		{
+			MethodName: "ResetPassword",
+			Handler:    _Pharmago_ResetPassword_Handler,
 		},
 		{
 			MethodName: "AccountDetail",

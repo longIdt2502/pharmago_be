@@ -70,6 +70,29 @@ func (q *Queries) GetAccount(ctx context.Context, id int32) (Account, error) {
 	return i, err
 }
 
+const getAccountByMail = `-- name: GetAccountByMail :one
+SELECT id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, created_at, role FROM accounts
+WHERE email = $1 LIMIT 1
+`
+
+func (q *Queries) GetAccountByMail(ctx context.Context, email string) (Account, error) {
+	row := q.db.QueryRowContext(ctx, getAccountByMail, email)
+	var i Account
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.HashedPassword,
+		&i.FullName,
+		&i.Email,
+		&i.Type,
+		&i.IsVerify,
+		&i.PasswordChangedAt,
+		&i.CreatedAt,
+		&i.Role,
+	)
+	return i, err
+}
+
 const getAccountByUseName = `-- name: GetAccountByUseName :one
 SELECT id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, created_at, role FROM accounts
 WHERE username = $1 LIMIT 1
@@ -132,6 +155,38 @@ func (q *Queries) ListAccount(ctx context.Context, role sql.NullInt32) ([]Accoun
 		return nil, err
 	}
 	return items, nil
+}
+
+const resetPassword = `-- name: ResetPassword :one
+UPDATE accounts
+SET
+    hashed_password = COALESCE($1, hashed_password)
+WHERE
+    email = $2
+RETURNING id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, created_at, role
+`
+
+type ResetPasswordParams struct {
+	HashedPassword sql.NullString `json:"hashed_password"`
+	Email          sql.NullString `json:"email"`
+}
+
+func (q *Queries) ResetPassword(ctx context.Context, arg ResetPasswordParams) (Account, error) {
+	row := q.db.QueryRowContext(ctx, resetPassword, arg.HashedPassword, arg.Email)
+	var i Account
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.HashedPassword,
+		&i.FullName,
+		&i.Email,
+		&i.Type,
+		&i.IsVerify,
+		&i.PasswordChangedAt,
+		&i.CreatedAt,
+		&i.Role,
+	)
+	return i, err
 }
 
 const updateAccount = `-- name: UpdateAccount :one
