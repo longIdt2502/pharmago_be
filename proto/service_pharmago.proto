@@ -13,6 +13,7 @@ import "rpc/account/rpc_account_detail.proto";
 import "rpc/account/rpc_account_inactive.proto";
 import "rpc/account/rpc_send_code.proto";
 import "rpc/account/rpc_reset_password.proto";
+import "rpc/account/rpc_check_email.proto";
 import "rpc/role/rpc_role.proto";
 import "rpc/role/rpc_app.proto";
 
@@ -173,6 +174,17 @@ service Pharmago {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Reset password";
+      tags: "Account";
+      security: {};
+    };
+  };
+  rpc CheckEmail (CheckEmailRequest) returns (CheckEmailResponse) {
+    option (google.api.http) = {
+      post: "/auth/v1/email"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Check Email";
       tags: "Account";
       security: {};
     };

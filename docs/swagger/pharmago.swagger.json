@@ -301,6 +301,40 @@
         ]
       }
     },
+    "/auth/v1/email": {
+      "post": {
+        "summary": "Check Email",
+        "operationId": "Pharmago_CheckEmail",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCheckEmailResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbCheckEmailRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Account"
+        ],
+        "security": []
+      }
+    },
     "/auth/v1/reset-password": {
       "post": {
         "summary": "Reset password",
@@ -3591,6 +3625,26 @@
             "type": "object",
             "$ref": "#/definitions/pbCategory"
           }
+        }
+      }
+    },
+    "pbCheckEmailRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        }
+      }
+    },
+    "pbCheckEmailResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
         }
       }
     },
