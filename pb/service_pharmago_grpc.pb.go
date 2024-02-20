@@ -25,6 +25,7 @@ const (
 	Pharmago_SendCode_FullMethodName                 = "/pb.Pharmago/SendCode"
 	Pharmago_VerifyCode_FullMethodName               = "/pb.Pharmago/VerifyCode"
 	Pharmago_ResetPassword_FullMethodName            = "/pb.Pharmago/ResetPassword"
+	Pharmago_CheckEmail_FullMethodName               = "/pb.Pharmago/CheckEmail"
 	Pharmago_AccountDetail_FullMethodName            = "/pb.Pharmago/AccountDetail"
 	Pharmago_AccountInactive_FullMethodName          = "/pb.Pharmago/AccountInactive"
 	Pharmago_AppList_FullMethodName                  = "/pb.Pharmago/AppList"
@@ -109,6 +110,7 @@ type PharmagoClient interface {
 	SendCode(ctx context.Context, in *SendCodeRequest, opts ...grpc.CallOption) (*SendCodeResponse, error)
 	VerifyCode(ctx context.Context, in *VerifyCodeRequest, opts ...grpc.CallOption) (*VerifyCodeResponse, error)
 	ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*ResetPasswordResponse, error)
+	CheckEmail(ctx context.Context, in *CheckEmailRequest, opts ...grpc.CallOption) (*CheckEmailResponse, error)
 	// TODO: ==================== Account ==========================
 	AccountDetail(ctx context.Context, in *AccountDetailRequest, opts ...grpc.CallOption) (*AccountDetailResponse, error)
 	AccountInactive(ctx context.Context, in *AccountInactiveRequest, opts ...grpc.CallOption) (*AccountInactiveResponse, error)
@@ -256,6 +258,15 @@ func (c *pharmagoClient) VerifyCode(ctx context.Context, in *VerifyCodeRequest, 
 func (c *pharmagoClient) ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*ResetPasswordResponse, error) {
 	out := new(ResetPasswordResponse)
 	err := c.cc.Invoke(ctx, Pharmago_ResetPassword_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) CheckEmail(ctx context.Context, in *CheckEmailRequest, opts ...grpc.CallOption) (*CheckEmailResponse, error) {
+	out := new(CheckEmailResponse)
+	err := c.cc.Invoke(ctx, Pharmago_CheckEmail_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -934,6 +945,7 @@ type PharmagoServer interface {
 	SendCode(context.Context, *SendCodeRequest) (*SendCodeResponse, error)
 	VerifyCode(context.Context, *VerifyCodeRequest) (*VerifyCodeResponse, error)
 	ResetPassword(context.Context, *ResetPasswordRequest) (*ResetPasswordResponse, error)
+	CheckEmail(context.Context, *CheckEmailRequest) (*CheckEmailResponse, error)
 	// TODO: ==================== Account ==========================
 	AccountDetail(context.Context, *AccountDetailRequest) (*AccountDetailResponse, error)
 	AccountInactive(context.Context, *AccountInactiveRequest) (*AccountInactiveResponse, error)
@@ -1047,6 +1059,9 @@ func (UnimplementedPharmagoServer) VerifyCode(context.Context, *VerifyCodeReques
 }
 func (UnimplementedPharmagoServer) ResetPassword(context.Context, *ResetPasswordRequest) (*ResetPasswordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ResetPassword not implemented")
+}
+func (UnimplementedPharmagoServer) CheckEmail(context.Context, *CheckEmailRequest) (*CheckEmailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckEmail not implemented")
 }
 func (UnimplementedPharmagoServer) AccountDetail(context.Context, *AccountDetailRequest) (*AccountDetailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AccountDetail not implemented")
@@ -1378,6 +1393,24 @@ func _Pharmago_ResetPassword_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PharmagoServer).ResetPassword(ctx, req.(*ResetPasswordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_CheckEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckEmailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).CheckEmail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_CheckEmail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).CheckEmail(ctx, req.(*CheckEmailRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2698,6 +2731,10 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ResetPassword",
 			Handler:    _Pharmago_ResetPassword_Handler,
+		},
+		{
+			MethodName: "CheckEmail",
+			Handler:    _Pharmago_CheckEmail_Handler,
 		},
 		{
 			MethodName: "AccountDetail",

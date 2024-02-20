@@ -107,3 +107,18 @@ func (server *ServerGRPC) ResetPassword(ctx context.Context, req *pb.ResetPasswo
 		Message: "success",
 	}, nil
 }
+
+func (server *ServerGRPC) CheckEmail(ctx context.Context, req *pb.CheckEmailRequest) (*pb.CheckEmailResponse, error) {
+	_, err := server.store.GetAccountByMail(ctx, req.GetEmail())
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, status.Errorf(codes.NotFound, "account not exists")
+		}
+		return nil, status.Errorf(codes.Internal, "failed to get account")
+	}
+
+	return &pb.CheckEmailResponse{
+		Code:    200,
+		Message: "success",
+	}, nil
+}
