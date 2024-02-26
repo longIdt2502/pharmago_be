@@ -69,6 +69,10 @@ const (
 	Pharmago_BrandDetail_FullMethodName              = "/pb.Pharmago/BrandDetail"
 	Pharmago_BrandDelete_FullMethodName              = "/pb.Pharmago/BrandDelete"
 	Pharmago_CategoryList_FullMethodName             = "/pb.Pharmago/CategoryList"
+	Pharmago_CategoryCreate_FullMethodName           = "/pb.Pharmago/CategoryCreate"
+	Pharmago_CategoryUpdate_FullMethodName           = "/pb.Pharmago/CategoryUpdate"
+	Pharmago_CategoryDetail_FullMethodName           = "/pb.Pharmago/CategoryDetail"
+	Pharmago_CategoryDelete_FullMethodName           = "/pb.Pharmago/CategoryDelete"
 	Pharmago_ProductTypeList_FullMethodName          = "/pb.Pharmago/ProductTypeList"
 	Pharmago_SupplierCreate_FullMethodName           = "/pb.Pharmago/SupplierCreate"
 	Pharmago_SupplierList_FullMethodName             = "/pb.Pharmago/SupplierList"
@@ -164,8 +168,12 @@ type PharmagoClient interface {
 	BrandUpdate(ctx context.Context, in *BrandUpdateRequest, opts ...grpc.CallOption) (*BrandUpdateResponse, error)
 	BrandDetail(ctx context.Context, in *BrandDetailRequest, opts ...grpc.CallOption) (*BrandDetailResponse, error)
 	BrandDelete(ctx context.Context, in *BrandDeleteRequest, opts ...grpc.CallOption) (*BrandDeleteResponse, error)
-	// ================== CATEGORY ===================
+	// TODO: ================== CATEGORY ===================
 	CategoryList(ctx context.Context, in *CategoryListRequest, opts ...grpc.CallOption) (*CategoryListResponse, error)
+	CategoryCreate(ctx context.Context, in *CategoryCreateRequest, opts ...grpc.CallOption) (*CategoryCreateResponse, error)
+	CategoryUpdate(ctx context.Context, in *CategoryUpdateRequest, opts ...grpc.CallOption) (*CategoryUpdateResponse, error)
+	CategoryDetail(ctx context.Context, in *CategoryDetailRequest, opts ...grpc.CallOption) (*CategoryDetailResponse, error)
+	CategoryDelete(ctx context.Context, in *CategoryDeleteRequest, opts ...grpc.CallOption) (*CategoryDeleteResponse, error)
 	// ================== PRODUCT_TYPE ===================
 	ProductTypeList(ctx context.Context, in *ProductTypeListRequest, opts ...grpc.CallOption) (*ProductTypeListResponse, error)
 	// TODO: ================== SUPPLIER ===================
@@ -682,6 +690,42 @@ func (c *pharmagoClient) CategoryList(ctx context.Context, in *CategoryListReque
 	return out, nil
 }
 
+func (c *pharmagoClient) CategoryCreate(ctx context.Context, in *CategoryCreateRequest, opts ...grpc.CallOption) (*CategoryCreateResponse, error) {
+	out := new(CategoryCreateResponse)
+	err := c.cc.Invoke(ctx, Pharmago_CategoryCreate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) CategoryUpdate(ctx context.Context, in *CategoryUpdateRequest, opts ...grpc.CallOption) (*CategoryUpdateResponse, error) {
+	out := new(CategoryUpdateResponse)
+	err := c.cc.Invoke(ctx, Pharmago_CategoryUpdate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) CategoryDetail(ctx context.Context, in *CategoryDetailRequest, opts ...grpc.CallOption) (*CategoryDetailResponse, error) {
+	out := new(CategoryDetailResponse)
+	err := c.cc.Invoke(ctx, Pharmago_CategoryDetail_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) CategoryDelete(ctx context.Context, in *CategoryDeleteRequest, opts ...grpc.CallOption) (*CategoryDeleteResponse, error) {
+	out := new(CategoryDeleteResponse)
+	err := c.cc.Invoke(ctx, Pharmago_CategoryDelete_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *pharmagoClient) ProductTypeList(ctx context.Context, in *ProductTypeListRequest, opts ...grpc.CallOption) (*ProductTypeListResponse, error) {
 	out := new(ProductTypeListResponse)
 	err := c.cc.Invoke(ctx, Pharmago_ProductTypeList_FullMethodName, in, out, opts...)
@@ -999,8 +1043,12 @@ type PharmagoServer interface {
 	BrandUpdate(context.Context, *BrandUpdateRequest) (*BrandUpdateResponse, error)
 	BrandDetail(context.Context, *BrandDetailRequest) (*BrandDetailResponse, error)
 	BrandDelete(context.Context, *BrandDeleteRequest) (*BrandDeleteResponse, error)
-	// ================== CATEGORY ===================
+	// TODO: ================== CATEGORY ===================
 	CategoryList(context.Context, *CategoryListRequest) (*CategoryListResponse, error)
+	CategoryCreate(context.Context, *CategoryCreateRequest) (*CategoryCreateResponse, error)
+	CategoryUpdate(context.Context, *CategoryUpdateRequest) (*CategoryUpdateResponse, error)
+	CategoryDetail(context.Context, *CategoryDetailRequest) (*CategoryDetailResponse, error)
+	CategoryDelete(context.Context, *CategoryDeleteRequest) (*CategoryDeleteResponse, error)
 	// ================== PRODUCT_TYPE ===================
 	ProductTypeList(context.Context, *ProductTypeListRequest) (*ProductTypeListResponse, error)
 	// TODO: ================== SUPPLIER ===================
@@ -1191,6 +1239,18 @@ func (UnimplementedPharmagoServer) BrandDelete(context.Context, *BrandDeleteRequ
 }
 func (UnimplementedPharmagoServer) CategoryList(context.Context, *CategoryListRequest) (*CategoryListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CategoryList not implemented")
+}
+func (UnimplementedPharmagoServer) CategoryCreate(context.Context, *CategoryCreateRequest) (*CategoryCreateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CategoryCreate not implemented")
+}
+func (UnimplementedPharmagoServer) CategoryUpdate(context.Context, *CategoryUpdateRequest) (*CategoryUpdateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CategoryUpdate not implemented")
+}
+func (UnimplementedPharmagoServer) CategoryDetail(context.Context, *CategoryDetailRequest) (*CategoryDetailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CategoryDetail not implemented")
+}
+func (UnimplementedPharmagoServer) CategoryDelete(context.Context, *CategoryDeleteRequest) (*CategoryDeleteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CategoryDelete not implemented")
 }
 func (UnimplementedPharmagoServer) ProductTypeList(context.Context, *ProductTypeListRequest) (*ProductTypeListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductTypeList not implemented")
@@ -2197,6 +2257,78 @@ func _Pharmago_CategoryList_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Pharmago_CategoryCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CategoryCreateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).CategoryCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_CategoryCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).CategoryCreate(ctx, req.(*CategoryCreateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_CategoryUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CategoryUpdateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).CategoryUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_CategoryUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).CategoryUpdate(ctx, req.(*CategoryUpdateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_CategoryDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CategoryDetailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).CategoryDetail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_CategoryDetail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).CategoryDetail(ctx, req.(*CategoryDetailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_CategoryDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CategoryDeleteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).CategoryDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_CategoryDelete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).CategoryDelete(ctx, req.(*CategoryDeleteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Pharmago_ProductTypeList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ProductTypeListRequest)
 	if err := dec(in); err != nil {
@@ -2903,6 +3035,22 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CategoryList",
 			Handler:    _Pharmago_CategoryList_Handler,
+		},
+		{
+			MethodName: "CategoryCreate",
+			Handler:    _Pharmago_CategoryCreate_Handler,
+		},
+		{
+			MethodName: "CategoryUpdate",
+			Handler:    _Pharmago_CategoryUpdate_Handler,
+		},
+		{
+			MethodName: "CategoryDetail",
+			Handler:    _Pharmago_CategoryDetail_Handler,
+		},
+		{
+			MethodName: "CategoryDelete",
+			Handler:    _Pharmago_CategoryDelete_Handler,
 		},
 		{
 			MethodName: "ProductTypeList",
