@@ -30,7 +30,7 @@ import "rpc/product/rpc_price_list.proto";
 import "rpc/product/rpc_detail_price_list.proto";
 import "rpc/product/rpc_update_price_list.proto";
 import "rpc/product/rpc_brand.proto";
-import "rpc/product/rpc_category_list.proto";
+import "rpc/product/rpc_category.proto";
 import "rpc/product/rpc_product_type_list.proto";
 import "rpc/product/rpc_classify_list.proto";
 import "rpc/product/rpc_production_standard_list.proto";
@@ -618,14 +618,52 @@ service Pharmago {
     };
   };
 
-  // ================== CATEGORY ===================
+  // TODO: ================== CATEGORY ===================
   rpc CategoryList (CategoryListRequest) returns (CategoryListResponse) {
     option (google.api.http) = {
       get: "/category/v1/list"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "List category";
-      tags: "Product Category";
+      tags: "Category";
+    };
+  };
+  rpc CategoryCreate (CategoryCreateRequest) returns (CategoryCreateResponse) {
+    option (google.api.http) = {
+      post: "/category/v1/create"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create";
+      tags: "Category";
+    };
+  };
+  rpc CategoryUpdate (CategoryUpdateRequest) returns (CategoryUpdateResponse) {
+    option (google.api.http) = {
+      put: "/category/v1/detail/{id}"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Update";
+      tags: "Category";
+    };
+  };
+  rpc CategoryDetail (CategoryDetailRequest) returns (CategoryDetailResponse) {
+    option (google.api.http) = {
+      get: "/category/v1/detail/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Detail";
+      tags: "Category";
+    };
+  };
+  rpc CategoryDelete (CategoryDeleteRequest) returns (CategoryDeleteResponse) {
+    option (google.api.http) = {
+      delete: "/category/v1/detail/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Delete";
+      tags: "Category";
     };
   };
 

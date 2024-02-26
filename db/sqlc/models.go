@@ -328,12 +328,15 @@ type ProductBrand struct {
 }
 
 type ProductCategory struct {
-	ID          int32     `json:"id"`
-	Code        string    `json:"code"`
-	Name        string    `json:"name"`
-	UserCreated int32     `json:"user_created"`
-	CreatedAt   time.Time `json:"created_at"`
-	Company     int32     `json:"company"`
+	ID          int32          `json:"id"`
+	Code        string         `json:"code"`
+	Name        string         `json:"name"`
+	UserCreated int32          `json:"user_created"`
+	CreatedAt   time.Time      `json:"created_at"`
+	Company     int32          `json:"company"`
+	UserUpdated sql.NullInt32  `json:"user_updated"`
+	UpdatedAt   sql.NullTime   `json:"updated_at"`
+	Description sql.NullString `json:"description"`
 }
 
 type ProductMedium struct {

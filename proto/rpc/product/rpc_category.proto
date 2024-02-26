@@ -1,0 +1,74 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+import "entities/category.proto";
+import "entities/simple_data.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+// TODO: List
+message CategoryListRequest {
+  optional int32 page = 1;
+  optional int32 limit = 2;
+  optional string search = 3;
+  optional int32 company = 4;
+}
+
+message CategoryListResponse {
+  int32 code = 1;
+  string message = 2;
+  repeated Category details = 3;
+}
+
+// TODO: Create
+message CategoryCreateRequest {
+  optional string code = 1;
+  string name = 2;
+  optional string description = 3;
+  repeated int32 products = 4;
+  int32 company = 5;
+}
+
+message CategoryCreateResponse {
+  int32 code = 1;
+  string message = 2;
+  int32 details = 3;
+}
+
+// TODO: Detail
+message CategoryDetailRequest {
+  int32 id = 1;
+}
+
+message CategoryDetailResponse {
+  int32 code = 1;
+  string message = 2;
+  SimpleData details = 3;
+}
+
+// TODO: Update
+message CategoryUpdateRequest {
+  optional string code = 1;
+  string name = 2;
+  optional string description = 3;
+  repeated int32 products = 4;
+  int32 id = 5;
+}
+
+message CategoryUpdateResponse {
+  int32 code = 1;
+  string message = 2;
+  int32 details = 3;
+}
+
+// TODO: Delete
+message CategoryDeleteRequest {
+  int32 id = 1;
+}
+
+message CategoryDeleteResponse {
+  int32 code = 1;
+  string message = 2;
+}

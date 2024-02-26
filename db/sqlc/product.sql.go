@@ -367,19 +367,21 @@ SELECT id, name, code, product_category, type, brand, unit, ta_duoc, nong_do, li
 WHERE company = $1::int AND (
     name ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
     code ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
-    ($3::int IS NULL OR brand = $3::int)
+    ($3::int IS NULL OR brand = $3::int) OR
+    ($4::int IS NULL OR product_category = $4::int)
 )
 ORDER BY -id
-LIMIT COALESCE($5::int, 10)
-OFFSET (COALESCE($4::int, 1) - 1) * COALESCE($5::int, 10)
+LIMIT COALESCE($6::int, 10)
+OFFSET (COALESCE($5::int, 1) - 1) * COALESCE($6::int, 10)
 `
 
 type GetProductsParams struct {
-	Company sql.NullInt32  `json:"company"`
-	Search  sql.NullString `json:"search"`
-	Brand   sql.NullInt32  `json:"brand"`
-	Page    sql.NullInt32  `json:"page"`
-	Limit   sql.NullInt32  `json:"limit"`
+	Company         sql.NullInt32  `json:"company"`
+	Search          sql.NullString `json:"search"`
+	Brand           sql.NullInt32  `json:"brand"`
+	ProductCategory sql.NullInt32  `json:"product_category"`
+	Page            sql.NullInt32  `json:"page"`
+	Limit           sql.NullInt32  `json:"limit"`
 }
 
 func (q *Queries) GetProducts(ctx context.Context, arg GetProductsParams) ([]Product, error) {
@@ -387,6 +389,7 @@ func (q *Queries) GetProducts(ctx context.Context, arg GetProductsParams) ([]Pro
 		arg.Company,
 		arg.Search,
 		arg.Brand,
+		arg.ProductCategory,
 		arg.Page,
 		arg.Limit,
 	)
@@ -444,18 +447,20 @@ func (q *Queries) GetProducts(ctx context.Context, arg GetProductsParams) ([]Pro
 const updateProduct = `-- name: UpdateProduct :one
 UPDATE products
 SET
-    brand = $1
-WHERE id = $2
+    brand = COALESCE($1, product_category),
+    product_category = COALESCE($2, product_category)
+WHERE id = $3
 RETURNING id, name, code, product_category, type, brand, unit, ta_duoc, nong_do, lieu_dung, chi_dinh, chong_chi_dinh, cong_dung, tac_dung_phu, than_trong, tuong_tac, bao_quan, dong_goi, phan_loai, dang_bao_che, tieu_chuan_sx, cong_ty_sx, cong_ty_dk, active, company, user_created, user_updated, updated_at, created_at
 `
 
 type UpdateProductParams struct {
-	Brand sql.NullInt32 `json:"brand"`
-	ID    int32         `json:"id"`
+	Brand           sql.NullInt32 `json:"brand"`
+	ProductCategory sql.NullInt32 `json:"product_category"`
+	ID              int32         `json:"id"`
 }
 
 func (q *Queries) UpdateProduct(ctx context.Context, arg UpdateProductParams) (Product, error) {
-	row := q.db.QueryRowContext(ctx, updateProduct, arg.Brand, arg.ID)
+	row := q.db.QueryRowContext(ctx, updateProduct, arg.Brand, arg.ProductCategory, arg.ID)
 	var i Product
 	err := row.Scan(
 		&i.ID,
