@@ -483,7 +483,7 @@ CREATE INDEX ON "products" ("id", "unit");
 
 CREATE INDEX ON "company_pharma" ("company_pharma_type");
 
-CREATE INDEX ON "company_pharma" ("name", "company_pharma_type");
+CREATE UNIQUE INDEX ON "company_pharma" ("name", "company_pharma_type");
 
 CREATE INDEX ON "product_media" ("product");
 

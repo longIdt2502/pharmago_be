@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/pb"
@@ -42,7 +43,7 @@ func (server *ServerGRPC) CreateProduct(ctx context.Context, req *pb.CreateProdu
 		UserUpdated: account.ID,
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to record unit data: ", err)
+		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to record unit data: %e", err))
 	}
 
 	for _, value := range req.GetUnitChanges() {
@@ -58,13 +59,17 @@ func (server *ServerGRPC) CreateProduct(ctx context.Context, req *pb.CreateProdu
 			UserUpdated: tokenPayload.UserID,
 		})
 		if err != nil {
-			return nil, status.Errorf(codes.Internal, "failed to record unit change: %w", err)
+			return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to record unit change: %e", err))
 		}
 	}
 
+	codeProduct := fmt.Sprintf("PRODUCT-%s-%d", utils.RandomString(6), utils.RandomInt(100, 999))
+	if productData.Code != nil {
+		codeProduct = productData.GetCode()
+	}
 	product, err := server.store.CreateProduct(ctx, db.CreateProductParams{
 		Name: productData.GetName(),
-		Code: utils.RandomString(10),
+		Code: codeProduct,
 		ProductCategory: sql.NullInt32{
 			Int32: productData.GetCategory(),
 			Valid: productData.Category != nil,
@@ -111,14 +116,14 @@ func (server *ServerGRPC) CreateProduct(ctx context.Context, req *pb.CreateProdu
 		Tieuchuansx: productData.GetTieuChuanSx(),
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to record product data: ", err)
+		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to record product data: %e", err))
 	}
 
 	for _, item := range req.Product.GetImage() {
 		file, _ := utils.NewFileFromImage(item)
 		_, err := server.b2Bucket.UploadFile(file.Name, file.Meta, file.File)
 		if err != nil {
-			return nil, status.Errorf(codes.Internal, "failed to upload image to b2", err)
+			return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to upload image to b2: %e", err))
 		}
 
 		url, err := server.b2Bucket.FileURL(file.Name)
@@ -129,7 +134,7 @@ func (server *ServerGRPC) CreateProduct(ctx context.Context, req *pb.CreateProdu
 
 		media, err := server.store.CreateMedia(ctx, url)
 		if err != nil {
-			return nil, status.Errorf(codes.Internal, "failed to record media: ", err.Error())
+			return nil, status.Errorf(codes.Internal, "failed to record media: %e", err)
 		}
 
 		_, err = server.store.CreateProductMedia(ctx, db.CreateProductMediaParams{
@@ -137,7 +142,7 @@ func (server *ServerGRPC) CreateProduct(ctx context.Context, req *pb.CreateProdu
 			Media:   media.ID,
 		})
 		if err != nil {
-			return nil, status.Errorf(codes.Internal, "failed to record media product: ", err.Error())
+			return nil, status.Errorf(codes.Internal, "failed to record media product: %e", err)
 		}
 	}
 
@@ -152,14 +157,15 @@ func (server *ServerGRPC) CreateProduct(ctx context.Context, req *pb.CreateProdu
 			},
 		})
 		if err != nil {
-			return nil, status.Errorf(codes.Internal, "failed to record ingredient: %w", err)
+			return nil, status.Errorf(codes.Internal, "failed to record ingredient: %e", err)
 		}
 	}
 
 	for _, value := range variantData {
+		codeVariant := fmt.Sprintf("VARIANT-%s-%s-%d", product.Code, utils.RandomString(6), utils.RandomInt(100, 999))
 		variant, err := server.store.CreateVariant(ctx, db.CreateVariantParams{
 			Name:    value.GetName(),
-			Code:    value.GetCode(),
+			Code:    codeVariant,
 			Barcode: value.GetCode(),
 			Vat: sql.NullFloat64{
 				Float64: 0,
@@ -173,24 +179,24 @@ func (server *ServerGRPC) CreateProduct(ctx context.Context, req *pb.CreateProdu
 			UserUpdated:    account.ID,
 		})
 		if err != nil {
-			return nil, status.Errorf(codes.Internal, "failed to record variant data: ", err)
+			return nil, status.Errorf(codes.Internal, "failed to record variant data: %e", err)
 		}
 
 		fileVariant, _ := utils.NewFileFromImage(value.Image)
 		_, err = server.b2Bucket.UploadFile(fileVariant.Name, fileVariant.Meta, fileVariant.File)
 		if err != nil {
-			return nil, status.Errorf(codes.Internal, "failed to upload image to b2", err)
+			return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to upload image to b2: %e", err))
 		}
 
 		urlVariant, err := server.b2Bucket.FileURL(fileVariant.Name)
 		if err != nil {
-			return nil, status.Errorf(codes.NotFound, "failed to get url by file name")
+			return nil, status.Errorf(codes.NotFound, fmt.Sprintf("failed to record media: %e", err))
 		}
 		println("hay", urlVariant)
 
 		media, err := server.store.CreateMedia(ctx, urlVariant)
 		if err != nil {
-			return nil, status.Errorf(codes.Internal, "failed to record media: ", err.Error())
+			return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to record media: %e", err))
 		}
 
 		_, err = server.store.CreateVariantMedia(ctx, db.CreateVariantMediaParams{
@@ -198,7 +204,7 @@ func (server *ServerGRPC) CreateProduct(ctx context.Context, req *pb.CreateProdu
 			Media:   media.ID,
 		})
 		if err != nil {
-			return nil, status.Errorf(codes.Internal, "failed to record media product: ", err.Error())
+			return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to record media product: %e", err))
 		}
 
 		_, err = server.store.CreateProductPriceList(ctx, db.CreateProductPriceListParams{
@@ -214,7 +220,7 @@ func (server *ServerGRPC) CreateProduct(ctx context.Context, req *pb.CreateProdu
 			},
 		})
 		if err != nil {
-			return nil, status.Errorf(codes.Internal, "failed to record price list: ", err)
+			return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to record price list: %e", err))
 		}
 	}
 
