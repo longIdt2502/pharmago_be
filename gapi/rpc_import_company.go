@@ -3,6 +3,8 @@ package gapi
 import (
 	"context"
 	"database/sql"
+	"fmt"
+
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/pb"
 	"github.com/tealeg/xlsx/v3"
@@ -17,7 +19,7 @@ func (server *ServerGRPC) ImportCompany(ctx context.Context, req *pb.ImportCompa
 		for i := 1; i < sheet.MaxRow; i++ {
 			row, _ := sheet.Row(i)
 
-			_, err = server.store.CreateCompanyPharma(ctx, db.CreateCompanyPharmaParams{
+			_, _ = server.store.CreateCompanyPharma(ctx, db.CreateCompanyPharmaParams{
 				Name: row.GetCell(16).String(),
 				Code: sql.NullString{
 					String: row.GetCell(17).String(),
@@ -34,7 +36,7 @@ func (server *ServerGRPC) ImportCompany(ctx context.Context, req *pb.ImportCompa
 				CompanyPharmaType: "PRODUCTION",
 			})
 
-			_, err = server.store.CreateCompanyPharma(ctx, db.CreateCompanyPharmaParams{
+			_, _ = server.store.CreateCompanyPharma(ctx, db.CreateCompanyPharmaParams{
 				Name: row.GetCell(20).String(),
 				Code: sql.NullString{},
 				Country: sql.NullString{
@@ -50,8 +52,8 @@ func (server *ServerGRPC) ImportCompany(ctx context.Context, req *pb.ImportCompa
 		}
 	}
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to read file: ", err)
+		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to read file: %e", err))
 	}
 
-	return nil, status.Errorf(codes.Internal, "failed to read file: ", err)
+	return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to read file: %e", err))
 }

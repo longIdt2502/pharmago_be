@@ -325,7 +325,7 @@ Table company_pharma {
 
   Indexes {
     company_pharma_type
-    (name, company_pharma_type)
+    (name, company_pharma_type) [unique]
   }
 }
 

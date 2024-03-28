@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml-lang.org)
 -- Database: PostgreSQL
--- Generated at: 2024-01-29T07:35:00.292Z
+-- Generated at: 2024-03-27T04:57:27.110Z
 
 CREATE TABLE "accounts" (
   "id" serial PRIMARY KEY,
@@ -545,7 +545,7 @@ CREATE INDEX ON "products" ("id", "unit");
 
 CREATE INDEX ON "company_pharma" ("company_pharma_type");
 
-CREATE INDEX ON "company_pharma" ("name", "company_pharma_type");
+CREATE UNIQUE INDEX ON "company_pharma" ("name", "company_pharma_type");
 
 CREATE INDEX ON "product_media" ("product");
 
