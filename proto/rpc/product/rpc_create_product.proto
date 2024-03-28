@@ -45,7 +45,7 @@ message CreateProductRequestUnit {
 message CreateProductRequestVariant {
   string name = 1;
   string code = 2;
-  string barCode = 3;
+  string barcode = 3;
   string decision_number = 4;
   string register_number = 5;
   string longevity = 6;
@@ -69,7 +69,7 @@ message CreateProductRequest {
   CreateProductRequestData product = 1;
   CreateProductRequestUnit unit = 2;
   repeated CreateProductRequestVariant variants = 3;
-  repeated CreateProductRequestUnitChange unitChanges = 4;
+  repeated CreateProductRequestUnitChange unit_changes = 4;
   repeated CreateProductRequestIngredient ingredients = 5;
 }
 

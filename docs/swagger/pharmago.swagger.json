@@ -4422,7 +4422,7 @@
         "code": {
           "type": "string"
         },
-        "barCode": {
+        "barcode": {
           "type": "string"
         },
         "decisionNumber": {
