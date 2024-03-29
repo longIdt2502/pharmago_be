@@ -145,6 +145,39 @@
         "security": []
       }
     },
+    "/account/v1/token": {
+      "post": {
+        "summary": "Check token User",
+        "operationId": "Pharmago_CheckToken",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCheckTokenResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbCheckTokenRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Account"
+        ]
+      }
+    },
     "/account/v1/verify": {
       "post": {
         "summary": "Verify new Account",
@@ -3885,6 +3918,30 @@
         },
         "message": {
           "type": "string"
+        }
+      }
+    },
+    "pbCheckTokenRequest": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      }
+    },
+    "pbCheckTokenResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "string",
+          "format": "date-time"
         }
       }
     },

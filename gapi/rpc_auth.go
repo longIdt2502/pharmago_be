@@ -5,13 +5,16 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"strconv"
+
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
+	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/pb"
 	"github.com/longIdt2502/pharmago_be/utils"
 	"github.com/longIdt2502/pharmago_be/woker"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"strconv"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func (server *ServerGRPC) SendCode(ctx context.Context, req *pb.SendCodeRequest) (*pb.SendCodeResponse, error) {
@@ -120,5 +123,20 @@ func (server *ServerGRPC) CheckEmail(ctx context.Context, req *pb.CheckEmailRequ
 	return &pb.CheckEmailResponse{
 		Code:    200,
 		Message: "success",
+	}, nil
+}
+
+func (server *ServerGRPC) CheckToken(ctx context.Context, req *pb.CheckTokenRequest) (*pb.CheckTokenResponse, error) {
+	auth, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	timePb := timestamppb.New(auth.ExpireAt)
+
+	return &pb.CheckTokenResponse{
+		Code:    200,
+		Message: "success",
+		Details: timePb,
 	}, nil
 }

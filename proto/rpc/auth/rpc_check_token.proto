@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message CheckTokenRequest {
+  string token = 1;
+}
+
+message CheckTokenResponse {
+  int32 code = 1;
+  string message = 2;
+  google.protobuf.Timestamp details = 3;
+}

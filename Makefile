@@ -44,14 +44,14 @@ proto:
 		--proto_path=proto/rpc/address --proto_path=proto/rpc/company --proto_path=proto/rpc/order \
 		--proto_path=proto/rpc/warehouse --proto_path=proto/rpc/product --proto_path=proto/rpc/customer \
 		--proto_path=proto/rpc/supplier --proto_path=proto/rpc/report --proto_path=proto/rpc/account \
-		--proto_path=proto/rpc/role \
+		--proto_path=proto/rpc/role --proto_path=proto/rpc/auth \
 	 	--go_out=pb --go_opt=paths=source_relative \
         --go-grpc_out=pb --go-grpc_opt=paths=source_relative \
         --grpc-gateway_out=pb --grpc-gateway_opt=paths=source_relative \
         --openapiv2_out=docs/swagger --openapiv2_opt=allow_merge=true,merge_file_name=pharmago \
         proto/*.proto proto/entities/*.proto proto/payloads/*.proto proto/rpc/*.proto proto/rpc/address/*.proto proto/rpc/company/*.proto \
         proto/rpc/product/*.proto proto/rpc/warehouse/*.proto proto/rpc/order/*.proto proto/rpc/customer/*.proto proto/rpc/supplier/*.proto \
-        proto/rpc/report/*.proto proto/rpc/account/*.proto proto/rpc/role/*.proto
+        proto/rpc/report/*.proto proto/rpc/account/*.proto proto/rpc/role/*.proto proto/rpc/auth/*.proto
 	cp pb/entities/*pb.go pb
 	cp pb/payloads/*pb.go pb
 	cp pb/rpc/*pb.go pb
@@ -65,6 +65,7 @@ proto:
 	cp pb/rpc/report/*pb.go pb
 	cp pb/rpc/account/*pb.go pb
 	cp pb/rpc/role/*pb.go pb
+	cp pb/rpc/auth/*pb.go pb
 	rm -r pb/entities
 	rm -r pb/payloads
 	rm -r pb/rpc

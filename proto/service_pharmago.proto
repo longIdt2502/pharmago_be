@@ -5,9 +5,10 @@ package pb;
 import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
-import "rpc/rpc_login.proto";
+import "rpc/auth/rpc_login.proto";
+import "rpc/auth/rpc_verify_account.proto";
+import "rpc/auth/rpc_check_token.proto";
 import "rpc/rpc_create_account.proto";
-import "rpc/rpc_verify_account.proto";
 
 import "rpc/account/rpc_account_detail.proto";
 import "rpc/account/rpc_account_inactive.proto";
@@ -122,6 +123,16 @@ service Pharmago {
       summary: "Login User";
       tags: "Account";
       security: {};
+    };
+  };
+  rpc CheckToken (CheckTokenRequest) returns (CheckTokenResponse) {
+    option (google.api.http) = {
+      post: "/account/v1/token"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Check token User";
+      tags: "Account";
     };
   };
   rpc CreateAccount (CreateAccountRequest) returns (CreateAccountResponse) {
