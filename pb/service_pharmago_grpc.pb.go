@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 
 const (
 	Pharmago_Login_FullMethodName                    = "/pb.Pharmago/Login"
+	Pharmago_CheckToken_FullMethodName               = "/pb.Pharmago/CheckToken"
 	Pharmago_CreateAccount_FullMethodName            = "/pb.Pharmago/CreateAccount"
 	Pharmago_VerifyAccount_FullMethodName            = "/pb.Pharmago/VerifyAccount"
 	Pharmago_SendCode_FullMethodName                 = "/pb.Pharmago/SendCode"
@@ -109,6 +110,7 @@ const (
 type PharmagoClient interface {
 	// TODO: ==================== Authentication ==========================
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
+	CheckToken(ctx context.Context, in *CheckTokenRequest, opts ...grpc.CallOption) (*CheckTokenResponse, error)
 	CreateAccount(ctx context.Context, in *CreateAccountRequest, opts ...grpc.CallOption) (*CreateAccountResponse, error)
 	VerifyAccount(ctx context.Context, in *VerifyAccountRequest, opts ...grpc.CallOption) (*VerifyAccountResponse, error)
 	SendCode(ctx context.Context, in *SendCodeRequest, opts ...grpc.CallOption) (*SendCodeResponse, error)
@@ -221,6 +223,15 @@ func NewPharmagoClient(cc grpc.ClientConnInterface) PharmagoClient {
 func (c *pharmagoClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
 	out := new(LoginResponse)
 	err := c.cc.Invoke(ctx, Pharmago_Login_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) CheckToken(ctx context.Context, in *CheckTokenRequest, opts ...grpc.CallOption) (*CheckTokenResponse, error) {
+	out := new(CheckTokenResponse)
+	err := c.cc.Invoke(ctx, Pharmago_CheckToken_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -984,6 +995,7 @@ func (c *pharmagoClient) ImportProductMasterData(ctx context.Context, in *Import
 type PharmagoServer interface {
 	// TODO: ==================== Authentication ==========================
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
+	CheckToken(context.Context, *CheckTokenRequest) (*CheckTokenResponse, error)
 	CreateAccount(context.Context, *CreateAccountRequest) (*CreateAccountResponse, error)
 	VerifyAccount(context.Context, *VerifyAccountRequest) (*VerifyAccountResponse, error)
 	SendCode(context.Context, *SendCodeRequest) (*SendCodeResponse, error)
@@ -1092,6 +1104,9 @@ type UnimplementedPharmagoServer struct {
 
 func (UnimplementedPharmagoServer) Login(context.Context, *LoginRequest) (*LoginResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
+}
+func (UnimplementedPharmagoServer) CheckToken(context.Context, *CheckTokenRequest) (*CheckTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckToken not implemented")
 }
 func (UnimplementedPharmagoServer) CreateAccount(context.Context, *CreateAccountRequest) (*CreateAccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateAccount not implemented")
@@ -1363,6 +1378,24 @@ func _Pharmago_Login_Handler(srv interface{}, ctx context.Context, dec func(inte
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PharmagoServer).Login(ctx, req.(*LoginRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_CheckToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).CheckToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_CheckToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).CheckToken(ctx, req.(*CheckTokenRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2843,6 +2876,10 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Login",
 			Handler:    _Pharmago_Login_Handler,
+		},
+		{
+			MethodName: "CheckToken",
+			Handler:    _Pharmago_CheckToken_Handler,
 		},
 		{
 			MethodName: "CreateAccount",
