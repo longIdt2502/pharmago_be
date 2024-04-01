@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message DebtNote {
+  int32 id = 1;
+  string code = 2;
+  string title = 3;
+  string entity = 4;
+  float money = 5;
+  float paymented = 6;
+  string note = 7;
+  string type = 8;
+  string status = 9;
+  int32 company = 10;
+  int32 user_created = 11;
+  google.protobuf.Timestamp exprise = 5;
+  google.protobuf.Timestamp dabt_note_at = 6;
+}
