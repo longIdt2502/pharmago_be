@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml-lang.org)
 -- Database: PostgreSQL
--- Generated at: 2024-03-27T04:57:27.110Z
+-- Generated at: 2024-04-02T02:38:54.505Z
 
 CREATE TABLE "accounts" (
   "id" serial PRIMARY KEY,
@@ -519,6 +519,41 @@ CREATE TABLE "suplier" (
   "company" serial
 );
 
+CREATE TABLE "debt_note_type" (
+  "code" varchar UNIQUE PRIMARY KEY,
+  "title" varchar
+);
+
+CREATE TABLE "debt_note_status" (
+  "code" varchar UNIQUE PRIMARY KEY,
+  "title" varchar
+);
+
+CREATE TABLE "debt_note" (
+  "id" serial PRIMARY KEY,
+  "code" varchar UNIQUE NOT NULL,
+  "title" varchar,
+  "entity" varchar NOT NULL,
+  "money" float NOT NULL DEFAULT 0,
+  "paymented" float NOT NULL DEFAULT 0,
+  "note" varchar,
+  "type" varchar NOT NULL,
+  "status" varchar NOT NULL,
+  "company" serial NOT NULL,
+  "user_created" serial NOT NULL,
+  "exprise" timestamp NOT NULL,
+  "dabt_note_at" timestamp DEFAULT (now())
+);
+
+CREATE TABLE "debt_repayment" (
+  "id" serial PRIMARY KEY,
+  "code" varchar UNIQUE NOT NULL,
+  "money" float NOT NULL DEFAULT 0,
+  "created_at" timestamp DEFAULT (now()),
+  "debt" serial NOT NULL,
+  "user_created" serial NOT NULL
+);
+
 CREATE UNIQUE INDEX ON "role_item" ("roles", "app");
 
 CREATE INDEX ON "address" ("province");
@@ -570,6 +605,8 @@ CREATE UNIQUE INDEX ON "customers" ("id", "address");
 CREATE INDEX ON "tickets" ("qr");
 
 CREATE UNIQUE INDEX ON "tickets" ("id", "qr");
+
+CREATE INDEX ON "debt_repayment" ("debt", "money");
 
 ALTER TABLE "accounts" ADD FOREIGN KEY ("type") REFERENCES "account_type" ("id") ON DELETE CASCADE;
 
@@ -780,3 +817,15 @@ ALTER TABLE "suplier" ADD FOREIGN KEY ("warehouses") REFERENCES "warehouses" ("i
 ALTER TABLE "suplier" ADD FOREIGN KEY ("address") REFERENCES "address" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "suplier" ADD FOREIGN KEY ("company") REFERENCES "companies" ("id") ON DELETE CASCADE;
+
+ALTER TABLE "debt_note" ADD FOREIGN KEY ("type") REFERENCES "debt_note_type" ("code") ON DELETE SET NULL;
+
+ALTER TABLE "debt_note" ADD FOREIGN KEY ("status") REFERENCES "debt_note_status" ("code") ON DELETE SET NULL;
+
+ALTER TABLE "debt_note" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "debt_note" ADD FOREIGN KEY ("company") REFERENCES "companies" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "debt_repayment" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "debt_repayment" ADD FOREIGN KEY ("debt") REFERENCES "debt_note" ("id") ON DELETE SET NULL;

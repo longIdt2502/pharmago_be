@@ -707,6 +707,55 @@ Ref: suplier.warehouses > warehouses.id [delete: set null]
 Ref: suplier.address > address.id [delete: set null]
 Ref: suplier.company > C.id [delete: cascade]
 
+// ============== Debt Note ================
+Table debt_note_type {
+  code varchar [pk, unique]
+  title varchar
+}
+
+Table debt_note_status {
+  code varchar [pk, unique]
+  title varchar
+}
+
+Table debt_note {
+  id serial [pk]
+  code varchar [not null, unique]
+  title varchar
+  entity varchar [not null]
+  money float [not null, default: 0]
+  paymented float [not null, default: 0]
+  note varchar
+  type varchar [not null]
+  status varchar [not null]
+  company serial [not null]
+  user_created serial [not null]
+  exprise timestamp [not null]
+  dabt_note_at timestamp [default: `now()`]
+}
+
+Ref: debt_note.type > debt_note_type.code [delete: set null]
+Ref: debt_note.status > debt_note_status.code [delete: set null]
+Ref: debt_note.user_created > A.id [delete: set null]
+Ref: debt_note.company > C.id [delete: set null]
+
+Table debt_repayment {
+  id serial [pk]
+  code varchar [unique, not null]
+  money float [not null, default: 0]
+  created_at timestamp [default: `now()`]
+  debt serial [not null]
+  user_created serial [not null]
+
+  Indexes {
+    (debt, money)
+  }
+}
+
+Ref: debt_repayment.user_created > A.id [delete: set null]
+Ref: debt_repayment.debt > debt_note.id [delete: set null]
+
+
 
 
 

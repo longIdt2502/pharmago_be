@@ -18,6 +18,16 @@ message DebtNote {
   string status = 9;
   int32 company = 10;
   int32 user_created = 11;
-  google.protobuf.Timestamp exprise = 5;
-  google.protobuf.Timestamp dabt_note_at = 6;
+  google.protobuf.Timestamp exprise = 12;
+  google.protobuf.Timestamp dabt_note_at = 13;
+  repeated DebtRepayment repayments = 14;
+}
+
+message DebtRepayment {
+  int32 id = 1;
+  string code = 2;
+  float money = 3;
+  int32 debt = 4;
+  int32 user_created = 5;
+  google.protobuf.Timestamp created_at = 6;
 }

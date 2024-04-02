@@ -102,6 +102,10 @@ const (
 	Pharmago_ImportCompany_FullMethodName            = "/pb.Pharmago/ImportCompany"
 	Pharmago_ImportProduct_FullMethodName            = "/pb.Pharmago/ImportProduct"
 	Pharmago_ImportProductMasterData_FullMethodName  = "/pb.Pharmago/ImportProductMasterData"
+	Pharmago_ListDebtNote_FullMethodName             = "/pb.Pharmago/ListDebtNote"
+	Pharmago_CreateDebtNote_FullMethodName           = "/pb.Pharmago/CreateDebtNote"
+	Pharmago_DetailDebtNote_FullMethodName           = "/pb.Pharmago/DetailDebtNote"
+	Pharmago_CreateDebtRepayment_FullMethodName      = "/pb.Pharmago/CreateDebtRepayment"
 )
 
 // PharmagoClient is the client API for Pharmago service.
@@ -210,6 +214,11 @@ type PharmagoClient interface {
 	ImportCompany(ctx context.Context, in *ImportCompanyRequest, opts ...grpc.CallOption) (*ImportCompanyResponse, error)
 	ImportProduct(ctx context.Context, in *ImportProductRequest, opts ...grpc.CallOption) (*ImportProductResponse, error)
 	ImportProductMasterData(ctx context.Context, in *ImportProductMasterDataRequest, opts ...grpc.CallOption) (*ImportProductMasterDataResponse, error)
+	// ================== DEBT NOTE ===================
+	ListDebtNote(ctx context.Context, in *ListDebtNoteRequest, opts ...grpc.CallOption) (*ListDebtNoteResponse, error)
+	CreateDebtNote(ctx context.Context, in *CreateDebtNoteRequest, opts ...grpc.CallOption) (*CreateDebtNoteResponse, error)
+	DetailDebtNote(ctx context.Context, in *DetailDebtNoteRequest, opts ...grpc.CallOption) (*DetailDebtNoteResponse, error)
+	CreateDebtRepayment(ctx context.Context, in *CreateDebtRepaymentRequest, opts ...grpc.CallOption) (*CreateDebtRepaymentResponse, error)
 }
 
 type pharmagoClient struct {
@@ -989,6 +998,42 @@ func (c *pharmagoClient) ImportProductMasterData(ctx context.Context, in *Import
 	return out, nil
 }
 
+func (c *pharmagoClient) ListDebtNote(ctx context.Context, in *ListDebtNoteRequest, opts ...grpc.CallOption) (*ListDebtNoteResponse, error) {
+	out := new(ListDebtNoteResponse)
+	err := c.cc.Invoke(ctx, Pharmago_ListDebtNote_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) CreateDebtNote(ctx context.Context, in *CreateDebtNoteRequest, opts ...grpc.CallOption) (*CreateDebtNoteResponse, error) {
+	out := new(CreateDebtNoteResponse)
+	err := c.cc.Invoke(ctx, Pharmago_CreateDebtNote_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) DetailDebtNote(ctx context.Context, in *DetailDebtNoteRequest, opts ...grpc.CallOption) (*DetailDebtNoteResponse, error) {
+	out := new(DetailDebtNoteResponse)
+	err := c.cc.Invoke(ctx, Pharmago_DetailDebtNote_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) CreateDebtRepayment(ctx context.Context, in *CreateDebtRepaymentRequest, opts ...grpc.CallOption) (*CreateDebtRepaymentResponse, error) {
+	out := new(CreateDebtRepaymentResponse)
+	err := c.cc.Invoke(ctx, Pharmago_CreateDebtRepayment_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PharmagoServer is the server API for Pharmago service.
 // All implementations must embed UnimplementedPharmagoServer
 // for forward compatibility
@@ -1095,6 +1140,11 @@ type PharmagoServer interface {
 	ImportCompany(context.Context, *ImportCompanyRequest) (*ImportCompanyResponse, error)
 	ImportProduct(context.Context, *ImportProductRequest) (*ImportProductResponse, error)
 	ImportProductMasterData(context.Context, *ImportProductMasterDataRequest) (*ImportProductMasterDataResponse, error)
+	// ================== DEBT NOTE ===================
+	ListDebtNote(context.Context, *ListDebtNoteRequest) (*ListDebtNoteResponse, error)
+	CreateDebtNote(context.Context, *CreateDebtNoteRequest) (*CreateDebtNoteResponse, error)
+	DetailDebtNote(context.Context, *DetailDebtNoteRequest) (*DetailDebtNoteResponse, error)
+	CreateDebtRepayment(context.Context, *CreateDebtRepaymentRequest) (*CreateDebtRepaymentResponse, error)
 	mustEmbedUnimplementedPharmagoServer()
 }
 
@@ -1350,6 +1400,18 @@ func (UnimplementedPharmagoServer) ImportProduct(context.Context, *ImportProduct
 }
 func (UnimplementedPharmagoServer) ImportProductMasterData(context.Context, *ImportProductMasterDataRequest) (*ImportProductMasterDataResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ImportProductMasterData not implemented")
+}
+func (UnimplementedPharmagoServer) ListDebtNote(context.Context, *ListDebtNoteRequest) (*ListDebtNoteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListDebtNote not implemented")
+}
+func (UnimplementedPharmagoServer) CreateDebtNote(context.Context, *CreateDebtNoteRequest) (*CreateDebtNoteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateDebtNote not implemented")
+}
+func (UnimplementedPharmagoServer) DetailDebtNote(context.Context, *DetailDebtNoteRequest) (*DetailDebtNoteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DetailDebtNote not implemented")
+}
+func (UnimplementedPharmagoServer) CreateDebtRepayment(context.Context, *CreateDebtRepaymentRequest) (*CreateDebtRepaymentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateDebtRepayment not implemented")
 }
 func (UnimplementedPharmagoServer) mustEmbedUnimplementedPharmagoServer() {}
 
@@ -2866,6 +2928,78 @@ func _Pharmago_ImportProductMasterData_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Pharmago_ListDebtNote_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListDebtNoteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ListDebtNote(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_ListDebtNote_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ListDebtNote(ctx, req.(*ListDebtNoteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_CreateDebtNote_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateDebtNoteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).CreateDebtNote(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_CreateDebtNote_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).CreateDebtNote(ctx, req.(*CreateDebtNoteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_DetailDebtNote_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DetailDebtNoteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).DetailDebtNote(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_DetailDebtNote_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).DetailDebtNote(ctx, req.(*DetailDebtNoteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_CreateDebtRepayment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateDebtRepaymentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).CreateDebtRepayment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_CreateDebtRepayment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).CreateDebtRepayment(ctx, req.(*CreateDebtRepaymentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Pharmago_ServiceDesc is the grpc.ServiceDesc for Pharmago service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -3200,6 +3334,22 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ImportProductMasterData",
 			Handler:    _Pharmago_ImportProductMasterData_Handler,
+		},
+		{
+			MethodName: "ListDebtNote",
+			Handler:    _Pharmago_ListDebtNote_Handler,
+		},
+		{
+			MethodName: "CreateDebtNote",
+			Handler:    _Pharmago_CreateDebtNote_Handler,
+		},
+		{
+			MethodName: "DetailDebtNote",
+			Handler:    _Pharmago_DetailDebtNote_Handler,
+		},
+		{
+			MethodName: "CreateDebtRepayment",
+			Handler:    _Pharmago_CreateDebtRepayment_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
