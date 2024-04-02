@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+import "google/protobuf/timestamp.proto";
+import "entities/debt_note.proto";
+
+message DetailDebtNoteRequest {
+  int32 id = 1;
+}
+
+message DetailDebtNoteResponse {
+  int32 code = 1;
+  string message = 2;
+  DebtNote details = 3;
+}

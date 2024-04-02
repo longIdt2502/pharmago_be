@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
+
 	"github.com/golang/protobuf/ptypes/timestamp"
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/pb"
@@ -32,7 +34,7 @@ func CustomerDetailMapper(ctx context.Context, store *db.Store, data db.Customer
 			if errors.Is(err, sql.ErrNoRows) {
 				return nil, status.Errorf(codes.NotFound, "address not exists")
 			}
-			return nil, status.Errorf(codes.Internal, "failed to get address: ", err.Error())
+			return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to get address: %e", err))
 		}
 		addressPb = AddressMapper(ctx, store, address)
 	}

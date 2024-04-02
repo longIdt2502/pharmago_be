@@ -1310,6 +1310,162 @@
         ]
       }
     },
+    "/debt-note/v1/create": {
+      "post": {
+        "summary": "Create Debt Note",
+        "operationId": "Pharmago_CreateDebtNote",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCreateDebtNoteResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbCreateDebtNoteRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Debt Note"
+        ]
+      }
+    },
+    "/debt-note/v1/detail/{id}": {
+      "get": {
+        "summary": "Detail Debt Note",
+        "operationId": "Pharmago_DetailDebtNote",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbDetailDebtNoteResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Debt Note"
+        ]
+      }
+    },
+    "/debt-note/v1/list": {
+      "get": {
+        "summary": "List Debt Note",
+        "operationId": "Pharmago_ListDebtNote",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbListDebtNoteResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "company",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Debt Note"
+        ]
+      }
+    },
+    "/debt-repayment/v1/create": {
+      "post": {
+        "summary": "Detail Debt Note",
+        "operationId": "Pharmago_CreateDebtRepayment",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCreateDebtRepaymentResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbCreateDebtRepaymentRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Debt Note"
+        ]
+      }
+    },
     "/import/v1/company": {
       "get": {
         "summary": "Import Data company pharma",
@@ -4297,6 +4453,90 @@
         }
       }
     },
+    "pbCreateDebtNoteRequest": {
+      "type": "object",
+      "properties": {
+        "company": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "code": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "entity": {
+          "type": "string"
+        },
+        "money": {
+          "type": "number",
+          "format": "float"
+        },
+        "paymented": {
+          "type": "number",
+          "format": "float"
+        },
+        "note": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "exprise": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "pbCreateDebtNoteResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbCreateDebtRepaymentRequest": {
+      "type": "object",
+      "properties": {
+        "debt": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "money": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "pbCreateDebtRepaymentResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
     "pbCreateProductRequest": {
       "type": "object",
       "properties": {
@@ -4671,6 +4911,107 @@
         }
       }
     },
+    "pbDebtNote": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "code": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "entity": {
+          "type": "string"
+        },
+        "money": {
+          "type": "number",
+          "format": "float"
+        },
+        "paymented": {
+          "type": "number",
+          "format": "float"
+        },
+        "note": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "company": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "userCreated": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "exprise": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "dabtNoteAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "repayments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbDebtRepayment"
+          }
+        }
+      }
+    },
+    "pbDebtRepayment": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "code": {
+          "type": "string"
+        },
+        "money": {
+          "type": "number",
+          "format": "float"
+        },
+        "debt": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "userCreated": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "pbDetailDebtNoteResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "$ref": "#/definitions/pbDebtNote"
+        }
+      }
+    },
     "pbDetailPriceListResponse": {
       "type": "object",
       "properties": {
@@ -4833,6 +5174,25 @@
         },
         "message": {
           "type": "string"
+        }
+      }
+    },
+    "pbListDebtNoteResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbDebtNote"
+          }
         }
       }
     },

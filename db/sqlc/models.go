@@ -155,6 +155,41 @@ type Customer struct {
 	CreatedAt   time.Time      `json:"created_at"`
 }
 
+type DebtNote struct {
+	ID          int32          `json:"id"`
+	Code        string         `json:"code"`
+	Title       sql.NullString `json:"title"`
+	Entity      string         `json:"entity"`
+	Money       float64        `json:"money"`
+	Paymented   float64        `json:"paymented"`
+	Note        sql.NullString `json:"note"`
+	Type        string         `json:"type"`
+	Status      string         `json:"status"`
+	Company     int32          `json:"company"`
+	UserCreated int32          `json:"user_created"`
+	Exprise     time.Time      `json:"exprise"`
+	DabtNoteAt  sql.NullTime   `json:"dabt_note_at"`
+}
+
+type DebtNoteStatus struct {
+	Code  string         `json:"code"`
+	Title sql.NullString `json:"title"`
+}
+
+type DebtNoteType struct {
+	Code  string         `json:"code"`
+	Title sql.NullString `json:"title"`
+}
+
+type DebtRepayment struct {
+	ID          int32        `json:"id"`
+	Code        string       `json:"code"`
+	Money       float64      `json:"money"`
+	CreatedAt   sql.NullTime `json:"created_at"`
+	Debt        int32        `json:"debt"`
+	UserCreated int32        `json:"user_created"`
+}
+
 type District struct {
 	Code                 string         `json:"code"`
 	Name                 string         `json:"name"`

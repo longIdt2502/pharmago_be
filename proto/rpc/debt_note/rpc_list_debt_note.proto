@@ -8,14 +8,14 @@ import "entities/debt_note.proto";
 
 message ListDebtNoteRequest {
   int32 company = 1;
-  string search = 2;
-  string status = 3;
-  int32 limit = 4;
-  int32 page = 5;
+  optional string search = 2;
+  optional string status = 3;
+  optional int32 limit = 4;
+  optional int32 page = 5;
 }
 
 message ListDebtNoteResponse {
   int32 code = 1;
   string message = 2;
-  DebtNote details = 3;
+  repeated DebtNote details = 3;
 }

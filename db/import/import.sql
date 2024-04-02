@@ -89,3 +89,11 @@ INSERT INTO apps (title, code, parent, level) VALUES ('Xem danh sách sản ph�
 INSERT INTO apps (title, code, parent, level) VALUES ('Tạo mới sản phẩm', 'PRODUCT-2', 'PRODUCT', 2);
 INSERT INTO apps (title, code, parent, level) VALUES ('Xem chi tiết sản phẩm', 'PRODUCT-3', 'PRODUCT', 2);
 INSERT INTO apps (title, code, parent, level) VALUES ('Chỉnh sửa sản phẩm', 'PRODUCT-4', 'PRODUCT', 2);
+
+INSERT INTO debt_note_type (code, title) VALUES ('REVENUE', 'Khoản thu');
+INSERT INTO debt_note_type (code, title) VALUES ('EXPENSE', 'Khoản chi');
+
+INSERT INTO debt_note_status (code, title) VALUES ('OPEN', 'Chưa thanh toán');
+INSERT INTO debt_note_status (code, title) VALUES ('REPAYING', 'Thanh toán 1 phần');
+INSERT INTO debt_note_status (code, title) VALUES ('SETTLED', 'Hoàn thành');
+INSERT INTO debt_note_status (code, title) VALUES ('OVERDUE', 'Quá hạn');
