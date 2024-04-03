@@ -3,6 +3,7 @@ package gapi
 import (
 	"context"
 	"database/sql"
+
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/pb"
 	"github.com/longIdt2502/pharmago_be/utils"
@@ -50,7 +51,7 @@ func (server *ServerGRPC) ImportProduct(ctx context.Context, req *pb.ImportProdu
 				CongTyDk:    congTyDk.ID,
 			})
 			if err != nil {
-				log.Printf("=====: ", err)
+				log.Printf("=====: %e", err)
 			}
 		}
 	}

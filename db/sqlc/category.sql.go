@@ -75,7 +75,7 @@ func (q *Queries) DeleteCategory(ctx context.Context, id int32) (ProductCategory
 }
 
 const detailCategory = `-- name: DetailCategory :one
-SELECT pb.id, code, name, user_created, pb.created_at, company, user_updated, updated_at, description, ac.id, ac.username, ac.hashed_password, ac.full_name, ac.email, ac.type, ac.is_verify, ac.password_changed_at, ac.created_at, ac.role, au.id, au.username, au.hashed_password, au.full_name, au.email, au.type, au.is_verify, au.password_changed_at, au.created_at, au.role, ac.full_name AS created_name, au.full_name AS updated_name FROM product_categories pb
+SELECT pb.id, code, name, user_created, pb.created_at, company, user_updated, updated_at, description, ac.id, ac.username, ac.hashed_password, ac.full_name, ac.email, ac.type, ac.oa_id, ac.is_verify, ac.password_changed_at, ac.created_at, ac.role, au.id, au.username, au.hashed_password, au.full_name, au.email, au.type, au.oa_id, au.is_verify, au.password_changed_at, au.created_at, au.role, ac.full_name AS created_name, au.full_name AS updated_name FROM product_categories pb
 JOIN accounts ac ON ac.id = pb.user_created
 LEFT JOIN accounts au ON au.id = pb.user_updated
 WHERE pb.id = $1
@@ -97,6 +97,7 @@ type DetailCategoryRow struct {
 	FullName            string         `json:"full_name"`
 	Email               string         `json:"email"`
 	Type                int32          `json:"type"`
+	OaID                sql.NullString `json:"oa_id"`
 	IsVerify            bool           `json:"is_verify"`
 	PasswordChangedAt   time.Time      `json:"password_changed_at"`
 	CreatedAt_2         time.Time      `json:"created_at_2"`
@@ -107,6 +108,7 @@ type DetailCategoryRow struct {
 	FullName_2          sql.NullString `json:"full_name_2"`
 	Email_2             sql.NullString `json:"email_2"`
 	Type_2              sql.NullInt32  `json:"type_2"`
+	OaID_2              sql.NullString `json:"oa_id_2"`
 	IsVerify_2          sql.NullBool   `json:"is_verify_2"`
 	PasswordChangedAt_2 sql.NullTime   `json:"password_changed_at_2"`
 	CreatedAt_3         sql.NullTime   `json:"created_at_3"`
@@ -134,6 +136,7 @@ func (q *Queries) DetailCategory(ctx context.Context, id int32) (DetailCategoryR
 		&i.FullName,
 		&i.Email,
 		&i.Type,
+		&i.OaID,
 		&i.IsVerify,
 		&i.PasswordChangedAt,
 		&i.CreatedAt_2,
@@ -144,6 +147,7 @@ func (q *Queries) DetailCategory(ctx context.Context, id int32) (DetailCategoryR
 		&i.FullName_2,
 		&i.Email_2,
 		&i.Type_2,
+		&i.OaID_2,
 		&i.IsVerify_2,
 		&i.PasswordChangedAt_2,
 		&i.CreatedAt_3,

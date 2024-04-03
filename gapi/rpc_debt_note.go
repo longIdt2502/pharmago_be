@@ -92,6 +92,10 @@ func (server *ServerGRPC) CreateDebtNote(ctx context.Context, req *pb.CreateDebt
 		Company:     req.GetCompany(),
 		UserCreated: tokenPayload.UserID,
 		Exprise:     time.Unix(req.GetExprise().GetSeconds(), 0),
+		DabtNoteAt: sql.NullTime{
+			Time:  time.Unix(req.GetCreatedAt().GetSeconds(), 0),
+			Valid: req.CreatedAt.IsValid(),
+		},
 	})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to record debt note: %e", err))

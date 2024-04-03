@@ -12,16 +12,17 @@ import (
 )
 
 type Account struct {
-	ID                int32         `json:"id"`
-	Username          string        `json:"username"`
-	HashedPassword    string        `json:"hashed_password"`
-	FullName          string        `json:"full_name"`
-	Email             string        `json:"email"`
-	Type              int32         `json:"type"`
-	IsVerify          bool          `json:"is_verify"`
-	PasswordChangedAt time.Time     `json:"password_changed_at"`
-	CreatedAt         time.Time     `json:"created_at"`
-	Role              sql.NullInt32 `json:"role"`
+	ID                int32          `json:"id"`
+	Username          string         `json:"username"`
+	HashedPassword    string         `json:"hashed_password"`
+	FullName          string         `json:"full_name"`
+	Email             string         `json:"email"`
+	Type              int32          `json:"type"`
+	OaID              sql.NullString `json:"oa_id"`
+	IsVerify          bool           `json:"is_verify"`
+	PasswordChangedAt time.Time      `json:"password_changed_at"`
+	CreatedAt         time.Time      `json:"created_at"`
+	Role              sql.NullInt32  `json:"role"`
 }
 
 type AccountCompany struct {

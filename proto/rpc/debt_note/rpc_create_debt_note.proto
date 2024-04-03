@@ -16,8 +16,8 @@ message CreateDebtNoteRequest {
   float paymented = 6;
   optional string note = 7;
   string type = 8;
-  optional string status = 9;
-  google.protobuf.Timestamp exprise = 10;
+  google.protobuf.Timestamp exprise = 9;
+  google.protobuf.Timestamp created_at = 10;
 }
 
 message CreateDebtNoteResponse {
