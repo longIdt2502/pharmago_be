@@ -392,7 +392,7 @@ func (q *Queries) GetConsignments(ctx context.Context, arg GetConsignmentsParams
 }
 
 const getDetailTicket = `-- name: GetDetailTicket :one
-SELECT t.id, t.code, t.type, status, note, qr, export_to, import_from, total_price, warehouse, t.user_created, t.user_updated, t.updated_at, t.created_at, s.id, s.code, s.name, deputy_name, s.phone, s.email, s.address, s.company, c.id, c.full_name, c.code, c.company, c.address, c.email, c.phone, license, birthday, c.user_created, c.user_updated, c.updated_at, c.created_at, w.id, w.address, companies, w.name, w.code, tt.id, tt.code, tt.title, ts.id, ts.code, ts.title, m.id, media_url, a_uc.id, a_uc.username, a_uc.hashed_password, a_uc.full_name, a_uc.email, a_uc.type, a_uc.is_verify, a_uc.password_changed_at, a_uc.created_at, a_uc.role, a_uu.id, a_uu.username, a_uu.hashed_password, a_uu.full_name, a_uu.email, a_uu.type, a_uu.is_verify, a_uu.password_changed_at, a_uu.created_at, a_uu.role , m.media_url AS qr_url, a_uc.full_name AS user_created_name, a_uu.full_name AS user_updated_name,
+SELECT t.id, t.code, t.type, status, note, qr, export_to, import_from, total_price, warehouse, t.user_created, t.user_updated, t.updated_at, t.created_at, s.id, s.code, s.name, deputy_name, s.phone, s.email, s.address, s.company, c.id, c.full_name, c.code, c.company, c.address, c.email, c.phone, license, birthday, c.user_created, c.user_updated, c.updated_at, c.created_at, w.id, w.address, companies, w.name, w.code, tt.id, tt.code, tt.title, ts.id, ts.code, ts.title, m.id, media_url, a_uc.id, a_uc.username, a_uc.hashed_password, a_uc.full_name, a_uc.email, a_uc.type, a_uc.oa_id, a_uc.is_verify, a_uc.password_changed_at, a_uc.created_at, a_uc.role, a_uu.id, a_uu.username, a_uu.hashed_password, a_uu.full_name, a_uu.email, a_uu.type, a_uu.oa_id, a_uu.is_verify, a_uu.password_changed_at, a_uu.created_at, a_uu.role , m.media_url AS qr_url, a_uc.full_name AS user_created_name, a_uu.full_name AS user_updated_name,
        w.id AS w_id, w.name AS w_name, w.code AS w_code, w.address AS w_address,
         c.id AS c_id, c.full_name AS c_name, c.code AS c_code, c.address AS c_address, c.email AS c_email, c.phone AS c_phone, c.company AS c_company,
         s.id AS s_id, s.code AS s_code, s.name AS s_name, s.deputy_name AS s_deputy, s.phone AS s_phone, s.email AS s_email, s.address AS s_address, s.company AS s_company,
@@ -465,6 +465,7 @@ type GetDetailTicketRow struct {
 	FullName_2          string         `json:"full_name_2"`
 	Email_3             string         `json:"email_3"`
 	Type_2              int32          `json:"type_2"`
+	OaID                sql.NullString `json:"oa_id"`
 	IsVerify            bool           `json:"is_verify"`
 	PasswordChangedAt   time.Time      `json:"password_changed_at"`
 	CreatedAt_3         time.Time      `json:"created_at_3"`
@@ -475,6 +476,7 @@ type GetDetailTicketRow struct {
 	FullName_3          string         `json:"full_name_3"`
 	Email_4             string         `json:"email_4"`
 	Type_3              int32          `json:"type_3"`
+	OaID_2              sql.NullString `json:"oa_id_2"`
 	IsVerify_2          bool           `json:"is_verify_2"`
 	PasswordChangedAt_2 time.Time      `json:"password_changed_at_2"`
 	CreatedAt_4         time.Time      `json:"created_at_4"`
@@ -567,6 +569,7 @@ func (q *Queries) GetDetailTicket(ctx context.Context, id int32) (GetDetailTicke
 		&i.FullName_2,
 		&i.Email_3,
 		&i.Type_2,
+		&i.OaID,
 		&i.IsVerify,
 		&i.PasswordChangedAt,
 		&i.CreatedAt_3,
@@ -577,6 +580,7 @@ func (q *Queries) GetDetailTicket(ctx context.Context, id int32) (GetDetailTicke
 		&i.FullName_3,
 		&i.Email_4,
 		&i.Type_3,
+		&i.OaID_2,
 		&i.IsVerify_2,
 		&i.PasswordChangedAt_2,
 		&i.CreatedAt_4,
@@ -656,7 +660,7 @@ func (q *Queries) GetItemsTicket(ctx context.Context, ticket sql.NullInt32) ([]C
 }
 
 const getListTicket = `-- name: GetListTicket :many
-SELECT t.id, t.code, t.type, status, note, qr, export_to, import_from, total_price, warehouse, t.user_created, t.user_updated, t.updated_at, t.created_at, w.id, w.address, companies, w.name, w.code, a.id, username, hashed_password, full_name, a.email, a.type, is_verify, password_changed_at, a.created_at, role, m.id, media_url, tt.id, tt.code, tt.title, ts.id, ts.code, ts.title, c.id, c.code, quantity, inventory, ticket, expired_at, producted_at, is_available, c.user_created, c.user_updated, c.updated_at, c.created_at, variant, s.id, s.code, s.name, deputy_name, phone, s.email, s.address, company, w.name AS w_name, a.full_name AS a_full_name, m.media_url AS qr_url,
+SELECT t.id, t.code, t.type, status, note, qr, export_to, import_from, total_price, warehouse, t.user_created, t.user_updated, t.updated_at, t.created_at, w.id, w.address, companies, w.name, w.code, a.id, username, hashed_password, full_name, a.email, a.type, oa_id, is_verify, password_changed_at, a.created_at, role, m.id, media_url, tt.id, tt.code, tt.title, ts.id, ts.code, ts.title, c.id, c.code, quantity, inventory, ticket, expired_at, producted_at, is_available, c.user_created, c.user_updated, c.updated_at, c.created_at, variant, s.id, s.code, s.name, deputy_name, phone, s.email, s.address, company, w.name AS w_name, a.full_name AS a_full_name, m.media_url AS qr_url,
     tt.id AS tt_id, tt.code AS tt_code, tt.title AS tt_title,
     ts.id AS ts_id, ts.code AS ts_code, ts.title AS ts_title,
     COALESCE(SUM(c.quantity), 0)::int AS total_products
@@ -727,6 +731,7 @@ type GetListTicketRow struct {
 	FullName          string         `json:"full_name"`
 	Email             string         `json:"email"`
 	Type_2            int32          `json:"type_2"`
+	OaID              sql.NullString `json:"oa_id"`
 	IsVerify          bool           `json:"is_verify"`
 	PasswordChangedAt time.Time      `json:"password_changed_at"`
 	CreatedAt_2       time.Time      `json:"created_at_2"`
@@ -815,6 +820,7 @@ func (q *Queries) GetListTicket(ctx context.Context, arg GetListTicketParams) ([
 			&i.FullName,
 			&i.Email,
 			&i.Type_2,
+			&i.OaID,
 			&i.IsVerify,
 			&i.PasswordChangedAt,
 			&i.CreatedAt_2,

@@ -3,6 +3,7 @@ package mapper
 import (
 	"context"
 	"database/sql"
+
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/pb"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -37,8 +38,7 @@ func OrderDetailMapper(ctx context.Context, store *db.Store, data db.DetailOrder
 		address = AddressMapper(ctx, store, addressDb)
 	}
 
-	var payment *pb.Payment
-	payment = PaymentMapper(ctx, store, data.Payment)
+	payment := PaymentMapper(ctx, store, data.Payment)
 
 	var orderItems []*pb.OrderItem
 	orderItemsDb, _ := store.ListOrderItem(ctx, data.ID)

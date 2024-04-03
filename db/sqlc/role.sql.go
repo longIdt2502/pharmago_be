@@ -141,7 +141,7 @@ func (q *Queries) ListApp(ctx context.Context, arg ListAppParams) ([]App, error)
 }
 
 const listRole = `-- name: ListRole :many
-SELECT r.id, r.code, title, note, company, user_created, user_updated, updated_at, r.created_at, c.id, name, c.code, tax_code, phone, description, address, c.created_at, owner, ac.id, ac.username, ac.hashed_password, ac.full_name, ac.email, ac.type, ac.is_verify, ac.password_changed_at, ac.created_at, ac.role, au.id, au.username, au.hashed_password, au.full_name, au.email, au.type, au.is_verify, au.password_changed_at, au.created_at, au.role, ac.full_name AS created_name, au.full_name AS updated_name FROM roles r
+SELECT r.id, r.code, title, note, company, user_created, user_updated, updated_at, r.created_at, c.id, name, c.code, tax_code, phone, description, address, c.created_at, owner, ac.id, ac.username, ac.hashed_password, ac.full_name, ac.email, ac.type, ac.oa_id, ac.is_verify, ac.password_changed_at, ac.created_at, ac.role, au.id, au.username, au.hashed_password, au.full_name, au.email, au.type, au.oa_id, au.is_verify, au.password_changed_at, au.created_at, au.role, ac.full_name AS created_name, au.full_name AS updated_name FROM roles r
 JOIN companies c ON c.id = r.company
 JOIN accounts ac ON ac.id = r.user_created
 JOIN accounts au ON au.id = r.user_updated
@@ -202,6 +202,7 @@ type ListRoleRow struct {
 	FullName            string         `json:"full_name"`
 	Email               string         `json:"email"`
 	Type                int32          `json:"type"`
+	OaID                sql.NullString `json:"oa_id"`
 	IsVerify            bool           `json:"is_verify"`
 	PasswordChangedAt   time.Time      `json:"password_changed_at"`
 	CreatedAt_3         time.Time      `json:"created_at_3"`
@@ -212,6 +213,7 @@ type ListRoleRow struct {
 	FullName_2          string         `json:"full_name_2"`
 	Email_2             string         `json:"email_2"`
 	Type_2              int32          `json:"type_2"`
+	OaID_2              sql.NullString `json:"oa_id_2"`
 	IsVerify_2          bool           `json:"is_verify_2"`
 	PasswordChangedAt_2 time.Time      `json:"password_changed_at_2"`
 	CreatedAt_4         time.Time      `json:"created_at_4"`
@@ -263,6 +265,7 @@ func (q *Queries) ListRole(ctx context.Context, arg ListRoleParams) ([]ListRoleR
 			&i.FullName,
 			&i.Email,
 			&i.Type,
+			&i.OaID,
 			&i.IsVerify,
 			&i.PasswordChangedAt,
 			&i.CreatedAt_3,
@@ -273,6 +276,7 @@ func (q *Queries) ListRole(ctx context.Context, arg ListRoleParams) ([]ListRoleR
 			&i.FullName_2,
 			&i.Email_2,
 			&i.Type_2,
+			&i.OaID_2,
 			&i.IsVerify_2,
 			&i.PasswordChangedAt_2,
 			&i.CreatedAt_4,
@@ -345,7 +349,7 @@ func (q *Queries) ListRoleItem(ctx context.Context, roles int32) ([]ListRoleItem
 }
 
 const roleDetail = `-- name: RoleDetail :one
-SELECT r.id, r.code, title, note, company, user_created, user_updated, updated_at, r.created_at, c.id, name, c.code, tax_code, phone, description, address, c.created_at, owner, ac.id, ac.username, ac.hashed_password, ac.full_name, ac.email, ac.type, ac.is_verify, ac.password_changed_at, ac.created_at, ac.role, au.id, au.username, au.hashed_password, au.full_name, au.email, au.type, au.is_verify, au.password_changed_at, au.created_at, au.role, ac.full_name AS created_name, au.full_name AS updated_name FROM roles r
+SELECT r.id, r.code, title, note, company, user_created, user_updated, updated_at, r.created_at, c.id, name, c.code, tax_code, phone, description, address, c.created_at, owner, ac.id, ac.username, ac.hashed_password, ac.full_name, ac.email, ac.type, ac.oa_id, ac.is_verify, ac.password_changed_at, ac.created_at, ac.role, au.id, au.username, au.hashed_password, au.full_name, au.email, au.type, au.oa_id, au.is_verify, au.password_changed_at, au.created_at, au.role, ac.full_name AS created_name, au.full_name AS updated_name FROM roles r
 JOIN companies c ON c.id = r.company
 JOIN accounts ac ON ac.id = r.user_created
 JOIN accounts au ON ac.id = r.user_updated
@@ -377,6 +381,7 @@ type RoleDetailRow struct {
 	FullName            string         `json:"full_name"`
 	Email               string         `json:"email"`
 	Type                int32          `json:"type"`
+	OaID                sql.NullString `json:"oa_id"`
 	IsVerify            bool           `json:"is_verify"`
 	PasswordChangedAt   time.Time      `json:"password_changed_at"`
 	CreatedAt_3         time.Time      `json:"created_at_3"`
@@ -387,6 +392,7 @@ type RoleDetailRow struct {
 	FullName_2          string         `json:"full_name_2"`
 	Email_2             string         `json:"email_2"`
 	Type_2              int32          `json:"type_2"`
+	OaID_2              sql.NullString `json:"oa_id_2"`
 	IsVerify_2          bool           `json:"is_verify_2"`
 	PasswordChangedAt_2 time.Time      `json:"password_changed_at_2"`
 	CreatedAt_4         time.Time      `json:"created_at_4"`
@@ -423,6 +429,7 @@ func (q *Queries) RoleDetail(ctx context.Context, id int32) (RoleDetailRow, erro
 		&i.FullName,
 		&i.Email,
 		&i.Type,
+		&i.OaID,
 		&i.IsVerify,
 		&i.PasswordChangedAt,
 		&i.CreatedAt_3,
@@ -433,6 +440,7 @@ func (q *Queries) RoleDetail(ctx context.Context, id int32) (RoleDetailRow, erro
 		&i.FullName_2,
 		&i.Email_2,
 		&i.Type_2,
+		&i.OaID_2,
 		&i.IsVerify_2,
 		&i.PasswordChangedAt_2,
 		&i.CreatedAt_4,

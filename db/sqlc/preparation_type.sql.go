@@ -73,7 +73,7 @@ func (q *Queries) DeletePreparationType(ctx context.Context, id int32) (Preparat
 }
 
 const detailPreparationType = `-- name: DetailPreparationType :one
-SELECT ps.id, ps.code, ps.name, ps.company, ps.user_created, ps.user_updated, ps.created_at, ps.updated_at, ps.description, a.id, a.username, a.hashed_password, a.full_name, a.email, a.type, a.is_verify, a.password_changed_at, a.created_at, a.role, au.full_name AS user_updated_name FROM preparation_type ps
+SELECT ps.id, ps.code, ps.name, ps.company, ps.user_created, ps.user_updated, ps.created_at, ps.updated_at, ps.description, a.id, a.username, a.hashed_password, a.full_name, a.email, a.type, a.oa_id, a.is_verify, a.password_changed_at, a.created_at, a.role, au.full_name AS user_updated_name FROM preparation_type ps
 LEFT JOIN accounts a ON a.id = ps.user_created
 LEFT JOIN accounts au ON au.id = ps.user_updated
 WHERE ps.id = $1
@@ -95,6 +95,7 @@ type DetailPreparationTypeRow struct {
 	FullName          sql.NullString `json:"full_name"`
 	Email             sql.NullString `json:"email"`
 	Type              sql.NullInt32  `json:"type"`
+	OaID              sql.NullString `json:"oa_id"`
 	IsVerify          sql.NullBool   `json:"is_verify"`
 	PasswordChangedAt sql.NullTime   `json:"password_changed_at"`
 	CreatedAt_2       sql.NullTime   `json:"created_at_2"`
@@ -121,6 +122,7 @@ func (q *Queries) DetailPreparationType(ctx context.Context, id int32) (DetailPr
 		&i.FullName,
 		&i.Email,
 		&i.Type,
+		&i.OaID,
 		&i.IsVerify,
 		&i.PasswordChangedAt,
 		&i.CreatedAt_2,
@@ -138,7 +140,7 @@ WITH preparation_type_quantity AS (
              LEFT JOIN products p ON p.tieu_chuan_sx = ps.code
     GROUP BY ps.id
 )
-SELECT ps.id, ps.code, ps.name, ps.company, ps.user_created, ps.user_updated, ps.created_at, ps.updated_at, ps.description, a.id, a.username, a.hashed_password, a.full_name, a.email, a.type, a.is_verify, a.password_changed_at, a.created_at, a.role, psq.total_quantity AS quantity FROM preparation_type_quantity psq
+SELECT ps.id, ps.code, ps.name, ps.company, ps.user_created, ps.user_updated, ps.created_at, ps.updated_at, ps.description, a.id, a.username, a.hashed_password, a.full_name, a.email, a.type, a.oa_id, a.is_verify, a.password_changed_at, a.created_at, a.role, psq.total_quantity AS quantity FROM preparation_type_quantity psq
 JOIN preparation_type ps ON psq.preparation_type_id = ps.id
 LEFT JOIN accounts a ON a.id = ps.user_created
 WHERE (
@@ -177,6 +179,7 @@ type ListPreparationTypeRow struct {
 	FullName          sql.NullString `json:"full_name"`
 	Email             sql.NullString `json:"email"`
 	Type              sql.NullInt32  `json:"type"`
+	OaID              sql.NullString `json:"oa_id"`
 	IsVerify          sql.NullBool   `json:"is_verify"`
 	PasswordChangedAt sql.NullTime   `json:"password_changed_at"`
 	CreatedAt_2       sql.NullTime   `json:"created_at_2"`
@@ -214,6 +217,7 @@ func (q *Queries) ListPreparationType(ctx context.Context, arg ListPreparationTy
 			&i.FullName,
 			&i.Email,
 			&i.Type,
+			&i.OaID,
 			&i.IsVerify,
 			&i.PasswordChangedAt,
 			&i.CreatedAt_2,

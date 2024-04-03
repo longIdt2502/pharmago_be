@@ -3600,6 +3600,9 @@
           "type": "string",
           "format": "int64"
         },
+        "oaId": {
+          "type": "string"
+        },
         "passwordChangedAt": {
           "type": "string",
           "format": "date-time"
@@ -4483,10 +4486,11 @@
         "type": {
           "type": "string"
         },
-        "status": {
-          "type": "string"
-        },
         "exprise": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "createdAt": {
           "type": "string",
           "format": "date-time"
         }

@@ -14,6 +14,7 @@ Table accounts as A {
   type serial [not null]
   is_verify boolean [not null, default: false]
   role serial
+  oa_id varchar
   password_changed_at timestamptz [not null, default: '0001-01-01 00:00:00Z']
   created_at timestamptz [not null, default: `now()`]
 }
