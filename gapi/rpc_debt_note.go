@@ -63,7 +63,7 @@ func (server *ServerGRPC) CreateDebtNote(ctx context.Context, req *pb.CreateDebt
 	}
 
 	debtCode := fmt.Sprintf("CNT-%s-%d", utils.RandomString(6), utils.RandomInt(100, 999))
-	if req.Code != nil {
+	if req.Code != nil && req.GetCode() == "" {
 		debtCode = req.GetCode()
 	}
 
