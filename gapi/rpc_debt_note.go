@@ -26,6 +26,10 @@ func (server *ServerGRPC) ListDebtNote(ctx context.Context, req *pb.ListDebtNote
 			String: req.GetStatus(),
 			Valid:  req.Status != nil,
 		},
+		Type: sql.NullString{
+			String: req.GetType(),
+			Valid:  req.Type != nil,
+		},
 		Search: sql.NullString{
 			String: req.GetSearch(),
 			Valid:  req.Search != nil,

@@ -10,6 +10,9 @@ AND (
     sqlc.narg('status')::varchar IS NULL OR dn.status = sqlc.narg('status')::varchar
 )
 AND (
+    sqlc.narg('type')::varchar IS NULL OR dn.type = sqlc.narg('type')::varchar
+)
+AND (
     dn.code ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
     dn.title ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%'
 )

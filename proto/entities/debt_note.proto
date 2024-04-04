@@ -31,3 +31,20 @@ message DebtRepayment {
   int32 user_created = 5;
   google.protobuf.Timestamp created_at = 6;
 }
+
+message DebtReport {
+  repeated DebtReportChart chart = 1;
+  repeated DebtReportRevenue revenue = 2;
+}
+
+message DebtReportChart {
+  google.protobuf.Timestamp date = 1;
+  int32 ticket = 2;
+  float money = 3;
+}
+
+message DebtReportRevenue {
+  string type = 1;
+  int32 quantity = 2;
+  float money = 3;
+}

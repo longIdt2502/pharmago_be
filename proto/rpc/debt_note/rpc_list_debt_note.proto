@@ -10,8 +10,9 @@ message ListDebtNoteRequest {
   int32 company = 1;
   optional string search = 2;
   optional string status = 3;
-  optional int32 limit = 4;
-  optional int32 page = 5;
+  optional string type = 4;
+  optional int32 limit = 5;
+  optional int32 page = 6;
 }
 
 message ListDebtNoteResponse {
