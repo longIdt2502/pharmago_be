@@ -21,7 +21,7 @@ message DebtNote {
   int32 user_created = 11;
   string user_created_name = 12;
   google.protobuf.Timestamp exprise = 13;
-  google.protobuf.Timestamp dabt_note_at = 14;
+  google.protobuf.Timestamp debt_note_at = 14;
   repeated DebtRepayment repayments = 15;
 }
 
