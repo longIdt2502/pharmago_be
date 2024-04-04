@@ -1439,6 +1439,65 @@
         ]
       }
     },
+    "/debt-note/v1/report": {
+      "get": {
+        "summary": "Report Debt Note",
+        "operationId": "Pharmago_ReportDebtNote",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbReportDebtNoteResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "company",
+            "description": "int32 value field",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
+        "tags": [
+          "Debt Note"
+        ]
+      }
+    },
     "/debt-repayment/v1/create": {
       "post": {
         "summary": "Detail Debt Note",
@@ -4935,7 +4994,7 @@
           "type": "string"
         },
         "entity": {
-          "type": "string"
+          "$ref": "#/definitions/pbSimpleData"
         },
         "money": {
           "type": "number",
@@ -4961,6 +5020,9 @@
         "userCreated": {
           "type": "integer",
           "format": "int32"
+        },
+        "userCreatedName": {
+          "type": "string"
         },
         "exprise": {
           "type": "string",
@@ -5001,9 +5063,64 @@
           "type": "integer",
           "format": "int32"
         },
+        "userCreatedName": {
+          "type": "string"
+        },
         "createdAt": {
           "type": "string",
           "format": "date-time"
+        }
+      }
+    },
+    "pbDebtReport": {
+      "type": "object",
+      "properties": {
+        "chart": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbDebtReportChart"
+          }
+        },
+        "revenue": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbDebtReportRevenue"
+          }
+        }
+      }
+    },
+    "pbDebtReportChart": {
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ticket": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "money": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "pbDebtReportRevenue": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "money": {
+          "type": "number",
+          "format": "float"
         }
       }
     },
@@ -6169,6 +6286,21 @@
         "count": {
           "type": "integer",
           "format": "int32"
+        }
+      }
+    },
+    "pbReportDebtNoteResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "$ref": "#/definitions/pbDebtReport"
         }
       }
     },

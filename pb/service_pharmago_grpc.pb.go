@@ -105,6 +105,7 @@ const (
 	Pharmago_ListDebtNote_FullMethodName             = "/pb.Pharmago/ListDebtNote"
 	Pharmago_CreateDebtNote_FullMethodName           = "/pb.Pharmago/CreateDebtNote"
 	Pharmago_DetailDebtNote_FullMethodName           = "/pb.Pharmago/DetailDebtNote"
+	Pharmago_ReportDebtNote_FullMethodName           = "/pb.Pharmago/ReportDebtNote"
 	Pharmago_CreateDebtRepayment_FullMethodName      = "/pb.Pharmago/CreateDebtRepayment"
 )
 
@@ -218,6 +219,7 @@ type PharmagoClient interface {
 	ListDebtNote(ctx context.Context, in *ListDebtNoteRequest, opts ...grpc.CallOption) (*ListDebtNoteResponse, error)
 	CreateDebtNote(ctx context.Context, in *CreateDebtNoteRequest, opts ...grpc.CallOption) (*CreateDebtNoteResponse, error)
 	DetailDebtNote(ctx context.Context, in *DetailDebtNoteRequest, opts ...grpc.CallOption) (*DetailDebtNoteResponse, error)
+	ReportDebtNote(ctx context.Context, in *ReportDebtNoteRequest, opts ...grpc.CallOption) (*ReportDebtNoteResponse, error)
 	CreateDebtRepayment(ctx context.Context, in *CreateDebtRepaymentRequest, opts ...grpc.CallOption) (*CreateDebtRepaymentResponse, error)
 }
 
@@ -1025,6 +1027,15 @@ func (c *pharmagoClient) DetailDebtNote(ctx context.Context, in *DetailDebtNoteR
 	return out, nil
 }
 
+func (c *pharmagoClient) ReportDebtNote(ctx context.Context, in *ReportDebtNoteRequest, opts ...grpc.CallOption) (*ReportDebtNoteResponse, error) {
+	out := new(ReportDebtNoteResponse)
+	err := c.cc.Invoke(ctx, Pharmago_ReportDebtNote_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *pharmagoClient) CreateDebtRepayment(ctx context.Context, in *CreateDebtRepaymentRequest, opts ...grpc.CallOption) (*CreateDebtRepaymentResponse, error) {
 	out := new(CreateDebtRepaymentResponse)
 	err := c.cc.Invoke(ctx, Pharmago_CreateDebtRepayment_FullMethodName, in, out, opts...)
@@ -1144,6 +1155,7 @@ type PharmagoServer interface {
 	ListDebtNote(context.Context, *ListDebtNoteRequest) (*ListDebtNoteResponse, error)
 	CreateDebtNote(context.Context, *CreateDebtNoteRequest) (*CreateDebtNoteResponse, error)
 	DetailDebtNote(context.Context, *DetailDebtNoteRequest) (*DetailDebtNoteResponse, error)
+	ReportDebtNote(context.Context, *ReportDebtNoteRequest) (*ReportDebtNoteResponse, error)
 	CreateDebtRepayment(context.Context, *CreateDebtRepaymentRequest) (*CreateDebtRepaymentResponse, error)
 	mustEmbedUnimplementedPharmagoServer()
 }
@@ -1409,6 +1421,9 @@ func (UnimplementedPharmagoServer) CreateDebtNote(context.Context, *CreateDebtNo
 }
 func (UnimplementedPharmagoServer) DetailDebtNote(context.Context, *DetailDebtNoteRequest) (*DetailDebtNoteResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DetailDebtNote not implemented")
+}
+func (UnimplementedPharmagoServer) ReportDebtNote(context.Context, *ReportDebtNoteRequest) (*ReportDebtNoteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReportDebtNote not implemented")
 }
 func (UnimplementedPharmagoServer) CreateDebtRepayment(context.Context, *CreateDebtRepaymentRequest) (*CreateDebtRepaymentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateDebtRepayment not implemented")
@@ -2982,6 +2997,24 @@ func _Pharmago_DetailDebtNote_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Pharmago_ReportDebtNote_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReportDebtNoteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ReportDebtNote(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_ReportDebtNote_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ReportDebtNote(ctx, req.(*ReportDebtNoteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Pharmago_CreateDebtRepayment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateDebtRepaymentRequest)
 	if err := dec(in); err != nil {
@@ -3346,6 +3379,10 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DetailDebtNote",
 			Handler:    _Pharmago_DetailDebtNote_Handler,
+		},
+		{
+			MethodName: "ReportDebtNote",
+			Handler:    _Pharmago_ReportDebtNote_Handler,
 		},
 		{
 			MethodName: "CreateDebtRepayment",
