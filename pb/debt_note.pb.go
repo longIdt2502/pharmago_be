@@ -259,6 +259,187 @@ func (x *DebtRepayment) GetCreatedAt() *timestamppb.Timestamp {
 	return nil
 }
 
+type DebtReport struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Chart   []*DebtReportChart   `protobuf:"bytes,1,rep,name=chart,proto3" json:"chart,omitempty"`
+	Revenue []*DebtReportRevenue `protobuf:"bytes,2,rep,name=revenue,proto3" json:"revenue,omitempty"`
+}
+
+func (x *DebtReport) Reset() {
+	*x = DebtReport{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_entities_debt_note_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DebtReport) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DebtReport) ProtoMessage() {}
+
+func (x *DebtReport) ProtoReflect() protoreflect.Message {
+	mi := &file_entities_debt_note_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DebtReport.ProtoReflect.Descriptor instead.
+func (*DebtReport) Descriptor() ([]byte, []int) {
+	return file_entities_debt_note_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *DebtReport) GetChart() []*DebtReportChart {
+	if x != nil {
+		return x.Chart
+	}
+	return nil
+}
+
+func (x *DebtReport) GetRevenue() []*DebtReportRevenue {
+	if x != nil {
+		return x.Revenue
+	}
+	return nil
+}
+
+type DebtReportChart struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Date   *timestamppb.Timestamp `protobuf:"bytes,1,opt,name=date,proto3" json:"date,omitempty"`
+	Ticket int32                  `protobuf:"varint,2,opt,name=ticket,proto3" json:"ticket,omitempty"`
+	Money  float32                `protobuf:"fixed32,3,opt,name=money,proto3" json:"money,omitempty"`
+}
+
+func (x *DebtReportChart) Reset() {
+	*x = DebtReportChart{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_entities_debt_note_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DebtReportChart) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DebtReportChart) ProtoMessage() {}
+
+func (x *DebtReportChart) ProtoReflect() protoreflect.Message {
+	mi := &file_entities_debt_note_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DebtReportChart.ProtoReflect.Descriptor instead.
+func (*DebtReportChart) Descriptor() ([]byte, []int) {
+	return file_entities_debt_note_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *DebtReportChart) GetDate() *timestamppb.Timestamp {
+	if x != nil {
+		return x.Date
+	}
+	return nil
+}
+
+func (x *DebtReportChart) GetTicket() int32 {
+	if x != nil {
+		return x.Ticket
+	}
+	return 0
+}
+
+func (x *DebtReportChart) GetMoney() float32 {
+	if x != nil {
+		return x.Money
+	}
+	return 0
+}
+
+type DebtReportRevenue struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Type     string  `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`
+	Quantity int32   `protobuf:"varint,2,opt,name=quantity,proto3" json:"quantity,omitempty"`
+	Money    float32 `protobuf:"fixed32,3,opt,name=money,proto3" json:"money,omitempty"`
+}
+
+func (x *DebtReportRevenue) Reset() {
+	*x = DebtReportRevenue{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_entities_debt_note_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DebtReportRevenue) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DebtReportRevenue) ProtoMessage() {}
+
+func (x *DebtReportRevenue) ProtoReflect() protoreflect.Message {
+	mi := &file_entities_debt_note_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DebtReportRevenue.ProtoReflect.Descriptor instead.
+func (*DebtReportRevenue) Descriptor() ([]byte, []int) {
+	return file_entities_debt_note_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *DebtReportRevenue) GetType() string {
+	if x != nil {
+		return x.Type
+	}
+	return ""
+}
+
+func (x *DebtReportRevenue) GetQuantity() int32 {
+	if x != nil {
+		return x.Quantity
+	}
+	return 0
+}
+
+func (x *DebtReportRevenue) GetMoney() float32 {
+	if x != nil {
+		return x.Money
+	}
+	return 0
+}
+
 var File_entities_debt_note_proto protoreflect.FileDescriptor
 
 var file_entities_debt_note_proto_rawDesc = []byte{
@@ -305,10 +486,29 @@ var file_entities_debt_note_proto_rawDesc = []byte{
 	0x61, 0x74, 0x65, 0x64, 0x5f, 0x61, 0x74, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e,
 	0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e,
 	0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x52, 0x09, 0x63, 0x72, 0x65, 0x61, 0x74,
-	0x65, 0x64, 0x41, 0x74, 0x42, 0x29, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63,
-	0x6f, 0x6d, 0x2f, 0x48, 0x6f, 0x61, 0x6e, 0x67, 0x4c, 0x6f, 0x6e, 0x67, 0x32, 0x35, 0x30, 0x32,
-	0x2f, 0x70, 0x68, 0x61, 0x72, 0x6d, 0x61, 0x67, 0x6f, 0x5f, 0x62, 0x65, 0x2f, 0x70, 0x62, 0x62,
-	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x64, 0x41, 0x74, 0x22, 0x68, 0x0a, 0x0a, 0x44, 0x65, 0x62, 0x74, 0x52, 0x65, 0x70, 0x6f,
+	0x72, 0x74, 0x12, 0x29, 0x0a, 0x05, 0x63, 0x68, 0x61, 0x72, 0x74, 0x18, 0x01, 0x20, 0x03, 0x28,
+	0x0b, 0x32, 0x13, 0x2e, 0x70, 0x62, 0x2e, 0x44, 0x65, 0x62, 0x74, 0x52, 0x65, 0x70, 0x6f, 0x72,
+	0x74, 0x43, 0x68, 0x61, 0x72, 0x74, 0x52, 0x05, 0x63, 0x68, 0x61, 0x72, 0x74, 0x12, 0x2f, 0x0a,
+	0x07, 0x72, 0x65, 0x76, 0x65, 0x6e, 0x75, 0x65, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x15,
+	0x2e, 0x70, 0x62, 0x2e, 0x44, 0x65, 0x62, 0x74, 0x52, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x52, 0x65,
+	0x76, 0x65, 0x6e, 0x75, 0x65, 0x52, 0x07, 0x72, 0x65, 0x76, 0x65, 0x6e, 0x75, 0x65, 0x22, 0x6f,
+	0x0a, 0x0f, 0x44, 0x65, 0x62, 0x74, 0x52, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x43, 0x68, 0x61, 0x72,
+	0x74, 0x12, 0x2e, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
+	0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x52, 0x04, 0x64, 0x61, 0x74,
+	0x65, 0x12, 0x16, 0x0a, 0x06, 0x74, 0x69, 0x63, 0x6b, 0x65, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x05, 0x52, 0x06, 0x74, 0x69, 0x63, 0x6b, 0x65, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x6d, 0x6f, 0x6e,
+	0x65, 0x79, 0x18, 0x03, 0x20, 0x01, 0x28, 0x02, 0x52, 0x05, 0x6d, 0x6f, 0x6e, 0x65, 0x79, 0x22,
+	0x59, 0x0a, 0x11, 0x44, 0x65, 0x62, 0x74, 0x52, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x52, 0x65, 0x76,
+	0x65, 0x6e, 0x75, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x71, 0x75, 0x61, 0x6e,
+	0x74, 0x69, 0x74, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x08, 0x71, 0x75, 0x61, 0x6e,
+	0x74, 0x69, 0x74, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x6d, 0x6f, 0x6e, 0x65, 0x79, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x02, 0x52, 0x05, 0x6d, 0x6f, 0x6e, 0x65, 0x79, 0x42, 0x29, 0x5a, 0x27, 0x67, 0x69,
+	0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x48, 0x6f, 0x61, 0x6e, 0x67, 0x4c, 0x6f,
+	0x6e, 0x67, 0x32, 0x35, 0x30, 0x32, 0x2f, 0x70, 0x68, 0x61, 0x72, 0x6d, 0x61, 0x67, 0x6f, 0x5f,
+	0x62, 0x65, 0x2f, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -323,22 +523,28 @@ func file_entities_debt_note_proto_rawDescGZIP() []byte {
 	return file_entities_debt_note_proto_rawDescData
 }
 
-var file_entities_debt_note_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_entities_debt_note_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_entities_debt_note_proto_goTypes = []interface{}{
 	(*DebtNote)(nil),              // 0: pb.DebtNote
 	(*DebtRepayment)(nil),         // 1: pb.DebtRepayment
-	(*timestamppb.Timestamp)(nil), // 2: google.protobuf.Timestamp
+	(*DebtReport)(nil),            // 2: pb.DebtReport
+	(*DebtReportChart)(nil),       // 3: pb.DebtReportChart
+	(*DebtReportRevenue)(nil),     // 4: pb.DebtReportRevenue
+	(*timestamppb.Timestamp)(nil), // 5: google.protobuf.Timestamp
 }
 var file_entities_debt_note_proto_depIdxs = []int32{
-	2, // 0: pb.DebtNote.exprise:type_name -> google.protobuf.Timestamp
-	2, // 1: pb.DebtNote.dabt_note_at:type_name -> google.protobuf.Timestamp
+	5, // 0: pb.DebtNote.exprise:type_name -> google.protobuf.Timestamp
+	5, // 1: pb.DebtNote.dabt_note_at:type_name -> google.protobuf.Timestamp
 	1, // 2: pb.DebtNote.repayments:type_name -> pb.DebtRepayment
-	2, // 3: pb.DebtRepayment.created_at:type_name -> google.protobuf.Timestamp
-	4, // [4:4] is the sub-list for method output_type
-	4, // [4:4] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	5, // 3: pb.DebtRepayment.created_at:type_name -> google.protobuf.Timestamp
+	3, // 4: pb.DebtReport.chart:type_name -> pb.DebtReportChart
+	4, // 5: pb.DebtReport.revenue:type_name -> pb.DebtReportRevenue
+	5, // 6: pb.DebtReportChart.date:type_name -> google.protobuf.Timestamp
+	7, // [7:7] is the sub-list for method output_type
+	7, // [7:7] is the sub-list for method input_type
+	7, // [7:7] is the sub-list for extension type_name
+	7, // [7:7] is the sub-list for extension extendee
+	0, // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_entities_debt_note_proto_init() }
@@ -371,6 +577,42 @@ func file_entities_debt_note_proto_init() {
 				return nil
 			}
 		}
+		file_entities_debt_note_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DebtReport); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_entities_debt_note_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DebtReportChart); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_entities_debt_note_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DebtReportRevenue); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -378,7 +620,7 @@ func file_entities_debt_note_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_entities_debt_note_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

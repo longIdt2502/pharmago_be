@@ -135,22 +135,26 @@ AND (
     $2::varchar IS NULL OR dn.status = $2::varchar
 )
 AND (
-    dn.code ILIKE '%' || COALESCE($3::varchar, '') || '%' OR
-    dn.title ILIKE '%' || COALESCE($3::varchar, '') || '%'
+    $3::varchar IS NULL OR dn.type = $3::varchar
+)
+AND (
+    dn.code ILIKE '%' || COALESCE($4::varchar, '') || '%' OR
+    dn.title ILIKE '%' || COALESCE($4::varchar, '') || '%'
 )
 ORDER BY
-    CASE WHEN $4::varchar = 'exprise' THEN dn.exprise END DESC,
-    CASE WHEN $4::varchar = '-exprise' THEN dn.exprise END ASC,
-    CASE WHEN $4::varchar = 'dabt_note_at' THEN dn.dabt_note_at END DESC,
-    CASE WHEN $4::varchar = '-dabt_note_at' THEN dn.dabt_note_at END ASC,
-    CASE WHEN $4::varchar IS NULL THEN dn.id END DESC
-LIMIT COALESCE($6::int, 10)
-OFFSET (COALESCE($5::int, 1) - 1) * COALESCE($6::int, 10)
+    CASE WHEN $5::varchar = 'exprise' THEN dn.exprise END DESC,
+    CASE WHEN $5::varchar = '-exprise' THEN dn.exprise END ASC,
+    CASE WHEN $5::varchar = 'dabt_note_at' THEN dn.dabt_note_at END DESC,
+    CASE WHEN $5::varchar = '-dabt_note_at' THEN dn.dabt_note_at END ASC,
+    CASE WHEN $5::varchar IS NULL THEN dn.id END DESC
+LIMIT COALESCE($7::int, 10)
+OFFSET (COALESCE($6::int, 1) - 1) * COALESCE($7::int, 10)
 `
 
 type GetListDebtNoteParams struct {
 	Company sql.NullInt32  `json:"company"`
 	Status  sql.NullString `json:"status"`
+	Type    sql.NullString `json:"type"`
 	Search  sql.NullString `json:"search"`
 	OrderBy sql.NullString `json:"order_by"`
 	Page    sql.NullInt32  `json:"page"`
@@ -188,6 +192,7 @@ func (q *Queries) GetListDebtNote(ctx context.Context, arg GetListDebtNoteParams
 	rows, err := q.db.QueryContext(ctx, getListDebtNote,
 		arg.Company,
 		arg.Status,
+		arg.Type,
 		arg.Search,
 		arg.OrderBy,
 		arg.Page,

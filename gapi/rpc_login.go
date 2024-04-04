@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"time"
 
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
@@ -22,7 +23,7 @@ func (server *ServerGRPC) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, status.Errorf(codes.NotFound, "user not found")
 		}
-		return nil, status.Errorf(codes.Internal, "failed to find user")
+		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to find user: %e", err))
 	}
 	if !account.IsVerify {
 		return nil, status.Errorf(codes.Unauthenticated, "account not verify")
@@ -31,7 +32,7 @@ func (server *ServerGRPC) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 	password := req.GetPassword()
 	err = utils.CheckPassword(password, account.HashedPassword)
 	if err != nil {
-		return nil, status.Errorf(codes.Unauthenticated, "password incorrect:", err)
+		return nil, status.Errorf(codes.Unauthenticated, fmt.Sprintf("password incorrect: %e", err))
 	}
 
 	accessToken, accessTokenPayload, err := server.tokenMaker.CreateToken(username, account.ID, server.config.AccessTokenDuration)
@@ -41,9 +42,9 @@ func (server *ServerGRPC) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 
 	refreshTokenDuration, err := time.ParseDuration("24h")
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to create refresh token duration:", err)
+		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to create refresh token duration: %e", err))
 	}
-	refreshToken, refreshTokenPayload, err := server.tokenMaker.CreateToken(username, account.ID, refreshTokenDuration)
+	refreshToken, refreshTokenPayload, _ := server.tokenMaker.CreateToken(username, account.ID, refreshTokenDuration)
 
 	metadata := server.extractMetadata(ctx)
 	session, err := server.store.CreateSession(ctx, db.CreateSessionParams{
@@ -56,7 +57,7 @@ func (server *ServerGRPC) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 		ExpiresAt:    refreshTokenPayload.ExpireAt,
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to create session:", err)
+		return nil, status.Errorf(codes.Internal, "failed to create session: %e", err)
 	}
 
 	accountResponse := mapper.AccountMapper(account)
