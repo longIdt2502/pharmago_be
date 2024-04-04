@@ -103,13 +103,67 @@ func (q *Queries) CreateRepayment(ctx context.Context, arg CreateRepaymentParams
 }
 
 const detailDebtNote = `-- name: DetailDebtNote :one
-SELECT id, code, title, entity, money, paymented, note, type, status, company, user_created, exprise, dabt_note_at FROM debt_note
-WHERE id = $1
+SELECT dn.id, dn.code, title, entity, money, paymented, note, dn.type, status, dn.company, dn.user_created, exprise, dabt_note_at, a.id, username, hashed_password, a.full_name, a.email, a.type, oa_id, is_verify, password_changed_at, a.created_at, role, c.id, c.full_name, c.code, c.company, c.address, c.email, c.phone, license, birthday, c.user_created, user_updated, updated_at, c.created_at, s.id, s.code, name, deputy_name, s.phone, s.email, s.address, s.company, a.full_name AS a_name, c.full_name AS c_name, s.name AS s_name FROM debt_note dn
+LEFT JOIN accounts a ON a.id = dn.user_created
+LEFT JOIN customers c ON c.code = dn.entity
+LEFT JOIN suplier s ON s.code = dn.entity
+WHERE dn.id = $1
 `
 
-func (q *Queries) DetailDebtNote(ctx context.Context, id int32) (DebtNote, error) {
+type DetailDebtNoteRow struct {
+	ID                int32          `json:"id"`
+	Code              string         `json:"code"`
+	Title             sql.NullString `json:"title"`
+	Entity            string         `json:"entity"`
+	Money             float64        `json:"money"`
+	Paymented         float64        `json:"paymented"`
+	Note              sql.NullString `json:"note"`
+	Type              string         `json:"type"`
+	Status            string         `json:"status"`
+	Company           int32          `json:"company"`
+	UserCreated       int32          `json:"user_created"`
+	Exprise           time.Time      `json:"exprise"`
+	DabtNoteAt        sql.NullTime   `json:"dabt_note_at"`
+	ID_2              sql.NullInt32  `json:"id_2"`
+	Username          sql.NullString `json:"username"`
+	HashedPassword    sql.NullString `json:"hashed_password"`
+	FullName          sql.NullString `json:"full_name"`
+	Email             sql.NullString `json:"email"`
+	Type_2            sql.NullInt32  `json:"type_2"`
+	OaID              sql.NullString `json:"oa_id"`
+	IsVerify          sql.NullBool   `json:"is_verify"`
+	PasswordChangedAt sql.NullTime   `json:"password_changed_at"`
+	CreatedAt         sql.NullTime   `json:"created_at"`
+	Role              sql.NullInt32  `json:"role"`
+	ID_3              sql.NullInt32  `json:"id_3"`
+	FullName_2        sql.NullString `json:"full_name_2"`
+	Code_2            sql.NullString `json:"code_2"`
+	Company_2         sql.NullInt32  `json:"company_2"`
+	Address           sql.NullInt32  `json:"address"`
+	Email_2           sql.NullString `json:"email_2"`
+	Phone             sql.NullString `json:"phone"`
+	License           sql.NullString `json:"license"`
+	Birthday          sql.NullTime   `json:"birthday"`
+	UserCreated_2     sql.NullInt32  `json:"user_created_2"`
+	UserUpdated       sql.NullInt32  `json:"user_updated"`
+	UpdatedAt         sql.NullTime   `json:"updated_at"`
+	CreatedAt_2       sql.NullTime   `json:"created_at_2"`
+	ID_4              sql.NullInt32  `json:"id_4"`
+	Code_3            sql.NullString `json:"code_3"`
+	Name              sql.NullString `json:"name"`
+	DeputyName        sql.NullString `json:"deputy_name"`
+	Phone_2           sql.NullString `json:"phone_2"`
+	Email_3           sql.NullString `json:"email_3"`
+	Address_2         sql.NullInt32  `json:"address_2"`
+	Company_3         sql.NullInt32  `json:"company_3"`
+	AName             sql.NullString `json:"a_name"`
+	CName             sql.NullString `json:"c_name"`
+	SName             sql.NullString `json:"s_name"`
+}
+
+func (q *Queries) DetailDebtNote(ctx context.Context, id int32) (DetailDebtNoteRow, error) {
 	row := q.db.QueryRowContext(ctx, detailDebtNote, id)
-	var i DebtNote
+	var i DetailDebtNoteRow
 	err := row.Scan(
 		&i.ID,
 		&i.Code,
@@ -124,12 +178,50 @@ func (q *Queries) DetailDebtNote(ctx context.Context, id int32) (DebtNote, error
 		&i.UserCreated,
 		&i.Exprise,
 		&i.DabtNoteAt,
+		&i.ID_2,
+		&i.Username,
+		&i.HashedPassword,
+		&i.FullName,
+		&i.Email,
+		&i.Type_2,
+		&i.OaID,
+		&i.IsVerify,
+		&i.PasswordChangedAt,
+		&i.CreatedAt,
+		&i.Role,
+		&i.ID_3,
+		&i.FullName_2,
+		&i.Code_2,
+		&i.Company_2,
+		&i.Address,
+		&i.Email_2,
+		&i.Phone,
+		&i.License,
+		&i.Birthday,
+		&i.UserCreated_2,
+		&i.UserUpdated,
+		&i.UpdatedAt,
+		&i.CreatedAt_2,
+		&i.ID_4,
+		&i.Code_3,
+		&i.Name,
+		&i.DeputyName,
+		&i.Phone_2,
+		&i.Email_3,
+		&i.Address_2,
+		&i.Company_3,
+		&i.AName,
+		&i.CName,
+		&i.SName,
 	)
 	return i, err
 }
 
 const getListDebtNote = `-- name: GetListDebtNote :many
-SELECT id, code, title, entity, money, paymented, note, type, status, company, user_created, exprise, dabt_note_at FROM debt_note dn
+SELECT dn.id, dn.code, dn.title, dn.entity, dn.money, dn.paymented, dn.note, dn.type, dn.status, dn.company, dn.user_created, dn.exprise, dn.dabt_note_at, a.full_name AS a_name, c.full_name AS c_name, s.name AS s_name FROM debt_note dn
+LEFT JOIN accounts a ON a.id = dn.user_created
+LEFT JOIN customers c ON c.code = dn.entity
+LEFT JOIN suplier s ON s.code = dn.entity
 WHERE dn.company = $1::int
 AND (
     $2::varchar IS NULL OR dn.status = $2::varchar
@@ -161,6 +253,25 @@ type GetListDebtNoteParams struct {
 	Limit   sql.NullInt32  `json:"limit"`
 }
 
+type GetListDebtNoteRow struct {
+	ID          int32          `json:"id"`
+	Code        string         `json:"code"`
+	Title       sql.NullString `json:"title"`
+	Entity      string         `json:"entity"`
+	Money       float64        `json:"money"`
+	Paymented   float64        `json:"paymented"`
+	Note        sql.NullString `json:"note"`
+	Type        string         `json:"type"`
+	Status      string         `json:"status"`
+	Company     int32          `json:"company"`
+	UserCreated int32          `json:"user_created"`
+	Exprise     time.Time      `json:"exprise"`
+	DabtNoteAt  sql.NullTime   `json:"dabt_note_at"`
+	AName       sql.NullString `json:"a_name"`
+	CName       sql.NullString `json:"c_name"`
+	SName       sql.NullString `json:"s_name"`
+}
+
 // WITH total_repayment AS (
 //
 //	SELECT debt, COALESCE(SUM(money), 0)::float AS total_money
@@ -188,7 +299,7 @@ type GetListDebtNoteParams struct {
 //	(o.updated_at <= sqlc.narg('updated_end')::timestamp OR sqlc.narg('updated_end')::timestamp  IS NULL)
 //
 // ))
-func (q *Queries) GetListDebtNote(ctx context.Context, arg GetListDebtNoteParams) ([]DebtNote, error) {
+func (q *Queries) GetListDebtNote(ctx context.Context, arg GetListDebtNoteParams) ([]GetListDebtNoteRow, error) {
 	rows, err := q.db.QueryContext(ctx, getListDebtNote,
 		arg.Company,
 		arg.Status,
@@ -202,9 +313,9 @@ func (q *Queries) GetListDebtNote(ctx context.Context, arg GetListDebtNoteParams
 		return nil, err
 	}
 	defer rows.Close()
-	items := []DebtNote{}
+	items := []GetListDebtNoteRow{}
 	for rows.Next() {
-		var i DebtNote
+		var i GetListDebtNoteRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.Code,
@@ -219,6 +330,9 @@ func (q *Queries) GetListDebtNote(ctx context.Context, arg GetListDebtNoteParams
 			&i.UserCreated,
 			&i.Exprise,
 			&i.DabtNoteAt,
+			&i.AName,
+			&i.CName,
+			&i.SName,
 		); err != nil {
 			return nil, err
 		}
@@ -234,19 +348,41 @@ func (q *Queries) GetListDebtNote(ctx context.Context, arg GetListDebtNoteParams
 }
 
 const listRepayment = `-- name: ListRepayment :many
-SELECT id, code, money, created_at, debt, user_created FROM debt_repayment
-WHERE debt = $1
+SELECT dr.id, code, money, dr.created_at, debt, user_created, a.id, username, hashed_password, full_name, email, type, oa_id, is_verify, password_changed_at, a.created_at, role, a.full_name AS a_name FROM debt_repayment dr
+LEFT JOIN accounts a ON a.id = dr.user_created
+WHERE dr.debt = $1
 `
 
-func (q *Queries) ListRepayment(ctx context.Context, debt int32) ([]DebtRepayment, error) {
+type ListRepaymentRow struct {
+	ID                int32          `json:"id"`
+	Code              string         `json:"code"`
+	Money             float64        `json:"money"`
+	CreatedAt         sql.NullTime   `json:"created_at"`
+	Debt              int32          `json:"debt"`
+	UserCreated       int32          `json:"user_created"`
+	ID_2              sql.NullInt32  `json:"id_2"`
+	Username          sql.NullString `json:"username"`
+	HashedPassword    sql.NullString `json:"hashed_password"`
+	FullName          sql.NullString `json:"full_name"`
+	Email             sql.NullString `json:"email"`
+	Type              sql.NullInt32  `json:"type"`
+	OaID              sql.NullString `json:"oa_id"`
+	IsVerify          sql.NullBool   `json:"is_verify"`
+	PasswordChangedAt sql.NullTime   `json:"password_changed_at"`
+	CreatedAt_2       sql.NullTime   `json:"created_at_2"`
+	Role              sql.NullInt32  `json:"role"`
+	AName             sql.NullString `json:"a_name"`
+}
+
+func (q *Queries) ListRepayment(ctx context.Context, debt int32) ([]ListRepaymentRow, error) {
 	rows, err := q.db.QueryContext(ctx, listRepayment, debt)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []DebtRepayment{}
+	items := []ListRepaymentRow{}
 	for rows.Next() {
-		var i DebtRepayment
+		var i ListRepaymentRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.Code,
@@ -254,7 +390,115 @@ func (q *Queries) ListRepayment(ctx context.Context, debt int32) ([]DebtRepaymen
 			&i.CreatedAt,
 			&i.Debt,
 			&i.UserCreated,
+			&i.ID_2,
+			&i.Username,
+			&i.HashedPassword,
+			&i.FullName,
+			&i.Email,
+			&i.Type,
+			&i.OaID,
+			&i.IsVerify,
+			&i.PasswordChangedAt,
+			&i.CreatedAt_2,
+			&i.Role,
+			&i.AName,
 		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const reportChartDebtNote = `-- name: ReportChartDebtNote :many
+WITH date_series AS (
+    SELECT generate_series(current_date - interval '7 days', current_date, interval '1 day')::timestamp AS date
+)
+SELECT date_series.date AS truncated_date,
+       COALESCE(SUM(dn.money), 0)::float AS total_money,
+       COALESCE(COUNT(dn.*), 0)::int AS ticket
+FROM date_series
+LEFT JOIN debt_note dn 
+ON DATE_TRUNC('day', dn.dabt_note_at) = date_series.date
+    AND ($1::varchar IS NULL OR dn.status = $1::varchar)
+    AND ($2::varchar IS NULL OR dn.type = $2::varchar)
+    AND dn.company = $3::int
+GROUP BY date_series.date
+ORDER BY date_series.date
+`
+
+type ReportChartDebtNoteParams struct {
+	Status  sql.NullString `json:"status"`
+	Type    sql.NullString `json:"type"`
+	Company int32          `json:"company"`
+}
+
+type ReportChartDebtNoteRow struct {
+	TruncatedDate time.Time `json:"truncated_date"`
+	TotalMoney    float64   `json:"total_money"`
+	Ticket        int32     `json:"ticket"`
+}
+
+func (q *Queries) ReportChartDebtNote(ctx context.Context, arg ReportChartDebtNoteParams) ([]ReportChartDebtNoteRow, error) {
+	rows, err := q.db.QueryContext(ctx, reportChartDebtNote, arg.Status, arg.Type, arg.Company)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ReportChartDebtNoteRow{}
+	for rows.Next() {
+		var i ReportChartDebtNoteRow
+		if err := rows.Scan(&i.TruncatedDate, &i.TotalMoney, &i.Ticket); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const reportRevenueDebtNote = `-- name: ReportRevenueDebtNote :many
+SELECT ds.code, COALESCE(SUM(money), 0)::float AS money, COUNT(dn.*) AS ticket 
+FROM debt_note_status ds
+LEFT JOIN debt_note dn 
+    ON  ds.code = dn.status
+    AND ($1::varchar IS NULL OR dn.type = $1::varchar)
+    AND dn.company = $2::int
+GROUP BY ds.code
+`
+
+type ReportRevenueDebtNoteParams struct {
+	Type    sql.NullString `json:"type"`
+	Company int32          `json:"company"`
+}
+
+type ReportRevenueDebtNoteRow struct {
+	Code   string  `json:"code"`
+	Money  float64 `json:"money"`
+	Ticket int64   `json:"ticket"`
+}
+
+func (q *Queries) ReportRevenueDebtNote(ctx context.Context, arg ReportRevenueDebtNoteParams) ([]ReportRevenueDebtNoteRow, error) {
+	rows, err := q.db.QueryContext(ctx, reportRevenueDebtNote, arg.Type, arg.Company)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ReportRevenueDebtNoteRow{}
+	for rows.Next() {
+		var i ReportRevenueDebtNoteRow
+		if err := rows.Scan(&i.Code, &i.Money, &i.Ticket); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

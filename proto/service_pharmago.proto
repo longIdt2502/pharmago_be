@@ -83,6 +83,7 @@ import "rpc/rpc_import_product_master_data.proto";
 import "rpc/debt_note/rpc_list_debt_note.proto";
 import "rpc/debt_note/rpc_create_debt_note.proto";
 import "rpc/debt_note/rpc_detail_debt_note.proto";
+import "rpc/debt_note/rpc_report_debt_note.proto";
 import "rpc/debt_note/rpc_create_debt_repayment.proto";
 
 
@@ -987,6 +988,15 @@ service Pharmago {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Detail Debt Note";
+      tags: "Debt Note";
+    };
+  };
+  rpc ReportDebtNote (ReportDebtNoteRequest) returns (ReportDebtNoteResponse) {
+    option (google.api.http) = {
+      get: "/debt-note/v1/report"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Report Debt Note";
       tags: "Debt Note";
     };
   };

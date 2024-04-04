@@ -3,6 +3,7 @@ syntax = "proto3";
 package pb;
 
 import "google/protobuf/timestamp.proto";
+import "entities/simple_data.proto";
 
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
@@ -10,7 +11,7 @@ message DebtNote {
   int32 id = 1;
   string code = 2;
   string title = 3;
-  string entity = 4;
+  SimpleData entity = 4;
   float money = 5;
   float paymented = 6;
   string note = 7;
@@ -18,9 +19,10 @@ message DebtNote {
   string status = 9;
   int32 company = 10;
   int32 user_created = 11;
-  google.protobuf.Timestamp exprise = 12;
-  google.protobuf.Timestamp dabt_note_at = 13;
-  repeated DebtRepayment repayments = 14;
+  string user_created_name = 12;
+  google.protobuf.Timestamp exprise = 13;
+  google.protobuf.Timestamp dabt_note_at = 14;
+  repeated DebtRepayment repayments = 15;
 }
 
 message DebtRepayment {
@@ -29,7 +31,8 @@ message DebtRepayment {
   float money = 3;
   int32 debt = 4;
   int32 user_created = 5;
-  google.protobuf.Timestamp created_at = 6;
+  string user_created_name = 6;
+  google.protobuf.Timestamp created_at = 7;
 }
 
 message DebtReport {
