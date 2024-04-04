@@ -5028,7 +5028,7 @@
           "type": "string",
           "format": "date-time"
         },
-        "dabtNoteAt": {
+        "debtNoteAt": {
           "type": "string",
           "format": "date-time"
         },

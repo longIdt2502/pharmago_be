@@ -29,7 +29,7 @@ func DebtNoteMapper(data db.DebtNote, items *[]db.ListRepaymentRow, entityName s
 		Status:          data.Status,
 		UserCreated:     data.UserCreated,
 		Exprise:         timestamppb.New(data.Exprise),
-		DabtNoteAt:      timestamppb.New(data.DabtNoteAt.Time),
+		DebtNoteAt:      timestamppb.New(data.DabtNoteAt.Time),
 		Repayments:      itemsPb,
 		UserCreatedName: userCreatedName,
 	}
