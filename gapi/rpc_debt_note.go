@@ -88,7 +88,7 @@ func (server *ServerGRPC) CreateDebtNote(ctx context.Context, req *pb.CreateDebt
 	}
 
 	debtCode := fmt.Sprintf("CNT-%s-%d", utils.RandomString(6), utils.RandomInt(100, 999))
-	if req.Code != nil && req.GetCode() == "" {
+	if req.Code != nil && req.GetCode() != "" {
 		debtCode = req.GetCode()
 	}
 
@@ -97,6 +97,11 @@ func (server *ServerGRPC) CreateDebtNote(ctx context.Context, req *pb.CreateDebt
 		statusDebt = "REPAYING"
 	} else if req.GetPaymented() == req.GetMoney() {
 		statusDebt = "SETTLED"
+	}
+
+	debtNoteAt := time.Now()
+	if req.CreatedAt.IsValid() {
+		debtNoteAt = time.Unix(req.GetCreatedAt().GetSeconds(), 0)
 	}
 
 	debtNoteDb, err := server.store.CreateDebtNote(ctx, db.CreateDebtNoteParams{
@@ -118,8 +123,8 @@ func (server *ServerGRPC) CreateDebtNote(ctx context.Context, req *pb.CreateDebt
 		UserCreated: tokenPayload.UserID,
 		Exprise:     time.Unix(req.GetExprise().GetSeconds(), 0),
 		DabtNoteAt: sql.NullTime{
-			Time:  time.Unix(req.GetCreatedAt().GetSeconds(), 0),
-			Valid: req.CreatedAt.IsValid(),
+			Time:  debtNoteAt,
+			Valid: true,
 		},
 	})
 	if err != nil {
