@@ -201,7 +201,24 @@ func (server *ServerGRPC) CreateDebtRepayment(ctx context.Context, req *pb.Creat
 		return nil, config.UnauthenticatedError(err)
 	}
 
-	repaymentCode := fmt.Sprintf("CNT-%s-%d", utils.RandomString(6), utils.RandomInt(100, 999))
+	debtNote, err := server.store.DetailDebtNote(ctx, req.GetDebt())
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, status.Errorf(codes.NotFound, "debt not exists")
+		}
+		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed get record debt: %e", err))
+	}
+
+	statusDebt := "OPEN"
+	if debtNote.Money > debtNote.Paymented+float64(req.GetMoney()) {
+		statusDebt = "REPAYING"
+	} else if debtNote.Money == debtNote.Paymented+float64(req.GetMoney()) {
+		statusDebt = "SETTLED"
+	} else {
+		return nil, status.Error(codes.InvalidArgument, "money invalid")
+	}
+
+	repaymentCode := fmt.Sprintf("RPM-%s-%d", utils.RandomString(6), utils.RandomInt(100, 999))
 	repayment, err := server.store.CreateRepayment(ctx, db.CreateRepaymentParams{
 		Code:        repaymentCode,
 		Money:       float64(req.GetMoney()),
@@ -210,6 +227,21 @@ func (server *ServerGRPC) CreateDebtRepayment(ctx context.Context, req *pb.Creat
 	})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to record repayment: %e", err))
+	}
+
+	_, err = server.store.UpdateDebtNote(ctx, db.UpdateDebtNoteParams{
+		Status: sql.NullString{
+			String: statusDebt,
+			Valid:  true,
+		},
+		ID: req.GetDebt(),
+		Paymented: sql.NullFloat64{
+			Float64: debtNote.Paymented + float64(req.GetMoney()),
+			Valid:   true,
+		},
+	})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to update debt: %e", err))
 	}
 
 	return &pb.CreateDebtRepaymentResponse{
