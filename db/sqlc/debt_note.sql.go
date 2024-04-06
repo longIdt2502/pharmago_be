@@ -511,3 +511,39 @@ func (q *Queries) ReportRevenueDebtNote(ctx context.Context, arg ReportRevenueDe
 	}
 	return items, nil
 }
+
+const updateDebtNote = `-- name: UpdateDebtNote :one
+UPDATE debt_note
+SET
+    status = COALESCE($1::varchar, status),
+    paymented = COALESCE($2::float, paymented)
+WHERE id = $3
+RETURNING id, code, title, entity, money, paymented, note, type, status, company, user_created, exprise, dabt_note_at
+`
+
+type UpdateDebtNoteParams struct {
+	Status    sql.NullString  `json:"status"`
+	Paymented sql.NullFloat64 `json:"paymented"`
+	ID        int32           `json:"id"`
+}
+
+func (q *Queries) UpdateDebtNote(ctx context.Context, arg UpdateDebtNoteParams) (DebtNote, error) {
+	row := q.db.QueryRowContext(ctx, updateDebtNote, arg.Status, arg.Paymented, arg.ID)
+	var i DebtNote
+	err := row.Scan(
+		&i.ID,
+		&i.Code,
+		&i.Title,
+		&i.Entity,
+		&i.Money,
+		&i.Paymented,
+		&i.Note,
+		&i.Type,
+		&i.Status,
+		&i.Company,
+		&i.UserCreated,
+		&i.Exprise,
+		&i.DabtNoteAt,
+	)
+	return i, err
+}

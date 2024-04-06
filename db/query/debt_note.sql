@@ -47,6 +47,14 @@ INSERT INTO debt_note (
     $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
 ) RETURNING *;
 
+-- name: UpdateDebtNote :one
+UPDATE debt_note
+SET
+    status = COALESCE(sqlc.narg(status)::varchar, status),
+    paymented = COALESCE(sqlc.narg(paymented)::float, paymented)
+WHERE id = sqlc.arg(id)
+RETURNING *;
+
 -- name: DetailDebtNote :one
 SELECT *, a.full_name AS a_name, c.full_name AS c_name, s.name AS s_name FROM debt_note dn
 LEFT JOIN accounts a ON a.id = dn.user_created
