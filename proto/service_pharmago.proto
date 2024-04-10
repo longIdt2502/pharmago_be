@@ -86,6 +86,12 @@ import "rpc/debt_note/rpc_detail_debt_note.proto";
 import "rpc/debt_note/rpc_report_debt_note.proto";
 import "rpc/debt_note/rpc_create_debt_repayment.proto";
 
+import "rpc/service/rpc_service_create.proto";
+import "rpc/service/rpc_service_detail.proto";
+import "rpc/service/rpc_service_list.proto";
+import "rpc/service/rpc_service_delete.proto";
+import "rpc/service/rpc_service_update.proto";
+
 
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
@@ -1008,6 +1014,55 @@ service Pharmago {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Detail Debt Note";
       tags: "Debt Note";
+    };
+  };
+
+  // ================== SERVICE ===================
+  rpc ServiceList (ServiceListRequest) returns (ServiceListResponse) {
+    option (google.api.http) = {
+      get: "/service/v1/list"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List Service";
+      tags: "Service";
+    };
+  };
+  rpc ServiceCreate (ServiceCreateRequest) returns (ServiceCreateResponse) {
+    option (google.api.http) = {
+      post: "/service/v1/create"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create Service";
+      tags: "Service";
+    };
+  };
+  rpc ServiceDetail (ServiceDetailRequest) returns (ServiceDetailResponse) {
+    option (google.api.http) = {
+      get: "/service/v1/detail/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Detail Service";
+      tags: "Service";
+    };
+  };
+  rpc ServiceUpdate (ServiceUpdateRequest) returns (ServiceUpdateResponse) {
+    option (google.api.http) = {
+      patch: "/service/v1/detail/{id}"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Update Service";
+      tags: "Service";
+    };
+  };
+  rpc ServiceDelete (ServiceDeleteRequest) returns (ServiceDeleteResponse) {
+    option (google.api.http) = {
+      delete: "/service/v1/detail/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Delete Service";
+      tags: "Service";
     };
   };
 }

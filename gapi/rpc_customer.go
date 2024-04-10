@@ -5,6 +5,8 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"time"
+
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/gapi/mapper"
@@ -12,7 +14,6 @@ import (
 	"github.com/longIdt2502/pharmago_be/utils"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"time"
 )
 
 func (server *ServerGRPC) CustomerList(ctx context.Context, req *pb.CustomerListRequest) (*pb.CustomerListResponse, error) {
@@ -37,7 +38,7 @@ func (server *ServerGRPC) CustomerList(ctx context.Context, req *pb.CustomerList
 		},
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to get customer: ", err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to get customer: %e", err)
 	}
 
 	var customersPb []*pb.CustomerDetail
@@ -85,7 +86,7 @@ func (server *ServerGRPC) CustomerCreate(ctx context.Context, req *pb.CustomerCr
 			UserCreated: tokenPayload.UserID,
 		})
 		if err != nil {
-			return nil, status.Errorf(codes.Internal, "failed to record address: ", err)
+			return nil, status.Errorf(codes.Internal, "failed to record address: %e", err)
 		}
 
 		addressId = address.ID
@@ -116,7 +117,7 @@ func (server *ServerGRPC) CustomerCreate(ctx context.Context, req *pb.CustomerCr
 		UserCreated: tokenPayload.UserID,
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to record customer: ", err)
+		return nil, status.Errorf(codes.Internal, "failed to record customer: %e", err)
 	}
 
 	return &pb.CustomerCreateResponse{
@@ -132,12 +133,12 @@ func (server *ServerGRPC) CustomerDetail(ctx context.Context, req *pb.CustomerDe
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, status.Errorf(codes.NotFound, "customer not exists")
 		}
-		return nil, status.Errorf(codes.Internal, "failed to get customer: ", err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to get customer: %e", err)
 	}
 
 	customerPb, err := mapper.CustomerDetailMapper(ctx, server.store, customer)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to mapper customer: ", err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to mapper customer: %e", err)
 	}
 
 	return &pb.CustomerDetailResponse{
@@ -158,7 +159,7 @@ func (server *ServerGRPC) CustomerUpdate(ctx context.Context, req *pb.CustomerUp
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, status.Errorf(codes.NotFound, "customer not exists")
 		}
-		return nil, status.Errorf(codes.Internal, "failed to get customer: ", err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to get customer: %e", err)
 	}
 
 	if req.Address != nil {
@@ -191,11 +192,12 @@ func (server *ServerGRPC) CustomerUpdate(ctx context.Context, req *pb.CustomerUp
 				ID: customerDb.Address.Int32,
 			})
 			if err != nil {
-				return nil, status.Errorf(codes.Internal, "failed to update address: ", err.Error())
+				return nil, status.Errorf(codes.Internal, "failed to update address: %e", err)
 			}
-		} else {
-			// TODO: create new address
 		}
+		// else {
+		// 	// TODO: create new address
+		// }
 	}
 
 	_, err = server.store.UpdateCustomer(ctx, db.UpdateCustomerParams{
@@ -224,7 +226,7 @@ func (server *ServerGRPC) CustomerUpdate(ctx context.Context, req *pb.CustomerUp
 		ID: req.GetId(),
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to update customer: ", err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to update customer: %e", err)
 	}
 
 	return &pb.CustomerUpdateResponse{

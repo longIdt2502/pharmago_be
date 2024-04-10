@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/gapi/mapper"
@@ -39,7 +40,7 @@ func (server *ServerGRPC) WarehouseCreate(ctx context.Context, req *pb.Warehouse
 		UserCreated: tokenPayload.UserID,
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to record address data: %w", err)
+		return nil, status.Errorf(codes.Internal, "failed to record address data: %e", err)
 	}
 
 	codeW := fmt.Sprintf("WAREHOUSE-%s%d", utils.RandomString(3), utils.RandomInt(100, 999))
@@ -60,7 +61,7 @@ func (server *ServerGRPC) WarehouseCreate(ctx context.Context, req *pb.Warehouse
 		},
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to record warehouse data: %w", err)
+		return nil, status.Errorf(codes.Internal, "failed to record warehouse data: %e", err)
 	}
 
 	return &pb.WarehouseCreateResponse{
@@ -90,14 +91,14 @@ func (server *ServerGRPC) WarehouseList(ctx context.Context, req *pb.WarehouseLi
 		},
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to get warehouse list: %w", err)
+		return nil, status.Errorf(codes.Internal, "failed to get warehouse list: %e", err)
 	}
 
 	var warehousesPb []*pb.Warehouse
 	for _, value := range warehouses {
 		dataPb, err := mapper.WarehouseMapper(ctx, server.store, value)
 		if err != nil {
-			return nil, status.Errorf(codes.Internal, "failed to mapper warehouse: %w", err)
+			return nil, status.Errorf(codes.Internal, "failed to mapper warehouse: %e", err)
 		}
 		warehousesPb = append(warehousesPb, dataPb)
 	}
@@ -120,12 +121,12 @@ func (server *ServerGRPC) WarehouseDetail(ctx context.Context, req *pb.Warehouse
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, status.Errorf(codes.NotFound, "warehouse not exists")
 		}
-		return nil, status.Errorf(codes.Internal, "failed to get warehouse list: %w", err)
+		return nil, status.Errorf(codes.Internal, "failed to get warehouse list: %e", err)
 	}
 
 	warehousesPb, err := mapper.WarehouseMapper(ctx, server.store, warehouse)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to mapper warehouse: %w", err)
+		return nil, status.Errorf(codes.Internal, "failed to mapper warehouse: %e", err)
 	}
 
 	return &pb.WarehouseDetailResponse{
@@ -146,7 +147,7 @@ func (server *ServerGRPC) WarehouseUpdate(ctx context.Context, req *pb.Warehouse
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, status.Errorf(codes.NotFound, "warehouse not exists")
 		}
-		return nil, status.Errorf(codes.Internal, "failed to get warehouse: %w", err)
+		return nil, status.Errorf(codes.Internal, "failed to get warehouse: %e", err)
 	}
 
 	_, err = server.store.UpdateAddress(ctx, db.UpdateAddressParams{
@@ -177,7 +178,7 @@ func (server *ServerGRPC) WarehouseUpdate(ctx context.Context, req *pb.Warehouse
 		ID: warehouse.Address.Int32,
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to update address: %w", err)
+		return nil, status.Errorf(codes.Internal, "failed to update address: %e", err)
 	}
 
 	_, err = server.store.UpdateWarehouse(ctx, db.UpdateWarehouseParams{
@@ -192,7 +193,7 @@ func (server *ServerGRPC) WarehouseUpdate(ctx context.Context, req *pb.Warehouse
 		},
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to update warehouse: %w", err)
+		return nil, status.Errorf(codes.Internal, "failed to update warehouse: %e", err)
 	}
 
 	return &pb.WarehouseUpdateResponse{
@@ -212,7 +213,7 @@ func (server *ServerGRPC) WarehouseDelete(ctx context.Context, req *pb.Warehouse
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, status.Errorf(codes.NotFound, "warehouse not exists")
 		}
-		return nil, status.Errorf(codes.Internal, "failed to delete warehouse: %w", err)
+		return nil, status.Errorf(codes.Internal, "failed to delete warehouse: %e", err)
 	}
 
 	return &pb.WarehouseDeleteResponse{

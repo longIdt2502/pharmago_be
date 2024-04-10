@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/gapi/mapper"
@@ -31,7 +32,7 @@ func (server *ServerGRPC) SupplierList(ctx context.Context, req *pb.SupplierList
 		},
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to get suppliers: ", err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to get suppliers: %e", err)
 	}
 
 	var suppliersPb []*pb.Supplier
@@ -72,7 +73,7 @@ func (server *ServerGRPC) SupplierCreate(ctx context.Context, req *pb.SupplierCr
 		UserCreated: tokenPayload.UserID,
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to record address: ", err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to record address: %e", err)
 	}
 
 	code := fmt.Sprintf("SUPPLIER-%s-%d", utils.RandomString(6), utils.RandomInt(100, 999))
@@ -99,7 +100,7 @@ func (server *ServerGRPC) SupplierCreate(ctx context.Context, req *pb.SupplierCr
 		},
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to record address: ", err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to record address: %e", err)
 	}
 
 	return &pb.SupplierCreateResponse{
@@ -169,7 +170,7 @@ func (server *ServerGRPC) SupplierUpdate(ctx context.Context, req *pb.SupplierUp
 			ID: supplier.Address.Int32,
 		})
 		if err != nil {
-			return nil, status.Errorf(codes.Internal, "failed to update address: ", err.Error())
+			return nil, status.Errorf(codes.Internal, "failed to update address: %e", err)
 		}
 	}
 
@@ -193,7 +194,7 @@ func (server *ServerGRPC) SupplierUpdate(ctx context.Context, req *pb.SupplierUp
 		ID: req.GetId(),
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to update supplier: ", err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to update supplier: %e", err)
 	}
 
 	return &pb.SupplierUpdateResponse{

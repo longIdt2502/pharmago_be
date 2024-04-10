@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+import "entities/account.proto";
+import "entities/variant.proto";
+
+message Service {
+    int32 id = 1;
+    string code = 2;
+    string title = 3;
+    optional string entity = 4;
+    Account staff = 5;
+    optional string frequency = 6;
+    string unit = 7;
+    float price = 8;
+    optional string description = 9;
+    int32 company = 10;
+    repeated Variant variants = 11;
+    
+}

@@ -227,5 +227,6 @@ func (server *ServerGRPC) CreateProduct(ctx context.Context, req *pb.CreateProdu
 	return &pb.CreateProductResponse{
 		Message: fmt.Sprintf("created %s", product.Name),
 		Code:    200,
+		Details: product.ID,
 	}, nil
 }

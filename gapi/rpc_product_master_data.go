@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/pb"
@@ -30,7 +31,7 @@ func (server *ServerGRPC) ClassifyList(ctx context.Context, req *pb.ClassifyList
 		},
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to get list classify: %w", err)
+		return nil, status.Errorf(codes.Internal, "failed to get list classify: %e", err)
 	}
 
 	var classifiesPb []*pb.SimpleData
@@ -67,7 +68,7 @@ func (server *ServerGRPC) ProductionStandardList(ctx context.Context, req *pb.Pr
 		Company: req.GetCompany(),
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to get list production standard: %w", err)
+		return nil, status.Errorf(codes.Internal, "failed to get list production standard: %e", err)
 	}
 
 	var productionStandardPb []*pb.SimpleData
@@ -129,7 +130,7 @@ func (server *ServerGRPC) ProductionStandardCreate(ctx context.Context, req *pb.
 		UserUpdated: sql.NullInt32{},
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to record production standard: ", err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to record production standard: %e", err)
 	}
 
 	return &pb.ProductionStandardCreateResponse{
@@ -147,7 +148,7 @@ func (server *ServerGRPC) ProductionStandardDetail(ctx context.Context, req *pb.
 
 	data, err := server.store.DetailProductionStandard(ctx, req.GetId())
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to get detail production standard: ", err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to get detail production standard: %e", err)
 	}
 
 	var userCreatedName *string
@@ -196,10 +197,10 @@ func (server *ServerGRPC) ProductionStandardUpdate(ctx context.Context, req *pb.
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, status.Errorf(codes.NotFound, "production standard not exists")
 		}
-		return nil, status.Errorf(codes.Internal, "failed to get production standard: ", err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to get production standard: %e", err)
 	}
 	if !ps.UserCreated.Valid {
-		return nil, status.Errorf(codes.PermissionDenied, "failed to update production standard: ", err.Error())
+		return nil, status.Errorf(codes.PermissionDenied, "failed to update production standard: %e", err)
 	}
 
 	data, err := server.store.UpdateProductionStandard(ctx, db.UpdateProductionStandardParams{
@@ -219,7 +220,7 @@ func (server *ServerGRPC) ProductionStandardUpdate(ctx context.Context, req *pb.
 		},
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to update production standard: ", err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to update production standard: %e", err)
 	}
 
 	return &pb.ProductionStandardUpdateResponse{
@@ -240,10 +241,10 @@ func (server *ServerGRPC) ProductionStandardDelete(ctx context.Context, req *pb.
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, status.Errorf(codes.NotFound, "production standard not exists")
 		}
-		return nil, status.Errorf(codes.Internal, "failed to get production standard: ", err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to get production standard: %e", err)
 	}
 	if !ps.UserCreated.Valid {
-		return nil, status.Errorf(codes.PermissionDenied, "failed to update production standard: ", err.Error())
+		return nil, status.Errorf(codes.PermissionDenied, "failed to update production standard: %e", err)
 	}
 
 	_, err = server.store.DeleteProductionStandard(ctx, req.GetId())
@@ -251,7 +252,7 @@ func (server *ServerGRPC) ProductionStandardDelete(ctx context.Context, req *pb.
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, status.Errorf(codes.NotFound, "production standard not exists")
 		}
-		return nil, status.Errorf(codes.Internal, "failed to delete production standard: ", err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to delete production standard: %e", err)
 	}
 
 	return &pb.ProductionStandardDeleteResponse{
@@ -276,7 +277,7 @@ func (server *ServerGRPC) PreparationTypeList(ctx context.Context, req *pb.Prepa
 		},
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to get list preparation type: %w", err)
+		return nil, status.Errorf(codes.Internal, "failed to get list preparation type: %e", err)
 	}
 
 	var preparationTypePb []*pb.SimpleData
@@ -320,7 +321,7 @@ func (server *ServerGRPC) PreparationTypeCreate(ctx context.Context, req *pb.Pre
 		UserUpdated: sql.NullInt32{},
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to record production standard: ", err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to record production standard: %e", err)
 	}
 
 	return &pb.PreparationTypeCreateResponse{
@@ -338,7 +339,7 @@ func (server *ServerGRPC) PreparationTypeDetail(ctx context.Context, req *pb.Pre
 
 	data, err := server.store.DetailPreparationType(ctx, req.GetId())
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to get detail production standard: ", err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to get detail production standard: %e", err)
 	}
 
 	var userCreatedName *string
@@ -387,10 +388,10 @@ func (server *ServerGRPC) PreparationTypeUpdate(ctx context.Context, req *pb.Pre
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, status.Errorf(codes.NotFound, "production standard not exists")
 		}
-		return nil, status.Errorf(codes.Internal, "failed to get production standard: ", err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to get production standard: %e", err)
 	}
 	if !ps.UserCreated.Valid {
-		return nil, status.Errorf(codes.PermissionDenied, "failed to update production standard: ", err.Error())
+		return nil, status.Errorf(codes.PermissionDenied, "failed to update production standard: %e", err)
 	}
 
 	data, err := server.store.UpdatePreparationType(ctx, db.UpdatePreparationTypeParams{
@@ -410,7 +411,7 @@ func (server *ServerGRPC) PreparationTypeUpdate(ctx context.Context, req *pb.Pre
 		},
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to update production standard: ", err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to update production standard: %e", err)
 	}
 
 	return &pb.PreparationTypeUpdateResponse{
@@ -431,18 +432,18 @@ func (server *ServerGRPC) PreparationTypeDelete(ctx context.Context, req *pb.Pre
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, status.Errorf(codes.NotFound, "production standard not exists")
 		}
-		return nil, status.Errorf(codes.Internal, "failed to get production standard: ", err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to get production standard: %e", err)
 	}
 	if !pt.UserCreated.Valid {
-		return nil, status.Errorf(codes.PermissionDenied, "failed to update production standard: ", err.Error())
+		return nil, status.Errorf(codes.PermissionDenied, "failed to update production standard: %e", err)
 	}
 
 	_, err = server.store.DeletePreparationType(ctx, req.GetId())
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, status.Errorf(codes.NotFound, "production standard not exists")
+			return nil, status.Errorf(codes.NotFound, "production standard not exists: %e", err)
 		}
-		return nil, status.Errorf(codes.Internal, "failed to delete production standard: ", err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to delete production standard: %e", err)
 	}
 
 	return &pb.PreparationTypeDeleteResponse{

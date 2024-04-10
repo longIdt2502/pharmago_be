@@ -5,6 +5,8 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"time"
+
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/gapi/mapper"
@@ -13,7 +15,6 @@ import (
 	"github.com/skip2/go-qrcode"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"time"
 )
 
 func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRequest) (*pb.OrderCreateResponse, error) {
@@ -32,9 +33,10 @@ func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRe
 			return nil, status.Errorf(codes.Internal, "failed to get customer")
 		}
 		addressOrder = customer.ID
-	} else {
-		// TODO:
 	}
+	// else {
+	// 	// TODO:
+	// }
 
 	warehouse, err := server.store.GetWarehouse(ctx, req.GetWarehouse())
 	if err != nil {
@@ -52,7 +54,7 @@ func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRe
 		NeedPay:  float64(req.Payment.GetNeedPay()),
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.InvalidArgument, "failed to record payment: ", err)
+		return nil, status.Errorf(codes.InvalidArgument, "failed to record payment: %e", err)
 	}
 
 	for _, value := range req.PaymentItems {
@@ -67,18 +69,18 @@ func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRe
 			},
 		})
 		if err != nil {
-			return nil, status.Errorf(codes.InvalidArgument, "failed to record payment item: ", err)
+			return nil, status.Errorf(codes.InvalidArgument, "failed to record payment item: %e", err)
 		}
 	}
 
-	ticketType, err := server.store.GetTicketType(ctx, db.GetTicketTypeParams{
+	ticketType, _ := server.store.GetTicketType(ctx, db.GetTicketTypeParams{
 		ID: sql.NullInt32{},
 		Code: sql.NullString{
 			String: "EXPORT",
 			Valid:  true,
 		},
 	})
-	ticketStatus, err := server.store.GetTicketStatus(ctx, db.GetTicketStatusParams{
+	ticketStatus, _ := server.store.GetTicketStatus(ctx, db.GetTicketStatusParams{
 		ID: sql.NullInt32{},
 		Code: sql.NullString{
 			String: "NEW",
@@ -90,16 +92,16 @@ func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRe
 	var png []byte
 	png, err = qrcode.Encode(codeTicket, qrcode.Medium, 256)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to create qr code ticket: %w", err)
+		return nil, status.Errorf(codes.Internal, "failed to create qr code ticket: %e", err)
 	}
 	file, _ := utils.NewFileFromImage(png)
 	_, err = server.b2Bucket.UploadFile(file.Name, file.Meta, file.File)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to save qr code: %w", err)
+		return nil, status.Errorf(codes.Internal, "failed to save qr code: %e", err)
 	}
 	urlQr, _ := server.b2Bucket.FileURL(file.Name)
 
-	qr, err := server.store.CreateMedia(ctx, urlQr)
+	qr, _ := server.store.CreateMedia(ctx, urlQr)
 
 	ticket, err := server.store.CreateTicket(ctx, db.CreateTicketParams{
 		Code: codeTicket,
@@ -136,7 +138,7 @@ func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRe
 		},
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to record ticket: ", err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to record ticket: %e", err)
 	}
 
 	var orderCode string
@@ -149,16 +151,16 @@ func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRe
 	var pngOrder []byte
 	pngOrder, err = qrcode.Encode(orderCode, qrcode.Medium, 256)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to create qr code order: %w", err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to create qr code order: %e", err)
 	}
 	fileOrder, _ := utils.NewFileFromImage(pngOrder)
 	_, err = server.b2Bucket.UploadFile(fileOrder.Name, fileOrder.Meta, fileOrder.File)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to save qr code: %w", err)
+		return nil, status.Errorf(codes.Internal, "failed to save qr code: %e", err)
 	}
 	urlQrOrder, _ := server.b2Bucket.FileURL(fileOrder.Name)
 
-	qrOrder, err := server.store.CreateMedia(ctx, urlQrOrder)
+	qrOrder, _ := server.store.CreateMedia(ctx, urlQrOrder)
 
 	order, err := server.store.CreateOrder(ctx, db.CreateOrderParams{
 		Code:       orderCode,
@@ -207,7 +209,7 @@ func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRe
 		},
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.InvalidArgument, "failed to record order: ", err)
+		return nil, status.Errorf(codes.InvalidArgument, "failed to record order: %e", err)
 	}
 
 	for _, value := range req.GetOrderItems() {
@@ -223,9 +225,9 @@ func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRe
 			})
 			if err != nil {
 				if errors.Is(err, sql.ErrNoRows) {
-					return nil, status.Errorf(codes.NotFound, "consignment not exists: ", err)
+					return nil, status.Errorf(codes.NotFound, "consignment not exists: %e", err)
 				}
-				return nil, status.Errorf(codes.NotFound, "consignment error: ", err)
+				return nil, status.Errorf(codes.NotFound, "consignment error: %e", err)
 			}
 		} else {
 			consignment, err = server.store.SuggestConsignmentForVariant(ctx, db.SuggestConsignmentForVariantParams{
@@ -236,7 +238,7 @@ func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRe
 				Inventory: value.GetValue(),
 			})
 			if err != nil {
-				return nil, status.Errorf(codes.Internal, "failed to get consignment: ", err)
+				return nil, status.Errorf(codes.Internal, "failed to get consignment: %e", err)
 			}
 		}
 
@@ -250,7 +252,7 @@ func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRe
 		} else {
 			amount = value.GetValue()
 		}
-		_, err = server.store.UpdateConsignment(ctx, db.UpdateConsignmentParams{
+		_, _ = server.store.UpdateConsignment(ctx, db.UpdateConsignmentParams{
 			Amount: amount,
 			ID:     consignment.ID,
 		})
@@ -265,7 +267,7 @@ func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRe
 			},
 		})
 		if err != nil {
-			return nil, status.Errorf(codes.InvalidArgument, "failed to record consignment log: ", err.Error())
+			return nil, status.Errorf(codes.InvalidArgument, "failed to record consignment log: %e", err)
 		}
 
 		_, err = server.store.CreateOrderItem(ctx, db.CreateOrderItemParams{
@@ -283,7 +285,7 @@ func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRe
 			},
 		})
 		if err != nil {
-			return nil, status.Errorf(codes.InvalidArgument, "failed to record order item: ", err.Error())
+			return nil, status.Errorf(codes.InvalidArgument, "failed to record order item: %e", err)
 		}
 	}
 
@@ -348,7 +350,7 @@ func (server *ServerGRPC) OrderList(ctx context.Context, req *pb.OrderListReques
 		},
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to get orders: ", err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to get orders: %e", err)
 	}
 
 	var ordersPb []*pb.OrderPreview
@@ -402,7 +404,7 @@ func (server *ServerGRPC) OrderDetail(ctx context.Context, req *pb.OrderDetailRe
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, status.Errorf(codes.NotFound, "order not exists")
 		}
-		return nil, status.Errorf(codes.Internal, "failed to get order: ", err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to get order: %e", err)
 	}
 
 	orderPb := mapper.OrderDetailMapper(ctx, server.store, orderDb)
@@ -425,23 +427,23 @@ func (server *ServerGRPC) OrderUpdateStatus(ctx context.Context, req *pb.OrderUp
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, status.Errorf(codes.NotFound, "order not exists")
 		}
-		return nil, status.Errorf(codes.Internal, "failed to get order: ", err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to get order: %e", err)
 	}
 
 	if order.OsCode == "COMPLETE" || order.OsCode == "CANCEL" {
 		return nil, status.Errorf(codes.InvalidArgument, "can't update status")
 	}
 
-	if order.OsCode == "COMPLETE" {
-		// TODO: edit order create, when status complete so minus quantity consignment
-	}
+	// if order.OsCode == "COMPLETE" {
+	// 	// TODO: edit order create, when status complete so minus quantity consignment
+	// }
 
 	_, err = server.store.UpdateStatusOrder(ctx, db.UpdateStatusOrderParams{
 		ID:     req.Id,
 		Status: req.Code.String(),
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to update status order: ", err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to update status order: %e", err)
 	}
 
 	return &pb.OrderUpdateStatusResponse{
@@ -461,7 +463,7 @@ func (server *ServerGRPC) OrderScan(ctx context.Context, req *pb.OrderScanReques
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, status.Errorf(codes.NotFound, "order not exists")
 		}
-		return nil, status.Errorf(codes.Internal, "failed to get order: ", err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to get order: %e", err)
 	}
 
 	if orderDb.OtCode != "PRESCRIPTION" {

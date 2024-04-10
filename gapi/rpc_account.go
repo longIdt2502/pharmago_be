@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/gapi/mapper"
@@ -24,12 +25,12 @@ func (server *ServerGRPC) AccountDetail(ctx context.Context, _ *pb.AccountDetail
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, status.Errorf(codes.NotFound, "account not exists")
 		}
-		return nil, status.Errorf(codes.Internal, "failed to get account: ", err)
+		return nil, status.Errorf(codes.Internal, "failed to get account: %e", err)
 	}
 
 	accountPb := mapper.AccountMapper(account)
 
-	companies, err := server.store.GetCompanies(ctx, db.GetCompaniesParams{
+	companies, _ := server.store.GetCompanies(ctx, db.GetCompaniesParams{
 		Owner: sql.NullInt32{
 			Int32: account.ID,
 			Valid: true,

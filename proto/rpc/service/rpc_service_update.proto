@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message ServiceUpdateRequest {
+    int32 id = 1;
+    optional string title = 2;
+    optional string entity = 3;
+    optional int32 staff = 4;
+    optional string frequency = 5;
+    optional string unit = 6;
+    optional double price = 7;
+    optional string description = 8;
+    repeated int32 variants = 10;
+    optional bool active = 11;
+}
+
+message ServiceUpdateResponse {
+    int32 code = 1;
+    string message = 2;
+    int32 details = 3;
+}

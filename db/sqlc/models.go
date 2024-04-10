@@ -97,6 +97,7 @@ type Company struct {
 	Address     sql.NullInt32  `json:"address"`
 	CreatedAt   time.Time      `json:"created_at"`
 	Owner       int32          `json:"owner"`
+	Type        string         `json:"type"`
 }
 
 type CompanyPharma struct {
@@ -111,6 +112,15 @@ type CompanyPharma struct {
 
 type CompanyPharmaType struct {
 	ID    int32  `json:"id"`
+	Code  string `json:"code"`
+	Title string `json:"title"`
+}
+
+type CompanyType struct {
+	//
+	// 💸 1 = CLINIC,
+	// ✔️ 2 = DRUGSTORE
+	//
 	Code  string `json:"code"`
 	Title string `json:"title"`
 }
@@ -452,6 +462,30 @@ type RoleItem struct {
 	Roles int32        `json:"roles"`
 	App   string       `json:"app"`
 	Value sql.NullBool `json:"value"`
+}
+
+type Service struct {
+	ID          int32          `json:"id"`
+	Image       sql.NullInt32  `json:"image"`
+	Code        string         `json:"code"`
+	Title       string         `json:"title"`
+	Entity      sql.NullString `json:"entity"`
+	Staff       int32          `json:"staff"`
+	Frequency   sql.NullString `json:"frequency"`
+	Unit        string         `json:"unit"`
+	Price       float64        `json:"price"`
+	Description sql.NullString `json:"description"`
+	Company     int32          `json:"company"`
+	UserCreated int32          `json:"user_created"`
+	UserUpdated sql.NullInt32  `json:"user_updated"`
+	CreatedAt   time.Time      `json:"created_at"`
+	UpdatedAt   sql.NullTime   `json:"updated_at"`
+}
+
+type ServiceVariant struct {
+	ID      int32         `json:"id"`
+	Service sql.NullInt32 `json:"service"`
+	Variant sql.NullInt32 `json:"variant"`
 }
 
 type Session struct {

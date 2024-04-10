@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/gapi/mapper"
@@ -55,7 +56,7 @@ func (server *ServerGRPC) CreateCompany(ctx context.Context, req *pb.CreateCompa
 		UserCreated: accountRequest.ID,
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to create address: ", err)
+		return nil, status.Errorf(codes.Internal, "failed to create address: %e", err)
 	}
 
 	company, err := server.store.CreateCompany(ctx, db.CreateCompanyParams{
@@ -80,7 +81,7 @@ func (server *ServerGRPC) CreateCompany(ctx context.Context, req *pb.CreateCompa
 		Owner: accountRequest.ID,
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to create company: ", err)
+		return nil, status.Errorf(codes.Internal, "failed to create company: %e", err)
 	}
 
 	companyData := mapper.CompanyMapper(ctx, server.store, company)

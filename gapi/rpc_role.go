@@ -5,6 +5,8 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"time"
+
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/pb"
@@ -12,7 +14,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
-	"time"
 )
 
 func (server *ServerGRPC) RoleCreate(ctx context.Context, req *pb.RoleCreateRequest) (*pb.RoleCreateResponse, error) {
@@ -200,21 +201,21 @@ func (server *ServerGRPC) RoleDetail(ctx context.Context, req *pb.RoleDetailRequ
 		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to get role item: %v", err))
 	}
 
-	var roleItemPb []*pb.RoleItem
-	for _, item := range roleItem {
-		data := &pb.RoleItem{
-			Id: item.ID,
-			App: &pb.App{
-				Id:     item.ID_2,
-				Title:  item.Title,
-				Code:   item.Code,
-				SubApp: nil,
-				Level:  item.Level.Int32,
-			},
-			Value: item.Value.Bool,
-		}
-		roleItemPb = append(roleItemPb, data)
-	}
+	// var roleItemPb []*pb.RoleItem
+	// for _, item := range roleItem {
+	// 	data := &pb.RoleItem{
+	// 		Id: item.ID,
+	// 		App: &pb.App{
+	// 			Id:     item.ID_2,
+	// 			Title:  item.Title,
+	// 			Code:   item.Code,
+	// 			SubApp: nil,
+	// 			Level:  item.Level.Int32,
+	// 		},
+	// 		Value: item.Value.Bool,
+	// 	}
+	// 	roleItemPb = append(roleItemPb, data)
+	// }
 
 	var note *string
 	if role.Note.Valid {

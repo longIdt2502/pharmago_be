@@ -117,9 +117,20 @@ Table companies as C {
   address serial
   created_at timestamptz [not null, default: `now()`]
   owner serial [ref: > A.id, not null]
+  type varchar [not null]
 }
 
 Ref: C.address > address.id [delete: set null]
+Ref: C.type > company_type.code [delete: set null]
+
+Table company_type {
+  code varchar [pk, unique, not null,
+    note: '''
+    💸 1 = CLINIC, 
+    ✔️ 2 = DRUGSTORE
+    ''']
+  title varchar [unique, not null]
+}
 
 Table address {
   id serial [pk]
@@ -708,7 +719,6 @@ Ref: suplier.warehouses > warehouses.id [delete: set null]
 Ref: suplier.address > address.id [delete: set null]
 Ref: suplier.company > C.id [delete: cascade]
 
-// ============== Debt Note ================
 Table debt_note_type {
   code varchar [pk, unique]
   title varchar
@@ -756,15 +766,42 @@ Table debt_repayment {
 Ref: debt_repayment.user_created > A.id [delete: set null]
 Ref: debt_repayment.debt > debt_note.id [delete: set null]
 
+Table services {
+  id serial [pk]
+  image serial
+  code varchar [not null, unique]
+  title varchar [not null]
+  entity varchar
+  staff serial [not null]
+  frequency varchar
+  unit varchar [not null]
+  price float [not null, default: 0]
+  description varchar
+  company serial [not null]
+  user_created serial [not null]
+  user_updated serial
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp
+}
 
+Ref: services.staff > A.id
+Ref: services.company > C.id
+Ref: M.id - services.image
+Ref: services.user_created > A.id
+Ref: services.user_updated > A.id
 
+Table service_variant {
+  id serial [pk]
+  service serial
+  variant serial
 
+  Indexes {
+    (service, variant) [unique]
+  }
+}
 
-
-
-
-
-
+Ref: service_variant.service > services.id [delete: cascade]
+Ref: service_variant.variant > V.id
 
 
 

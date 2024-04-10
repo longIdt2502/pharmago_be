@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+import "entities/service.proto";
+
+message ServiceDetailRequest {
+    int32 id = 1;
+}
+
+message ServiceDetailResponse {
+    int32 code = 1;
+    string message = 2;
+    Service details = 3;
+}

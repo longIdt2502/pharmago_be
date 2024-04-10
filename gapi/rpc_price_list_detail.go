@@ -2,6 +2,7 @@ package gapi
 
 import (
 	"context"
+
 	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/gapi/mapper"
 	"github.com/longIdt2502/pharmago_be/pb"
@@ -17,7 +18,7 @@ func (server *ServerGRPC) DetailPriceList(ctx context.Context, req *pb.DetailPri
 
 	priceList, err := server.store.DetailPriceList(ctx, req.GetId())
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to get detail price list: ", err)
+		return nil, status.Errorf(codes.Internal, "failed to get detail price list: %e", err)
 	}
 
 	priceListPb := mapper.PriceListDetailMapper(priceList)
