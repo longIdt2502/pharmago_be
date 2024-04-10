@@ -3,6 +3,7 @@ package gapi
 import (
 	"context"
 	"database/sql"
+
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/mapper"
 	"github.com/longIdt2502/pharmago_be/pb"
@@ -30,7 +31,7 @@ func (server *ServerGRPC) ProductTypeList(ctx context.Context, req *pb.ProductTy
 		},
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to get list brands: %w", err)
+		return nil, status.Errorf(codes.Internal, "failed to get list brands: %e", err)
 	}
 
 	var productTypePb []*pb.ProductType

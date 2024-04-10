@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/gapi/mapper"
@@ -29,7 +30,7 @@ func (server *ServerGRPC) CompanyPharmaList(ctx context.Context, req *pb.Company
 		Type: req.GetType(),
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to get list preparation type: %w", err)
+		return nil, status.Errorf(codes.Internal, "failed to get list preparation type: %e", err)
 	}
 
 	var companyPharmaPb []*pb.CompanyPharma
@@ -80,7 +81,7 @@ func (server *ServerGRPC) CompanyPharmaCreate(ctx context.Context, req *pb.Compa
 func (server *ServerGRPC) CompanyPharmaDetail(ctx context.Context, req *pb.CompanyPharmaDetailRequest) (*pb.CompanyPharmaDetailResponse, error) {
 	companyPharma, err := server.store.GetCompanyPharmaDetail(ctx, req.GetId())
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to get list preparation type: %w", err)
+		return nil, status.Errorf(codes.Internal, "failed to get list preparation type: %e", err)
 	}
 
 	companyPharmaPb := mapper.CompanyPharmaMapper(companyPharma)

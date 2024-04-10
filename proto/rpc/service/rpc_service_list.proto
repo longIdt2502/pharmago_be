@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+import "entities/service.proto";
+
+message ServiceListRequest {
+    optional int32 page = 1;
+    optional int32 limit = 2;
+    optional string search = 3;
+    int32 company = 4;
+}
+
+message ServiceListResponse {
+    int32 code = 1;
+    string message = 2;
+    repeated Service details = 3;
+}

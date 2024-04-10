@@ -76,5 +76,5 @@ message CreateProductRequest {
 message CreateProductResponse {
   int32 code = 1;
   string message = 2;
-  Product details = 3;
+  int32 details = 3;
 }

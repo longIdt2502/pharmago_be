@@ -3,6 +3,7 @@ package gapi
 import (
 	"context"
 	"database/sql"
+
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/gapi/mapper"
@@ -52,7 +53,7 @@ func (server *ServerGRPC) GetPriceList(ctx context.Context, req *pb.PriceListReq
 		},
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to get price list: ", err)
+		return nil, status.Errorf(codes.Internal, "failed to get price list: %e", err)
 	}
 
 	var priceListPb []*pb.PriceList

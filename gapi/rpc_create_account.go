@@ -4,6 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"strconv"
+	"time"
+
 	"github.com/hibiken/asynq"
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
@@ -15,8 +18,6 @@ import (
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"strconv"
-	"time"
 )
 
 func (server *ServerGRPC) CreateAccount(ctx context.Context, req *pb.CreateAccountRequest) (*pb.CreateAccountResponse, error) {
@@ -28,7 +29,7 @@ func (server *ServerGRPC) CreateAccount(ctx context.Context, req *pb.CreateAccou
 	password := req.GetPassword()
 	hashedPassword, err := utils.HashedPassword(password)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "can't hashed password:", err)
+		return nil, status.Errorf(codes.Internal, "can't hashed password: %e", err)
 	}
 
 	accountType, err := server.store.GetAccountType(ctx, db.GetAccountTypeParams{
@@ -53,7 +54,7 @@ func (server *ServerGRPC) CreateAccount(ctx context.Context, req *pb.CreateAccou
 		Type:           accountType.ID,
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed create record account:", err)
+		return nil, status.Errorf(codes.Internal, "failed create record account: %e", err)
 	}
 
 	randomCode := utils.RandomInt(100000, 999999)
@@ -64,7 +65,7 @@ func (server *ServerGRPC) CreateAccount(ctx context.Context, req *pb.CreateAccou
 		SecretCode: secretCode,
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to create verify:", err)
+		return nil, status.Errorf(codes.Internal, "failed to create verify: %e", err)
 	}
 
 	// ===== Redis task distributor send email
@@ -80,7 +81,7 @@ func (server *ServerGRPC) CreateAccount(ctx context.Context, req *pb.CreateAccou
 
 	err = server.taskDistributor.DistributeTaskSendVerifyEmail(ctx, taskPayload, opts...)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to run task email: ", err)
+		return nil, status.Errorf(codes.Internal, "failed to run task email: %e", err)
 	}
 
 	accountMapper := mapper.AccountMapper(account)

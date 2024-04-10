@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/gapi/mapper"
@@ -36,7 +37,7 @@ func (server *ServerGRPC) CategoryList(ctx context.Context, req *pb.CategoryList
 		},
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to get list categorys: %w", err)
+		return nil, status.Errorf(codes.Internal, "failed to get list categorys: %e", err)
 	}
 
 	var categorysPb []*pb.Category
@@ -125,10 +126,10 @@ func (server *ServerGRPC) CategoryUpdate(ctx context.Context, req *pb.CategoryUp
 		ID: req.GetId(),
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to update category: %v", err))
+		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to update category: %e", err))
 	}
 
-	products, err := server.store.GetProducts(ctx, db.GetProductsParams{
+	products, _ := server.store.GetProducts(ctx, db.GetProductsParams{
 		Company: sql.NullInt32{
 			Int32: 1,
 			Valid: true,

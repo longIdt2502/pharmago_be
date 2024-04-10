@@ -3,6 +3,8 @@ package gapi
 import (
 	"context"
 	"database/sql"
+	"io"
+
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/gapi/mapper"
@@ -10,7 +12,6 @@ import (
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"io"
 )
 
 func (server *ServerGRPC) ListVariant(ctx context.Context, req *pb.ListVariantRequest) (*pb.ListVariantResponse, error) {
@@ -35,7 +36,7 @@ func (server *ServerGRPC) ListVariant(ctx context.Context, req *pb.ListVariantRe
 		},
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to get variant record: ", err)
+		return nil, status.Errorf(codes.Internal, "failed to get variant record: %e", err)
 	}
 
 	var variantsPb []*pb.Variant
@@ -91,7 +92,7 @@ func (server *ServerGRPC) ScanVariant(srv pb.Pharmago_ScanVariantServer) error {
 			Details: variantPb,
 		}
 		if err := srv.Send(&resp); err != nil {
-			log.Debug().Msgf("send new response failed: ", err.Error())
+			log.Debug().Msgf("send new response failed: %e", err)
 		}
 		log.Info().Msg("send new response success")
 	}

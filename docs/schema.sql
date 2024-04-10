@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml-lang.org)
 -- Database: PostgreSQL
--- Generated at: 2024-04-02T02:38:54.505Z
+-- Generated at: 2024-04-10T08:18:24.790Z
 
 CREATE TABLE "accounts" (
   "id" serial PRIMARY KEY,
@@ -11,6 +11,7 @@ CREATE TABLE "accounts" (
   "type" serial NOT NULL,
   "is_verify" boolean NOT NULL DEFAULT false,
   "role" serial,
+  "oa_id" varchar,
   "password_changed_at" timestamptz NOT NULL DEFAULT '0001-01-01 00:00:00Z',
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
@@ -90,7 +91,13 @@ CREATE TABLE "companies" (
   "description" varchar,
   "address" serial,
   "created_at" timestamptz NOT NULL DEFAULT (now()),
-  "owner" serial NOT NULL
+  "owner" serial NOT NULL,
+  "type" varchar NOT NULL
+);
+
+CREATE TABLE "company_type" (
+  "code" varchar UNIQUE PRIMARY KEY NOT NULL,
+  "title" varchar UNIQUE NOT NULL
 );
 
 CREATE TABLE "address" (
@@ -554,6 +561,30 @@ CREATE TABLE "debt_repayment" (
   "user_created" serial NOT NULL
 );
 
+CREATE TABLE "services" (
+  "id" serial PRIMARY KEY,
+  "image" serial,
+  "code" varchar UNIQUE NOT NULL,
+  "title" varchar NOT NULL,
+  "entity" varchar,
+  "staff" serial NOT NULL,
+  "frequency" varchar,
+  "unit" varchar NOT NULL,
+  "price" float NOT NULL DEFAULT 0,
+  "description" varchar,
+  "company" serial NOT NULL,
+  "user_created" serial NOT NULL,
+  "user_updated" serial,
+  "created_at" timestamp NOT NULL DEFAULT (now()),
+  "updated_at" timestamp
+);
+
+CREATE TABLE "service_variant" (
+  "id" serial PRIMARY KEY,
+  "service" serial,
+  "variant" serial
+);
+
 CREATE UNIQUE INDEX ON "role_item" ("roles", "app");
 
 CREATE INDEX ON "address" ("province");
@@ -608,6 +639,13 @@ CREATE UNIQUE INDEX ON "tickets" ("id", "qr");
 
 CREATE INDEX ON "debt_repayment" ("debt", "money");
 
+CREATE UNIQUE INDEX ON "service_variant" ("service", "variant");
+
+COMMENT ON COLUMN "company_type"."code" IS '
+💸 1 = CLINIC,
+✔️ 2 = DRUGSTORE
+';
+
 ALTER TABLE "accounts" ADD FOREIGN KEY ("type") REFERENCES "account_type" ("id") ON DELETE CASCADE;
 
 ALTER TABLE "accounts" ADD FOREIGN KEY ("role") REFERENCES "roles" ("id") ON DELETE SET NULL;
@@ -633,6 +671,8 @@ ALTER TABLE "verifies" ADD FOREIGN KEY ("username") REFERENCES "accounts" ("user
 ALTER TABLE "companies" ADD FOREIGN KEY ("owner") REFERENCES "accounts" ("id");
 
 ALTER TABLE "companies" ADD FOREIGN KEY ("address") REFERENCES "address" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "companies" ADD FOREIGN KEY ("type") REFERENCES "company_type" ("code") ON DELETE SET NULL;
 
 ALTER TABLE "address" ADD FOREIGN KEY ("province") REFERENCES "provinces" ("code");
 
@@ -829,3 +869,17 @@ ALTER TABLE "debt_note" ADD FOREIGN KEY ("company") REFERENCES "companies" ("id"
 ALTER TABLE "debt_repayment" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "debt_repayment" ADD FOREIGN KEY ("debt") REFERENCES "debt_note" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "services" ADD FOREIGN KEY ("staff") REFERENCES "accounts" ("id");
+
+ALTER TABLE "services" ADD FOREIGN KEY ("company") REFERENCES "companies" ("id");
+
+ALTER TABLE "services" ADD FOREIGN KEY ("image") REFERENCES "medias" ("id");
+
+ALTER TABLE "services" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id");
+
+ALTER TABLE "services" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" ("id");
+
+ALTER TABLE "service_variant" ADD FOREIGN KEY ("service") REFERENCES "services" ("id") ON DELETE CASCADE;
+
+ALTER TABLE "service_variant" ADD FOREIGN KEY ("variant") REFERENCES "variants" ("id");

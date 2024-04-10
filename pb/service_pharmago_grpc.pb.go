@@ -107,6 +107,11 @@ const (
 	Pharmago_DetailDebtNote_FullMethodName           = "/pb.Pharmago/DetailDebtNote"
 	Pharmago_ReportDebtNote_FullMethodName           = "/pb.Pharmago/ReportDebtNote"
 	Pharmago_CreateDebtRepayment_FullMethodName      = "/pb.Pharmago/CreateDebtRepayment"
+	Pharmago_ServiceList_FullMethodName              = "/pb.Pharmago/ServiceList"
+	Pharmago_ServiceCreate_FullMethodName            = "/pb.Pharmago/ServiceCreate"
+	Pharmago_ServiceDetail_FullMethodName            = "/pb.Pharmago/ServiceDetail"
+	Pharmago_ServiceUpdate_FullMethodName            = "/pb.Pharmago/ServiceUpdate"
+	Pharmago_ServiceDelete_FullMethodName            = "/pb.Pharmago/ServiceDelete"
 )
 
 // PharmagoClient is the client API for Pharmago service.
@@ -221,6 +226,12 @@ type PharmagoClient interface {
 	DetailDebtNote(ctx context.Context, in *DetailDebtNoteRequest, opts ...grpc.CallOption) (*DetailDebtNoteResponse, error)
 	ReportDebtNote(ctx context.Context, in *ReportDebtNoteRequest, opts ...grpc.CallOption) (*ReportDebtNoteResponse, error)
 	CreateDebtRepayment(ctx context.Context, in *CreateDebtRepaymentRequest, opts ...grpc.CallOption) (*CreateDebtRepaymentResponse, error)
+	// ================== SERVICE ===================
+	ServiceList(ctx context.Context, in *ServiceListRequest, opts ...grpc.CallOption) (*ServiceListResponse, error)
+	ServiceCreate(ctx context.Context, in *ServiceCreateRequest, opts ...grpc.CallOption) (*ServiceCreateResponse, error)
+	ServiceDetail(ctx context.Context, in *ServiceDetailRequest, opts ...grpc.CallOption) (*ServiceDetailResponse, error)
+	ServiceUpdate(ctx context.Context, in *ServiceUpdateRequest, opts ...grpc.CallOption) (*ServiceUpdateResponse, error)
+	ServiceDelete(ctx context.Context, in *ServiceDeleteRequest, opts ...grpc.CallOption) (*ServiceDeleteResponse, error)
 }
 
 type pharmagoClient struct {
@@ -1045,6 +1056,51 @@ func (c *pharmagoClient) CreateDebtRepayment(ctx context.Context, in *CreateDebt
 	return out, nil
 }
 
+func (c *pharmagoClient) ServiceList(ctx context.Context, in *ServiceListRequest, opts ...grpc.CallOption) (*ServiceListResponse, error) {
+	out := new(ServiceListResponse)
+	err := c.cc.Invoke(ctx, Pharmago_ServiceList_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) ServiceCreate(ctx context.Context, in *ServiceCreateRequest, opts ...grpc.CallOption) (*ServiceCreateResponse, error) {
+	out := new(ServiceCreateResponse)
+	err := c.cc.Invoke(ctx, Pharmago_ServiceCreate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) ServiceDetail(ctx context.Context, in *ServiceDetailRequest, opts ...grpc.CallOption) (*ServiceDetailResponse, error) {
+	out := new(ServiceDetailResponse)
+	err := c.cc.Invoke(ctx, Pharmago_ServiceDetail_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) ServiceUpdate(ctx context.Context, in *ServiceUpdateRequest, opts ...grpc.CallOption) (*ServiceUpdateResponse, error) {
+	out := new(ServiceUpdateResponse)
+	err := c.cc.Invoke(ctx, Pharmago_ServiceUpdate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) ServiceDelete(ctx context.Context, in *ServiceDeleteRequest, opts ...grpc.CallOption) (*ServiceDeleteResponse, error) {
+	out := new(ServiceDeleteResponse)
+	err := c.cc.Invoke(ctx, Pharmago_ServiceDelete_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PharmagoServer is the server API for Pharmago service.
 // All implementations must embed UnimplementedPharmagoServer
 // for forward compatibility
@@ -1157,6 +1213,12 @@ type PharmagoServer interface {
 	DetailDebtNote(context.Context, *DetailDebtNoteRequest) (*DetailDebtNoteResponse, error)
 	ReportDebtNote(context.Context, *ReportDebtNoteRequest) (*ReportDebtNoteResponse, error)
 	CreateDebtRepayment(context.Context, *CreateDebtRepaymentRequest) (*CreateDebtRepaymentResponse, error)
+	// ================== SERVICE ===================
+	ServiceList(context.Context, *ServiceListRequest) (*ServiceListResponse, error)
+	ServiceCreate(context.Context, *ServiceCreateRequest) (*ServiceCreateResponse, error)
+	ServiceDetail(context.Context, *ServiceDetailRequest) (*ServiceDetailResponse, error)
+	ServiceUpdate(context.Context, *ServiceUpdateRequest) (*ServiceUpdateResponse, error)
+	ServiceDelete(context.Context, *ServiceDeleteRequest) (*ServiceDeleteResponse, error)
 	mustEmbedUnimplementedPharmagoServer()
 }
 
@@ -1427,6 +1489,21 @@ func (UnimplementedPharmagoServer) ReportDebtNote(context.Context, *ReportDebtNo
 }
 func (UnimplementedPharmagoServer) CreateDebtRepayment(context.Context, *CreateDebtRepaymentRequest) (*CreateDebtRepaymentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateDebtRepayment not implemented")
+}
+func (UnimplementedPharmagoServer) ServiceList(context.Context, *ServiceListRequest) (*ServiceListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ServiceList not implemented")
+}
+func (UnimplementedPharmagoServer) ServiceCreate(context.Context, *ServiceCreateRequest) (*ServiceCreateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ServiceCreate not implemented")
+}
+func (UnimplementedPharmagoServer) ServiceDetail(context.Context, *ServiceDetailRequest) (*ServiceDetailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ServiceDetail not implemented")
+}
+func (UnimplementedPharmagoServer) ServiceUpdate(context.Context, *ServiceUpdateRequest) (*ServiceUpdateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ServiceUpdate not implemented")
+}
+func (UnimplementedPharmagoServer) ServiceDelete(context.Context, *ServiceDeleteRequest) (*ServiceDeleteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ServiceDelete not implemented")
 }
 func (UnimplementedPharmagoServer) mustEmbedUnimplementedPharmagoServer() {}
 
@@ -3033,6 +3110,96 @@ func _Pharmago_CreateDebtRepayment_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Pharmago_ServiceList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ServiceListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ServiceList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_ServiceList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ServiceList(ctx, req.(*ServiceListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_ServiceCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ServiceCreateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ServiceCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_ServiceCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ServiceCreate(ctx, req.(*ServiceCreateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_ServiceDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ServiceDetailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ServiceDetail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_ServiceDetail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ServiceDetail(ctx, req.(*ServiceDetailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_ServiceUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ServiceUpdateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ServiceUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_ServiceUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ServiceUpdate(ctx, req.(*ServiceUpdateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_ServiceDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ServiceDeleteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ServiceDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_ServiceDelete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ServiceDelete(ctx, req.(*ServiceDeleteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Pharmago_ServiceDesc is the grpc.ServiceDesc for Pharmago service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -3387,6 +3554,26 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateDebtRepayment",
 			Handler:    _Pharmago_CreateDebtRepayment_Handler,
+		},
+		{
+			MethodName: "ServiceList",
+			Handler:    _Pharmago_ServiceList_Handler,
+		},
+		{
+			MethodName: "ServiceCreate",
+			Handler:    _Pharmago_ServiceCreate_Handler,
+		},
+		{
+			MethodName: "ServiceDetail",
+			Handler:    _Pharmago_ServiceDetail_Handler,
+		},
+		{
+			MethodName: "ServiceUpdate",
+			Handler:    _Pharmago_ServiceUpdate_Handler,
+		},
+		{
+			MethodName: "ServiceDelete",
+			Handler:    _Pharmago_ServiceDelete_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

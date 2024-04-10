@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/gapi/mapper"
@@ -36,7 +37,7 @@ func (server *ServerGRPC) BrandList(ctx context.Context, req *pb.BrandListReques
 		},
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to get list brands: %w", err)
+		return nil, status.Errorf(codes.Internal, "failed to get list brands: %e", err)
 	}
 
 	var brandsPb []*pb.Brand
@@ -128,7 +129,7 @@ func (server *ServerGRPC) BrandUpdate(ctx context.Context, req *pb.BrandUpdateRe
 		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to update brand: %v", err))
 	}
 
-	products, err := server.store.GetProducts(ctx, db.GetProductsParams{
+	products, _ := server.store.GetProducts(ctx, db.GetProductsParams{
 		Company: sql.NullInt32{
 			Int32: 1,
 			Valid: true,

@@ -5,6 +5,8 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"time"
+
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/gapi/mapper"
@@ -13,7 +15,6 @@ import (
 	"github.com/skip2/go-qrcode"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"time"
 )
 
 func (server *ServerGRPC) TicketCreate(ctx context.Context, req *pb.TicketCreateRequest) (*pb.TicketCreateResponse, error) {
@@ -27,7 +28,7 @@ func (server *ServerGRPC) TicketCreate(ctx context.Context, req *pb.TicketCreate
 		return nil, config.UnauthenticatedError(err)
 	}
 
-	ticketType, err := server.store.GetTicketType(ctx, db.GetTicketTypeParams{
+	ticketType, _ := server.store.GetTicketType(ctx, db.GetTicketTypeParams{
 		ID: sql.NullInt32{},
 		Code: sql.NullString{
 			String: req.Ticket.GetType(),
@@ -35,7 +36,7 @@ func (server *ServerGRPC) TicketCreate(ctx context.Context, req *pb.TicketCreate
 		},
 	})
 
-	ticketStatus, err := server.store.GetTicketStatus(ctx, db.GetTicketStatusParams{
+	ticketStatus, _ := server.store.GetTicketStatus(ctx, db.GetTicketStatusParams{
 		ID: sql.NullInt32{},
 		Code: sql.NullString{
 			String: req.Ticket.GetStatus(),
@@ -51,25 +52,25 @@ func (server *ServerGRPC) TicketCreate(ctx context.Context, req *pb.TicketCreate
 	var png []byte
 	png, err = qrcode.Encode(codeTicket, qrcode.Medium, 256)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to create qr code: %w", err)
+		return nil, status.Errorf(codes.Internal, "failed to create qr code: %e", err)
 	}
 	file, _ := utils.NewFileFromImage(png)
 	_, err = server.b2Bucket.UploadFile(file.Name, file.Meta, file.File)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to save qr code: %w", err)
+		return nil, status.Errorf(codes.Internal, "failed to save qr code: %e", err)
 	}
 	urlQr, _ := server.b2Bucket.FileURL(file.Name)
 
-	qr, err := server.store.CreateMedia(ctx, urlQr)
+	qr, _ := server.store.CreateMedia(ctx, urlQr)
 
 	var idAddressExportTo int32
 	if req.Ticket.ExportTo == nil {
 		warehouse, err := server.store.GetWarehouse(ctx, req.Ticket.GetWarehouse())
 		if err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
-				return nil, status.Errorf(codes.NotFound, "warehouse not exists: ", err.Error())
+				return nil, status.Errorf(codes.NotFound, "warehouse not exists: %e", err)
 			}
-			return nil, status.Errorf(codes.Internal, "fail to get warehouse: ", err.Error())
+			return nil, status.Errorf(codes.Internal, "fail to get warehouse: %e", err)
 		}
 		if !warehouse.Address.Valid {
 			return nil, status.Errorf(codes.InvalidArgument, "warehouse address not exists")
@@ -114,7 +115,7 @@ func (server *ServerGRPC) TicketCreate(ctx context.Context, req *pb.TicketCreate
 		},
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.InvalidArgument, "cannot record ticket: %w", err)
+		return nil, status.Errorf(codes.InvalidArgument, "cannot record ticket: %e", err)
 	}
 
 	for _, value := range req.Consignment {
@@ -146,7 +147,7 @@ func (server *ServerGRPC) TicketCreate(ctx context.Context, req *pb.TicketCreate
 			},
 		})
 		if err != nil {
-			return nil, status.Errorf(codes.InvalidArgument, "cannot record consignment: %w", err)
+			return nil, status.Errorf(codes.InvalidArgument, "cannot record consignment: %e", err)
 		}
 	}
 
@@ -189,7 +190,7 @@ func (server *ServerGRPC) TicketList(ctx context.Context, req *pb.TicketListRequ
 		},
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to get list tickets: ", err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to get list tickets: %e", err)
 	}
 
 	var ticketsPb []*pb.TicketPreview
@@ -222,7 +223,7 @@ func (server *ServerGRPC) TicketDetail(ctx context.Context, req *pb.TicketDetail
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, status.Errorf(codes.NotFound, "ticket not exists")
 		}
-		return nil, status.Errorf(codes.Internal, "failed to get ticket: ", err.Error())
+		return nil, status.Errorf(codes.Internal, "failed to get ticket: %e", err)
 	}
 
 	ticketPb := mapper.TicketDetailMapper(ctx, server.store, ticket)
@@ -253,9 +254,9 @@ func (server *ServerGRPC) TicketUpdateStatus(ctx context.Context, req *pb.Ticket
 	})
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, status.Errorf(codes.NotFound, "id ticket not exists: ", err)
+			return nil, status.Errorf(codes.NotFound, "id ticket not exists: %e", err)
 		}
-		return nil, status.Errorf(codes.Internal, "failed to change status ticket: ", err)
+		return nil, status.Errorf(codes.Internal, "failed to change status ticket: %e", err)
 	}
 
 	if statusTicket.Code == "COMPLETE" {
@@ -299,7 +300,7 @@ func (server *ServerGRPC) ConsignmentList(ctx context.Context, req *pb.Consignme
 		},
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to get list consignment: %w", err)
+		return nil, status.Errorf(codes.Internal, "failed to get list consignment: %e", err)
 	}
 
 	var consignmentsPb []*pb.Consignment

@@ -5,14 +5,15 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"strconv"
+	"time"
+
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/pb"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"strconv"
-	"time"
 )
 
 func (server *ServerGRPC) VerifyAccount(ctx context.Context, req *pb.VerifyAccountRequest) (*pb.VerifyAccountResponse, error) {
@@ -24,9 +25,9 @@ func (server *ServerGRPC) VerifyAccount(ctx context.Context, req *pb.VerifyAccou
 	verify, err := server.store.GetVerify(ctx, req.IdVerify)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, status.Errorf(codes.NotFound, "verify id invalid:", err)
+			return nil, status.Errorf(codes.NotFound, "verify id invalid: %e", err)
 		}
-		return nil, status.Errorf(codes.Internal, "failed to get verify:", err)
+		return nil, status.Errorf(codes.Internal, "failed to get verify: %e", err)
 	}
 
 	if verify.ExpiredAt.Before(time.Now()) {
@@ -39,7 +40,7 @@ func (server *ServerGRPC) VerifyAccount(ctx context.Context, req *pb.VerifyAccou
 
 	_, err = server.store.UpdateVerify(ctx, req.IdVerify)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to verify account:", err)
+		return nil, status.Errorf(codes.Internal, "failed to verify account: %e", err)
 	}
 
 	_, err = server.store.UpdateAccount(ctx, db.UpdateAccountParams{
@@ -54,7 +55,7 @@ func (server *ServerGRPC) VerifyAccount(ctx context.Context, req *pb.VerifyAccou
 		},
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to update verify account:", err)
+		return nil, status.Errorf(codes.Internal, "failed to update verify account: %e", err)
 	}
 
 	rsp := &pb.VerifyAccountResponse{
