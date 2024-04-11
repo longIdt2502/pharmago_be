@@ -3,9 +3,10 @@ package gapi
 import (
 	"context"
 	"fmt"
+	"strings"
+
 	"github.com/longIdt2502/pharmago_be/token"
 	"google.golang.org/grpc/metadata"
-	"strings"
 )
 
 const (
