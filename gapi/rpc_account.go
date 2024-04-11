@@ -97,3 +97,52 @@ func (server *ServerGRPC) AccountInactive(ctx context.Context, req *pb.AccountIn
 		Message: "success",
 	}, nil
 }
+
+func (server *ServerGRPC) AccountList(ctx context.Context, req *pb.AccountListRequest) (*pb.AccountListResponse, error) {
+	_, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	accountsDb, err := server.store.ListAccount(ctx, db.ListAccountParams{
+		Company: req.GetCompany(),
+		Search: sql.NullString{
+			String: req.GetSearch(),
+			Valid:  true,
+		},
+		Type: sql.NullInt32{
+			Int32: req.GetType(),
+			Valid: req.Type != nil,
+		},
+		Page: sql.NullInt32{
+			Int32: req.GetPage(),
+			Valid: req.Page != nil,
+		},
+		Limit: sql.NullInt32{
+			Int32: req.GetLimit(),
+			Valid: req.Limit != nil,
+		},
+	})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get list account: %e", err)
+	}
+
+	var accountsPb []*pb.Account
+	for _, item := range accountsDb {
+		accountsPb = append(accountsPb, mapper.AccountMapper(db.Account{
+			ID:        item.ID,
+			Username:  item.Username,
+			FullName:  item.FullName,
+			Email:     item.Email,
+			Type:      item.Type,
+			Role:      item.Role,
+			CreatedAt: item.CreatedAt,
+		}))
+	}
+
+	return &pb.AccountListResponse{
+		Code:    200,
+		Message: "success",
+		Details: accountsPb,
+	}, nil
+}

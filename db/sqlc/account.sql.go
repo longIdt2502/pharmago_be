@@ -8,6 +8,7 @@ package db
 import (
 	"context"
 	"database/sql"
+	"time"
 )
 
 const createAccount = `-- name: CreateAccount :one
@@ -45,6 +46,22 @@ func (q *Queries) CreateAccount(ctx context.Context, arg CreateAccountParams) (A
 		&i.CreatedAt,
 		&i.Role,
 	)
+	return i, err
+}
+
+const createAccountCompany = `-- name: CreateAccountCompany :one
+INSERT INTO account_company (account, company) VALUES ($1, $2) RETURNING id, account, company
+`
+
+type CreateAccountCompanyParams struct {
+	Account int32 `json:"account"`
+	Company int32 `json:"company"`
+}
+
+func (q *Queries) CreateAccountCompany(ctx context.Context, arg CreateAccountCompanyParams) (AccountCompany, error) {
+	row := q.db.QueryRowContext(ctx, createAccountCompany, arg.Account, arg.Company)
+	var i AccountCompany
+	err := row.Scan(&i.ID, &i.Account, &i.Company)
 	return i, err
 }
 
@@ -121,21 +138,67 @@ func (q *Queries) GetAccountByUseName(ctx context.Context, username string) (Acc
 }
 
 const listAccount = `-- name: ListAccount :many
-SELECT id, username, hashed_password, full_name, email, type, oa_id, is_verify, password_changed_at, created_at, role FROM accounts
-WHERE (
-    role = $1
+SELECT a.id, username, hashed_password, full_name, email, type, oa_id, is_verify, password_changed_at, created_at, role, ac.id, account, company FROM accounts a
+LEFT JOIN account_company ac ON ac.account = a.id
+WHERE ac.company = $1::int
+AND (
+    a.full_name ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
+    a.username ILIKE '%' || COALESCE($2::varchar, '') || '%'
 )
+AND (
+    $3::int IS NULL OR a.type = $3::int
+)
+AND (
+    $4::int IS NULL OR a.role = $4::int
+    
+)
+ORDER BY -a.id
+LIMIT COALESCE($6::int, 10)
+OFFSET (COALESCE($5::int, 1) - 1) * COALESCE($6::int, 10)
 `
 
-func (q *Queries) ListAccount(ctx context.Context, role sql.NullInt32) ([]Account, error) {
-	rows, err := q.db.QueryContext(ctx, listAccount, role)
+type ListAccountParams struct {
+	Company int32          `json:"company"`
+	Search  sql.NullString `json:"search"`
+	Type    sql.NullInt32  `json:"type"`
+	Role    sql.NullInt32  `json:"role"`
+	Page    sql.NullInt32  `json:"page"`
+	Limit   sql.NullInt32  `json:"limit"`
+}
+
+type ListAccountRow struct {
+	ID                int32          `json:"id"`
+	Username          string         `json:"username"`
+	HashedPassword    string         `json:"hashed_password"`
+	FullName          string         `json:"full_name"`
+	Email             string         `json:"email"`
+	Type              int32          `json:"type"`
+	OaID              sql.NullString `json:"oa_id"`
+	IsVerify          bool           `json:"is_verify"`
+	PasswordChangedAt time.Time      `json:"password_changed_at"`
+	CreatedAt         time.Time      `json:"created_at"`
+	Role              sql.NullInt32  `json:"role"`
+	ID_2              sql.NullInt32  `json:"id_2"`
+	Account           sql.NullInt32  `json:"account"`
+	Company           sql.NullInt32  `json:"company"`
+}
+
+func (q *Queries) ListAccount(ctx context.Context, arg ListAccountParams) ([]ListAccountRow, error) {
+	rows, err := q.db.QueryContext(ctx, listAccount,
+		arg.Company,
+		arg.Search,
+		arg.Type,
+		arg.Role,
+		arg.Page,
+		arg.Limit,
+	)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []Account{}
+	items := []ListAccountRow{}
 	for rows.Next() {
-		var i Account
+		var i ListAccountRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.Username,
@@ -148,6 +211,9 @@ func (q *Queries) ListAccount(ctx context.Context, role sql.NullInt32) ([]Accoun
 			&i.PasswordChangedAt,
 			&i.CreatedAt,
 			&i.Role,
+			&i.ID_2,
+			&i.Account,
+			&i.Company,
 		); err != nil {
 			return nil, err
 		}
