@@ -126,6 +126,21 @@ func (server *ServerGRPC) CheckEmail(ctx context.Context, req *pb.CheckEmailRequ
 	}, nil
 }
 
+func (server *ServerGRPC) CheckPhone(ctx context.Context, req *pb.CheckPhoneRequest) (*pb.CheckPhoneResponse, error) {
+	_, err := server.store.GetAccountByPhone(ctx, req.GetPhone())
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, status.Errorf(codes.NotFound, "account not exists")
+		}
+		return nil, status.Errorf(codes.Internal, "failed to get account")
+	}
+
+	return &pb.CheckPhoneResponse{
+		Code:    200,
+		Message: "success",
+	}, nil
+}
+
 func (server *ServerGRPC) CheckToken(ctx context.Context, req *pb.CheckTokenRequest) (*pb.CheckTokenResponse, error) {
 	auth, err := server.authorizeUser(ctx)
 	if err != nil {

@@ -113,6 +113,30 @@ func (q *Queries) GetAccountByMail(ctx context.Context, email string) (Account, 
 	return i, err
 }
 
+const getAccountByPhone = `-- name: GetAccountByPhone :one
+SELECT id, username, hashed_password, full_name, email, type, oa_id, is_verify, password_changed_at, created_at, role FROM accounts
+WHERE username = $1 LIMIT 1
+`
+
+func (q *Queries) GetAccountByPhone(ctx context.Context, username string) (Account, error) {
+	row := q.db.QueryRowContext(ctx, getAccountByPhone, username)
+	var i Account
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.HashedPassword,
+		&i.FullName,
+		&i.Email,
+		&i.Type,
+		&i.OaID,
+		&i.IsVerify,
+		&i.PasswordChangedAt,
+		&i.CreatedAt,
+		&i.Role,
+	)
+	return i, err
+}
+
 const getAccountByUseName = `-- name: GetAccountByUseName :one
 SELECT id, username, hashed_password, full_name, email, type, oa_id, is_verify, password_changed_at, created_at, role FROM accounts
 WHERE username = $1 LIMIT 1

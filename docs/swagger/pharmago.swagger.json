@@ -427,6 +427,40 @@
         "security": []
       }
     },
+    "/auth/v1/phone": {
+      "post": {
+        "summary": "Check Phone",
+        "operationId": "Pharmago_CheckPhone",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCheckPhoneResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbCheckPhoneRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Account"
+        ],
+        "security": []
+      }
+    },
     "/auth/v1/reset-password": {
       "post": {
         "summary": "Reset password",
@@ -4435,6 +4469,26 @@
       }
     },
     "pbCheckEmailResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "pbCheckPhoneRequest": {
+      "type": "object",
+      "properties": {
+        "phone": {
+          "type": "string"
+        }
+      }
+    },
+    "pbCheckPhoneResponse": {
       "type": "object",
       "properties": {
         "code": {
