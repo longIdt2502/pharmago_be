@@ -62,6 +62,7 @@ func (server *ServerGRPC) CreateCompany(ctx context.Context, req *pb.CreateCompa
 	company, err := server.store.CreateCompany(ctx, db.CreateCompanyParams{
 		Name: req.Company.GetName(),
 		Code: code,
+		Type: req.Company.GetType(),
 		TaxCode: sql.NullString{
 			String: req.Company.GetTaxCode(),
 			Valid:  req.Company.TaxCode != nil,

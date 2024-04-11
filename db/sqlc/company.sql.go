@@ -12,15 +12,16 @@ import (
 
 const createCompany = `-- name: CreateCompany :one
 INSERT INTO companies (
-    name, code, tax_code, phone, description, address, owner
+    name, code, type, tax_code, phone, description, address, owner
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7
+    $1, $2, $3, $4, $5, $6, $7, $8
 ) RETURNING id, name, code, tax_code, phone, description, address, created_at, owner, type
 `
 
 type CreateCompanyParams struct {
 	Name        string         `json:"name"`
 	Code        string         `json:"code"`
+	Type        string         `json:"type"`
 	TaxCode     sql.NullString `json:"tax_code"`
 	Phone       sql.NullString `json:"phone"`
 	Description sql.NullString `json:"description"`
@@ -32,6 +33,7 @@ func (q *Queries) CreateCompany(ctx context.Context, arg CreateCompanyParams) (C
 	row := q.db.QueryRowContext(ctx, createCompany,
 		arg.Name,
 		arg.Code,
+		arg.Type,
 		arg.TaxCode,
 		arg.Phone,
 		arg.Description,
