@@ -4715,6 +4715,9 @@
         },
         "description": {
           "type": "string"
+        },
+        "type": {
+          "type": "string"
         }
       }
     },
