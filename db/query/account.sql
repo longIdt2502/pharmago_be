@@ -14,6 +14,9 @@ WHERE email = $1 LIMIT 1;
 INSERT INTO accounts (username, hashed_password, full_name, email, type)
 VALUES ($1, $2, $3, $4, $5) RETURNING *;
 
+-- name: CreateAccountCompany :one
+INSERT INTO account_company (account, company) VALUES ($1, $2) RETURNING *;
+
 -- name: UpdateAccount :one
 UPDATE accounts
 SET
@@ -32,8 +35,21 @@ WHERE
 RETURNING *;
 
 -- name: ListAccount :many
-SELECT * FROM accounts
-WHERE (
-    role = sqlc.narg(role)
-);
+SELECT * FROM accounts a
+LEFT JOIN account_company ac ON ac.account = a.id
+WHERE ac.company = sqlc.arg(company)::int
+AND (
+    a.full_name ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
+    a.username ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%'
+)
+AND (
+    sqlc.narg(type)::int IS NULL OR a.type = sqlc.narg(type)::int
+)
+AND (
+    sqlc.narg(role)::int IS NULL OR a.role = sqlc.narg(role)::int
+    
+)
+ORDER BY -a.id
+LIMIT COALESCE(sqlc.narg('limit')::int, 10)
+OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10);
 

@@ -12,6 +12,7 @@ import "rpc/rpc_create_account.proto";
 
 import "rpc/account/rpc_account_detail.proto";
 import "rpc/account/rpc_account_inactive.proto";
+import "rpc/account/rpc_account_list.proto";
 import "rpc/account/rpc_send_code.proto";
 import "rpc/account/rpc_reset_password.proto";
 import "rpc/account/rpc_check_email.proto";
@@ -230,6 +231,15 @@ service Pharmago {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Inactive Account";
+      tags: "Account";
+    };
+  }
+  rpc AccountList (AccountListRequest) returns (AccountListResponse) {
+    option (google.api.http) = {
+      get: "/account/v1/list"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List Account";
       tags: "Account";
     };
   }

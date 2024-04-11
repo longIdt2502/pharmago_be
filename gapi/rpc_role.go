@@ -342,9 +342,11 @@ func (server *ServerGRPC) RoleDelete(ctx context.Context, req *pb.RoleDeleteRequ
 		return nil, config.UnauthenticatedError(err)
 	}
 
-	users, _ := server.store.ListAccount(ctx, sql.NullInt32{
-		Int32: req.GetId(),
-		Valid: true,
+	users, _ := server.store.ListAccount(ctx, db.ListAccountParams{
+		Role: sql.NullInt32{
+			Int32: req.GetId(),
+			Valid: true,
+		},
 	})
 	if len(users) != 0 {
 		return nil, status.Errorf(codes.Unavailable, "role has account implement")

@@ -75,7 +75,7 @@ func (server *ServerGRPC) CreateAccount(ctx context.Context, req *pb.CreateAccou
 	}
 	opts := []asynq.Option{
 		asynq.MaxRetry(10),
-		asynq.ProcessIn(10 * time.Second),
+		asynq.ProcessIn(1 * time.Second),
 		asynq.Queue(woker.QueueCritical),
 	}
 
