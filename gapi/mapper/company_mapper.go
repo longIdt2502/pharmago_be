@@ -2,6 +2,7 @@ package mapper
 
 import (
 	"context"
+
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/pb"
 )
@@ -73,6 +74,7 @@ func CompanyMapper(ctx context.Context, store *db.Store, data db.Company) *pb.Co
 		Id:          int32(data.ID),
 		Name:        data.Name,
 		Code:        data.Code,
+		Type:        data.Type,
 		TaxCode:     taxCode,
 		Phone:       phone,
 		Description: nil,
