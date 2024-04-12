@@ -69,6 +69,22 @@ func OrderDetailMapper(ctx context.Context, store *db.Store, data db.DetailOrder
 		})
 	}
 
+	var orderServiceItems []*pb.OrderServiceItem
+	orderServiceItemsDb, _ := store.ListOrderServiceItem(ctx, data.ID)
+	for _, item := range orderServiceItemsDb {
+		orderServiceItems = append(orderServiceItems, &pb.OrderServiceItem{
+			Id:         item.ID,
+			UnitPrice:  float32(item.UnitPrice),
+			TotalPrice: float32(item.TotalPrice),
+			Discount:   float32(item.Discount),
+			Service: ServiceMapper(db.Service{
+				ID:    item.ID_2,
+				Title: item.Title,
+				Code:  item.Code,
+			}),
+		})
+	}
+
 	return &pb.Order{
 		Id:           data.ID,
 		Code:         data.Code,
@@ -90,13 +106,14 @@ func OrderDetailMapper(ctx context.Context, store *db.Store, data db.DetailOrder
 			Name: data.OsTitle,
 			Code: data.OsCode,
 		},
-		Qr:          data.QrUrl,
-		Company:     data.Company,
-		UserCreated: data.Username,
-		UserUpdated: "",
-		CreatedAt:   timestamppb.New(data.CreatedAt),
-		UpdatedAt:   nil,
-		Payment:     payment,
-		Items:       orderItems,
+		Qr:           data.QrUrl,
+		Company:      data.Company,
+		UserCreated:  data.Username,
+		UserUpdated:  "",
+		CreatedAt:    timestamppb.New(data.CreatedAt),
+		UpdatedAt:    nil,
+		Payment:      payment,
+		Items:        orderItems,
+		ServiceItems: orderServiceItems,
 	}
 }

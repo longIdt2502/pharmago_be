@@ -558,6 +558,18 @@ Ref: order_items.variant > V.id [delete: cascade]
 Ref: order_items.consignment > consignment.id [delete: set null]
 Ref: order_items.consignment_log > consignment_log.id [delete: set null]
 
+Table service_order_item {
+  id serial [pk]
+  order serial [not null]
+  service serial
+  unit_price float [not null, default: 0]
+  discount float [not null, default: 0]
+  total_price float [not null, default: 0]
+}
+
+Ref: service_order_item.order > O.id [delete: cascade]
+Ref: service_order_item.service > services.id [delete: set null]
+
 Table customers {
   id serial [pk]
   full_name varchar [not null]

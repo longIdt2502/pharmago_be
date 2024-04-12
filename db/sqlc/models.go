@@ -482,6 +482,15 @@ type Service struct {
 	UpdatedAt   sql.NullTime   `json:"updated_at"`
 }
 
+type ServiceOrderItem struct {
+	ID         int32         `json:"id"`
+	Order      int32         `json:"order"`
+	Service    sql.NullInt32 `json:"service"`
+	UnitPrice  float64       `json:"unit_price"`
+	Discount   float64       `json:"discount"`
+	TotalPrice float64       `json:"total_price"`
+}
+
 type ServiceVariant struct {
 	ID      int32         `json:"id"`
 	Service sql.NullInt32 `json:"service"`

@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml-lang.org)
 -- Database: PostgreSQL
--- Generated at: 2024-04-10T08:18:24.790Z
+-- Generated at: 2024-04-12T06:38:31.330Z
 
 CREATE TABLE "accounts" (
   "id" serial PRIMARY KEY,
@@ -408,6 +408,15 @@ CREATE TABLE "order_items" (
   "consignment_log" serial
 );
 
+CREATE TABLE "service_order_item" (
+  "id" serial PRIMARY KEY,
+  "order" serial NOT NULL,
+  "service" serial,
+  "unit_price" float NOT NULL DEFAULT 0,
+  "discount" float NOT NULL DEFAULT 0,
+  "total_price" float NOT NULL DEFAULT 0
+);
+
 CREATE TABLE "customers" (
   "id" serial PRIMARY KEY,
   "full_name" varchar NOT NULL,
@@ -807,6 +816,10 @@ ALTER TABLE "order_items" ADD FOREIGN KEY ("variant") REFERENCES "variants" ("id
 ALTER TABLE "order_items" ADD FOREIGN KEY ("consignment") REFERENCES "consignment" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "order_items" ADD FOREIGN KEY ("consignment_log") REFERENCES "consignment_log" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "service_order_item" ADD FOREIGN KEY ("order") REFERENCES "orders" ("id") ON DELETE CASCADE;
+
+ALTER TABLE "service_order_item" ADD FOREIGN KEY ("service") REFERENCES "services" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "customers" ADD FOREIGN KEY ("company") REFERENCES "companies" ("id") ON DELETE CASCADE;
 

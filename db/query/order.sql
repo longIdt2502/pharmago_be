@@ -14,6 +14,13 @@ INSERT INTO order_items (
     $1, $2, $3, $4, $5, $6
 ) RETURNING *;
 
+-- name: CreateOrderServiceItem :one
+INSERT INTO service_order_item (
+    "order", service, unit_price, total_price, discount
+) VALUES (
+    $1, $2, $3, $4, $5
+) RETURNING *;
+
 -- name: ListOrder :many
 SELECT *, c.full_name AS c_full_name, os.title AS os_title, os.id AS os_id, a.full_name AS a_full_name FROM orders o
 JOIN customers c ON o.customer = c.id
@@ -69,6 +76,11 @@ JOIN consignment c ON c.id = oi.consignment
 JOIN variant_media vm ON vm.variant = v.id
 JOIN medias m ON vm.media = m.id
 WHERE oi.order = $1;
+
+-- name: ListOrderServiceItem :many
+SELECT * FROM service_order_item soi
+JOIN services s ON s.id = soi.service
+WHERE soi.order = $1;
 
 -- name: UpdateStatusOrder :one
 UPDATE orders

@@ -138,6 +138,42 @@ func (q *Queries) CreateOrderItem(ctx context.Context, arg CreateOrderItemParams
 	return i, err
 }
 
+const createOrderServiceItem = `-- name: CreateOrderServiceItem :one
+INSERT INTO service_order_item (
+    "order", service, unit_price, total_price, discount
+) VALUES (
+    $1, $2, $3, $4, $5
+) RETURNING id, "order", service, unit_price, discount, total_price
+`
+
+type CreateOrderServiceItemParams struct {
+	Order      int32         `json:"order"`
+	Service    sql.NullInt32 `json:"service"`
+	UnitPrice  float64       `json:"unit_price"`
+	TotalPrice float64       `json:"total_price"`
+	Discount   float64       `json:"discount"`
+}
+
+func (q *Queries) CreateOrderServiceItem(ctx context.Context, arg CreateOrderServiceItemParams) (ServiceOrderItem, error) {
+	row := q.db.QueryRowContext(ctx, createOrderServiceItem,
+		arg.Order,
+		arg.Service,
+		arg.UnitPrice,
+		arg.TotalPrice,
+		arg.Discount,
+	)
+	var i ServiceOrderItem
+	err := row.Scan(
+		&i.ID,
+		&i.Order,
+		&i.Service,
+		&i.UnitPrice,
+		&i.Discount,
+		&i.TotalPrice,
+	)
+	return i, err
+}
+
 const detailOrder = `-- name: DetailOrder :one
 SELECT o.id, o.code, total_price, description, vat, discount, service_price, must_paid, customer, address, status, o.type, ticket, qr, company, payment, user_created, user_updated, o.created_at, updated_at, m.id, media_url, ot.id, ot.code, ot.title, os.id, os.code, os.title, a.id, username, hashed_password, full_name, email, a.type, oa_id, is_verify, password_changed_at, a.created_at, role, m.media_url AS qr_url, ot.id AS ot_id, ot.code AS ot_code, ot.title AS ot_title,
        os.id AS os_id, os.code AS os_code, os.title AS os_title,
@@ -579,6 +615,81 @@ func (q *Queries) ListOrderItem(ctx context.Context, order int32) ([]ListOrderIt
 			&i.Media,
 			&i.ID_5,
 			&i.MediaUrl,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listOrderServiceItem = `-- name: ListOrderServiceItem :many
+SELECT soi.id, "order", service, unit_price, discount, total_price, s.id, image, code, title, entity, staff, frequency, unit, price, description, company, user_created, user_updated, created_at, updated_at FROM service_order_item soi
+JOIN services s ON s.id = soi.service
+WHERE soi.order = $1
+`
+
+type ListOrderServiceItemRow struct {
+	ID          int32          `json:"id"`
+	Order       int32          `json:"order"`
+	Service     sql.NullInt32  `json:"service"`
+	UnitPrice   float64        `json:"unit_price"`
+	Discount    float64        `json:"discount"`
+	TotalPrice  float64        `json:"total_price"`
+	ID_2        int32          `json:"id_2"`
+	Image       sql.NullInt32  `json:"image"`
+	Code        string         `json:"code"`
+	Title       string         `json:"title"`
+	Entity      sql.NullString `json:"entity"`
+	Staff       int32          `json:"staff"`
+	Frequency   sql.NullString `json:"frequency"`
+	Unit        string         `json:"unit"`
+	Price       float64        `json:"price"`
+	Description sql.NullString `json:"description"`
+	Company     int32          `json:"company"`
+	UserCreated int32          `json:"user_created"`
+	UserUpdated sql.NullInt32  `json:"user_updated"`
+	CreatedAt   time.Time      `json:"created_at"`
+	UpdatedAt   sql.NullTime   `json:"updated_at"`
+}
+
+func (q *Queries) ListOrderServiceItem(ctx context.Context, order int32) ([]ListOrderServiceItemRow, error) {
+	rows, err := q.db.QueryContext(ctx, listOrderServiceItem, order)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListOrderServiceItemRow{}
+	for rows.Next() {
+		var i ListOrderServiceItemRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Order,
+			&i.Service,
+			&i.UnitPrice,
+			&i.Discount,
+			&i.TotalPrice,
+			&i.ID_2,
+			&i.Image,
+			&i.Code,
+			&i.Title,
+			&i.Entity,
+			&i.Staff,
+			&i.Frequency,
+			&i.Unit,
+			&i.Price,
+			&i.Description,
+			&i.Company,
+			&i.UserCreated,
+			&i.UserUpdated,
+			&i.CreatedAt,
+			&i.UpdatedAt,
 		); err != nil {
 			return nil, err
 		}

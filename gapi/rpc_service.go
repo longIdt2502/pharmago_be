@@ -11,7 +11,6 @@ import (
 	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/gapi/mapper"
 	"github.com/longIdt2502/pharmago_be/pb"
-	"github.com/longIdt2502/pharmago_be/utils"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -54,55 +53,18 @@ func (server *ServerGRPC) ServiceCreate(ctx context.Context, req *pb.ServiceCrea
 		return nil, config.UnauthenticatedError(err)
 	}
 
-	code := fmt.Sprintf("SER-%s-%d", utils.RandomString(6), utils.RandomInt(100, 999))
-	if req.Code != nil {
-		code = req.GetCode()
-	}
-	serviceDb, err := server.store.CreateService(ctx, db.CreateServiceParams{
-		Code:  code,
-		Title: req.GetTitle(),
-		Entity: sql.NullString{
-			String: req.GetEntity(),
-			Valid:  req.Entity != nil,
-		},
-		Staff: req.GetStaff(),
-		Frequency: sql.NullString{
-			String: req.GetFrequency(),
-			Valid:  req.Frequency != nil,
-		},
-		Unit:  req.GetUnit(),
-		Price: req.GetPrice(),
-		Description: sql.NullString{
-			String: req.GetDescription(),
-			Valid:  req.Description != nil,
-		},
-		Company:     req.GetCompany(),
-		UserCreated: tokenPayload.UserID,
+	result, err := server.store.CreateServiceTx(ctx, db.CreateServiceTxParams{
+		ServiceCreateRequest: req,
+		TokenPayload:         tokenPayload,
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to create service: %e", err)
-	}
-
-	for _, item := range req.GetVariants() {
-		_, err := server.store.CreateServiceVariant(ctx, db.CreateServiceVariantParams{
-			Variant: sql.NullInt32{
-				Int32: item,
-				Valid: true,
-			},
-			Service: sql.NullInt32{
-				Int32: serviceDb.ID,
-				Valid: true,
-			},
-		})
-		if err != nil {
-			return nil, status.Errorf(codes.Internal, "failed to create service variant: %e", err)
-		}
+		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to create service: %e", err))
 	}
 
 	return &pb.ServiceCreateResponse{
 		Code:    200,
 		Message: "success",
-		Details: serviceDb.ID,
+		Details: result.Id,
 	}, nil
 }
 

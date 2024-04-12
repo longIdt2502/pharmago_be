@@ -26,72 +26,115 @@ func (server *ServerGRPC) CreateAccount(ctx context.Context, req *pb.CreateAccou
 		return nil, config.InvalidArgumentError(violation)
 	}
 
-	password := req.GetPassword()
-	hashedPassword, err := utils.HashedPassword(password)
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "can't hashed password: %e", err)
-	}
-
-	accountType, err := server.store.GetAccountType(ctx, db.GetAccountTypeParams{
-		ID: sql.NullInt32{},
-		Code: sql.NullString{
-			String: req.AccountType,
-			Valid:  true,
-		},
-	})
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, status.Errorf(codes.NotFound, "account code doesn't exists")
+	accountCheck, err := server.store.GetAccountByMail(ctx, req.GetEmail())
+	if errors.Is(err, sql.ErrNoRows) {
+		password := req.GetPassword()
+		hashedPassword, err := utils.HashedPassword(password)
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "can't hashed password: %e", err)
 		}
-		return nil, status.Errorf(codes.Internal, "failed to get account type")
-	}
 
-	account, err := server.store.CreateAccount(ctx, db.CreateAccountParams{
-		Username:       req.Username,
-		HashedPassword: hashedPassword,
-		FullName:       req.FullName,
-		Email:          req.Email,
-		Type:           accountType.ID,
-	})
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed create record account: %e", err)
-	}
+		accountType, err := server.store.GetAccountType(ctx, db.GetAccountTypeParams{
+			ID: sql.NullInt32{},
+			Code: sql.NullString{
+				String: req.AccountType,
+				Valid:  true,
+			},
+		})
+		if err != nil {
+			if errors.Is(err, sql.ErrNoRows) {
+				return nil, status.Errorf(codes.NotFound, "account code doesn't exists")
+			}
+			return nil, status.Errorf(codes.Internal, "failed to get account type")
+		}
 
-	randomCode := utils.RandomInt(100000, 999999)
-	secretCode := strconv.Itoa(int(randomCode))
-	verify, err := server.store.CreateVerify(ctx, db.CreateVerifyParams{
-		Username:   req.Username,
-		Email:      req.Email,
-		SecretCode: secretCode,
-	})
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to create verify: %e", err)
-	}
+		account, err := server.store.CreateAccount(ctx, db.CreateAccountParams{
+			Username:       req.Username,
+			HashedPassword: hashedPassword,
+			FullName:       req.FullName,
+			Email:          req.Email,
+			Type:           accountType.ID,
+		})
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "failed create record account: %e", err)
+		}
 
-	// ===== Redis task distributor send email
-	taskPayload := &woker.PayloadSendVerifyEmail{
-		Username: req.Username,
-		Code:     secretCode,
-	}
-	opts := []asynq.Option{
-		asynq.MaxRetry(10),
-		asynq.ProcessIn(1 * time.Second),
-		asynq.Queue(woker.QueueCritical),
-	}
+		randomCode := utils.RandomInt(100000, 999999)
+		secretCode := strconv.Itoa(int(randomCode))
+		verify, err := server.store.CreateVerify(ctx, db.CreateVerifyParams{
+			Username:   req.Username,
+			Email:      req.Email,
+			SecretCode: secretCode,
+		})
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to create verify: %e", err)
+		}
 
-	err = server.taskDistributor.DistributeTaskSendVerifyEmail(ctx, taskPayload, opts...)
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to run task email: %e", err)
-	}
+		// ===== Redis task distributor send email
+		taskPayload := &woker.PayloadSendVerifyEmail{
+			Username: req.Username,
+			Code:     secretCode,
+		}
+		opts := []asynq.Option{
+			asynq.MaxRetry(10),
+			asynq.ProcessIn(1 * time.Second),
+			asynq.Queue(woker.QueueCritical),
+		}
 
-	accountMapper := mapper.AccountMapper(account)
-	rsp := &pb.CreateAccountResponse{
-		Code:     int32(200),
-		Message:  "success",
-		Details:  accountMapper,
-		VerifyId: int32(verify.ID),
+		err = server.taskDistributor.DistributeTaskSendVerifyEmail(ctx, taskPayload, opts...)
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to run task email: %e", err)
+		}
+
+		accountMapper := mapper.AccountMapper(account)
+		rsp := &pb.CreateAccountResponse{
+			Code:     int32(200),
+			Message:  "success",
+			Details:  accountMapper,
+			VerifyId: int32(verify.ID),
+		}
+		return rsp, nil
+	} else {
+		if accountCheck.IsVerify {
+			return nil, status.Errorf(codes.InvalidArgument, "email already exists")
+		} else {
+			randomCode := utils.RandomInt(100000, 999999)
+			secretCode := strconv.Itoa(int(randomCode))
+			verify, err := server.store.CreateVerify(ctx, db.CreateVerifyParams{
+				Username:   req.Username,
+				Email:      req.Email,
+				SecretCode: secretCode,
+			})
+			if err != nil {
+				return nil, status.Errorf(codes.Internal, "failed to create verify: %e", err)
+			}
+
+			// ===== Redis task distributor send email
+			taskPayload := &woker.PayloadSendVerifyEmail{
+				Username: req.Username,
+				Code:     secretCode,
+			}
+			opts := []asynq.Option{
+				asynq.MaxRetry(10),
+				asynq.ProcessIn(1 * time.Second),
+				asynq.Queue(woker.QueueCritical),
+			}
+
+			err = server.taskDistributor.DistributeTaskSendVerifyEmail(ctx, taskPayload, opts...)
+			if err != nil {
+				return nil, status.Errorf(codes.Internal, "failed to run task email: %e", err)
+			}
+
+			accountMapper := mapper.AccountMapper(accountCheck)
+			rsp := &pb.CreateAccountResponse{
+				Code:     int32(200),
+				Message:  "success",
+				Details:  accountMapper,
+				VerifyId: int32(verify.ID),
+			}
+			return rsp, nil
+		}
 	}
-	return rsp, nil
 }
 
 func validateCreateAccountRequest(req *pb.CreateAccountRequest) (violations []*errdetails.BadRequest_FieldViolation) {

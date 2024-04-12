@@ -182,29 +182,29 @@ func (server *ServerGRPC) CreateProduct(ctx context.Context, req *pb.CreateProdu
 			return nil, status.Errorf(codes.Internal, "failed to record variant data: %e", err)
 		}
 
-		fileVariant, _ := utils.NewFileFromImage(value.Image)
-		_, err = server.b2Bucket.UploadFile(fileVariant.Name, fileVariant.Meta, fileVariant.File)
-		if err != nil {
-			return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to upload image to b2: %e", err))
-		}
+		if value.Image != nil {
+			fileVariant, _ := utils.NewFileFromImage(value.Image)
+			_, err = server.b2Bucket.UploadFile(fileVariant.Name, fileVariant.Meta, fileVariant.File)
+			if err != nil {
+				return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to upload image to b2: %e", err))
+			}
+			urlVariant, err := server.b2Bucket.FileURL(fileVariant.Name)
+			if err != nil {
+				return nil, status.Errorf(codes.NotFound, fmt.Sprintf("failed to record media: %e", err))
+			}
 
-		urlVariant, err := server.b2Bucket.FileURL(fileVariant.Name)
-		if err != nil {
-			return nil, status.Errorf(codes.NotFound, fmt.Sprintf("failed to record media: %e", err))
-		}
-		println("hay", urlVariant)
+			media, err := server.store.CreateMedia(ctx, urlVariant)
+			if err != nil {
+				return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to record media: %e", err))
+			}
 
-		media, err := server.store.CreateMedia(ctx, urlVariant)
-		if err != nil {
-			return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to record media: %e", err))
-		}
-
-		_, err = server.store.CreateVariantMedia(ctx, db.CreateVariantMediaParams{
-			Variant: variant.ID,
-			Media:   media.ID,
-		})
-		if err != nil {
-			return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to record media product: %e", err))
+			_, err = server.store.CreateVariantMedia(ctx, db.CreateVariantMediaParams{
+				Variant: variant.ID,
+				Media:   media.ID,
+			})
+			if err != nil {
+				return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to record media product: %e", err))
+			}
 		}
 
 		_, err = server.store.CreateProductPriceList(ctx, db.CreateProductPriceListParams{

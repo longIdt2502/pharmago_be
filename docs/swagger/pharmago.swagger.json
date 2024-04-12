@@ -5848,6 +5848,13 @@
             "type": "object",
             "$ref": "#/definitions/pbOrderItem"
           }
+        },
+        "serviceItems": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbOrderServiceItem"
+          }
         }
       }
     },
@@ -5927,6 +5934,13 @@
         "warehouse": {
           "type": "integer",
           "format": "int32"
+        },
+        "serviceItems": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbOrderServiceItemCreate"
+          }
         }
       }
     },
@@ -6100,6 +6114,51 @@
         },
         "details": {
           "$ref": "#/definitions/pbOrder"
+        }
+      }
+    },
+    "pbOrderServiceItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "service": {
+          "$ref": "#/definitions/pbService"
+        },
+        "unitPrice": {
+          "type": "number",
+          "format": "float"
+        },
+        "totalPrice": {
+          "type": "number",
+          "format": "float"
+        },
+        "discount": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "pbOrderServiceItemCreate": {
+      "type": "object",
+      "properties": {
+        "service": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "unitPrice": {
+          "type": "number",
+          "format": "float"
+        },
+        "discount": {
+          "type": "number",
+          "format": "float"
+        },
+        "totalPrice": {
+          "type": "number",
+          "format": "float"
         }
       }
     },
