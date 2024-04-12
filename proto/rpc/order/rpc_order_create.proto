@@ -24,6 +24,13 @@ message OrderItemCreate {
   float total_price = 4;
 }
 
+message OrderServiceItemCreate {
+  int32 service = 1;
+  float unit_price = 2;
+  float discount = 3;
+  float total_price = 4;
+}
+
 message OrderCreate {
   optional string code = 1;
   float total_price = 2;
@@ -46,6 +53,7 @@ message OrderCreateRequest {
   PaymentCreate payment = 3;
   repeated PaymentItemCreate payment_items = 4;
   int32 warehouse = 5;
+  repeated OrderServiceItemCreate service_items = 6;
 }
 
 message OrderCreateResponse {

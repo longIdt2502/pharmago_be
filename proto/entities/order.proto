@@ -9,6 +9,7 @@ import "entities/simple_data.proto";
 import "entities/payment.proto";
 import "entities/variant.proto";
 import "entities/consigment.proto";
+import "entities/service.proto";
 
 import "google/protobuf/timestamp.proto";
 
@@ -20,6 +21,14 @@ message OrderItem {
   int32 value = 3;
   float total_price = 4;
   Consignment consignment = 5;
+}
+
+message OrderServiceItem {
+  int32 id = 1;
+  Service service = 2;
+  float unit_price = 3;
+  float total_price = 4;
+  float discount = 5;
 }
 
 message Order {
@@ -43,6 +52,7 @@ message Order {
   google.protobuf.Timestamp updated_at = 18;
   Payment payment = 19;
   repeated OrderItem items = 20;
+  repeated OrderServiceItem service_items = 21;
 }
 
 message OrderPreview {
