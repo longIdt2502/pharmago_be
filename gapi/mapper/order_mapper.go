@@ -48,6 +48,7 @@ func OrderDetailMapper(ctx context.Context, store *db.Store, data db.DetailOrder
 			Company: data.Company,
 			ID: sql.NullInt32{
 				Int32: value.Variant,
+				Valid: true,
 			},
 		})
 		variantDb := VariantMapper(ctx, store, variant[0])
