@@ -11,16 +11,39 @@ import (
 	"time"
 )
 
-const countOrderByStatus = `-- name: CountOrderByStatus :one
-SELECT COUNT(*) FROM orders
-WHERE status = $1
+const countOrderByStatus = `-- name: CountOrderByStatus :many
+SELECT os.code, COALESCE(COUNT(os.code), 0)::int AS count FROM order_status os
+RIGHT JOIN orders o ON os.code = o.status
+WHERE o.company = $1
+GROUP BY os.code
 `
 
-func (q *Queries) CountOrderByStatus(ctx context.Context, status sql.NullString) (int64, error) {
-	row := q.db.QueryRowContext(ctx, countOrderByStatus, status)
-	var count int64
-	err := row.Scan(&count)
-	return count, err
+type CountOrderByStatusRow struct {
+	Code  sql.NullString `json:"code"`
+	Count int32          `json:"count"`
+}
+
+func (q *Queries) CountOrderByStatus(ctx context.Context, company int32) ([]CountOrderByStatusRow, error) {
+	rows, err := q.db.QueryContext(ctx, countOrderByStatus, company)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []CountOrderByStatusRow{}
+	for rows.Next() {
+		var i CountOrderByStatusRow
+		if err := rows.Scan(&i.Code, &i.Count); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const createOrder = `-- name: CreateOrder :one

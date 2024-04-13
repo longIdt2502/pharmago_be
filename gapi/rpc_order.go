@@ -101,25 +101,24 @@ func (server *ServerGRPC) OrderList(ctx context.Context, req *pb.OrderListReques
 		ordersPb = append(ordersPb, dataPb)
 	}
 
-	draftCount, _ := server.store.CountOrderByStatus(ctx, sql.NullString{
-		String: "DRAFT",
-		Valid:  true,
-	})
+	countData, _ := server.store.CountOrderByStatus(ctx, req.Company)
 
-	inProcessCount, _ := server.store.CountOrderByStatus(ctx, sql.NullString{
-		String: "IN_PROCESS",
-		Valid:  true,
-	})
-
-	completeCount, _ := server.store.CountOrderByStatus(ctx, sql.NullString{
-		String: "COMPLETE",
-		Valid:  true,
-	})
-
-	cancelCount, _ := server.store.CountOrderByStatus(ctx, sql.NullString{
-		String: "CANCEL",
-		Valid:  true,
-	})
+	draftCount := 0
+	inProcessCount := 0
+	completeCount := 0
+	cancelCount := 0
+	for _, item := range countData {
+		switch item.Code.String {
+		case "DRAFT":
+			draftCount = int(item.Count)
+		case "IN_PROCESS":
+			inProcessCount = int(item.Count)
+		case "COMPLETE":
+			completeCount = int(item.Count)
+		case "CANCEL":
+			cancelCount = int(item.Count)
+		}
+	}
 
 	return &pb.OrderListResponse{
 		Code:    200,
