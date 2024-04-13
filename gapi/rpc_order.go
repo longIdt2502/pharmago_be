@@ -26,9 +26,9 @@ func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRe
 		B2Bucket:           server.b2Bucket,
 		TokenPayload:       tokenPayload,
 	})
-	// if err != nil {
-	// 	return nil, err
-	// }
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, fmt.Sprintf("failed: %e", err))
+	}
 
 	return &pb.OrderCreateResponse{
 		Code:    200,
