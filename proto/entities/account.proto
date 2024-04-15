@@ -7,11 +7,12 @@ import "google/protobuf/timestamp.proto";
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
 message Account {
-  string username = 1;
-  string full_name = 2;
-  string email = 3;
-  int64 verify_id = 4;
-  optional string oa_id = 5;
-  google.protobuf.Timestamp password_changed_at = 6;
-  google.protobuf.Timestamp created_at = 7;
+  int32 id = 1;
+  string username = 2;
+  string full_name = 3;
+  string email = 4;
+  int64 verify_id = 5;
+  optional string oa_id = 6;
+  google.protobuf.Timestamp password_changed_at = 7;
+  google.protobuf.Timestamp created_at = 8;
 }
