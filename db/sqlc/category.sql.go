@@ -75,7 +75,7 @@ func (q *Queries) DeleteCategory(ctx context.Context, id int32) (ProductCategory
 }
 
 const detailCategory = `-- name: DetailCategory :one
-SELECT pb.id, code, name, user_created, pb.created_at, company, user_updated, updated_at, description, ac.id, ac.username, ac.hashed_password, ac.full_name, ac.email, ac.type, ac.oa_id, ac.is_verify, ac.password_changed_at, ac.created_at, ac.role, au.id, au.username, au.hashed_password, au.full_name, au.email, au.type, au.oa_id, au.is_verify, au.password_changed_at, au.created_at, au.role, ac.full_name AS created_name, au.full_name AS updated_name FROM product_categories pb
+SELECT pb.id, code, name, user_created, pb.created_at, company, user_updated, updated_at, description, ac.id, ac.username, ac.hashed_password, ac.full_name, ac.email, ac.type, ac.oa_id, ac.is_verify, ac.password_changed_at, ac.created_at, ac.role, ac.gender, ac.licence, ac.dob, ac.address, au.id, au.username, au.hashed_password, au.full_name, au.email, au.type, au.oa_id, au.is_verify, au.password_changed_at, au.created_at, au.role, au.gender, au.licence, au.dob, au.address, ac.full_name AS created_name, au.full_name AS updated_name FROM product_categories pb
 JOIN accounts ac ON ac.id = pb.user_created
 LEFT JOIN accounts au ON au.id = pb.user_updated
 WHERE pb.id = $1
@@ -102,6 +102,10 @@ type DetailCategoryRow struct {
 	PasswordChangedAt   time.Time      `json:"password_changed_at"`
 	CreatedAt_2         time.Time      `json:"created_at_2"`
 	Role                sql.NullInt32  `json:"role"`
+	Gender              NullGender     `json:"gender"`
+	Licence             sql.NullString `json:"licence"`
+	Dob                 sql.NullTime   `json:"dob"`
+	Address             sql.NullInt32  `json:"address"`
 	ID_3                sql.NullInt32  `json:"id_3"`
 	Username_2          sql.NullString `json:"username_2"`
 	HashedPassword_2    sql.NullString `json:"hashed_password_2"`
@@ -113,6 +117,10 @@ type DetailCategoryRow struct {
 	PasswordChangedAt_2 sql.NullTime   `json:"password_changed_at_2"`
 	CreatedAt_3         sql.NullTime   `json:"created_at_3"`
 	Role_2              sql.NullInt32  `json:"role_2"`
+	Gender_2            NullGender     `json:"gender_2"`
+	Licence_2           sql.NullString `json:"licence_2"`
+	Dob_2               sql.NullTime   `json:"dob_2"`
+	Address_2           sql.NullInt32  `json:"address_2"`
 	CreatedName         string         `json:"created_name"`
 	UpdatedName         sql.NullString `json:"updated_name"`
 }
@@ -141,6 +149,10 @@ func (q *Queries) DetailCategory(ctx context.Context, id int32) (DetailCategoryR
 		&i.PasswordChangedAt,
 		&i.CreatedAt_2,
 		&i.Role,
+		&i.Gender,
+		&i.Licence,
+		&i.Dob,
+		&i.Address,
 		&i.ID_3,
 		&i.Username_2,
 		&i.HashedPassword_2,
@@ -152,6 +164,10 @@ func (q *Queries) DetailCategory(ctx context.Context, id int32) (DetailCategoryR
 		&i.PasswordChangedAt_2,
 		&i.CreatedAt_3,
 		&i.Role_2,
+		&i.Gender_2,
+		&i.Licence_2,
+		&i.Dob_2,
+		&i.Address_2,
 		&i.CreatedName,
 		&i.UpdatedName,
 	)

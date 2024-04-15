@@ -4,11 +4,13 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"time"
 
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/gapi/mapper"
 	"github.com/longIdt2502/pharmago_be/pb"
+	"github.com/longIdt2502/pharmago_be/utils"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -144,5 +146,90 @@ func (server *ServerGRPC) AccountList(ctx context.Context, req *pb.AccountListRe
 		Code:    200,
 		Message: "success",
 		Details: accountsPb,
+	}, nil
+}
+
+func (server *ServerGRPC) CreateEmployee(ctx context.Context, req *pb.CreateEmployeeRequest) (*pb.CreateEmployeeResponse, error) {
+	tokenPayload, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	hashPass, err := utils.HashedPassword(req.GetPassword())
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to hash password")
+	}
+
+	var address db.Address
+	if req.Address != nil {
+		address, err = server.store.CreateAddress(ctx, db.CreateAddressParams{
+			Lat: float64(req.Address.Lat),
+			Lng: float64(req.Address.Lng),
+			Province: sql.NullString{
+				String: req.Address.Province.Code,
+				Valid:  true,
+			},
+			Ward: sql.NullString{
+				String: req.Address.Ward.Code,
+				Valid:  true,
+			},
+			District: sql.NullString{
+				String: req.Address.District.Code,
+				Valid:  true,
+			},
+			Title:       req.Address.Title,
+			UserCreated: tokenPayload.UserID,
+		})
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to create address")
+		}
+	}
+
+	accountType, err := server.store.GetAccountType(ctx, db.GetAccountTypeParams{
+		ID: sql.NullInt32{},
+		Code: sql.NullString{
+			String: req.AccountType,
+			Valid:  true,
+		},
+	})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get account type")
+	}
+
+	employee, err := server.store.CreateAccount(ctx, db.CreateAccountParams{
+		Username:       req.GetUsername(),
+		HashedPassword: hashPass,
+		FullName:       req.FullName,
+		Email:          req.Email,
+		Type:           accountType.ID,
+		Role: sql.NullInt32{
+			Int32: req.GetRole(),
+			Valid: req.Role != nil,
+		},
+		Gender: db.NullGender{
+			Gender: db.GenderNam,
+			Valid:  req.Gender != nil,
+		},
+		Licence: sql.NullString{
+			String: req.GetLicence(),
+			Valid:  req.Licence != nil,
+		},
+		Dob: sql.NullTime{
+			Time:  time.Unix(req.GetDob().GetSeconds(), 0),
+			Valid: req.Dob.IsValid(),
+		},
+		Address: sql.NullInt32{
+			Int32: address.ID,
+			Valid: req.Address != nil,
+		},
+	})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to create employee: %e", err))
+	}
+
+	return &pb.CreateEmployeeResponse{
+		Code:    200,
+		Message: "success",
+		Details: employee.ID,
 	}, nil
 }

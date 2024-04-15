@@ -6,10 +6,55 @@ package db
 
 import (
 	"database/sql"
+	"database/sql/driver"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
 )
+
+type Gender string
+
+const (
+	GenderNam Gender = "nam"
+	GenderN   Gender = "nữ"
+	GenderKhc Gender = "khác"
+)
+
+func (e *Gender) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = Gender(s)
+	case string:
+		*e = Gender(s)
+	default:
+		return fmt.Errorf("unsupported scan type for Gender: %T", src)
+	}
+	return nil
+}
+
+type NullGender struct {
+	Gender Gender `json:"gender"`
+	Valid  bool   `json:"valid"` // Valid is true if Gender is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullGender) Scan(value interface{}) error {
+	if value == nil {
+		ns.Gender, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.Gender.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullGender) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.Gender), nil
+}
 
 type Account struct {
 	ID                int32          `json:"id"`
@@ -23,6 +68,10 @@ type Account struct {
 	PasswordChangedAt time.Time      `json:"password_changed_at"`
 	CreatedAt         time.Time      `json:"created_at"`
 	Role              sql.NullInt32  `json:"role"`
+	Gender            NullGender     `json:"gender"`
+	Licence           sql.NullString `json:"licence"`
+	Dob               sql.NullTime   `json:"dob"`
+	Address           sql.NullInt32  `json:"address"`
 }
 
 type AccountCompany struct {

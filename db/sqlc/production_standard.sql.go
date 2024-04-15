@@ -73,7 +73,7 @@ func (q *Queries) DeleteProductionStandard(ctx context.Context, id int32) (Produ
 }
 
 const detailProductionStandard = `-- name: DetailProductionStandard :one
-SELECT ps.id, ps.code, ps.name, ps.company, ps.user_created, ps.user_updated, ps.created_at, ps.updated_at, ps.description, a.id, a.username, a.hashed_password, a.full_name, a.email, a.type, a.oa_id, a.is_verify, a.password_changed_at, a.created_at, a.role, au.full_name AS user_updated_name FROM production_standard ps
+SELECT ps.id, ps.code, ps.name, ps.company, ps.user_created, ps.user_updated, ps.created_at, ps.updated_at, ps.description, a.id, a.username, a.hashed_password, a.full_name, a.email, a.type, a.oa_id, a.is_verify, a.password_changed_at, a.created_at, a.role, a.gender, a.licence, a.dob, a.address, au.full_name AS user_updated_name FROM production_standard ps
 LEFT JOIN accounts a ON a.id = ps.user_created
 LEFT JOIN accounts au ON au.id = ps.user_updated
 WHERE ps.id = $1
@@ -100,6 +100,10 @@ type DetailProductionStandardRow struct {
 	PasswordChangedAt sql.NullTime   `json:"password_changed_at"`
 	CreatedAt_2       sql.NullTime   `json:"created_at_2"`
 	Role              sql.NullInt32  `json:"role"`
+	Gender            NullGender     `json:"gender"`
+	Licence           sql.NullString `json:"licence"`
+	Dob               sql.NullTime   `json:"dob"`
+	Address           sql.NullInt32  `json:"address"`
 	UserUpdatedName   sql.NullString `json:"user_updated_name"`
 }
 
@@ -127,6 +131,10 @@ func (q *Queries) DetailProductionStandard(ctx context.Context, id int32) (Detai
 		&i.PasswordChangedAt,
 		&i.CreatedAt_2,
 		&i.Role,
+		&i.Gender,
+		&i.Licence,
+		&i.Dob,
+		&i.Address,
 		&i.UserUpdatedName,
 	)
 	return i, err
@@ -140,7 +148,7 @@ WITH production_standard_quantity AS (
     LEFT JOIN products p ON p.tieu_chuan_sx = ps.code
     GROUP BY ps.id
 )
-SELECT ps.id, ps.code, ps.name, ps.company, ps.user_created, ps.user_updated, ps.created_at, ps.updated_at, ps.description, a.id, a.username, a.hashed_password, a.full_name, a.email, a.type, a.oa_id, a.is_verify, a.password_changed_at, a.created_at, a.role, psq.total_quantity AS quantity FROM production_standard_quantity psq
+SELECT ps.id, ps.code, ps.name, ps.company, ps.user_created, ps.user_updated, ps.created_at, ps.updated_at, ps.description, a.id, a.username, a.hashed_password, a.full_name, a.email, a.type, a.oa_id, a.is_verify, a.password_changed_at, a.created_at, a.role, a.gender, a.licence, a.dob, a.address, psq.total_quantity AS quantity FROM production_standard_quantity psq
 JOIN production_standard ps ON psq.production_standard_id = ps.id
 LEFT JOIN accounts a ON a.id = ps.user_created
 WHERE (
@@ -184,6 +192,10 @@ type ListProductionStandardRow struct {
 	PasswordChangedAt sql.NullTime   `json:"password_changed_at"`
 	CreatedAt_2       sql.NullTime   `json:"created_at_2"`
 	Role              sql.NullInt32  `json:"role"`
+	Gender            NullGender     `json:"gender"`
+	Licence           sql.NullString `json:"licence"`
+	Dob               sql.NullTime   `json:"dob"`
+	Address           sql.NullInt32  `json:"address"`
 	Quantity          int32          `json:"quantity"`
 }
 
@@ -222,6 +234,10 @@ func (q *Queries) ListProductionStandard(ctx context.Context, arg ListProduction
 			&i.PasswordChangedAt,
 			&i.CreatedAt_2,
 			&i.Role,
+			&i.Gender,
+			&i.Licence,
+			&i.Dob,
+			&i.Address,
 			&i.Quantity,
 		); err != nil {
 			return nil, err

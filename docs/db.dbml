@@ -5,6 +5,12 @@ Project pharmago {
   '''
 }
 
+enum gender {
+  "nam"
+  "nữ"
+  "khác"
+}
+
 Table accounts as A {
   id serial [pk]
   username varchar [unique, not null]
@@ -15,12 +21,17 @@ Table accounts as A {
   is_verify boolean [not null, default: false]
   role serial
   oa_id varchar
+  gender gender
+  licence varchar
+  dob timestamp
+  address serial
   password_changed_at timestamptz [not null, default: '0001-01-01 00:00:00Z']
   created_at timestamptz [not null, default: `now()`]
 }
 
 Ref: A.type > account_type.id [delete: cascade]
 Ref: A.role > roles.id [delete: set null]
+Ref: A.address > address.id [delete: set null]
 
 Table account_media {
   id serial [pk]

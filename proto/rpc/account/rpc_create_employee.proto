@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+import "entities/account.proto";
+import "entities/address.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message CreateEmployeeRequest {
+  string username = 1;
+  string password = 2;
+  string full_name = 3;
+  string email = 4;
+  string account_type = 5;
+  optional int32 role = 6;
+  optional string gender = 7;
+  optional string licence = 8;
+  optional google.protobuf.Timestamp dob = 9;
+  optional Address address = 10;
+  int32 company = 11;
+}
+
+message CreateEmployeeResponse {
+  int32 code = 1;
+  string message = 2;
+  int32 details = 3;
+}
