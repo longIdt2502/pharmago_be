@@ -222,6 +222,7 @@ func (server *ServerGRPC) CreateEmployee(ctx context.Context, req *pb.CreateEmpl
 			Int32: address.ID,
 			Valid: req.Address != nil,
 		},
+		IsVerify: req.GetActive(),
 	})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to create employee: %e", err))

@@ -15,8 +15,8 @@ SELECT * FROM accounts
 WHERE username = $1 LIMIT 1;
 
 -- name: CreateAccount :one
-INSERT INTO accounts (username, hashed_password, full_name, email, type, role, gender, licence, dob, address)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *;
+INSERT INTO accounts (username, hashed_password, full_name, email, type, role, gender, licence, dob, address, is_verify)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *;
 
 -- name: CreateAccountCompany :one
 INSERT INTO account_company (account, company) VALUES ($1, $2) RETURNING *;

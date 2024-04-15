@@ -12,8 +12,8 @@ import (
 )
 
 const createAccount = `-- name: CreateAccount :one
-INSERT INTO accounts (username, hashed_password, full_name, email, type, role, gender, licence, dob, address)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id, username, hashed_password, full_name, email, type, oa_id, is_verify, password_changed_at, created_at, role, gender, licence, dob, address
+INSERT INTO accounts (username, hashed_password, full_name, email, type, role, gender, licence, dob, address, is_verify)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING id, username, hashed_password, full_name, email, type, oa_id, is_verify, password_changed_at, created_at, role, gender, licence, dob, address
 `
 
 type CreateAccountParams struct {
@@ -27,6 +27,7 @@ type CreateAccountParams struct {
 	Licence        sql.NullString `json:"licence"`
 	Dob            sql.NullTime   `json:"dob"`
 	Address        sql.NullInt32  `json:"address"`
+	IsVerify       bool           `json:"is_verify"`
 }
 
 func (q *Queries) CreateAccount(ctx context.Context, arg CreateAccountParams) (Account, error) {
@@ -41,6 +42,7 @@ func (q *Queries) CreateAccount(ctx context.Context, arg CreateAccountParams) (A
 		arg.Licence,
 		arg.Dob,
 		arg.Address,
+		arg.IsVerify,
 	)
 	var i Account
 	err := row.Scan(
