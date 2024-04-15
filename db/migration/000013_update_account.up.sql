@@ -1,4 +1,4 @@
-CREATE TYPE IF NOT EXISTS "gender" AS ENUM (
+CREATE TYPE "gender" AS ENUM (
   'nam',
   'nữ',
   'khác'
