@@ -20,6 +20,7 @@ message CreateEmployeeRequest {
   optional google.protobuf.Timestamp dob = 9;
   optional Address address = 10;
   int32 company = 11;
+  bool active = 12;
 }
 
 message CreateEmployeeResponse {
