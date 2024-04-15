@@ -141,7 +141,7 @@ func (q *Queries) ListApp(ctx context.Context, arg ListAppParams) ([]App, error)
 }
 
 const listRole = `-- name: ListRole :many
-SELECT r.id, r.code, title, note, company, user_created, user_updated, updated_at, r.created_at, c.id, name, c.code, tax_code, phone, description, address, c.created_at, owner, c.type, ac.id, ac.username, ac.hashed_password, ac.full_name, ac.email, ac.type, ac.oa_id, ac.is_verify, ac.password_changed_at, ac.created_at, ac.role, au.id, au.username, au.hashed_password, au.full_name, au.email, au.type, au.oa_id, au.is_verify, au.password_changed_at, au.created_at, au.role, ac.full_name AS created_name, au.full_name AS updated_name FROM roles r
+SELECT r.id, r.code, title, note, company, user_created, user_updated, updated_at, r.created_at, c.id, name, c.code, tax_code, phone, description, c.address, c.created_at, owner, c.type, ac.id, ac.username, ac.hashed_password, ac.full_name, ac.email, ac.type, ac.oa_id, ac.is_verify, ac.password_changed_at, ac.created_at, ac.role, ac.gender, ac.licence, ac.dob, ac.address, au.id, au.username, au.hashed_password, au.full_name, au.email, au.type, au.oa_id, au.is_verify, au.password_changed_at, au.created_at, au.role, au.gender, au.licence, au.dob, au.address, ac.full_name AS created_name, au.full_name AS updated_name FROM roles r
 JOIN companies c ON c.id = r.company
 JOIN accounts ac ON ac.id = r.user_created
 JOIN accounts au ON au.id = r.user_updated
@@ -208,6 +208,10 @@ type ListRoleRow struct {
 	PasswordChangedAt   time.Time      `json:"password_changed_at"`
 	CreatedAt_3         time.Time      `json:"created_at_3"`
 	Role                sql.NullInt32  `json:"role"`
+	Gender              NullGender     `json:"gender"`
+	Licence             sql.NullString `json:"licence"`
+	Dob                 sql.NullTime   `json:"dob"`
+	Address_2           sql.NullInt32  `json:"address_2"`
 	ID_4                int32          `json:"id_4"`
 	Username_2          string         `json:"username_2"`
 	HashedPassword_2    string         `json:"hashed_password_2"`
@@ -219,6 +223,10 @@ type ListRoleRow struct {
 	PasswordChangedAt_2 time.Time      `json:"password_changed_at_2"`
 	CreatedAt_4         time.Time      `json:"created_at_4"`
 	Role_2              sql.NullInt32  `json:"role_2"`
+	Gender_2            NullGender     `json:"gender_2"`
+	Licence_2           sql.NullString `json:"licence_2"`
+	Dob_2               sql.NullTime   `json:"dob_2"`
+	Address_3           sql.NullInt32  `json:"address_3"`
 	CreatedName         string         `json:"created_name"`
 	UpdatedName         string         `json:"updated_name"`
 }
@@ -272,6 +280,10 @@ func (q *Queries) ListRole(ctx context.Context, arg ListRoleParams) ([]ListRoleR
 			&i.PasswordChangedAt,
 			&i.CreatedAt_3,
 			&i.Role,
+			&i.Gender,
+			&i.Licence,
+			&i.Dob,
+			&i.Address_2,
 			&i.ID_4,
 			&i.Username_2,
 			&i.HashedPassword_2,
@@ -283,6 +295,10 @@ func (q *Queries) ListRole(ctx context.Context, arg ListRoleParams) ([]ListRoleR
 			&i.PasswordChangedAt_2,
 			&i.CreatedAt_4,
 			&i.Role_2,
+			&i.Gender_2,
+			&i.Licence_2,
+			&i.Dob_2,
+			&i.Address_3,
 			&i.CreatedName,
 			&i.UpdatedName,
 		); err != nil {
@@ -351,7 +367,7 @@ func (q *Queries) ListRoleItem(ctx context.Context, roles int32) ([]ListRoleItem
 }
 
 const roleDetail = `-- name: RoleDetail :one
-SELECT r.id, r.code, title, note, company, user_created, user_updated, updated_at, r.created_at, c.id, name, c.code, tax_code, phone, description, address, c.created_at, owner, c.type, ac.id, ac.username, ac.hashed_password, ac.full_name, ac.email, ac.type, ac.oa_id, ac.is_verify, ac.password_changed_at, ac.created_at, ac.role, au.id, au.username, au.hashed_password, au.full_name, au.email, au.type, au.oa_id, au.is_verify, au.password_changed_at, au.created_at, au.role, ac.full_name AS created_name, au.full_name AS updated_name FROM roles r
+SELECT r.id, r.code, title, note, company, user_created, user_updated, updated_at, r.created_at, c.id, name, c.code, tax_code, phone, description, c.address, c.created_at, owner, c.type, ac.id, ac.username, ac.hashed_password, ac.full_name, ac.email, ac.type, ac.oa_id, ac.is_verify, ac.password_changed_at, ac.created_at, ac.role, ac.gender, ac.licence, ac.dob, ac.address, au.id, au.username, au.hashed_password, au.full_name, au.email, au.type, au.oa_id, au.is_verify, au.password_changed_at, au.created_at, au.role, au.gender, au.licence, au.dob, au.address, ac.full_name AS created_name, au.full_name AS updated_name FROM roles r
 JOIN companies c ON c.id = r.company
 JOIN accounts ac ON ac.id = r.user_created
 JOIN accounts au ON ac.id = r.user_updated
@@ -389,6 +405,10 @@ type RoleDetailRow struct {
 	PasswordChangedAt   time.Time      `json:"password_changed_at"`
 	CreatedAt_3         time.Time      `json:"created_at_3"`
 	Role                sql.NullInt32  `json:"role"`
+	Gender              NullGender     `json:"gender"`
+	Licence             sql.NullString `json:"licence"`
+	Dob                 sql.NullTime   `json:"dob"`
+	Address_2           sql.NullInt32  `json:"address_2"`
 	ID_4                int32          `json:"id_4"`
 	Username_2          string         `json:"username_2"`
 	HashedPassword_2    string         `json:"hashed_password_2"`
@@ -400,6 +420,10 @@ type RoleDetailRow struct {
 	PasswordChangedAt_2 time.Time      `json:"password_changed_at_2"`
 	CreatedAt_4         time.Time      `json:"created_at_4"`
 	Role_2              sql.NullInt32  `json:"role_2"`
+	Gender_2            NullGender     `json:"gender_2"`
+	Licence_2           sql.NullString `json:"licence_2"`
+	Dob_2               sql.NullTime   `json:"dob_2"`
+	Address_3           sql.NullInt32  `json:"address_3"`
 	CreatedName         string         `json:"created_name"`
 	UpdatedName         string         `json:"updated_name"`
 }
@@ -438,6 +462,10 @@ func (q *Queries) RoleDetail(ctx context.Context, id int32) (RoleDetailRow, erro
 		&i.PasswordChangedAt,
 		&i.CreatedAt_3,
 		&i.Role,
+		&i.Gender,
+		&i.Licence,
+		&i.Dob,
+		&i.Address_2,
 		&i.ID_4,
 		&i.Username_2,
 		&i.HashedPassword_2,
@@ -449,6 +477,10 @@ func (q *Queries) RoleDetail(ctx context.Context, id int32) (RoleDetailRow, erro
 		&i.PasswordChangedAt_2,
 		&i.CreatedAt_4,
 		&i.Role_2,
+		&i.Gender_2,
+		&i.Licence_2,
+		&i.Dob_2,
+		&i.Address_3,
 		&i.CreatedName,
 		&i.UpdatedName,
 	)

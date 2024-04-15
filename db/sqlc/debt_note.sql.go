@@ -103,7 +103,7 @@ func (q *Queries) CreateRepayment(ctx context.Context, arg CreateRepaymentParams
 }
 
 const detailDebtNote = `-- name: DetailDebtNote :one
-SELECT dn.id, dn.code, title, entity, money, paymented, note, dn.type, status, dn.company, dn.user_created, exprise, dabt_note_at, a.id, username, hashed_password, a.full_name, a.email, a.type, oa_id, is_verify, password_changed_at, a.created_at, role, c.id, c.full_name, c.code, c.company, c.address, c.email, c.phone, license, birthday, c.user_created, user_updated, updated_at, c.created_at, s.id, s.code, name, deputy_name, s.phone, s.email, s.address, s.company, a.full_name AS a_name, c.full_name AS c_name, s.name AS s_name FROM debt_note dn
+SELECT dn.id, dn.code, title, entity, money, paymented, note, dn.type, status, dn.company, dn.user_created, exprise, dabt_note_at, a.id, username, hashed_password, a.full_name, a.email, a.type, oa_id, is_verify, password_changed_at, a.created_at, role, gender, licence, dob, a.address, c.id, c.full_name, c.code, c.company, c.address, c.email, c.phone, license, birthday, c.user_created, user_updated, updated_at, c.created_at, s.id, s.code, name, deputy_name, s.phone, s.email, s.address, s.company, a.full_name AS a_name, c.full_name AS c_name, s.name AS s_name FROM debt_note dn
 LEFT JOIN accounts a ON a.id = dn.user_created
 LEFT JOIN customers c ON c.code = dn.entity
 LEFT JOIN suplier s ON s.code = dn.entity
@@ -135,11 +135,15 @@ type DetailDebtNoteRow struct {
 	PasswordChangedAt sql.NullTime   `json:"password_changed_at"`
 	CreatedAt         sql.NullTime   `json:"created_at"`
 	Role              sql.NullInt32  `json:"role"`
+	Gender            NullGender     `json:"gender"`
+	Licence           sql.NullString `json:"licence"`
+	Dob               sql.NullTime   `json:"dob"`
+	Address           sql.NullInt32  `json:"address"`
 	ID_3              sql.NullInt32  `json:"id_3"`
 	FullName_2        sql.NullString `json:"full_name_2"`
 	Code_2            sql.NullString `json:"code_2"`
 	Company_2         sql.NullInt32  `json:"company_2"`
-	Address           sql.NullInt32  `json:"address"`
+	Address_2         sql.NullInt32  `json:"address_2"`
 	Email_2           sql.NullString `json:"email_2"`
 	Phone             sql.NullString `json:"phone"`
 	License           sql.NullString `json:"license"`
@@ -154,7 +158,7 @@ type DetailDebtNoteRow struct {
 	DeputyName        sql.NullString `json:"deputy_name"`
 	Phone_2           sql.NullString `json:"phone_2"`
 	Email_3           sql.NullString `json:"email_3"`
-	Address_2         sql.NullInt32  `json:"address_2"`
+	Address_3         sql.NullInt32  `json:"address_3"`
 	Company_3         sql.NullInt32  `json:"company_3"`
 	AName             sql.NullString `json:"a_name"`
 	CName             sql.NullString `json:"c_name"`
@@ -189,11 +193,15 @@ func (q *Queries) DetailDebtNote(ctx context.Context, id int32) (DetailDebtNoteR
 		&i.PasswordChangedAt,
 		&i.CreatedAt,
 		&i.Role,
+		&i.Gender,
+		&i.Licence,
+		&i.Dob,
+		&i.Address,
 		&i.ID_3,
 		&i.FullName_2,
 		&i.Code_2,
 		&i.Company_2,
-		&i.Address,
+		&i.Address_2,
 		&i.Email_2,
 		&i.Phone,
 		&i.License,
@@ -208,7 +216,7 @@ func (q *Queries) DetailDebtNote(ctx context.Context, id int32) (DetailDebtNoteR
 		&i.DeputyName,
 		&i.Phone_2,
 		&i.Email_3,
-		&i.Address_2,
+		&i.Address_3,
 		&i.Company_3,
 		&i.AName,
 		&i.CName,
@@ -348,7 +356,7 @@ func (q *Queries) GetListDebtNote(ctx context.Context, arg GetListDebtNoteParams
 }
 
 const listRepayment = `-- name: ListRepayment :many
-SELECT dr.id, code, money, dr.created_at, debt, user_created, a.id, username, hashed_password, full_name, email, type, oa_id, is_verify, password_changed_at, a.created_at, role, a.full_name AS a_name FROM debt_repayment dr
+SELECT dr.id, code, money, dr.created_at, debt, user_created, a.id, username, hashed_password, full_name, email, type, oa_id, is_verify, password_changed_at, a.created_at, role, gender, licence, dob, address, a.full_name AS a_name FROM debt_repayment dr
 LEFT JOIN accounts a ON a.id = dr.user_created
 WHERE dr.debt = $1
 `
@@ -371,6 +379,10 @@ type ListRepaymentRow struct {
 	PasswordChangedAt sql.NullTime   `json:"password_changed_at"`
 	CreatedAt_2       sql.NullTime   `json:"created_at_2"`
 	Role              sql.NullInt32  `json:"role"`
+	Gender            NullGender     `json:"gender"`
+	Licence           sql.NullString `json:"licence"`
+	Dob               sql.NullTime   `json:"dob"`
+	Address           sql.NullInt32  `json:"address"`
 	AName             sql.NullString `json:"a_name"`
 }
 
@@ -401,6 +413,10 @@ func (q *Queries) ListRepayment(ctx context.Context, debt int32) ([]ListRepaymen
 			&i.PasswordChangedAt,
 			&i.CreatedAt_2,
 			&i.Role,
+			&i.Gender,
+			&i.Licence,
+			&i.Dob,
+			&i.Address,
 			&i.AName,
 		); err != nil {
 			return nil, err

@@ -1,6 +1,12 @@
 -- SQL dump generated using DBML (dbml-lang.org)
 -- Database: PostgreSQL
--- Generated at: 2024-04-12T06:38:31.330Z
+-- Generated at: 2024-04-15T02:50:35.042Z
+
+CREATE TYPE "gender" AS ENUM (
+  'nam',
+  'nữ',
+  'khác'
+);
 
 CREATE TABLE "accounts" (
   "id" serial PRIMARY KEY,
@@ -12,6 +18,10 @@ CREATE TABLE "accounts" (
   "is_verify" boolean NOT NULL DEFAULT false,
   "role" serial,
   "oa_id" varchar,
+  "gender" gender,
+  "licence" varchar,
+  "dob" timestamp,
+  "address" serial,
   "password_changed_at" timestamptz NOT NULL DEFAULT '0001-01-01 00:00:00Z',
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
@@ -658,6 +668,8 @@ COMMENT ON COLUMN "company_type"."code" IS '
 ALTER TABLE "accounts" ADD FOREIGN KEY ("type") REFERENCES "account_type" ("id") ON DELETE CASCADE;
 
 ALTER TABLE "accounts" ADD FOREIGN KEY ("role") REFERENCES "roles" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "accounts" ADD FOREIGN KEY ("address") REFERENCES "address" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "account_media" ADD FOREIGN KEY ("account") REFERENCES "accounts" ("id") ON DELETE CASCADE;
 

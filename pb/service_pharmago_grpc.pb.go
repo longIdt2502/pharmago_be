@@ -31,6 +31,7 @@ const (
 	Pharmago_AccountDetail_FullMethodName            = "/pb.Pharmago/AccountDetail"
 	Pharmago_AccountInactive_FullMethodName          = "/pb.Pharmago/AccountInactive"
 	Pharmago_AccountList_FullMethodName              = "/pb.Pharmago/AccountList"
+	Pharmago_CreateEmployee_FullMethodName           = "/pb.Pharmago/CreateEmployee"
 	Pharmago_AppList_FullMethodName                  = "/pb.Pharmago/AppList"
 	Pharmago_RoleCreate_FullMethodName               = "/pb.Pharmago/RoleCreate"
 	Pharmago_RoleList_FullMethodName                 = "/pb.Pharmago/RoleList"
@@ -134,6 +135,7 @@ type PharmagoClient interface {
 	AccountDetail(ctx context.Context, in *AccountDetailRequest, opts ...grpc.CallOption) (*AccountDetailResponse, error)
 	AccountInactive(ctx context.Context, in *AccountInactiveRequest, opts ...grpc.CallOption) (*AccountInactiveResponse, error)
 	AccountList(ctx context.Context, in *AccountListRequest, opts ...grpc.CallOption) (*AccountListResponse, error)
+	CreateEmployee(ctx context.Context, in *CreateEmployeeRequest, opts ...grpc.CallOption) (*CreateEmployeeResponse, error)
 	// TODO ================== APP ===================
 	AppList(ctx context.Context, in *AppListRequest, opts ...grpc.CallOption) (*AppListResponse, error)
 	// TODO ================== ROLE ===================
@@ -348,6 +350,15 @@ func (c *pharmagoClient) AccountInactive(ctx context.Context, in *AccountInactiv
 func (c *pharmagoClient) AccountList(ctx context.Context, in *AccountListRequest, opts ...grpc.CallOption) (*AccountListResponse, error) {
 	out := new(AccountListResponse)
 	err := c.cc.Invoke(ctx, Pharmago_AccountList_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) CreateEmployee(ctx context.Context, in *CreateEmployeeRequest, opts ...grpc.CallOption) (*CreateEmployeeResponse, error) {
+	out := new(CreateEmployeeResponse)
+	err := c.cc.Invoke(ctx, Pharmago_CreateEmployee_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1141,6 +1152,7 @@ type PharmagoServer interface {
 	AccountDetail(context.Context, *AccountDetailRequest) (*AccountDetailResponse, error)
 	AccountInactive(context.Context, *AccountInactiveRequest) (*AccountInactiveResponse, error)
 	AccountList(context.Context, *AccountListRequest) (*AccountListResponse, error)
+	CreateEmployee(context.Context, *CreateEmployeeRequest) (*CreateEmployeeResponse, error)
 	// TODO ================== APP ===================
 	AppList(context.Context, *AppListRequest) (*AppListResponse, error)
 	// TODO ================== ROLE ===================
@@ -1285,6 +1297,9 @@ func (UnimplementedPharmagoServer) AccountInactive(context.Context, *AccountInac
 }
 func (UnimplementedPharmagoServer) AccountList(context.Context, *AccountListRequest) (*AccountListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AccountList not implemented")
+}
+func (UnimplementedPharmagoServer) CreateEmployee(context.Context, *CreateEmployeeRequest) (*CreateEmployeeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateEmployee not implemented")
 }
 func (UnimplementedPharmagoServer) AppList(context.Context, *AppListRequest) (*AppListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AppList not implemented")
@@ -1760,6 +1775,24 @@ func _Pharmago_AccountList_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PharmagoServer).AccountList(ctx, req.(*AccountListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_CreateEmployee_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateEmployeeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).CreateEmployee(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_CreateEmployee_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).CreateEmployee(ctx, req.(*CreateEmployeeRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3320,6 +3353,10 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AccountList",
 			Handler:    _Pharmago_AccountList_Handler,
+		},
+		{
+			MethodName: "CreateEmployee",
+			Handler:    _Pharmago_CreateEmployee_Handler,
 		},
 		{
 			MethodName: "AppList",

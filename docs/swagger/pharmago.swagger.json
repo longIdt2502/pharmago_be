@@ -44,6 +44,39 @@
         ]
       }
     },
+    "/account/v1/employee": {
+      "post": {
+        "summary": "Create Employee",
+        "operationId": "Pharmago_CreateEmployee",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCreateEmployeeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbCreateEmployeeRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Account"
+        ]
+      }
+    },
     "/account/v1/inactive": {
       "patch": {
         "summary": "Inactive Account",
@@ -4956,6 +4989,63 @@
       }
     },
     "pbCreateDebtRepaymentResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbCreateEmployeeRequest": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "accountType": {
+          "type": "string"
+        },
+        "role": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "gender": {
+          "type": "string"
+        },
+        "licence": {
+          "type": "string"
+        },
+        "dob": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "address": {
+          "$ref": "#/definitions/pbAddress"
+        },
+        "company": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbCreateEmployeeResponse": {
       "type": "object",
       "properties": {
         "code": {
