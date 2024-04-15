@@ -8,6 +8,7 @@ import (
 
 func AccountMapper(account db.Account) *pb.Account {
 	return &pb.Account{
+		Id:                account.ID,
 		Username:          account.Username,
 		FullName:          account.FullName,
 		Email:             account.Email,
