@@ -15,5 +15,10 @@ func AccountMapper(account db.Account) *pb.Account {
 		OaId:              &account.OaID.String,
 		PasswordChangedAt: timestamppb.New(account.PasswordChangedAt),
 		CreatedAt:         timestamppb.New(account.CreatedAt),
+		IsActive:          account.IsVerify,
+		Role:              &account.Role.Int32,
+		Gender:            (*string)(&account.Gender.Gender),
+		Licence:           &account.Licence.String,
+		Dob:               timestamppb.New(account.Dob.Time),
 	}
 }

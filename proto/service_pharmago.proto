@@ -18,6 +18,8 @@ import "rpc/account/rpc_reset_password.proto";
 import "rpc/account/rpc_check_email.proto";
 import "rpc/account/rpc_check_phone.proto";
 import "rpc/account/rpc_create_employee.proto";
+import "rpc/account/rpc_employee_detail.proto";
+import "rpc/account/rpc_update_employee.proto";
 import "rpc/role/rpc_role.proto";
 import "rpc/role/rpc_app.proto";
 
@@ -262,6 +264,25 @@ service Pharmago {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Create Employee";
+      tags: "Account";
+    };
+  }
+  rpc UpdateEmployee (EmployeeUpdateRequest) returns (EmployeeUpdateResponse) {
+    option (google.api.http) = {
+      patch: "/account/v1/employee/{id}"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Update Employee";
+      tags: "Account";
+    };
+  }
+  rpc DetailEmployee (EmployeeDetailRequest) returns (EmployeeDetailResponse) {
+    option (google.api.http) = {
+      get: "/account/v1/employee/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get Detail Employee";
       tags: "Account";
     };
   }

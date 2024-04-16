@@ -24,7 +24,15 @@ INSERT INTO account_company (account, company) VALUES ($1, $2) RETURNING *;
 -- name: UpdateAccount :one
 UPDATE accounts
 SET
-    is_verify = COALESCE(sqlc.narg(is_verify), is_verify)
+    is_verify = COALESCE(sqlc.narg(is_verify), is_verify),
+    password = COALESCE(sqlc.narg(password)::varchar, password),
+    full_name = COALESCE(sqlc.narg(full_name)::varchar, full_name),
+    email = COALESCE(sqlc.narg(email)::varchar, email),
+    account_type = COALESCE(sqlc.narg(account_type)::int, account_type),
+    role = COALESCE(sqlc.narg(role)::int, role),
+    gender = COALESCE(sqlc.narg(gender)::gender, gender),
+    licence = COALESCE(sqlc.narg(licence)::varchar, licence),
+    dob = COALESCE(sqlc.narg(dob)::timestamp, dob)
 WHERE
     id = sqlc.narg(id)
     OR username = sqlc.narg(username)

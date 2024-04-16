@@ -14,6 +14,7 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func (server *ServerGRPC) AccountDetail(ctx context.Context, _ *pb.AccountDetailRequest) (*pb.AccountDetailResponse, error) {
@@ -240,5 +241,142 @@ func (server *ServerGRPC) CreateEmployee(ctx context.Context, req *pb.CreateEmpl
 		Code:    200,
 		Message: "success",
 		Details: employee.ID,
+	}, nil
+}
+
+func (server *ServerGRPC) UpdateEmployee(ctx context.Context, req *pb.EmployeeUpdateRequest) (*pb.EmployeeUpdateResponse, error) {
+	_, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	hashPass, err := utils.HashedPassword(req.GetPassword())
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to hash password")
+	}
+
+	_, err = server.store.UpdateAddress(ctx, db.UpdateAddressParams{
+		Lat: sql.NullFloat64{
+			Float64: float64(req.GetAddress().GetLat()),
+			Valid:   true,
+		},
+		Lng: sql.NullFloat64{
+			Float64: float64(req.GetAddress().GetLng()),
+			Valid:   true,
+		},
+		District: sql.NullString{
+			String: req.GetAddress().GetDistrict().GetCode(),
+			Valid:  true,
+		},
+		Province: sql.NullString{
+			String: req.GetAddress().GetProvince().GetCode(),
+			Valid:  true,
+		},
+		Ward: sql.NullString{
+			String: req.GetAddress().GetWard().GetCode(),
+			Valid:  true,
+		},
+		Title: sql.NullString{
+			String: req.GetAddress().GetTitle(),
+			Valid:  true,
+		},
+	})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to update address")
+	}
+
+	_, err = server.store.UpdateAccount(ctx, db.UpdateAccountParams{
+		ID: sql.NullInt32{
+			Int32: req.Id,
+			Valid: true,
+		},
+		IsVerify: sql.NullBool{
+			Bool:  req.GetActive(),
+			Valid: true,
+		},
+		Password: sql.NullString{
+			String: hashPass,
+			Valid:  true,
+		},
+		FullName: sql.NullString{
+			String: req.GetFullName(),
+			Valid:  true,
+		},
+		Email: sql.NullString{
+			String: req.GetEmail(),
+			Valid:  true,
+		},
+		AccountType: sql.NullInt32{},
+		Licence: sql.NullString{
+			String: req.GetLicence(),
+			Valid:  req.Licence != nil,
+		},
+		Gender: db.NullGender{
+			Gender: db.Gender(req.GetGender()),
+			Valid:  req.Gender != nil,
+		},
+		Role: sql.NullInt32{
+			Int32: req.GetRole(),
+			Valid: req.Role != nil,
+		},
+		Dob: sql.NullTime{
+			Time:  time.Unix(req.GetDob().GetSeconds(), 0),
+			Valid: req.Dob.IsValid(),
+		},
+	})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to update account")
+	}
+
+	return &pb.EmployeeUpdateResponse{
+		Code:    200,
+		Message: "success",
+	}, nil
+}
+
+func (server *ServerGRPC) DetailEmployee(ctx context.Context, req *pb.EmployeeDetailRequest) (*pb.EmployeeDetailResponse, error) {
+	_, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	account, err := server.store.GetAccount(ctx, req.GetId())
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, status.Errorf(codes.NotFound, "account not exists")
+		}
+		return nil, status.Errorf(codes.Internal, "failed to get account")
+	}
+
+	accountPb := mapper.AccountMapper(account)
+
+	var address *pb.Address
+	if account.Address.Valid {
+		addressDb, _ := server.store.GetAddress(ctx, account.Address.Int32)
+		address = mapper.AddressMapper(ctx, server.store, addressDb)
+	}
+
+	var role *pb.Role
+	if account.Role.Valid {
+		roleDb, _ := server.store.RoleDetail(ctx, account.Role.Int32)
+		role = &pb.Role{
+			Id:              roleDb.ID,
+			Code:            roleDb.Code,
+			Title:           roleDb.Title,
+			Company:         roleDb.Company.Int32,
+			UserCreatedName: roleDb.CreatedName,
+			UserUpdatedName: roleDb.UpdatedName,
+			CreatedAt:       timestamppb.New(roleDb.CreatedAt),
+			UpdatedAt:       timestamppb.New(roleDb.UpdatedAt.Time),
+		}
+	}
+
+	accountPb.Address = address
+	accountPb.RoleData = role
+
+	return &pb.EmployeeDetailResponse{
+		Code:    200,
+		Message: "success",
+		Details: accountPb,
 	}, nil
 }

@@ -77,6 +77,76 @@
         ]
       }
     },
+    "/account/v1/employee/{id}": {
+      "get": {
+        "summary": "Get Detail Employee",
+        "operationId": "Pharmago_DetailEmployee",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbEmployeeDetailResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Account"
+        ]
+      },
+      "patch": {
+        "summary": "Update Employee",
+        "operationId": "Pharmago_UpdateEmployee",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbEmployeeUpdateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PharmagoUpdateEmployeeBody"
+            }
+          }
+        ],
+        "tags": [
+          "Account"
+        ]
+      }
+    },
     "/account/v1/inactive": {
       "patch": {
         "summary": "Inactive Account",
@@ -3974,6 +4044,43 @@
         }
       }
     },
+    "PharmagoUpdateEmployeeBody": {
+      "type": "object",
+      "properties": {
+        "password": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "accountType": {
+          "type": "string"
+        },
+        "role": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "gender": {
+          "type": "string"
+        },
+        "licence": {
+          "type": "string"
+        },
+        "dob": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "address": {
+          "$ref": "#/definitions/pbAddress"
+        },
+        "active": {
+          "type": "boolean"
+        }
+      }
+    },
     "PharmagoWarehouseUpdateBody": {
       "type": "object",
       "properties": {
@@ -4020,6 +4127,32 @@
         },
         "oaId": {
           "type": "string"
+        },
+        "isActive": {
+          "type": "boolean"
+        },
+        "accountType": {
+          "type": "string"
+        },
+        "role": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "gender": {
+          "type": "string"
+        },
+        "licence": {
+          "type": "string"
+        },
+        "dob": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "address": {
+          "$ref": "#/definitions/pbAddress"
+        },
+        "roleData": {
+          "$ref": "#/definitions/pbRole"
         },
         "passwordChangedAt": {
           "type": "string",
@@ -5682,6 +5815,33 @@
         "count": {
           "type": "integer",
           "format": "int32"
+        }
+      }
+    },
+    "pbEmployeeDetailResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "$ref": "#/definitions/pbAccount"
+        }
+      }
+    },
+    "pbEmployeeUpdateResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
         }
       }
     },

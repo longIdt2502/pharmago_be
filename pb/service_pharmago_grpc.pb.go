@@ -32,6 +32,8 @@ const (
 	Pharmago_AccountInactive_FullMethodName          = "/pb.Pharmago/AccountInactive"
 	Pharmago_AccountList_FullMethodName              = "/pb.Pharmago/AccountList"
 	Pharmago_CreateEmployee_FullMethodName           = "/pb.Pharmago/CreateEmployee"
+	Pharmago_UpdateEmployee_FullMethodName           = "/pb.Pharmago/UpdateEmployee"
+	Pharmago_DetailEmployee_FullMethodName           = "/pb.Pharmago/DetailEmployee"
 	Pharmago_AppList_FullMethodName                  = "/pb.Pharmago/AppList"
 	Pharmago_RoleCreate_FullMethodName               = "/pb.Pharmago/RoleCreate"
 	Pharmago_RoleList_FullMethodName                 = "/pb.Pharmago/RoleList"
@@ -136,6 +138,8 @@ type PharmagoClient interface {
 	AccountInactive(ctx context.Context, in *AccountInactiveRequest, opts ...grpc.CallOption) (*AccountInactiveResponse, error)
 	AccountList(ctx context.Context, in *AccountListRequest, opts ...grpc.CallOption) (*AccountListResponse, error)
 	CreateEmployee(ctx context.Context, in *CreateEmployeeRequest, opts ...grpc.CallOption) (*CreateEmployeeResponse, error)
+	UpdateEmployee(ctx context.Context, in *EmployeeUpdateRequest, opts ...grpc.CallOption) (*EmployeeUpdateResponse, error)
+	DetailEmployee(ctx context.Context, in *EmployeeDetailRequest, opts ...grpc.CallOption) (*EmployeeDetailResponse, error)
 	// TODO ================== APP ===================
 	AppList(ctx context.Context, in *AppListRequest, opts ...grpc.CallOption) (*AppListResponse, error)
 	// TODO ================== ROLE ===================
@@ -359,6 +363,24 @@ func (c *pharmagoClient) AccountList(ctx context.Context, in *AccountListRequest
 func (c *pharmagoClient) CreateEmployee(ctx context.Context, in *CreateEmployeeRequest, opts ...grpc.CallOption) (*CreateEmployeeResponse, error) {
 	out := new(CreateEmployeeResponse)
 	err := c.cc.Invoke(ctx, Pharmago_CreateEmployee_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) UpdateEmployee(ctx context.Context, in *EmployeeUpdateRequest, opts ...grpc.CallOption) (*EmployeeUpdateResponse, error) {
+	out := new(EmployeeUpdateResponse)
+	err := c.cc.Invoke(ctx, Pharmago_UpdateEmployee_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) DetailEmployee(ctx context.Context, in *EmployeeDetailRequest, opts ...grpc.CallOption) (*EmployeeDetailResponse, error) {
+	out := new(EmployeeDetailResponse)
+	err := c.cc.Invoke(ctx, Pharmago_DetailEmployee_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1153,6 +1175,8 @@ type PharmagoServer interface {
 	AccountInactive(context.Context, *AccountInactiveRequest) (*AccountInactiveResponse, error)
 	AccountList(context.Context, *AccountListRequest) (*AccountListResponse, error)
 	CreateEmployee(context.Context, *CreateEmployeeRequest) (*CreateEmployeeResponse, error)
+	UpdateEmployee(context.Context, *EmployeeUpdateRequest) (*EmployeeUpdateResponse, error)
+	DetailEmployee(context.Context, *EmployeeDetailRequest) (*EmployeeDetailResponse, error)
 	// TODO ================== APP ===================
 	AppList(context.Context, *AppListRequest) (*AppListResponse, error)
 	// TODO ================== ROLE ===================
@@ -1300,6 +1324,12 @@ func (UnimplementedPharmagoServer) AccountList(context.Context, *AccountListRequ
 }
 func (UnimplementedPharmagoServer) CreateEmployee(context.Context, *CreateEmployeeRequest) (*CreateEmployeeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateEmployee not implemented")
+}
+func (UnimplementedPharmagoServer) UpdateEmployee(context.Context, *EmployeeUpdateRequest) (*EmployeeUpdateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateEmployee not implemented")
+}
+func (UnimplementedPharmagoServer) DetailEmployee(context.Context, *EmployeeDetailRequest) (*EmployeeDetailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DetailEmployee not implemented")
 }
 func (UnimplementedPharmagoServer) AppList(context.Context, *AppListRequest) (*AppListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AppList not implemented")
@@ -1793,6 +1823,42 @@ func _Pharmago_CreateEmployee_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PharmagoServer).CreateEmployee(ctx, req.(*CreateEmployeeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_UpdateEmployee_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EmployeeUpdateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).UpdateEmployee(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_UpdateEmployee_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).UpdateEmployee(ctx, req.(*EmployeeUpdateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_DetailEmployee_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EmployeeDetailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).DetailEmployee(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_DetailEmployee_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).DetailEmployee(ctx, req.(*EmployeeDetailRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3357,6 +3423,14 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateEmployee",
 			Handler:    _Pharmago_CreateEmployee_Handler,
+		},
+		{
+			MethodName: "UpdateEmployee",
+			Handler:    _Pharmago_UpdateEmployee_Handler,
+		},
+		{
+			MethodName: "DetailEmployee",
+			Handler:    _Pharmago_DetailEmployee_Handler,
 		},
 		{
 			MethodName: "AppList",
