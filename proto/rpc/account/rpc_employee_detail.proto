@@ -1,0 +1,16 @@
+syntax = "proto3";
+package pb;
+
+import "entities/account.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message EmployeeDetailRequest {
+    int32 id = 1;
+}
+
+message EmployeeDetailResponse {
+  int32 code = 1;
+  string message = 2;
+  Account details = 3;
+}

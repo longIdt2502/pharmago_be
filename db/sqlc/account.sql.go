@@ -332,21 +332,49 @@ func (q *Queries) ResetPassword(ctx context.Context, arg ResetPasswordParams) (A
 const updateAccount = `-- name: UpdateAccount :one
 UPDATE accounts
 SET
-    is_verify = COALESCE($1, is_verify)
+    is_verify = COALESCE($1, is_verify),
+    password = COALESCE($2::varchar, password),
+    full_name = COALESCE($3::varchar, full_name),
+    email = COALESCE($4::varchar, email),
+    account_type = COALESCE($5::int, account_type),
+    role = COALESCE($6::int, role),
+    gender = COALESCE($7::gender, gender),
+    licence = COALESCE($8::varchar, licence),
+    dob = COALESCE($9::timestamp, dob)
 WHERE
-    id = $2
-    OR username = $3
+    id = $10
+    OR username = $11
 RETURNING id, username, hashed_password, full_name, email, type, oa_id, is_verify, password_changed_at, created_at, role, gender, licence, dob, address
 `
 
 type UpdateAccountParams struct {
-	IsVerify sql.NullBool   `json:"is_verify"`
-	ID       sql.NullInt32  `json:"id"`
-	Username sql.NullString `json:"username"`
+	IsVerify    sql.NullBool   `json:"is_verify"`
+	Password    sql.NullString `json:"password"`
+	FullName    sql.NullString `json:"full_name"`
+	Email       sql.NullString `json:"email"`
+	AccountType sql.NullInt32  `json:"account_type"`
+	Role        sql.NullInt32  `json:"role"`
+	Gender      NullGender     `json:"gender"`
+	Licence     sql.NullString `json:"licence"`
+	Dob         sql.NullTime   `json:"dob"`
+	ID          sql.NullInt32  `json:"id"`
+	Username    sql.NullString `json:"username"`
 }
 
 func (q *Queries) UpdateAccount(ctx context.Context, arg UpdateAccountParams) (Account, error) {
-	row := q.db.QueryRowContext(ctx, updateAccount, arg.IsVerify, arg.ID, arg.Username)
+	row := q.db.QueryRowContext(ctx, updateAccount,
+		arg.IsVerify,
+		arg.Password,
+		arg.FullName,
+		arg.Email,
+		arg.AccountType,
+		arg.Role,
+		arg.Gender,
+		arg.Licence,
+		arg.Dob,
+		arg.ID,
+		arg.Username,
+	)
 	var i Account
 	err := row.Scan(
 		&i.ID,

@@ -3,6 +3,8 @@ syntax = "proto3";
 package pb;
 
 import "google/protobuf/timestamp.proto";
+import "entities/address.proto";
+import "entities/role.proto";
 
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
@@ -13,6 +15,14 @@ message Account {
   string email = 4;
   int64 verify_id = 5;
   optional string oa_id = 6;
-  google.protobuf.Timestamp password_changed_at = 7;
-  google.protobuf.Timestamp created_at = 8;
+  bool is_active = 7;
+  string account_type = 8;
+  optional int32 role = 9;
+  optional string gender = 10;
+  optional string licence = 11;
+  optional google.protobuf.Timestamp dob = 12;
+  optional Address address = 13;
+  optional Role roleData = 14;
+  google.protobuf.Timestamp password_changed_at = 15;
+  google.protobuf.Timestamp created_at = 16;
 }
