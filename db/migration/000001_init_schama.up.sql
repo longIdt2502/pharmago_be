@@ -8,7 +8,6 @@ CREATE TABLE "accounts" (
     "full_name" varchar NOT NULL,
     "email" varchar UNIQUE NOT NULL,
     "type" serial NOT NULL,
-    "oa_id" varchar,
     "is_verify" boolean NOT NULL DEFAULT false,
     "password_changed_at" timestamptz NOT NULL DEFAULT '0001-01-01 00:00:00Z',
     "created_at" timestamptz NOT NULL DEFAULT (now())
@@ -61,6 +60,7 @@ CREATE TABLE "companies" (
     "phone" varchar,
     "description" varchar,
     "address" serial,
+    "oa_id" varchar,
     "created_at" timestamptz NOT NULL DEFAULT (now()),
     "owner" serial NOT NULL
 );

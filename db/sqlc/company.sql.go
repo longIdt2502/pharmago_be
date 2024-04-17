@@ -15,7 +15,7 @@ INSERT INTO companies (
     name, code, type, tax_code, phone, description, address, owner
 ) VALUES (
     $1, $2, $3, $4, $5, $6, $7, $8
-) RETURNING id, name, code, tax_code, phone, description, address, created_at, owner, type
+) RETURNING id, name, code, tax_code, phone, description, address, oa_id, created_at, owner, type
 `
 
 type CreateCompanyParams struct {
@@ -49,6 +49,7 @@ func (q *Queries) CreateCompany(ctx context.Context, arg CreateCompanyParams) (C
 		&i.Phone,
 		&i.Description,
 		&i.Address,
+		&i.OaID,
 		&i.CreatedAt,
 		&i.Owner,
 		&i.Type,
@@ -57,7 +58,7 @@ func (q *Queries) CreateCompany(ctx context.Context, arg CreateCompanyParams) (C
 }
 
 const getCompanies = `-- name: GetCompanies :many
-SELECT id, name, code, tax_code, phone, description, address, created_at, owner, type FROM companies
+SELECT id, name, code, tax_code, phone, description, address, oa_id, created_at, owner, type FROM companies
 WHERE owner = $1::int AND
     (name ILIKE COALESCE($2::varchar, '%') OR
     phone ILIKE COALESCE($2::varchar, '%'))
@@ -95,6 +96,7 @@ func (q *Queries) GetCompanies(ctx context.Context, arg GetCompaniesParams) ([]C
 			&i.Phone,
 			&i.Description,
 			&i.Address,
+			&i.OaID,
 			&i.CreatedAt,
 			&i.Owner,
 			&i.Type,
@@ -113,7 +115,7 @@ func (q *Queries) GetCompanies(ctx context.Context, arg GetCompaniesParams) ([]C
 }
 
 const getCompanyById = `-- name: GetCompanyById :one
-SELECT id, name, code, tax_code, phone, description, address, created_at, owner, type FROM companies
+SELECT id, name, code, tax_code, phone, description, address, oa_id, created_at, owner, type FROM companies
 WHERE id = $1
 LIMIT 1
 `
@@ -129,6 +131,7 @@ func (q *Queries) GetCompanyById(ctx context.Context, id int32) (Company, error)
 		&i.Phone,
 		&i.Description,
 		&i.Address,
+		&i.OaID,
 		&i.CreatedAt,
 		&i.Owner,
 		&i.Type,

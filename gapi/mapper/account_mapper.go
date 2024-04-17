@@ -12,7 +12,6 @@ func AccountMapper(account db.Account) *pb.Account {
 		Username:          account.Username,
 		FullName:          account.FullName,
 		Email:             account.Email,
-		OaId:              &account.OaID.String,
 		PasswordChangedAt: timestamppb.New(account.PasswordChangedAt),
 		CreatedAt:         timestamppb.New(account.CreatedAt),
 		IsActive:          account.IsVerify,

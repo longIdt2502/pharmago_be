@@ -2,6 +2,7 @@ package woker
 
 import (
 	"context"
+
 	"github.com/hibiken/asynq"
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/mail"
@@ -16,6 +17,7 @@ const (
 type TaskProcessor interface {
 	Start() error
 	ProcessorTaskSendVerifyEmail(ctx context.Context, task *asynq.Task) error
+	ProcessorTaskSendOrderZns(ctx context.Context, task *asynq.Task) error
 }
 
 type RedisTaskProcessor struct {
@@ -53,5 +55,7 @@ func (processor *RedisTaskProcessor) Start() error {
 	mux := asynq.NewServeMux()
 
 	mux.HandleFunc(TaskSendVerifyEmail, processor.ProcessorTaskSendVerifyEmail)
+	mux.HandleFunc(TaskSendOrderZns, processor.ProcessorTaskSendOrderZns)
+
 	return processor.server.Start(mux)
 }

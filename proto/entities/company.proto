@@ -17,4 +17,5 @@ message Company {
   optional string description = 7;
   Address address = 8;
   int32 owner = 9;
+  optional string oa_id = 10;
 }

@@ -14,15 +14,14 @@ message Account {
   string full_name = 3;
   string email = 4;
   int64 verify_id = 5;
-  optional string oa_id = 6;
-  bool is_active = 7;
-  string account_type = 8;
-  optional int32 role = 9;
-  optional string gender = 10;
-  optional string licence = 11;
-  optional google.protobuf.Timestamp dob = 12;
-  optional Address address = 13;
-  optional Role roleData = 14;
-  google.protobuf.Timestamp password_changed_at = 15;
-  google.protobuf.Timestamp created_at = 16;
+  bool is_active = 6;
+  string account_type = 7;
+  optional int32 role = 8;
+  optional string gender = 9;
+  optional string licence = 10;
+  optional google.protobuf.Timestamp dob = 11;
+  optional Address address = 12;
+  optional Role roleData = 13;
+  google.protobuf.Timestamp password_changed_at = 14;
+  google.protobuf.Timestamp created_at = 15;
 }

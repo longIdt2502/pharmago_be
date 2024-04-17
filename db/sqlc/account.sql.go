@@ -13,7 +13,7 @@ import (
 
 const createAccount = `-- name: CreateAccount :one
 INSERT INTO accounts (username, hashed_password, full_name, email, type, role, gender, licence, dob, address, is_verify)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING id, username, hashed_password, full_name, email, type, oa_id, is_verify, password_changed_at, created_at, role, gender, licence, dob, address
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, created_at, role, gender, licence, dob, address
 `
 
 type CreateAccountParams struct {
@@ -52,7 +52,6 @@ func (q *Queries) CreateAccount(ctx context.Context, arg CreateAccountParams) (A
 		&i.FullName,
 		&i.Email,
 		&i.Type,
-		&i.OaID,
 		&i.IsVerify,
 		&i.PasswordChangedAt,
 		&i.CreatedAt,
@@ -82,7 +81,7 @@ func (q *Queries) CreateAccountCompany(ctx context.Context, arg CreateAccountCom
 }
 
 const getAccount = `-- name: GetAccount :one
-SELECT id, username, hashed_password, full_name, email, type, oa_id, is_verify, password_changed_at, created_at, role, gender, licence, dob, address FROM accounts
+SELECT id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, created_at, role, gender, licence, dob, address FROM accounts
 WHERE id = $1 LIMIT 1
 `
 
@@ -96,7 +95,6 @@ func (q *Queries) GetAccount(ctx context.Context, id int32) (Account, error) {
 		&i.FullName,
 		&i.Email,
 		&i.Type,
-		&i.OaID,
 		&i.IsVerify,
 		&i.PasswordChangedAt,
 		&i.CreatedAt,
@@ -110,7 +108,7 @@ func (q *Queries) GetAccount(ctx context.Context, id int32) (Account, error) {
 }
 
 const getAccountByMail = `-- name: GetAccountByMail :one
-SELECT id, username, hashed_password, full_name, email, type, oa_id, is_verify, password_changed_at, created_at, role, gender, licence, dob, address FROM accounts
+SELECT id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, created_at, role, gender, licence, dob, address FROM accounts
 WHERE email = $1 LIMIT 1
 `
 
@@ -124,7 +122,6 @@ func (q *Queries) GetAccountByMail(ctx context.Context, email string) (Account, 
 		&i.FullName,
 		&i.Email,
 		&i.Type,
-		&i.OaID,
 		&i.IsVerify,
 		&i.PasswordChangedAt,
 		&i.CreatedAt,
@@ -138,7 +135,7 @@ func (q *Queries) GetAccountByMail(ctx context.Context, email string) (Account, 
 }
 
 const getAccountByPhone = `-- name: GetAccountByPhone :one
-SELECT id, username, hashed_password, full_name, email, type, oa_id, is_verify, password_changed_at, created_at, role, gender, licence, dob, address FROM accounts
+SELECT id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, created_at, role, gender, licence, dob, address FROM accounts
 WHERE username = $1 LIMIT 1
 `
 
@@ -152,7 +149,6 @@ func (q *Queries) GetAccountByPhone(ctx context.Context, username string) (Accou
 		&i.FullName,
 		&i.Email,
 		&i.Type,
-		&i.OaID,
 		&i.IsVerify,
 		&i.PasswordChangedAt,
 		&i.CreatedAt,
@@ -166,7 +162,7 @@ func (q *Queries) GetAccountByPhone(ctx context.Context, username string) (Accou
 }
 
 const getAccountByUseName = `-- name: GetAccountByUseName :one
-SELECT id, username, hashed_password, full_name, email, type, oa_id, is_verify, password_changed_at, created_at, role, gender, licence, dob, address FROM accounts
+SELECT id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, created_at, role, gender, licence, dob, address FROM accounts
 WHERE username = $1 LIMIT 1
 `
 
@@ -180,7 +176,6 @@ func (q *Queries) GetAccountByUseName(ctx context.Context, username string) (Acc
 		&i.FullName,
 		&i.Email,
 		&i.Type,
-		&i.OaID,
 		&i.IsVerify,
 		&i.PasswordChangedAt,
 		&i.CreatedAt,
@@ -194,7 +189,7 @@ func (q *Queries) GetAccountByUseName(ctx context.Context, username string) (Acc
 }
 
 const listAccount = `-- name: ListAccount :many
-SELECT a.id, username, hashed_password, full_name, email, type, oa_id, is_verify, password_changed_at, created_at, role, gender, licence, dob, address, ac.id, account, company FROM accounts a
+SELECT a.id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, created_at, role, gender, licence, dob, address, ac.id, account, company FROM accounts a
 LEFT JOIN account_company ac ON ac.account = a.id
 WHERE ac.company = $1::int
 AND (
@@ -229,7 +224,6 @@ type ListAccountRow struct {
 	FullName          string         `json:"full_name"`
 	Email             string         `json:"email"`
 	Type              int32          `json:"type"`
-	OaID              sql.NullString `json:"oa_id"`
 	IsVerify          bool           `json:"is_verify"`
 	PasswordChangedAt time.Time      `json:"password_changed_at"`
 	CreatedAt         time.Time      `json:"created_at"`
@@ -266,7 +260,6 @@ func (q *Queries) ListAccount(ctx context.Context, arg ListAccountParams) ([]Lis
 			&i.FullName,
 			&i.Email,
 			&i.Type,
-			&i.OaID,
 			&i.IsVerify,
 			&i.PasswordChangedAt,
 			&i.CreatedAt,
@@ -298,7 +291,7 @@ SET
     hashed_password = COALESCE($1, hashed_password)
 WHERE
     email = $2
-RETURNING id, username, hashed_password, full_name, email, type, oa_id, is_verify, password_changed_at, created_at, role, gender, licence, dob, address
+RETURNING id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, created_at, role, gender, licence, dob, address
 `
 
 type ResetPasswordParams struct {
@@ -316,7 +309,6 @@ func (q *Queries) ResetPassword(ctx context.Context, arg ResetPasswordParams) (A
 		&i.FullName,
 		&i.Email,
 		&i.Type,
-		&i.OaID,
 		&i.IsVerify,
 		&i.PasswordChangedAt,
 		&i.CreatedAt,
@@ -344,7 +336,7 @@ SET
 WHERE
     id = $10
     OR username = $11
-RETURNING id, username, hashed_password, full_name, email, type, oa_id, is_verify, password_changed_at, created_at, role, gender, licence, dob, address
+RETURNING id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, created_at, role, gender, licence, dob, address
 `
 
 type UpdateAccountParams struct {
@@ -383,7 +375,6 @@ func (q *Queries) UpdateAccount(ctx context.Context, arg UpdateAccountParams) (A
 		&i.FullName,
 		&i.Email,
 		&i.Type,
-		&i.OaID,
 		&i.IsVerify,
 		&i.PasswordChangedAt,
 		&i.CreatedAt,

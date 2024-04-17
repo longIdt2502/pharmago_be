@@ -80,5 +80,6 @@ func CompanyMapper(ctx context.Context, store *db.Store, data db.Company) *pb.Co
 		Description: nil,
 		Address:     addressPb,
 		Owner:       int32(data.Owner),
+		OaId:        &data.OaID.String,
 	}
 }

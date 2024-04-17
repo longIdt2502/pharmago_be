@@ -4232,9 +4232,6 @@
           "type": "string",
           "format": "int64"
         },
-        "oaId": {
-          "type": "string"
-        },
         "isActive": {
           "type": "boolean"
         },
@@ -4851,6 +4848,9 @@
         "owner": {
           "type": "integer",
           "format": "int32"
+        },
+        "oaId": {
+          "type": "string"
         }
       }
     },
