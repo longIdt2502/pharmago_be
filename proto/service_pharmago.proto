@@ -97,6 +97,9 @@ import "rpc/service/rpc_service_list.proto";
 import "rpc/service/rpc_service_delete.proto";
 import "rpc/service/rpc_service_update.proto";
 
+import "rpc/conversation/rpc_list_conversation.proto";
+import "rpc/conversation/rpc_list_message.proto";
+
 
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
@@ -1115,6 +1118,26 @@ service Pharmago {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Delete Service";
       tags: "Service";
+    };
+  };
+
+  // ================== CONVERSATION ===================
+  rpc ConversationList (ListConversationRequest) returns (ListConversationResponse) {
+    option (google.api.http) = {
+      get: "/conversation/v1/list"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List Conversation";
+      tags: "Conversation";
+    };
+  };
+  rpc MessageList (ListMessageRequest) returns (ListMessageResponse) {
+    option (google.api.http) = {
+      get: "/message/v1/list"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List Message";
+      tags: "Conversation";
     };
   };
 }

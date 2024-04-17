@@ -1,9 +1,10 @@
 package utils
 
 import (
-	"github.com/spf13/viper"
 	"os"
 	"time"
+
+	"github.com/spf13/viper"
 )
 
 type Config struct {
@@ -23,6 +24,7 @@ type Config struct {
 	B2Bucket            string        `mapstructure:"B2_BUCKET"`
 	B2AccountId         string        `mapstructure:"B2_ACCOUNT_ID"`
 	MigrationURL        string        `mapstructure:"MIGRATION_URL"`
+	WezoloServerAdress  string        `mapstructure:"WEZOLO_SERVER_ADDRESS"`
 }
 
 func LoadConfig(path string) (config Config, err error) {
@@ -51,6 +53,7 @@ func LoadConfig(path string) (config Config, err error) {
 		config.B2Bucket = os.Getenv("B2_BUCKET")
 		config.B2AccountId = os.Getenv("B2_ACCOUNT_ID")
 		config.MigrationURL = os.Getenv("MIGRATION_URL")
+		config.MigrationURL = os.Getenv("WEZOLO_SERVER_ADDRESS")
 
 		err = nil
 

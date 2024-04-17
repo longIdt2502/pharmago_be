@@ -117,6 +117,8 @@ const (
 	Pharmago_ServiceDetail_FullMethodName            = "/pb.Pharmago/ServiceDetail"
 	Pharmago_ServiceUpdate_FullMethodName            = "/pb.Pharmago/ServiceUpdate"
 	Pharmago_ServiceDelete_FullMethodName            = "/pb.Pharmago/ServiceDelete"
+	Pharmago_ConversationList_FullMethodName         = "/pb.Pharmago/ConversationList"
+	Pharmago_MessageList_FullMethodName              = "/pb.Pharmago/MessageList"
 )
 
 // PharmagoClient is the client API for Pharmago service.
@@ -242,6 +244,9 @@ type PharmagoClient interface {
 	ServiceDetail(ctx context.Context, in *ServiceDetailRequest, opts ...grpc.CallOption) (*ServiceDetailResponse, error)
 	ServiceUpdate(ctx context.Context, in *ServiceUpdateRequest, opts ...grpc.CallOption) (*ServiceUpdateResponse, error)
 	ServiceDelete(ctx context.Context, in *ServiceDeleteRequest, opts ...grpc.CallOption) (*ServiceDeleteResponse, error)
+	// ================== CONVERSATION ===================
+	ConversationList(ctx context.Context, in *ListConversationRequest, opts ...grpc.CallOption) (*ListConversationResponse, error)
+	MessageList(ctx context.Context, in *ListMessageRequest, opts ...grpc.CallOption) (*ListMessageResponse, error)
 }
 
 type pharmagoClient struct {
@@ -1156,6 +1161,24 @@ func (c *pharmagoClient) ServiceDelete(ctx context.Context, in *ServiceDeleteReq
 	return out, nil
 }
 
+func (c *pharmagoClient) ConversationList(ctx context.Context, in *ListConversationRequest, opts ...grpc.CallOption) (*ListConversationResponse, error) {
+	out := new(ListConversationResponse)
+	err := c.cc.Invoke(ctx, Pharmago_ConversationList_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) MessageList(ctx context.Context, in *ListMessageRequest, opts ...grpc.CallOption) (*ListMessageResponse, error) {
+	out := new(ListMessageResponse)
+	err := c.cc.Invoke(ctx, Pharmago_MessageList_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PharmagoServer is the server API for Pharmago service.
 // All implementations must embed UnimplementedPharmagoServer
 // for forward compatibility
@@ -1279,6 +1302,9 @@ type PharmagoServer interface {
 	ServiceDetail(context.Context, *ServiceDetailRequest) (*ServiceDetailResponse, error)
 	ServiceUpdate(context.Context, *ServiceUpdateRequest) (*ServiceUpdateResponse, error)
 	ServiceDelete(context.Context, *ServiceDeleteRequest) (*ServiceDeleteResponse, error)
+	// ================== CONVERSATION ===================
+	ConversationList(context.Context, *ListConversationRequest) (*ListConversationResponse, error)
+	MessageList(context.Context, *ListMessageRequest) (*ListMessageResponse, error)
 	mustEmbedUnimplementedPharmagoServer()
 }
 
@@ -1579,6 +1605,12 @@ func (UnimplementedPharmagoServer) ServiceUpdate(context.Context, *ServiceUpdate
 }
 func (UnimplementedPharmagoServer) ServiceDelete(context.Context, *ServiceDeleteRequest) (*ServiceDeleteResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ServiceDelete not implemented")
+}
+func (UnimplementedPharmagoServer) ConversationList(context.Context, *ListConversationRequest) (*ListConversationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConversationList not implemented")
+}
+func (UnimplementedPharmagoServer) MessageList(context.Context, *ListMessageRequest) (*ListMessageResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MessageList not implemented")
 }
 func (UnimplementedPharmagoServer) mustEmbedUnimplementedPharmagoServer() {}
 
@@ -3365,6 +3397,42 @@ func _Pharmago_ServiceDelete_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Pharmago_ConversationList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListConversationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ConversationList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_ConversationList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ConversationList(ctx, req.(*ListConversationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_MessageList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListMessageRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).MessageList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_MessageList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).MessageList(ctx, req.(*ListMessageRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Pharmago_ServiceDesc is the grpc.ServiceDesc for Pharmago service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -3759,6 +3827,14 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ServiceDelete",
 			Handler:    _Pharmago_ServiceDelete_Handler,
+		},
+		{
+			MethodName: "ConversationList",
+			Handler:    _Pharmago_ConversationList_Handler,
+		},
+		{
+			MethodName: "MessageList",
+			Handler:    _Pharmago_MessageList_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
