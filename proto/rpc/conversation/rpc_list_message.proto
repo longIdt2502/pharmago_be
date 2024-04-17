@@ -8,7 +8,7 @@ import "entities/conversation.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
 message ListMessageRequest {
-    int32 oa_id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    int64 oa_id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
         description: "int32 value field",
         required: [
           "oa_id"
