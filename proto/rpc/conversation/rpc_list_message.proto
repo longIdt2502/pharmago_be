@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+import "entities/conversation.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+message ListMessageRequest {
+    int32 oa_id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "int32 value field",
+        required: [
+          "oa_id"
+        ],
+    }];
+    string user_id = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "string value field",
+        required: [
+          "user_id"
+        ],
+    }];
+    int32 page = 3;
+    int32 per_page = 4;
+}
+
+message ListMessageResponse {
+    int32 code = 1;
+    string message = 2;
+    repeated Message details = 3;
+}
