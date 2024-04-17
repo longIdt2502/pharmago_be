@@ -38,7 +38,6 @@ func (server *ServerGRPC) ConversationList(ctx context.Context, req *pb.ListConv
 	client := &http.Client{}
 
 	url := fmt.Sprintf("%s/v1/conversations/%d?search=%s&page=%d&per_page=%d", server.config.WezoloServerAdress, req.GetOaId(), req.GetSerach(), req.GetPage(), req.GetPerPage())
-
 	reqHttp, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, fmt.Sprintln("Error creating HTTP request:", err))
