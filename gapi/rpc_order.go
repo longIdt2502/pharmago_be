@@ -5,12 +5,15 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"strconv"
 	"time"
 
+	"github.com/hibiken/asynq"
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/gapi/mapper"
 	"github.com/longIdt2502/pharmago_be/pb"
+	"github.com/longIdt2502/pharmago_be/woker"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -29,6 +32,35 @@ func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRe
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, fmt.Sprintf("failed: %e", err))
 	}
+
+	company, _ := server.store.GetCompanyById(ctx, req.Order.Company)
+	order, _ := server.store.DetailOrder(ctx, db.DetailOrderParams{ID: sql.NullInt32{
+		Int32: result.Id,
+		Valid: true,
+	}})
+
+	// company := req.Order.GetCompany()
+	payload := &woker.PayloadZNS{
+		OaID: company.OaID.String,
+		Data: woker.PayloadZNSData{
+			Name:      *req.Order.CustomerName,
+			Status:    "Chờ xác nhận",
+			CreatedAt: time.Now().Format("15:04:05 02/01/2006"),
+			Total:     strconv.FormatFloat(float64(req.Order.GetTotalPrice()), 'f', -1, 64),
+			Phone:     *req.Order.CustomerPhone,
+			Code:      order.Code,
+		},
+		Phone: *req.Order.CustomerPhone,
+		Mode:  "development",
+	}
+
+	opts := []asynq.Option{
+		asynq.MaxRetry(10),
+		asynq.ProcessIn(1 * time.Second),
+		asynq.Queue(woker.QueueCritical),
+	}
+
+	_ = server.taskDistributor.DistributorTaskSendOrderZns(ctx, payload, opts...)
 
 	return &pb.OrderCreateResponse{
 		Code:    200,

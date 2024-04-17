@@ -103,7 +103,7 @@ func (q *Queries) CreateRepayment(ctx context.Context, arg CreateRepaymentParams
 }
 
 const detailDebtNote = `-- name: DetailDebtNote :one
-SELECT dn.id, dn.code, title, entity, money, paymented, note, dn.type, status, dn.company, dn.user_created, exprise, dabt_note_at, a.id, username, hashed_password, a.full_name, a.email, a.type, oa_id, is_verify, password_changed_at, a.created_at, role, gender, licence, dob, a.address, c.id, c.full_name, c.code, c.company, c.address, c.email, c.phone, license, birthday, c.user_created, user_updated, updated_at, c.created_at, s.id, s.code, name, deputy_name, s.phone, s.email, s.address, s.company, a.full_name AS a_name, c.full_name AS c_name, s.name AS s_name FROM debt_note dn
+SELECT dn.id, dn.code, title, entity, money, paymented, note, dn.type, status, dn.company, dn.user_created, exprise, dabt_note_at, a.id, username, hashed_password, a.full_name, a.email, a.type, is_verify, password_changed_at, a.created_at, role, gender, licence, dob, a.address, c.id, c.full_name, c.code, c.company, c.address, c.email, c.phone, license, birthday, c.user_created, user_updated, updated_at, c.created_at, s.id, s.code, name, deputy_name, s.phone, s.email, s.address, s.company, a.full_name AS a_name, c.full_name AS c_name, s.name AS s_name FROM debt_note dn
 LEFT JOIN accounts a ON a.id = dn.user_created
 LEFT JOIN customers c ON c.code = dn.entity
 LEFT JOIN suplier s ON s.code = dn.entity
@@ -130,7 +130,6 @@ type DetailDebtNoteRow struct {
 	FullName          sql.NullString `json:"full_name"`
 	Email             sql.NullString `json:"email"`
 	Type_2            sql.NullInt32  `json:"type_2"`
-	OaID              sql.NullString `json:"oa_id"`
 	IsVerify          sql.NullBool   `json:"is_verify"`
 	PasswordChangedAt sql.NullTime   `json:"password_changed_at"`
 	CreatedAt         sql.NullTime   `json:"created_at"`
@@ -188,7 +187,6 @@ func (q *Queries) DetailDebtNote(ctx context.Context, id int32) (DetailDebtNoteR
 		&i.FullName,
 		&i.Email,
 		&i.Type_2,
-		&i.OaID,
 		&i.IsVerify,
 		&i.PasswordChangedAt,
 		&i.CreatedAt,
@@ -356,7 +354,7 @@ func (q *Queries) GetListDebtNote(ctx context.Context, arg GetListDebtNoteParams
 }
 
 const listRepayment = `-- name: ListRepayment :many
-SELECT dr.id, code, money, dr.created_at, debt, user_created, a.id, username, hashed_password, full_name, email, type, oa_id, is_verify, password_changed_at, a.created_at, role, gender, licence, dob, address, a.full_name AS a_name FROM debt_repayment dr
+SELECT dr.id, code, money, dr.created_at, debt, user_created, a.id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, a.created_at, role, gender, licence, dob, address, a.full_name AS a_name FROM debt_repayment dr
 LEFT JOIN accounts a ON a.id = dr.user_created
 WHERE dr.debt = $1
 `
@@ -374,7 +372,6 @@ type ListRepaymentRow struct {
 	FullName          sql.NullString `json:"full_name"`
 	Email             sql.NullString `json:"email"`
 	Type              sql.NullInt32  `json:"type"`
-	OaID              sql.NullString `json:"oa_id"`
 	IsVerify          sql.NullBool   `json:"is_verify"`
 	PasswordChangedAt sql.NullTime   `json:"password_changed_at"`
 	CreatedAt_2       sql.NullTime   `json:"created_at_2"`
@@ -408,7 +405,6 @@ func (q *Queries) ListRepayment(ctx context.Context, debt int32) ([]ListRepaymen
 			&i.FullName,
 			&i.Email,
 			&i.Type,
-			&i.OaID,
 			&i.IsVerify,
 			&i.PasswordChangedAt,
 			&i.CreatedAt_2,

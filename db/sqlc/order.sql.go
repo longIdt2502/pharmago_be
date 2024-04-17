@@ -198,7 +198,7 @@ func (q *Queries) CreateOrderServiceItem(ctx context.Context, arg CreateOrderSer
 }
 
 const detailOrder = `-- name: DetailOrder :one
-SELECT o.id, o.code, total_price, description, vat, discount, service_price, must_paid, customer, o.address, status, o.type, ticket, qr, company, payment, user_created, user_updated, o.created_at, updated_at, m.id, media_url, ot.id, ot.code, ot.title, os.id, os.code, os.title, a.id, username, hashed_password, full_name, email, a.type, oa_id, is_verify, password_changed_at, a.created_at, role, gender, licence, dob, a.address, m.media_url AS qr_url, ot.id AS ot_id, ot.code AS ot_code, ot.title AS ot_title,
+SELECT o.id, o.code, total_price, description, vat, discount, service_price, must_paid, customer, o.address, status, o.type, ticket, qr, company, payment, user_created, user_updated, o.created_at, updated_at, m.id, media_url, ot.id, ot.code, ot.title, os.id, os.code, os.title, a.id, username, hashed_password, full_name, email, a.type, is_verify, password_changed_at, a.created_at, role, gender, licence, dob, a.address, m.media_url AS qr_url, ot.id AS ot_id, ot.code AS ot_code, ot.title AS ot_title,
        os.id AS os_id, os.code AS os_code, os.title AS os_title,
        a.full_name AS a_full_name FROM orders o
 JOIN medias m ON o.qr = m.id
@@ -248,7 +248,6 @@ type DetailOrderRow struct {
 	FullName          string         `json:"full_name"`
 	Email             string         `json:"email"`
 	Type_2            int32          `json:"type_2"`
-	OaID              sql.NullString `json:"oa_id"`
 	IsVerify          bool           `json:"is_verify"`
 	PasswordChangedAt time.Time      `json:"password_changed_at"`
 	CreatedAt_2       time.Time      `json:"created_at_2"`
@@ -305,7 +304,6 @@ func (q *Queries) DetailOrder(ctx context.Context, arg DetailOrderParams) (Detai
 		&i.FullName,
 		&i.Email,
 		&i.Type_2,
-		&i.OaID,
 		&i.IsVerify,
 		&i.PasswordChangedAt,
 		&i.CreatedAt_2,
@@ -327,7 +325,7 @@ func (q *Queries) DetailOrder(ctx context.Context, arg DetailOrderParams) (Detai
 }
 
 const listOrder = `-- name: ListOrder :many
-SELECT o.id, o.code, o.total_price, description, vat, discount, service_price, must_paid, customer, o.address, o.status, o.type, ticket, o.qr, o.company, payment, o.user_created, o.user_updated, o.created_at, o.updated_at, c.id, c.full_name, c.code, c.company, c.address, c.email, phone, license, birthday, c.user_created, c.user_updated, c.updated_at, c.created_at, t.id, t.code, t.type, t.status, note, t.qr, export_to, import_from, t.total_price, warehouse, t.user_created, t.user_updated, t.updated_at, t.created_at, os.id, os.code, title, a.id, username, hashed_password, a.full_name, a.email, a.type, oa_id, is_verify, password_changed_at, a.created_at, role, gender, licence, dob, a.address, c.full_name AS c_full_name, os.title AS os_title, os.id AS os_id, a.full_name AS a_full_name FROM orders o
+SELECT o.id, o.code, o.total_price, description, vat, discount, service_price, must_paid, customer, o.address, o.status, o.type, ticket, o.qr, o.company, payment, o.user_created, o.user_updated, o.created_at, o.updated_at, c.id, c.full_name, c.code, c.company, c.address, c.email, phone, license, birthday, c.user_created, c.user_updated, c.updated_at, c.created_at, t.id, t.code, t.type, t.status, note, t.qr, export_to, import_from, t.total_price, warehouse, t.user_created, t.user_updated, t.updated_at, t.created_at, os.id, os.code, title, a.id, username, hashed_password, a.full_name, a.email, a.type, is_verify, password_changed_at, a.created_at, role, gender, licence, dob, a.address, c.full_name AS c_full_name, os.title AS os_title, os.id AS os_id, a.full_name AS a_full_name FROM orders o
 JOIN customers c ON o.customer = c.id
 JOIN tickets t ON o.ticket = t.id
 JOIN order_status os ON os.code = o.status
@@ -436,7 +434,6 @@ type ListOrderRow struct {
 	FullName_2        string         `json:"full_name_2"`
 	Email_2           string         `json:"email_2"`
 	Type_3            int32          `json:"type_3"`
-	OaID              sql.NullString `json:"oa_id"`
 	IsVerify          bool           `json:"is_verify"`
 	PasswordChangedAt time.Time      `json:"password_changed_at"`
 	CreatedAt_4       time.Time      `json:"created_at_4"`
@@ -529,7 +526,6 @@ func (q *Queries) ListOrder(ctx context.Context, arg ListOrderParams) ([]ListOrd
 			&i.FullName_2,
 			&i.Email_2,
 			&i.Type_3,
-			&i.OaID,
 			&i.IsVerify,
 			&i.PasswordChangedAt,
 			&i.CreatedAt_4,

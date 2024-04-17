@@ -2,6 +2,7 @@ package woker
 
 import (
 	"context"
+
 	"github.com/hibiken/asynq"
 )
 
@@ -11,6 +12,7 @@ type TaskDistributor interface {
 		payload *PayloadSendVerifyEmail,
 		opts ...asynq.Option,
 	) error
+	DistributorTaskSendOrderZns(ctx context.Context, payload *PayloadZNS, opts ...asynq.Option) error
 }
 
 type RedisTaskDistributor struct {

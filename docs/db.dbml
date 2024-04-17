@@ -20,7 +20,6 @@ Table accounts as A {
   type serial [not null]
   is_verify boolean [not null, default: false]
   role serial
-  oa_id varchar
   gender gender
   licence varchar
   dob timestamp
@@ -126,6 +125,7 @@ Table companies as C {
   phone varchar
   description varchar
   address serial
+  oa_id varchar
   created_at timestamptz [not null, default: `now()`]
   owner serial [ref: > A.id, not null]
   type varchar [not null]

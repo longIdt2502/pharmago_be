@@ -63,7 +63,6 @@ type Account struct {
 	FullName          string         `json:"full_name"`
 	Email             string         `json:"email"`
 	Type              int32          `json:"type"`
-	OaID              sql.NullString `json:"oa_id"`
 	IsVerify          bool           `json:"is_verify"`
 	PasswordChangedAt time.Time      `json:"password_changed_at"`
 	CreatedAt         time.Time      `json:"created_at"`
@@ -144,6 +143,7 @@ type Company struct {
 	Phone       sql.NullString `json:"phone"`
 	Description sql.NullString `json:"description"`
 	Address     sql.NullInt32  `json:"address"`
+	OaID        sql.NullString `json:"oa_id"`
 	CreatedAt   time.Time      `json:"created_at"`
 	Owner       int32          `json:"owner"`
 	Type        string         `json:"type"`
