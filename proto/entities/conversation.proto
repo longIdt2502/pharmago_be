@@ -21,7 +21,7 @@ message Message {
     int32 id = 1;
     string message_text = 2;
     bool read = 3;
-    string send_by = 4;
+    int32 send_by = 4;
     string oa_name = 5;
     string oa_image = 6;
     string zalo_name = 7;

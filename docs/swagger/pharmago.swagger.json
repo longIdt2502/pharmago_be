@@ -1873,8 +1873,8 @@
             "description": "int32 value field",
             "in": "query",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           },
           {
             "name": "userId",
@@ -6211,7 +6211,8 @@
           "type": "boolean"
         },
         "sendBy": {
-          "type": "string"
+          "type": "integer",
+          "format": "int32"
         },
         "oaName": {
           "type": "string"
