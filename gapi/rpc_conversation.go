@@ -41,15 +41,13 @@ func (server *ServerGRPC) ConversationList(ctx context.Context, req *pb.ListConv
 
 	reqHttp, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		fmt.Println("Error creating HTTP request:", err)
-		return nil, nil
+		return nil, status.Errorf(codes.Internal, fmt.Sprintln("Error creating HTTP request:", err))
 	}
 
 	// Gửi request và nhận response
 	resp, err := client.Do(reqHttp)
 	if err != nil {
-		fmt.Println("Error sending HTTP request:", err)
-		return nil, nil
+		return nil, status.Errorf(codes.Internal, fmt.Sprintln("Error sending HTTP request:", err))
 	}
 
 	// Đảm bảo rằng response body sẽ được đóng sau khi hoàn tất
@@ -58,14 +56,12 @@ func (server *ServerGRPC) ConversationList(ctx context.Context, req *pb.ListConv
 	// Đọc response body
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Println("Error reading response body:", err)
-		return nil, nil
+		return nil, status.Errorf(codes.Internal, fmt.Sprintln("Error reading response body:", err))
 	}
 
 	var responseData ResponseConversation
 	if err := json.Unmarshal(body, &responseData); err != nil {
-		fmt.Println("Lỗi giải mã JSON:", err)
-		return nil, nil
+		return nil, status.Errorf(codes.Internal, fmt.Sprintln("Lỗi giải mã JSON:", err))
 	}
 
 	// Lấy các phần tử từ mảng "items" và in ra
