@@ -39,18 +39,20 @@ func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRe
 		Valid: true,
 	}})
 
+	customer, _ := server.store.DetailCustomer(ctx, req.Order.GetCustomer())
+
 	// company := req.Order.GetCompany()
 	payload := &woker.PayloadZNS{
 		OaID: company.OaID.String,
 		Data: woker.PayloadZNSData{
-			Name:      *req.Order.CustomerName,
+			Name:      customer.FullName,
 			Status:    "Chờ xác nhận",
 			CreatedAt: time.Now().Format("15:04:05 02/01/2006"),
 			Total:     strconv.FormatFloat(float64(req.Order.GetTotalPrice()), 'f', -1, 64),
-			Phone:     *req.Order.CustomerPhone,
+			Phone:     customer.Phone.String,
 			Code:      order.Code,
 		},
-		Phone: *req.Order.CustomerPhone,
+		Phone: customer.Phone.String,
 		Mode:  "development",
 	}
 
