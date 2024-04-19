@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+import "entities/variant.proto";
+import "entities/account.proto";
+import "google/protobuf/timestamp.proto";
+
+message MedicalRecord {
+    int32 id = 1;
+    string code = 2;
+    int32 customer = 3;
+    optional float weight = 4;
+    optional float long = 5;
+    string symptom = 6;
+    string diagnostic = 7;
+    string result = 8;
+    Account doctor = 9;
+    optional int32 re_examination = 10;
+    string note = 11;
+    repeated Variant variants = 12;
+    google.protobuf.Timestamp created_at = 13;
+    google.protobuf.Timestamp updated_at = 14;
+    Account user_created = 15;
+    optional Account user_updated = 16;
+}

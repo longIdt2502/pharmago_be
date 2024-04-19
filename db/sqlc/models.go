@@ -274,6 +274,33 @@ type Media struct {
 	MediaUrl string `json:"media_url"`
 }
 
+type MedicalRecord struct {
+	ID       int32           `json:"id"`
+	Code     string          `json:"code"`
+	Customer int32           `json:"customer"`
+	Weight   sql.NullFloat64 `json:"weight"`
+	Long     sql.NullFloat64 `json:"long"`
+	// Triệu chứng
+	Symptom string `json:"symptom"`
+	// Chuẩn đoán
+	Diagnostic string `json:"diagnostic"`
+	// Kết luận
+	Result        string         `json:"result"`
+	Doctor        sql.NullInt32  `json:"doctor"`
+	ReExamination int32          `json:"re_examination"`
+	Note          sql.NullString `json:"note"`
+	CreatedAt     time.Time      `json:"created_at"`
+	UpdatedAt     sql.NullTime   `json:"updated_at"`
+	UserCreated   sql.NullInt32  `json:"user_created"`
+	UserUpdated   sql.NullInt32  `json:"user_updated"`
+}
+
+type MedicalRecordVariant struct {
+	ID            int32 `json:"id"`
+	MedicalRecord int32 `json:"medical_record"`
+	Variant       int32 `json:"variant"`
+}
+
 type Order struct {
 	ID           int32          `json:"id"`
 	Code         string         `json:"code"`
