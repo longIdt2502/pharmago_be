@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message CreateMedicalRecordRequest {
+    int32 customer = 1;
+    optional float weight = 2;
+    optional float long = 3;
+    string symptom = 4;
+    string diagnostic = 5;
+    string result = 6;
+    int32 doctor = 7;
+    optional int32 re_examination = 8;
+    string note = 9;
+    repeated int32 variants = 10;
+}
+
+message CreateMedicalRecordResponse {
+    int32 code = 1;
+    string message = 2;
+    int32 details = 3;
+}

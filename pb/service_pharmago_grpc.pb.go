@@ -119,6 +119,9 @@ const (
 	Pharmago_ServiceDelete_FullMethodName            = "/pb.Pharmago/ServiceDelete"
 	Pharmago_ConversationList_FullMethodName         = "/pb.Pharmago/ConversationList"
 	Pharmago_MessageList_FullMethodName              = "/pb.Pharmago/MessageList"
+	Pharmago_ListMedicalRecord_FullMethodName        = "/pb.Pharmago/ListMedicalRecord"
+	Pharmago_CreateMedicalRecord_FullMethodName      = "/pb.Pharmago/CreateMedicalRecord"
+	Pharmago_DetailMedicalRecord_FullMethodName      = "/pb.Pharmago/DetailMedicalRecord"
 )
 
 // PharmagoClient is the client API for Pharmago service.
@@ -247,6 +250,10 @@ type PharmagoClient interface {
 	// ================== CONVERSATION ===================
 	ConversationList(ctx context.Context, in *ListConversationRequest, opts ...grpc.CallOption) (*ListConversationResponse, error)
 	MessageList(ctx context.Context, in *ListMessageRequest, opts ...grpc.CallOption) (*ListMessageResponse, error)
+	// ================== MEDICAL RECORD ===================
+	ListMedicalRecord(ctx context.Context, in *ListMedicalRecordRequest, opts ...grpc.CallOption) (*ListMedicalRecordResponse, error)
+	CreateMedicalRecord(ctx context.Context, in *CreateMedicalRecordRequest, opts ...grpc.CallOption) (*CreateMedicalRecordResponse, error)
+	DetailMedicalRecord(ctx context.Context, in *DetailMedicalRecordRequest, opts ...grpc.CallOption) (*DetailMedicalRecordResponse, error)
 }
 
 type pharmagoClient struct {
@@ -1179,6 +1186,33 @@ func (c *pharmagoClient) MessageList(ctx context.Context, in *ListMessageRequest
 	return out, nil
 }
 
+func (c *pharmagoClient) ListMedicalRecord(ctx context.Context, in *ListMedicalRecordRequest, opts ...grpc.CallOption) (*ListMedicalRecordResponse, error) {
+	out := new(ListMedicalRecordResponse)
+	err := c.cc.Invoke(ctx, Pharmago_ListMedicalRecord_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) CreateMedicalRecord(ctx context.Context, in *CreateMedicalRecordRequest, opts ...grpc.CallOption) (*CreateMedicalRecordResponse, error) {
+	out := new(CreateMedicalRecordResponse)
+	err := c.cc.Invoke(ctx, Pharmago_CreateMedicalRecord_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) DetailMedicalRecord(ctx context.Context, in *DetailMedicalRecordRequest, opts ...grpc.CallOption) (*DetailMedicalRecordResponse, error) {
+	out := new(DetailMedicalRecordResponse)
+	err := c.cc.Invoke(ctx, Pharmago_DetailMedicalRecord_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PharmagoServer is the server API for Pharmago service.
 // All implementations must embed UnimplementedPharmagoServer
 // for forward compatibility
@@ -1305,6 +1339,10 @@ type PharmagoServer interface {
 	// ================== CONVERSATION ===================
 	ConversationList(context.Context, *ListConversationRequest) (*ListConversationResponse, error)
 	MessageList(context.Context, *ListMessageRequest) (*ListMessageResponse, error)
+	// ================== MEDICAL RECORD ===================
+	ListMedicalRecord(context.Context, *ListMedicalRecordRequest) (*ListMedicalRecordResponse, error)
+	CreateMedicalRecord(context.Context, *CreateMedicalRecordRequest) (*CreateMedicalRecordResponse, error)
+	DetailMedicalRecord(context.Context, *DetailMedicalRecordRequest) (*DetailMedicalRecordResponse, error)
 	mustEmbedUnimplementedPharmagoServer()
 }
 
@@ -1611,6 +1649,15 @@ func (UnimplementedPharmagoServer) ConversationList(context.Context, *ListConver
 }
 func (UnimplementedPharmagoServer) MessageList(context.Context, *ListMessageRequest) (*ListMessageResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MessageList not implemented")
+}
+func (UnimplementedPharmagoServer) ListMedicalRecord(context.Context, *ListMedicalRecordRequest) (*ListMedicalRecordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListMedicalRecord not implemented")
+}
+func (UnimplementedPharmagoServer) CreateMedicalRecord(context.Context, *CreateMedicalRecordRequest) (*CreateMedicalRecordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateMedicalRecord not implemented")
+}
+func (UnimplementedPharmagoServer) DetailMedicalRecord(context.Context, *DetailMedicalRecordRequest) (*DetailMedicalRecordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DetailMedicalRecord not implemented")
 }
 func (UnimplementedPharmagoServer) mustEmbedUnimplementedPharmagoServer() {}
 
@@ -3433,6 +3480,60 @@ func _Pharmago_MessageList_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Pharmago_ListMedicalRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListMedicalRecordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ListMedicalRecord(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_ListMedicalRecord_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ListMedicalRecord(ctx, req.(*ListMedicalRecordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_CreateMedicalRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateMedicalRecordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).CreateMedicalRecord(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_CreateMedicalRecord_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).CreateMedicalRecord(ctx, req.(*CreateMedicalRecordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_DetailMedicalRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DetailMedicalRecordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).DetailMedicalRecord(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_DetailMedicalRecord_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).DetailMedicalRecord(ctx, req.(*DetailMedicalRecordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Pharmago_ServiceDesc is the grpc.ServiceDesc for Pharmago service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -3835,6 +3936,18 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "MessageList",
 			Handler:    _Pharmago_MessageList_Handler,
+		},
+		{
+			MethodName: "ListMedicalRecord",
+			Handler:    _Pharmago_ListMedicalRecord_Handler,
+		},
+		{
+			MethodName: "CreateMedicalRecord",
+			Handler:    _Pharmago_CreateMedicalRecord_Handler,
+		},
+		{
+			MethodName: "DetailMedicalRecord",
+			Handler:    _Pharmago_DetailMedicalRecord_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

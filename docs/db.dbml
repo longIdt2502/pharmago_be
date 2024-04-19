@@ -607,6 +607,37 @@ Ref: customers.address > address.id [delete: set null]
 Ref: customers.user_created > A.id [delete: cascade]
 Ref: customers.user_updated > A.id [delete: set null]
 
+Table medical_records {
+  id serial [pk]
+  code varchar [not null, unique]
+  customer serial [not null]
+  weight float
+  long float
+  symptom varchar [not null, note: 'Triệu chứng']
+  diagnostic varchar [not null, note: 'Chuẩn đoán']
+  result varchar [not null, note: 'Kết luận']
+  doctor serial
+  re_examination int [not null, default: 0]
+  note varchar
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp
+  user_created serial
+  user_updated serial
+}
+
+Ref: medical_records.customer > customers.id [delete: set null]
+Ref: medical_records.doctor > A.id [delete: set null]
+Ref: medical_records.user_created > A.id [delete: set null]
+Ref: medical_records.user_updated > A.id [delete: set null]
+
+Table medical_record_variant {
+  id serial [pk]
+  medical_record serial [not null]
+  variant serial [not null]
+}
+Ref: medical_record_variant.medical_record > medical_records.id [delete: set null]
+Ref: medical_record_variant.variant > V.id [delete: set null]
+
 Table payment_item_types {
   id serial [pk]
   code varchar(255) [not null, unique]

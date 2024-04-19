@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml-lang.org)
 -- Database: PostgreSQL
--- Generated at: 2024-04-17T09:54:46.264Z
+-- Generated at: 2024-04-19T03:11:29.376Z
 
 CREATE TYPE "gender" AS ENUM (
   'nam',
@@ -443,6 +443,30 @@ CREATE TABLE "customers" (
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
+CREATE TABLE "medical_records" (
+  "id" serial PRIMARY KEY,
+  "code" varchar UNIQUE NOT NULL,
+  "customer" serial NOT NULL,
+  "weight" float,
+  "long" float,
+  "symptom" varchar NOT NULL,
+  "diagnostic" varchar NOT NULL,
+  "result" varchar NOT NULL,
+  "doctor" serial,
+  "re_examination" int NOT NULL DEFAULT 0,
+  "note" varchar,
+  "created_at" timestamp NOT NULL DEFAULT (now()),
+  "updated_at" timestamp,
+  "user_created" serial,
+  "user_updated" serial
+);
+
+CREATE TABLE "medical_record_variant" (
+  "id" serial PRIMARY KEY,
+  "medical_record" serial NOT NULL,
+  "variant" serial NOT NULL
+);
+
 CREATE TABLE "payment_item_types" (
   "id" serial PRIMARY KEY,
   "code" varchar(255) UNIQUE NOT NULL,
@@ -665,6 +689,12 @@ COMMENT ON COLUMN "company_type"."code" IS '
 ✔️ 2 = DRUGSTORE
 ';
 
+COMMENT ON COLUMN "medical_records"."symptom" IS 'Triệu chứng';
+
+COMMENT ON COLUMN "medical_records"."diagnostic" IS 'Chuẩn đoán';
+
+COMMENT ON COLUMN "medical_records"."result" IS 'Kết luận';
+
 ALTER TABLE "accounts" ADD FOREIGN KEY ("type") REFERENCES "account_type" ("id") ON DELETE CASCADE;
 
 ALTER TABLE "accounts" ADD FOREIGN KEY ("role") REFERENCES "roles" ("id") ON DELETE SET NULL;
@@ -840,6 +870,18 @@ ALTER TABLE "customers" ADD FOREIGN KEY ("address") REFERENCES "address" ("id") 
 ALTER TABLE "customers" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id") ON DELETE CASCADE;
 
 ALTER TABLE "customers" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "medical_records" ADD FOREIGN KEY ("customer") REFERENCES "customers" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "medical_records" ADD FOREIGN KEY ("doctor") REFERENCES "accounts" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "medical_records" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "medical_records" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "medical_record_variant" ADD FOREIGN KEY ("medical_record") REFERENCES "medical_records" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "medical_record_variant" ADD FOREIGN KEY ("variant") REFERENCES "variants" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "payment_items" ADD FOREIGN KEY ("type") REFERENCES "payment_item_types" ("code") ON DELETE CASCADE;
 

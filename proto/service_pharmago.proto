@@ -100,6 +100,10 @@ import "rpc/service/rpc_service_update.proto";
 import "rpc/conversation/rpc_list_conversation.proto";
 import "rpc/conversation/rpc_list_message.proto";
 
+import "rpc/medical_record/rpc_list_medical_record.proto";
+import "rpc/medical_record/rpc_create_medical_record.proto";
+import "rpc/medical_record/rpc_detail_medical_record.proto";
+
 
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
@@ -1138,6 +1142,36 @@ service Pharmago {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "List Message";
       tags: "Conversation";
+    };
+  };
+
+  // ================== MEDICAL RECORD ===================
+  rpc ListMedicalRecord (ListMedicalRecordRequest) returns (ListMedicalRecordResponse) {
+    option (google.api.http) = {
+      get: "/medical_record/v1/list"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List Medical Record";
+      tags: "Medical Record";
+    };
+  };
+  rpc CreateMedicalRecord (CreateMedicalRecordRequest) returns (CreateMedicalRecordResponse) {
+    option (google.api.http) = {
+      post: "/medical_record/v1/create"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create Medical Record";
+      tags: "Medical Record";
+    };
+  };
+  rpc DetailMedicalRecord (DetailMedicalRecordRequest) returns (DetailMedicalRecordResponse) {
+    option (google.api.http) = {
+      get: "/medical_record/v1/detail/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Detail Medical Record";
+      tags: "Medical Record";
     };
   };
 }
