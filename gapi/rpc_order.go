@@ -41,7 +41,6 @@ func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRe
 
 	customer, _ := server.store.DetailCustomer(ctx, req.Order.GetCustomer())
 
-	// company := req.Order.GetCompany()
 	payload := &woker.PayloadZNS{
 		OaID: company.OaID.String,
 		Data: woker.PayloadZNSData{
@@ -73,9 +72,10 @@ func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRe
 		for _, item := range services {
 			if item.ReminderTime.Valid {
 				payloadTaskFcm := &woker.PayloadSendFcm{
-					To:    fmt.Sprintf("/topics/COMPANY_%s", company.Code),
-					Title: "Thông báo dịch vụ",
-					Body:  fmt.Sprintf("Nhắc khách hàng lưu ý dịch vụ %s", item.Title),
+					To:      fmt.Sprintf("/topics/COMPANY_%s", company.Code),
+					Title:   "Thông báo dịch vụ",
+					Body:    fmt.Sprintf("Nhắc khách hàng lưu ý dịch vụ %s", item.Title),
+					Company: company.ID,
 				}
 
 				opts := []asynq.Option{
@@ -87,7 +87,6 @@ func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRe
 				_ = server.taskDistributor.DistributorTaskSendFcm(ctx, payloadTaskFcm, opts...)
 			}
 		}
-
 	}
 
 	return &pb.OrderCreateResponse{

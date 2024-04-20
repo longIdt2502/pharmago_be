@@ -858,7 +858,24 @@ Table service_variant {
 Ref: service_variant.service > services.id [delete: cascade]
 Ref: service_variant.variant > V.id
 
+Table notification as N {
+  id serial [pk]
+  type varchar [not null]
+  topic varchar [not null]
+  title varchar [not null]
+  content varchar [not null]
+  is_read bool [not null, default: false]
+  data varchar [note: 'save code entity']
+  company serial
+  created_at timestamp [not null, default: `now()`]
+}
 
+Ref: N.type > noti_type.code [delete: set null]
+Ref: N.company > C.id [delete: set null]
+
+Table noti_type {
+  code varchar [unique, not null]
+}
 
 
 

@@ -301,6 +301,23 @@ type MedicalRecordVariant struct {
 	Variant       int32 `json:"variant"`
 }
 
+type NotiType struct {
+	Code string `json:"code"`
+}
+
+type Notification struct {
+	ID      int32  `json:"id"`
+	Type    string `json:"type"`
+	Topic   string `json:"topic"`
+	Title   string `json:"title"`
+	Content string `json:"content"`
+	IsRead  bool   `json:"is_read"`
+	// save code entity
+	Data      sql.NullString `json:"data"`
+	Company   sql.NullInt32  `json:"company"`
+	CreatedAt time.Time      `json:"created_at"`
+}
+
 type Order struct {
 	ID           int32          `json:"id"`
 	Code         string         `json:"code"`

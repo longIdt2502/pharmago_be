@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message Notification {
+  int32 id = 1;
+  string type = 2;
+  string topic = 3;
+  string title = 4;
+  string content = 5;
+  bool is_read = 6;
+  string data = 7;
+  int32 company = 8;
+  google.protobuf.Timestamp created_at = 9;
+}

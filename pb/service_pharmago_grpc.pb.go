@@ -122,6 +122,7 @@ const (
 	Pharmago_ListMedicalRecord_FullMethodName        = "/pb.Pharmago/ListMedicalRecord"
 	Pharmago_CreateMedicalRecord_FullMethodName      = "/pb.Pharmago/CreateMedicalRecord"
 	Pharmago_DetailMedicalRecord_FullMethodName      = "/pb.Pharmago/DetailMedicalRecord"
+	Pharmago_ListNotification_FullMethodName         = "/pb.Pharmago/ListNotification"
 )
 
 // PharmagoClient is the client API for Pharmago service.
@@ -254,6 +255,8 @@ type PharmagoClient interface {
 	ListMedicalRecord(ctx context.Context, in *ListMedicalRecordRequest, opts ...grpc.CallOption) (*ListMedicalRecordResponse, error)
 	CreateMedicalRecord(ctx context.Context, in *CreateMedicalRecordRequest, opts ...grpc.CallOption) (*CreateMedicalRecordResponse, error)
 	DetailMedicalRecord(ctx context.Context, in *DetailMedicalRecordRequest, opts ...grpc.CallOption) (*DetailMedicalRecordResponse, error)
+	// ================== NOTIFICATION ===================
+	ListNotification(ctx context.Context, in *ListNotificationRequest, opts ...grpc.CallOption) (*ListNotificationResponse, error)
 }
 
 type pharmagoClient struct {
@@ -1213,6 +1216,15 @@ func (c *pharmagoClient) DetailMedicalRecord(ctx context.Context, in *DetailMedi
 	return out, nil
 }
 
+func (c *pharmagoClient) ListNotification(ctx context.Context, in *ListNotificationRequest, opts ...grpc.CallOption) (*ListNotificationResponse, error) {
+	out := new(ListNotificationResponse)
+	err := c.cc.Invoke(ctx, Pharmago_ListNotification_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PharmagoServer is the server API for Pharmago service.
 // All implementations must embed UnimplementedPharmagoServer
 // for forward compatibility
@@ -1343,6 +1355,8 @@ type PharmagoServer interface {
 	ListMedicalRecord(context.Context, *ListMedicalRecordRequest) (*ListMedicalRecordResponse, error)
 	CreateMedicalRecord(context.Context, *CreateMedicalRecordRequest) (*CreateMedicalRecordResponse, error)
 	DetailMedicalRecord(context.Context, *DetailMedicalRecordRequest) (*DetailMedicalRecordResponse, error)
+	// ================== NOTIFICATION ===================
+	ListNotification(context.Context, *ListNotificationRequest) (*ListNotificationResponse, error)
 	mustEmbedUnimplementedPharmagoServer()
 }
 
@@ -1658,6 +1672,9 @@ func (UnimplementedPharmagoServer) CreateMedicalRecord(context.Context, *CreateM
 }
 func (UnimplementedPharmagoServer) DetailMedicalRecord(context.Context, *DetailMedicalRecordRequest) (*DetailMedicalRecordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DetailMedicalRecord not implemented")
+}
+func (UnimplementedPharmagoServer) ListNotification(context.Context, *ListNotificationRequest) (*ListNotificationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListNotification not implemented")
 }
 func (UnimplementedPharmagoServer) mustEmbedUnimplementedPharmagoServer() {}
 
@@ -3534,6 +3551,24 @@ func _Pharmago_DetailMedicalRecord_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Pharmago_ListNotification_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListNotificationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ListNotification(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_ListNotification_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ListNotification(ctx, req.(*ListNotificationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Pharmago_ServiceDesc is the grpc.ServiceDesc for Pharmago service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -3948,6 +3983,10 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DetailMedicalRecord",
 			Handler:    _Pharmago_DetailMedicalRecord_Handler,
+		},
+		{
+			MethodName: "ListNotification",
+			Handler:    _Pharmago_ListNotification_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
