@@ -7818,7 +7818,8 @@
           }
         },
         "reminderTime": {
-          "type": "string"
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
