@@ -25,6 +25,7 @@ type Config struct {
 	B2AccountId         string        `mapstructure:"B2_ACCOUNT_ID"`
 	MigrationURL        string        `mapstructure:"MIGRATION_URL"`
 	WezoloServerAdress  string        `mapstructure:"WEZOLO_SERVER_ADDRESS"`
+	FireKey             string        `mapstructure:"FIRE_KEY"`
 }
 
 func LoadConfig(path string) (config Config, err error) {
@@ -54,6 +55,7 @@ func LoadConfig(path string) (config Config, err error) {
 		config.B2AccountId = os.Getenv("B2_ACCOUNT_ID")
 		config.MigrationURL = os.Getenv("MIGRATION_URL")
 		config.MigrationURL = os.Getenv("WEZOLO_SERVER_ADDRESS")
+		config.FireKey = os.Getenv("FIRE_KEY")
 
 		err = nil
 

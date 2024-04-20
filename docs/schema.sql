@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml-lang.org)
 -- Database: PostgreSQL
--- Generated at: 2024-04-19T03:11:29.376Z
+-- Generated at: 2024-04-20T03:05:01.299Z
 
 CREATE TYPE "gender" AS ENUM (
   'nam',
@@ -612,6 +612,7 @@ CREATE TABLE "services" (
   "entity" varchar,
   "staff" serial NOT NULL,
   "frequency" varchar,
+  "reminder_time" int,
   "unit" varchar NOT NULL,
   "price" float NOT NULL DEFAULT 0,
   "description" varchar,
@@ -694,6 +695,8 @@ COMMENT ON COLUMN "medical_records"."symptom" IS 'Triệu chứng';
 COMMENT ON COLUMN "medical_records"."diagnostic" IS 'Chuẩn đoán';
 
 COMMENT ON COLUMN "medical_records"."result" IS 'Kết luận';
+
+COMMENT ON COLUMN "services"."reminder_time" IS 'Thời gian nhắc hẹn (seconds)';
 
 ALTER TABLE "accounts" ADD FOREIGN KEY ("type") REFERENCES "account_type" ("id") ON DELETE CASCADE;
 

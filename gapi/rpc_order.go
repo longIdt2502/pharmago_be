@@ -64,6 +64,32 @@ func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRe
 
 	_ = server.taskDistributor.DistributorTaskSendOrderZns(ctx, payload, opts...)
 
+	if len(req.ServiceItems) != 0 {
+		services, err := server.store.ListOrderServiceItem(ctx, result.Id)
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to get service item")
+		}
+
+		for _, item := range services {
+			if item.ReminderTime.Valid {
+				payloadTaskFcm := &woker.PayloadSendFcm{
+					To:    fmt.Sprintf("/topics/COMPANY_%s", company.Code),
+					Title: "Thông báo dịch vụ",
+					Body:  fmt.Sprintf("Nhắc khách hàng lưu ý dịch vụ %s", item.Title),
+				}
+
+				opts := []asynq.Option{
+					asynq.MaxRetry(10),
+					asynq.ProcessIn(time.Duration(item.ReminderTime.Int32) * time.Second),
+					asynq.Queue(woker.QueueCritical),
+				}
+
+				_ = server.taskDistributor.DistributorTaskSendFcm(ctx, payloadTaskFcm, opts...)
+			}
+		}
+
+	}
+
 	return &pb.OrderCreateResponse{
 		Code:    200,
 		Message: fmt.Sprintf("success: %e", err),

@@ -13,6 +13,7 @@ CREATE TABLE "services" (
   "entity" varchar,
   "staff" serial NOT NULL,
   "frequency" varchar,
+  "reminder_time" int,
   "unit" varchar NOT NULL,
   "price" float NOT NULL DEFAULT 0,
   "description" varchar,

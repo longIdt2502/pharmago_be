@@ -828,6 +828,7 @@ Table services {
   entity varchar
   staff serial [not null]
   frequency varchar
+  reminder_time int [note: 'Thời gian nhắc hẹn (seconds)']
   unit varchar [not null]
   price float [not null, default: 0]
   description varchar

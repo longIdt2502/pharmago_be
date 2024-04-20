@@ -4,6 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"net"
+	"net/http"
+	"os"
+
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/hibiken/asynq"
 	"github.com/kothar/go-backblaze"
@@ -11,6 +15,7 @@ import (
 	"github.com/longIdt2502/pharmago_be/b2"
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	_ "github.com/longIdt2502/pharmago_be/docs/statik"
+	"github.com/longIdt2502/pharmago_be/firebase"
 	"github.com/longIdt2502/pharmago_be/gapi"
 	config2 "github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/mail"
@@ -23,9 +28,6 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/protobuf/encoding/protojson"
-	"net"
-	"net/http"
-	"os"
 
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
@@ -88,9 +90,14 @@ func runDBMigration(migrationURL string, dbSource string) {
 
 func runTaskProcessor(config utils.Config, redisOpt asynq.RedisClientOpt, store db.Store) {
 	mailer := mail.NewGmailSender(config.EmailSenderName, config.EmailSenderAddress, config.EmailSenderPassword)
-	taskProcessor := woker.NewRedisTaskProcessor(redisOpt, store, mailer)
+	clientFcm, err := firebase.NewFCM(config.FireKey)
+	if err != nil {
+		log.Fatal().Msg("can't create new client fcm")
+	}
+
+	taskProcessor := woker.NewRedisTaskProcessor(redisOpt, store, mailer, clientFcm)
 	log.Info().Msg("start task processor")
-	err := taskProcessor.Start()
+	err = taskProcessor.Start()
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to start task processor")
 	}

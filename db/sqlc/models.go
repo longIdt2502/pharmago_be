@@ -541,21 +541,22 @@ type RoleItem struct {
 }
 
 type Service struct {
-	ID          int32          `json:"id"`
-	Image       sql.NullInt32  `json:"image"`
-	Code        string         `json:"code"`
-	Title       string         `json:"title"`
-	Entity      sql.NullString `json:"entity"`
-	Staff       int32          `json:"staff"`
-	Frequency   sql.NullString `json:"frequency"`
-	Unit        string         `json:"unit"`
-	Price       float64        `json:"price"`
-	Description sql.NullString `json:"description"`
-	Company     int32          `json:"company"`
-	UserCreated int32          `json:"user_created"`
-	UserUpdated sql.NullInt32  `json:"user_updated"`
-	CreatedAt   time.Time      `json:"created_at"`
-	UpdatedAt   sql.NullTime   `json:"updated_at"`
+	ID           int32          `json:"id"`
+	Image        sql.NullInt32  `json:"image"`
+	Code         string         `json:"code"`
+	Title        string         `json:"title"`
+	Entity       sql.NullString `json:"entity"`
+	Staff        int32          `json:"staff"`
+	Frequency    sql.NullString `json:"frequency"`
+	ReminderTime sql.NullInt32  `json:"reminder_time"`
+	Unit         string         `json:"unit"`
+	Price        float64        `json:"price"`
+	Description  sql.NullString `json:"description"`
+	Company      int32          `json:"company"`
+	UserCreated  int32          `json:"user_created"`
+	UserUpdated  sql.NullInt32  `json:"user_updated"`
+	CreatedAt    time.Time      `json:"created_at"`
+	UpdatedAt    sql.NullTime   `json:"updated_at"`
 }
 
 type ServiceOrderItem struct {
