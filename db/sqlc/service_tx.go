@@ -54,6 +54,10 @@ func (store *Store) CreateServiceTx(ctx context.Context, req CreateServiceTxPara
 			},
 			Company:     req.GetCompany(),
 			UserCreated: req.TokenPayload.UserID,
+			ReminderTime: sql.NullInt32{
+				Int32: req.GetReminderTime(),
+				Valid: req.ReminderTime != nil,
+			},
 		})
 		if err != nil {
 			return err

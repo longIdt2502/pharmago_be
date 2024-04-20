@@ -15,6 +15,7 @@ message ServiceCreateRequest {
     optional string description = 8;
     int32 company = 9;
     repeated int32 variants = 10;
+    optional int32 reminder_time = 11;
 }
 
 message ServiceCreateResponse {

@@ -104,6 +104,7 @@ import "rpc/medical_record/rpc_list_medical_record.proto";
 import "rpc/medical_record/rpc_create_medical_record.proto";
 import "rpc/medical_record/rpc_detail_medical_record.proto";
 
+import "rpc/notification/rpc_notification_list.proto";
 
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
@@ -1172,6 +1173,17 @@ service Pharmago {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Detail Medical Record";
       tags: "Medical Record";
+    };
+  };
+
+  // ================== NOTIFICATION ===================
+  rpc ListNotification (ListNotificationRequest) returns (ListNotificationResponse) {
+    option (google.api.http) = {
+      get: "/notification/v1/list"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List Notification";
+      tags: "Notification";
     };
   };
 }

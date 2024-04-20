@@ -2,19 +2,22 @@ package woker
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 
 	"github.com/hibiken/asynq"
+	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/rs/zerolog/log"
 )
 
 const TaskSendFcm = "task:send_fcm"
 
 type PayloadSendFcm struct {
-	To    string `json:"to"`
-	Title string `json:"title"`
-	Body  string `json:"body"`
+	To      string `json:"to"`
+	Title   string `json:"title"`
+	Body    string `json:"body"`
+	Company int32  `json:"company"`
 }
 
 func (distributor *RedisTaskDistributor) DistributorTaskSendFcm(
@@ -47,7 +50,22 @@ func (processor *RedisTaskProcessor) ProcessorTaskSendFcm(ctx context.Context, t
 		return fmt.Errorf("failed to unmarshal payload: %w", asynq.SkipRetry)
 	}
 
-	err := processor.client.SendMessage(payload.To, payload.Title, payload.Body)
+	_, err := processor.store.CreateNotification(ctx, db.CreateNotificationParams{
+		Type:    "SERVICE",
+		Topic:   payload.To,
+		Title:   payload.Title,
+		Content: payload.Body,
+		IsRead:  false,
+		Company: sql.NullInt32{
+			Int32: payload.Company,
+			Valid: true,
+		},
+	})
+	if err != nil {
+		log.Error().Str("channel", payload.To).Msg("failed to create notification record db")
+	}
+
+	err = processor.client.SendMessage(payload.To, payload.Title, payload.Body)
 	if err != nil {
 		log.Error().Str("channel", payload.To).Msg("can't send fcm message")
 		return err
