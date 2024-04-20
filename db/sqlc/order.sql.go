@@ -665,33 +665,34 @@ func (q *Queries) ListOrderItem(ctx context.Context, order int32) ([]ListOrderIt
 }
 
 const listOrderServiceItem = `-- name: ListOrderServiceItem :many
-SELECT soi.id, "order", service, unit_price, discount, total_price, s.id, image, code, title, entity, staff, frequency, unit, price, description, company, user_created, user_updated, created_at, updated_at FROM service_order_item soi
+SELECT soi.id, "order", service, unit_price, discount, total_price, s.id, image, code, title, entity, staff, frequency, reminder_time, unit, price, description, company, user_created, user_updated, created_at, updated_at FROM service_order_item soi
 JOIN services s ON s.id = soi.service
 WHERE soi.order = $1
 `
 
 type ListOrderServiceItemRow struct {
-	ID          int32          `json:"id"`
-	Order       int32          `json:"order"`
-	Service     sql.NullInt32  `json:"service"`
-	UnitPrice   float64        `json:"unit_price"`
-	Discount    float64        `json:"discount"`
-	TotalPrice  float64        `json:"total_price"`
-	ID_2        int32          `json:"id_2"`
-	Image       sql.NullInt32  `json:"image"`
-	Code        string         `json:"code"`
-	Title       string         `json:"title"`
-	Entity      sql.NullString `json:"entity"`
-	Staff       int32          `json:"staff"`
-	Frequency   sql.NullString `json:"frequency"`
-	Unit        string         `json:"unit"`
-	Price       float64        `json:"price"`
-	Description sql.NullString `json:"description"`
-	Company     int32          `json:"company"`
-	UserCreated int32          `json:"user_created"`
-	UserUpdated sql.NullInt32  `json:"user_updated"`
-	CreatedAt   time.Time      `json:"created_at"`
-	UpdatedAt   sql.NullTime   `json:"updated_at"`
+	ID           int32          `json:"id"`
+	Order        int32          `json:"order"`
+	Service      sql.NullInt32  `json:"service"`
+	UnitPrice    float64        `json:"unit_price"`
+	Discount     float64        `json:"discount"`
+	TotalPrice   float64        `json:"total_price"`
+	ID_2         int32          `json:"id_2"`
+	Image        sql.NullInt32  `json:"image"`
+	Code         string         `json:"code"`
+	Title        string         `json:"title"`
+	Entity       sql.NullString `json:"entity"`
+	Staff        int32          `json:"staff"`
+	Frequency    sql.NullString `json:"frequency"`
+	ReminderTime sql.NullInt32  `json:"reminder_time"`
+	Unit         string         `json:"unit"`
+	Price        float64        `json:"price"`
+	Description  sql.NullString `json:"description"`
+	Company      int32          `json:"company"`
+	UserCreated  int32          `json:"user_created"`
+	UserUpdated  sql.NullInt32  `json:"user_updated"`
+	CreatedAt    time.Time      `json:"created_at"`
+	UpdatedAt    sql.NullTime   `json:"updated_at"`
 }
 
 func (q *Queries) ListOrderServiceItem(ctx context.Context, order int32) ([]ListOrderServiceItemRow, error) {
@@ -717,6 +718,7 @@ func (q *Queries) ListOrderServiceItem(ctx context.Context, order int32) ([]List
 			&i.Entity,
 			&i.Staff,
 			&i.Frequency,
+			&i.ReminderTime,
 			&i.Unit,
 			&i.Price,
 			&i.Description,

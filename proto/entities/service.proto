@@ -19,5 +19,5 @@ message Service {
     optional string description = 9;
     int32 company = 10;
     repeated Variant variants = 11;
-    
+    optional string reminder_time = 12;
 }

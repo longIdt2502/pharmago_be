@@ -7709,6 +7709,9 @@
             "type": "object",
             "$ref": "#/definitions/pbVariant"
           }
+        },
+        "reminderTime": {
+          "type": "string"
         }
       }
     },

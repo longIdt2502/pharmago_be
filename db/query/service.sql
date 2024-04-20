@@ -1,14 +1,15 @@
 -- name: GetListService :many
 SELECT * FROM services
 WHERE company = sqlc.narg(company)::int
+ORDER BY -id
 LIMIT COALESCE(sqlc.narg('limit')::int, 10)
 OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10);
 
 -- name: CreateService :one
 INSERT INTO services (
-    code, image, title, entity, staff, frequency, unit, price, description, company, user_created, user_updated
+    code, image, title, entity, staff, frequency, unit, price, description, company, user_created, user_updated, reminder_time
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
 ) RETURNING *;
 
 -- name: UpdateService :one

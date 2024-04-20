@@ -13,6 +13,7 @@ type TaskDistributor interface {
 		opts ...asynq.Option,
 	) error
 	DistributorTaskSendOrderZns(ctx context.Context, payload *PayloadZNS, opts ...asynq.Option) error
+	DistributorTaskSendFcm(ctx context.Context, payload *PayloadSendFcm, opts ...asynq.Option) error
 }
 
 type RedisTaskDistributor struct {

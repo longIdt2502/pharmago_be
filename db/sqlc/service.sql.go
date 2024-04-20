@@ -12,25 +12,26 @@ import (
 
 const createService = `-- name: CreateService :one
 INSERT INTO services (
-    code, image, title, entity, staff, frequency, unit, price, description, company, user_created, user_updated
+    code, image, title, entity, staff, frequency, unit, price, description, company, user_created, user_updated, reminder_time
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
-) RETURNING id, image, code, title, entity, staff, frequency, unit, price, description, company, user_created, user_updated, created_at, updated_at
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
+) RETURNING id, image, code, title, entity, staff, frequency, reminder_time, unit, price, description, company, user_created, user_updated, created_at, updated_at
 `
 
 type CreateServiceParams struct {
-	Code        string         `json:"code"`
-	Image       sql.NullInt32  `json:"image"`
-	Title       string         `json:"title"`
-	Entity      sql.NullString `json:"entity"`
-	Staff       int32          `json:"staff"`
-	Frequency   sql.NullString `json:"frequency"`
-	Unit        string         `json:"unit"`
-	Price       float64        `json:"price"`
-	Description sql.NullString `json:"description"`
-	Company     int32          `json:"company"`
-	UserCreated int32          `json:"user_created"`
-	UserUpdated sql.NullInt32  `json:"user_updated"`
+	Code         string         `json:"code"`
+	Image        sql.NullInt32  `json:"image"`
+	Title        string         `json:"title"`
+	Entity       sql.NullString `json:"entity"`
+	Staff        int32          `json:"staff"`
+	Frequency    sql.NullString `json:"frequency"`
+	Unit         string         `json:"unit"`
+	Price        float64        `json:"price"`
+	Description  sql.NullString `json:"description"`
+	Company      int32          `json:"company"`
+	UserCreated  int32          `json:"user_created"`
+	UserUpdated  sql.NullInt32  `json:"user_updated"`
+	ReminderTime sql.NullInt32  `json:"reminder_time"`
 }
 
 func (q *Queries) CreateService(ctx context.Context, arg CreateServiceParams) (Service, error) {
@@ -47,6 +48,7 @@ func (q *Queries) CreateService(ctx context.Context, arg CreateServiceParams) (S
 		arg.Company,
 		arg.UserCreated,
 		arg.UserUpdated,
+		arg.ReminderTime,
 	)
 	var i Service
 	err := row.Scan(
@@ -57,6 +59,7 @@ func (q *Queries) CreateService(ctx context.Context, arg CreateServiceParams) (S
 		&i.Entity,
 		&i.Staff,
 		&i.Frequency,
+		&i.ReminderTime,
 		&i.Unit,
 		&i.Price,
 		&i.Description,
@@ -92,7 +95,7 @@ func (q *Queries) CreateServiceVariant(ctx context.Context, arg CreateServiceVar
 const deleteService = `-- name: DeleteService :one
 DELETE FROM services
 WHERE id = $1
-RETURNING id, image, code, title, entity, staff, frequency, unit, price, description, company, user_created, user_updated, created_at, updated_at
+RETURNING id, image, code, title, entity, staff, frequency, reminder_time, unit, price, description, company, user_created, user_updated, created_at, updated_at
 `
 
 func (q *Queries) DeleteService(ctx context.Context, id int32) (Service, error) {
@@ -106,6 +109,7 @@ func (q *Queries) DeleteService(ctx context.Context, id int32) (Service, error) 
 		&i.Entity,
 		&i.Staff,
 		&i.Frequency,
+		&i.ReminderTime,
 		&i.Unit,
 		&i.Price,
 		&i.Description,
@@ -132,7 +136,7 @@ func (q *Queries) DeleteServiceVariant(ctx context.Context, id int32) (ServiceVa
 }
 
 const detailService = `-- name: DetailService :one
-SELECT id, image, code, title, entity, staff, frequency, unit, price, description, company, user_created, user_updated, created_at, updated_at FROM services
+SELECT id, image, code, title, entity, staff, frequency, reminder_time, unit, price, description, company, user_created, user_updated, created_at, updated_at FROM services
 WHERE id = $1
 `
 
@@ -147,6 +151,7 @@ func (q *Queries) DetailService(ctx context.Context, id int32) (Service, error) 
 		&i.Entity,
 		&i.Staff,
 		&i.Frequency,
+		&i.ReminderTime,
 		&i.Unit,
 		&i.Price,
 		&i.Description,
@@ -160,8 +165,9 @@ func (q *Queries) DetailService(ctx context.Context, id int32) (Service, error) 
 }
 
 const getListService = `-- name: GetListService :many
-SELECT id, image, code, title, entity, staff, frequency, unit, price, description, company, user_created, user_updated, created_at, updated_at FROM services
+SELECT id, image, code, title, entity, staff, frequency, reminder_time, unit, price, description, company, user_created, user_updated, created_at, updated_at FROM services
 WHERE company = $1::int
+ORDER BY -id
 LIMIT COALESCE($3::int, 10)
 OFFSET (COALESCE($2::int, 1) - 1) * COALESCE($3::int, 10)
 `
@@ -189,6 +195,7 @@ func (q *Queries) GetListService(ctx context.Context, arg GetListServiceParams) 
 			&i.Entity,
 			&i.Staff,
 			&i.Frequency,
+			&i.ReminderTime,
 			&i.Unit,
 			&i.Price,
 			&i.Description,
@@ -290,7 +297,7 @@ SET
     user_updated = $9::int,
     updated_at = now()
 WHERE id = $10
-RETURNING id, image, code, title, entity, staff, frequency, unit, price, description, company, user_created, user_updated, created_at, updated_at
+RETURNING id, image, code, title, entity, staff, frequency, reminder_time, unit, price, description, company, user_created, user_updated, created_at, updated_at
 `
 
 type UpdateServiceParams struct {
@@ -328,6 +335,7 @@ func (q *Queries) UpdateService(ctx context.Context, arg UpdateServiceParams) (S
 		&i.Entity,
 		&i.Staff,
 		&i.Frequency,
+		&i.ReminderTime,
 		&i.Unit,
 		&i.Price,
 		&i.Description,
