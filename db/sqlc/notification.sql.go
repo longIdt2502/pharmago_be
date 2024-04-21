@@ -57,7 +57,8 @@ const listNotification = `-- name: ListNotification :many
 SELECT id, type, topic, title, content, is_read, data, company, created_at FROM notification 
 WHERE company = $1::int
 AND (
-    code ILIKE '%' || COALESCE($2::varchar, '') || '%'
+    title ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
+    content ILIKE '%' || COALESCE($2::varchar, '') || '%'
 )
 ORDER BY -id
 LIMIT COALESCE($4::int, 10)

@@ -2,7 +2,8 @@
 SELECT * FROM notification 
 WHERE company = sqlc.arg('company')::int
 AND (
-    code ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%'
+    title ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
+    content ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%'
 )
 ORDER BY -id
 LIMIT COALESCE(sqlc.narg('limit')::int, 10)
