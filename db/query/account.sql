@@ -25,7 +25,7 @@ INSERT INTO account_company (account, company) VALUES ($1, $2) RETURNING *;
 UPDATE accounts
 SET
     is_verify = COALESCE(sqlc.narg(is_verify), is_verify),
-    password = COALESCE(sqlc.narg(password)::varchar, password),
+    hashed_password = COALESCE(sqlc.narg(password)::varchar, hashed_password),
     full_name = COALESCE(sqlc.narg(full_name)::varchar, full_name),
     email = COALESCE(sqlc.narg(email)::varchar, email),
     account_type = COALESCE(sqlc.narg(account_type)::int, account_type),

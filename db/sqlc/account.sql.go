@@ -325,7 +325,7 @@ const updateAccount = `-- name: UpdateAccount :one
 UPDATE accounts
 SET
     is_verify = COALESCE($1, is_verify),
-    password = COALESCE($2::varchar, password),
+    hashed_password = COALESCE($2::varchar, hashed_password),
     full_name = COALESCE($3::varchar, full_name),
     email = COALESCE($4::varchar, email),
     account_type = COALESCE($5::int, account_type),
