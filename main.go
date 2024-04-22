@@ -20,6 +20,7 @@ import (
 	config2 "github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/mail"
 	"github.com/longIdt2502/pharmago_be/pb"
+	"github.com/longIdt2502/pharmago_be/socket"
 	"github.com/longIdt2502/pharmago_be/utils"
 	"github.com/longIdt2502/pharmago_be/woker"
 	"github.com/rakyll/statik/fs"
@@ -63,6 +64,7 @@ func main() {
 		log.Fatal().Err(err).Msg("cannot connect to b2")
 	}
 
+	go socket.StartSocket(store)
 	go runTaskProcessor(config, redisOpt, store)
 	go runGatewayServer(config, &store, taskDistributor, b2Bucket)
 	runServerGRPC(config, &store, taskDistributor, b2Bucket)
@@ -168,6 +170,7 @@ func runGatewayServer(config utils.Config, store *db.Store, taskDistributor woke
 
 	log.Info().Msgf("start HTTP gateway server at %s", listener.Addr().String())
 	handler := config2.HttpLogger(mux)
+	// http.HandleFunc("/websocket", socket.WebsocketHandler)
 	err = http.Serve(listener, handler)
 	if err != nil {
 		log.Fatal().Err(err).Msg("cannot start HTTP gateway server")

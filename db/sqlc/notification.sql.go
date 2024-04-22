@@ -10,6 +10,40 @@ import (
 	"database/sql"
 )
 
+const countNotification = `-- name: CountNotification :many
+SELECT COUNT(*), is_read FROM notification
+WHERE company = $1
+GROUP BY is_read
+`
+
+type CountNotificationRow struct {
+	Count  int64 `json:"count"`
+	IsRead bool  `json:"is_read"`
+}
+
+func (q *Queries) CountNotification(ctx context.Context, company sql.NullInt32) ([]CountNotificationRow, error) {
+	rows, err := q.db.QueryContext(ctx, countNotification, company)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []CountNotificationRow{}
+	for rows.Next() {
+		var i CountNotificationRow
+		if err := rows.Scan(&i.Count, &i.IsRead); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const createNotification = `-- name: CreateNotification :one
 INSERT INTO notification (
     type, topic, title, content, is_read, data, company

@@ -6388,6 +6388,14 @@
             "type": "object",
             "$ref": "#/definitions/pbNotification"
           }
+        },
+        "countNotSeen": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "count": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
