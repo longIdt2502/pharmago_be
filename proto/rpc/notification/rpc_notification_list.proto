@@ -23,4 +23,6 @@ message ListNotificationResponse {
     int32 code = 1;
     string message = 2;
     repeated Notification details = 3;
+    int32 count_not_seen = 4;
+    int32 count = 5;
 }

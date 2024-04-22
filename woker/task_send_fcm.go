@@ -5,7 +5,9 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"net/url"
 
+	"github.com/gorilla/websocket"
 	"github.com/hibiken/asynq"
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/rs/zerolog/log"
@@ -50,7 +52,7 @@ func (processor *RedisTaskProcessor) ProcessorTaskSendFcm(ctx context.Context, t
 		return fmt.Errorf("failed to unmarshal payload: %w", asynq.SkipRetry)
 	}
 
-	_, err := processor.store.CreateNotification(ctx, db.CreateNotificationParams{
+	payloadNoti := db.CreateNotificationParams{
 		Type:    "SERVICE",
 		Topic:   payload.To,
 		Title:   payload.Title,
@@ -60,7 +62,8 @@ func (processor *RedisTaskProcessor) ProcessorTaskSendFcm(ctx context.Context, t
 			Int32: payload.Company,
 			Valid: true,
 		},
-	})
+	}
+	noti, err := processor.store.CreateNotification(ctx, payloadNoti)
 	if err != nil {
 		log.Error().Str("channel", payload.To).Msg("failed to create notification record db")
 	}
@@ -69,6 +72,21 @@ func (processor *RedisTaskProcessor) ProcessorTaskSendFcm(ctx context.Context, t
 	if err != nil {
 		log.Error().Str("channel", payload.To).Msg("can't send fcm message")
 		return err
+	}
+
+	ws := url.URL{Scheme: "ws", Host: ":8000", Path: fmt.Sprintf("/websocket/%d", payload.Company)}
+	log.Info().Str("Connecting to %s", ws.String()).Msg("WS")
+
+	conn, _, err := websocket.DefaultDialer.Dial(ws.String(), nil)
+	if err != nil {
+		log.Err(err).Msg("dial")
+	}
+	defer conn.Close()
+
+	message, _ := json.Marshal(noti)
+	err = conn.WriteMessage(websocket.TextMessage, message)
+	if err != nil {
+		log.Err(err).Msg("write")
 	}
 
 	log.Info().

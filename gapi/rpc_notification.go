@@ -38,9 +38,30 @@ func (server *ServerGRPC) ListNotification(ctx context.Context, req *pb.ListNoti
 		notificationsPb = append(notificationsPb, mapper.NotificationMapper(item))
 	}
 
+	count, err := server.store.CountNotification(ctx, sql.NullInt32{
+		Int32: int32(req.GetCompany()),
+		Valid: true,
+	})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get count notification: %e", err)
+	}
+
+	countNotSeen := 0
+	countSeen := 0
+
+	for _, item := range count {
+		if item.IsRead {
+			countSeen = int(item.Count)
+		} else {
+			countNotSeen = int(item.Count)
+		}
+	}
+
 	return &pb.ListNotificationResponse{
-		Code:    200,
-		Message: "success",
-		Details: notificationsPb,
+		Code:         200,
+		Message:      "success",
+		Details:      notificationsPb,
+		CountNotSeen: int32(countNotSeen),
+		Count:        int32(countSeen + countNotSeen),
 	}, nil
 }
