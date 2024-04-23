@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+import "entities/notification.proto";
+import "entities/order.proto";
+import "entities/service.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+message DetailNotificationRequest {
+    int64 id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "int32 value field",
+        required: [
+          "id"
+        ],
+    }];
+}
+
+message DetailNotificationResponse {
+    int32 code = 1;
+    string message = 2;
+    Notification details = 3;
+    Order order = 4;
+    Service service = 5;
+}

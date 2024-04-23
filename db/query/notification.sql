@@ -20,3 +20,24 @@ INSERT INTO notification (
 SELECT COUNT(*), is_read FROM notification
 WHERE company = $1
 GROUP BY is_read;
+
+-- name: DetailNotification :one
+SELECT * FROM notification
+WHERE id = $1;
+
+-- name: UpdateNotification :one
+UPDATE notification 
+SET
+    is_read = COALESCE(sqlc.narg(is_read), is_read)
+WHERE id = sqlc.arg(id)
+RETURNING *;
+
+-- name: SeenAllNotification :many
+UPDATE notification
+SET
+    is_read = true
+WHERE 
+    company = sqlc.arg(company) AND
+    is_read = false
+RETURNING *;
+

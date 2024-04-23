@@ -123,6 +123,8 @@ const (
 	Pharmago_CreateMedicalRecord_FullMethodName      = "/pb.Pharmago/CreateMedicalRecord"
 	Pharmago_DetailMedicalRecord_FullMethodName      = "/pb.Pharmago/DetailMedicalRecord"
 	Pharmago_ListNotification_FullMethodName         = "/pb.Pharmago/ListNotification"
+	Pharmago_DetailNotification_FullMethodName       = "/pb.Pharmago/DetailNotification"
+	Pharmago_SeenAllNoti_FullMethodName              = "/pb.Pharmago/SeenAllNoti"
 )
 
 // PharmagoClient is the client API for Pharmago service.
@@ -257,6 +259,8 @@ type PharmagoClient interface {
 	DetailMedicalRecord(ctx context.Context, in *DetailMedicalRecordRequest, opts ...grpc.CallOption) (*DetailMedicalRecordResponse, error)
 	// ================== NOTIFICATION ===================
 	ListNotification(ctx context.Context, in *ListNotificationRequest, opts ...grpc.CallOption) (*ListNotificationResponse, error)
+	DetailNotification(ctx context.Context, in *DetailNotificationRequest, opts ...grpc.CallOption) (*DetailNotificationResponse, error)
+	SeenAllNoti(ctx context.Context, in *SeenAllNotiRequest, opts ...grpc.CallOption) (*SeenAllNotiResponse, error)
 }
 
 type pharmagoClient struct {
@@ -1225,6 +1229,24 @@ func (c *pharmagoClient) ListNotification(ctx context.Context, in *ListNotificat
 	return out, nil
 }
 
+func (c *pharmagoClient) DetailNotification(ctx context.Context, in *DetailNotificationRequest, opts ...grpc.CallOption) (*DetailNotificationResponse, error) {
+	out := new(DetailNotificationResponse)
+	err := c.cc.Invoke(ctx, Pharmago_DetailNotification_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) SeenAllNoti(ctx context.Context, in *SeenAllNotiRequest, opts ...grpc.CallOption) (*SeenAllNotiResponse, error) {
+	out := new(SeenAllNotiResponse)
+	err := c.cc.Invoke(ctx, Pharmago_SeenAllNoti_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PharmagoServer is the server API for Pharmago service.
 // All implementations must embed UnimplementedPharmagoServer
 // for forward compatibility
@@ -1357,6 +1379,8 @@ type PharmagoServer interface {
 	DetailMedicalRecord(context.Context, *DetailMedicalRecordRequest) (*DetailMedicalRecordResponse, error)
 	// ================== NOTIFICATION ===================
 	ListNotification(context.Context, *ListNotificationRequest) (*ListNotificationResponse, error)
+	DetailNotification(context.Context, *DetailNotificationRequest) (*DetailNotificationResponse, error)
+	SeenAllNoti(context.Context, *SeenAllNotiRequest) (*SeenAllNotiResponse, error)
 	mustEmbedUnimplementedPharmagoServer()
 }
 
@@ -1675,6 +1699,12 @@ func (UnimplementedPharmagoServer) DetailMedicalRecord(context.Context, *DetailM
 }
 func (UnimplementedPharmagoServer) ListNotification(context.Context, *ListNotificationRequest) (*ListNotificationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListNotification not implemented")
+}
+func (UnimplementedPharmagoServer) DetailNotification(context.Context, *DetailNotificationRequest) (*DetailNotificationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DetailNotification not implemented")
+}
+func (UnimplementedPharmagoServer) SeenAllNoti(context.Context, *SeenAllNotiRequest) (*SeenAllNotiResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SeenAllNoti not implemented")
 }
 func (UnimplementedPharmagoServer) mustEmbedUnimplementedPharmagoServer() {}
 
@@ -3569,6 +3599,42 @@ func _Pharmago_ListNotification_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Pharmago_DetailNotification_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DetailNotificationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).DetailNotification(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_DetailNotification_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).DetailNotification(ctx, req.(*DetailNotificationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_SeenAllNoti_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SeenAllNotiRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).SeenAllNoti(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_SeenAllNoti_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).SeenAllNoti(ctx, req.(*SeenAllNotiRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Pharmago_ServiceDesc is the grpc.ServiceDesc for Pharmago service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -3987,6 +4053,14 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListNotification",
 			Handler:    _Pharmago_ListNotification_Handler,
+		},
+		{
+			MethodName: "DetailNotification",
+			Handler:    _Pharmago_DetailNotification_Handler,
+		},
+		{
+			MethodName: "SeenAllNoti",
+			Handler:    _Pharmago_SeenAllNoti_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

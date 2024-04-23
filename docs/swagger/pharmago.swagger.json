@@ -2020,6 +2020,39 @@
         ]
       }
     },
+    "/notification/v1/detail/{id}": {
+      "get": {
+        "summary": "Detail Notification",
+        "operationId": "Pharmago_DetailNotification",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbDetailNotificationResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "int32 value field",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "Notification"
+        ]
+      }
+    },
     "/notification/v1/list": {
       "get": {
         "summary": "List Notification",
@@ -2066,6 +2099,37 @@
             "required": false,
             "type": "integer",
             "format": "int32"
+          }
+        ],
+        "tags": [
+          "Notification"
+        ]
+      },
+      "post": {
+        "summary": "Seen All Notification",
+        "operationId": "Pharmago_SeenAllNoti",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbSeenAllNotiResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbSeenAllNotiRequest"
+            }
           }
         ],
         "tags": [
@@ -6104,6 +6168,27 @@
         }
       }
     },
+    "pbDetailNotificationResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "$ref": "#/definitions/pbNotification"
+        },
+        "order": {
+          "$ref": "#/definitions/pbOrder"
+        },
+        "service": {
+          "$ref": "#/definitions/pbService"
+        }
+      }
+    },
     "pbDetailPriceListResponse": {
       "type": "object",
       "properties": {
@@ -7747,6 +7832,31 @@
       }
     },
     "pbRoleUpdateResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "pbSeenAllNotiRequest": {
+      "type": "object",
+      "properties": {
+        "company": {
+          "type": "integer",
+          "format": "int32",
+          "description": "int32 value field"
+        }
+      },
+      "required": [
+        "company"
+      ]
+    },
+    "pbSeenAllNotiResponse": {
       "type": "object",
       "properties": {
         "code": {
