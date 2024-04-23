@@ -105,6 +105,8 @@ import "rpc/medical_record/rpc_create_medical_record.proto";
 import "rpc/medical_record/rpc_detail_medical_record.proto";
 
 import "rpc/notification/rpc_notification_list.proto";
+import "rpc/notification/rpc_notification_detail.proto";
+import "rpc/notification/rpc_seen_all_noti.proto";
 
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
@@ -1183,6 +1185,25 @@ service Pharmago {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "List Notification";
+      tags: "Notification";
+    };
+  };
+  rpc DetailNotification (DetailNotificationRequest) returns (DetailNotificationResponse) {
+    option (google.api.http) = {
+      get: "/notification/v1/detail/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Detail Notification";
+      tags: "Notification";
+    };
+  };
+  rpc SeenAllNoti (SeenAllNotiRequest) returns (SeenAllNotiResponse) {
+    option (google.api.http) = {
+      post: "/notification/v1/list"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Seen All Notification";
       tags: "Notification";
     };
   };

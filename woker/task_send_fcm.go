@@ -16,10 +16,16 @@ import (
 const TaskSendFcm = "task:send_fcm"
 
 type PayloadSendFcm struct {
-	To      string `json:"to"`
-	Title   string `json:"title"`
-	Body    string `json:"body"`
-	Company int32  `json:"company"`
+	To      string    `json:"to"`
+	Title   string    `json:"title"`
+	Body    string    `json:"body"`
+	Company int32     `json:"company"`
+	Data    *DataNoti `json:"data"`
+}
+
+type DataNoti struct {
+	Order   *int32 `json:"order"`
+	Service *int32 `json:"service"`
 }
 
 func (distributor *RedisTaskDistributor) DistributorTaskSendFcm(
@@ -52,6 +58,10 @@ func (processor *RedisTaskProcessor) ProcessorTaskSendFcm(ctx context.Context, t
 		return fmt.Errorf("failed to unmarshal payload: %w", asynq.SkipRetry)
 	}
 
+	data, err := json.Marshal(payload.Data)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to json marshal data")
+	}
 	payloadNoti := db.CreateNotificationParams{
 		Type:    "SERVICE",
 		Topic:   payload.To,
@@ -61,6 +71,10 @@ func (processor *RedisTaskProcessor) ProcessorTaskSendFcm(ctx context.Context, t
 		Company: sql.NullInt32{
 			Int32: payload.Company,
 			Valid: true,
+		},
+		Data: sql.NullString{
+			String: string(data),
+			Valid:  payload.Data != nil && err == nil,
 		},
 	}
 	noti, err := processor.store.CreateNotification(ctx, payloadNoti)

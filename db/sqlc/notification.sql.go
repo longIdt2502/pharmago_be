@@ -87,6 +87,28 @@ func (q *Queries) CreateNotification(ctx context.Context, arg CreateNotification
 	return i, err
 }
 
+const detailNotification = `-- name: DetailNotification :one
+SELECT id, type, topic, title, content, is_read, data, company, created_at FROM notification
+WHERE id = $1
+`
+
+func (q *Queries) DetailNotification(ctx context.Context, id int32) (Notification, error) {
+	row := q.db.QueryRowContext(ctx, detailNotification, id)
+	var i Notification
+	err := row.Scan(
+		&i.ID,
+		&i.Type,
+		&i.Topic,
+		&i.Title,
+		&i.Content,
+		&i.IsRead,
+		&i.Data,
+		&i.Company,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const listNotification = `-- name: ListNotification :many
 SELECT id, type, topic, title, content, is_read, data, company, created_at FROM notification 
 WHERE company = $1::int
@@ -142,4 +164,77 @@ func (q *Queries) ListNotification(ctx context.Context, arg ListNotificationPara
 		return nil, err
 	}
 	return items, nil
+}
+
+const seenAllNotification = `-- name: SeenAllNotification :many
+UPDATE notification
+SET
+    is_read = true
+WHERE 
+    company = $1 AND
+    is_read = false
+RETURNING id, type, topic, title, content, is_read, data, company, created_at
+`
+
+func (q *Queries) SeenAllNotification(ctx context.Context, company sql.NullInt32) ([]Notification, error) {
+	rows, err := q.db.QueryContext(ctx, seenAllNotification, company)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Notification{}
+	for rows.Next() {
+		var i Notification
+		if err := rows.Scan(
+			&i.ID,
+			&i.Type,
+			&i.Topic,
+			&i.Title,
+			&i.Content,
+			&i.IsRead,
+			&i.Data,
+			&i.Company,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const updateNotification = `-- name: UpdateNotification :one
+UPDATE notification 
+SET
+    is_read = COALESCE($1, is_read)
+WHERE id = $2
+RETURNING id, type, topic, title, content, is_read, data, company, created_at
+`
+
+type UpdateNotificationParams struct {
+	IsRead sql.NullBool `json:"is_read"`
+	ID     int32        `json:"id"`
+}
+
+func (q *Queries) UpdateNotification(ctx context.Context, arg UpdateNotificationParams) (Notification, error) {
+	row := q.db.QueryRowContext(ctx, updateNotification, arg.IsRead, arg.ID)
+	var i Notification
+	err := row.Scan(
+		&i.ID,
+		&i.Type,
+		&i.Topic,
+		&i.Title,
+		&i.Content,
+		&i.IsRead,
+		&i.Data,
+		&i.Company,
+		&i.CreatedAt,
+	)
+	return i, err
 }

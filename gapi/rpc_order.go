@@ -76,6 +76,10 @@ func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRe
 					Title:   "Thông báo dịch vụ",
 					Body:    fmt.Sprintf("Nhắc khách hàng lưu ý dịch vụ %s", item.Title),
 					Company: company.ID,
+					Data: &woker.DataNoti{
+						Order:   &result.Id,
+						Service: &item.ID_2,
+					},
 				}
 
 				opts := []asynq.Option{
