@@ -30,6 +30,10 @@ func (server *ServerGRPC) ServiceList(ctx context.Context, req *pb.ServiceListRe
 			Int32: req.GetLimit(),
 			Valid: req.Limit != nil,
 		},
+		Search: sql.NullString{
+			String: req.GetSearch(),
+			Valid:  req.Search != nil,
+		},
 	})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get list service: %e", err)

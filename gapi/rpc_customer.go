@@ -48,10 +48,16 @@ func (server *ServerGRPC) CustomerList(ctx context.Context, req *pb.CustomerList
 		customersPb = append(customersPb, dataPb)
 	}
 
+	count, err := server.store.CountCustomer(ctx, req.GetCompany())
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to count customer: %e", err)
+	}
+
 	return &pb.CustomerListResponse{
 		Code:    200,
 		Message: "success",
 		Details: customersPb,
+		Count:   int32(count),
 	}, nil
 }
 

@@ -11,6 +11,18 @@ import (
 	"time"
 )
 
+const countCustomer = `-- name: CountCustomer :one
+SELECT COUNT(*) FROM customers
+WHERE company = $1::int
+`
+
+func (q *Queries) CountCustomer(ctx context.Context, company int32) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countCustomer, company)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createCustomer = `-- name: CreateCustomer :one
 INSERT INTO customers (
     full_name, code, company, address, email, phone ,license, birthday, user_updated, user_created
