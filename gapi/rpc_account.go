@@ -306,7 +306,7 @@ func (server *ServerGRPC) UpdateEmployee(ctx context.Context, req *pb.EmployeeUp
 			String: req.GetEmail(),
 			Valid:  true,
 		},
-		AccountType: sql.NullInt32{},
+		Type: sql.NullInt32{},
 		Licence: sql.NullString{
 			String: req.GetLicence(),
 			Valid:  req.Licence != nil,
