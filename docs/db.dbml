@@ -560,7 +560,7 @@ Table order_items {
   variant serial [not null]
   value int [not null, default: 0]
   total_price float [not null, default: 0]
-  consignment serial
+  consignment serial [note: "Không truyền lúc tạo tự chọn theo BE"]
   consignment_log serial
 }
 
@@ -591,6 +591,7 @@ Table customers {
   phone varchar(20)
   license varchar(20)
   birthday timestamptz
+  group serial
   user_created serial [not null]
   user_updated serial
   updated_at timestamptz
@@ -606,6 +607,23 @@ Ref: customers.company > C.id [delete: cascade]
 Ref: customers.address > address.id [delete: set null]
 Ref: customers.user_created > A.id [delete: cascade]
 Ref: customers.user_updated > A.id [delete: set null]
+Ref: customers.group > customer_group.id [delete: set null]
+
+Table customer_group {
+  id serial [pk]
+  code varchar [not null, unique]
+  name varchar [not null]
+  company serial [not null]
+  note varchar
+  user_created serial [not null]
+  user_updated serial
+  updated_at timestamptz
+  created_at timestamptz [not null, default: `now()`]
+}
+
+Ref: customer_group.company > C.id [delete: cascade]
+Ref: customer_group.user_created > A.id [delete: cascade]
+Ref: customer_group.user_updated > A.id [delete: set null]
 
 Table medical_records {
   id serial [pk]
@@ -822,6 +840,7 @@ Ref: debt_repayment.debt > debt_note.id [delete: set null]
 
 Table services {
   id serial [pk]
+  active bool [not null, default: true]
   image serial
   code varchar [not null, unique]
   title varchar [not null]
@@ -876,35 +895,3 @@ Ref: N.company > C.id [delete: set null]
 Table noti_type {
   code varchar [unique, not null]
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

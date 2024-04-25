@@ -36,6 +36,48 @@ SET
     phone = COALESCE(sqlc.narg(phone)::varchar, phone),
     license = COALESCE(sqlc.narg(license)::varchar, license),
     birthday = COALESCE(sqlc.narg(birthday)::timestamp, birthday),
-    user_updated = COALESCE(sqlc.narg(user_updated)::int, user_updated)
+    user_updated = COALESCE(sqlc.narg(user_updated)::int, user_updated),
+    "group" = COALESCE(sqlc.narg('group')::int, "group")
 WHERE id = sqlc.arg(id)
 RETURNING *;
+
+-- name: CreateCustomerGroup :one
+INSERT INTO customer_group (
+    code, name, company, note, user_created
+) VALUES (
+    $1, $2, $3, $4, $5
+) RETURNING *;
+
+-- name: ListCustomerGroup :many
+SELECT * FROM customer_group cg
+LEFT JOIN accounts ac ON ac.id = cg.user_created
+LEFT JOIN accounts au ON au.id = cg.user_updated
+WHERE cg.company = sqlc.arg('company')::int
+AND (
+    cg.name ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
+    cg.code ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%'
+)
+ORDER BY -cg.id
+LIMIT COALESCE(sqlc.narg('limit')::int, 10)
+OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10);
+
+-- name: DetailCustomerGroup :one
+SELECT * FROM customer_group cg
+LEFT JOIN accounts ac ON ac.id = cg.user_created
+LEFT JOIN accounts au ON au.id = cg.user_updated
+WHERE cg.id = $1;
+
+-- name: UpdateCustomerGroup :one
+UPDATE customer_group
+SET
+    name = COALESCE(sqlc.narg(name), name),
+    code = COALESCE(sqlc.narg(code), code),
+    note = COALESCE(sqlc.narg(note), note),
+    user_updated = sqlc.arg(user_updated),
+    updated_at = now()
+WHERE id = sqlc.arg(id)
+RETURNING *;
+
+-- name: DeleteCustomerGroup :one
+DELETE FROM customer_group
+WHERE id = $1 RETURNING *;

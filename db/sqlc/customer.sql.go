@@ -8,6 +8,7 @@ package db
 import (
 	"context"
 	"database/sql"
+	"time"
 )
 
 const createCustomer = `-- name: CreateCustomer :one
@@ -15,7 +16,7 @@ INSERT INTO customers (
     full_name, code, company, address, email, phone ,license, birthday, user_updated, user_created
 ) VALUES (
     $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
-) RETURNING id, full_name, code, company, address, email, phone, license, birthday, user_created, user_updated, updated_at, created_at
+) RETURNING id, full_name, code, company, address, email, phone, license, birthday, user_created, user_updated, updated_at, created_at, "group"
 `
 
 type CreateCustomerParams struct {
@@ -59,12 +60,74 @@ func (q *Queries) CreateCustomer(ctx context.Context, arg CreateCustomerParams) 
 		&i.UserUpdated,
 		&i.UpdatedAt,
 		&i.CreatedAt,
+		&i.Group,
+	)
+	return i, err
+}
+
+const createCustomerGroup = `-- name: CreateCustomerGroup :one
+INSERT INTO customer_group (
+    code, name, company, note, user_created
+) VALUES (
+    $1, $2, $3, $4, $5
+) RETURNING id, code, name, company, note, user_created, user_updated, updated_at, created_at
+`
+
+type CreateCustomerGroupParams struct {
+	Code        string         `json:"code"`
+	Name        string         `json:"name"`
+	Company     int32          `json:"company"`
+	Note        sql.NullString `json:"note"`
+	UserCreated int32          `json:"user_created"`
+}
+
+func (q *Queries) CreateCustomerGroup(ctx context.Context, arg CreateCustomerGroupParams) (CustomerGroup, error) {
+	row := q.db.QueryRowContext(ctx, createCustomerGroup,
+		arg.Code,
+		arg.Name,
+		arg.Company,
+		arg.Note,
+		arg.UserCreated,
+	)
+	var i CustomerGroup
+	err := row.Scan(
+		&i.ID,
+		&i.Code,
+		&i.Name,
+		&i.Company,
+		&i.Note,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.UpdatedAt,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const deleteCustomerGroup = `-- name: DeleteCustomerGroup :one
+DELETE FROM customer_group
+WHERE id = $1 RETURNING id, code, name, company, note, user_created, user_updated, updated_at, created_at
+`
+
+func (q *Queries) DeleteCustomerGroup(ctx context.Context, id int32) (CustomerGroup, error) {
+	row := q.db.QueryRowContext(ctx, deleteCustomerGroup, id)
+	var i CustomerGroup
+	err := row.Scan(
+		&i.ID,
+		&i.Code,
+		&i.Name,
+		&i.Company,
+		&i.Note,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.UpdatedAt,
+		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const detailCustomer = `-- name: DetailCustomer :one
-SELECT id, full_name, code, company, address, email, phone, license, birthday, user_created, user_updated, updated_at, created_at FROM customers
+SELECT id, full_name, code, company, address, email, phone, license, birthday, user_created, user_updated, updated_at, created_at, "group" FROM customers
 WHERE id = $1
 LIMIT 1
 `
@@ -86,12 +149,105 @@ func (q *Queries) DetailCustomer(ctx context.Context, id int32) (Customer, error
 		&i.UserUpdated,
 		&i.UpdatedAt,
 		&i.CreatedAt,
+		&i.Group,
+	)
+	return i, err
+}
+
+const detailCustomerGroup = `-- name: DetailCustomerGroup :one
+SELECT cg.id, code, name, company, note, user_created, user_updated, updated_at, cg.created_at, ac.id, ac.username, ac.hashed_password, ac.full_name, ac.email, ac.type, ac.is_verify, ac.password_changed_at, ac.created_at, ac.role, ac.gender, ac.licence, ac.dob, ac.address, au.id, au.username, au.hashed_password, au.full_name, au.email, au.type, au.is_verify, au.password_changed_at, au.created_at, au.role, au.gender, au.licence, au.dob, au.address FROM customer_group cg
+LEFT JOIN accounts ac ON ac.id = cg.user_created
+LEFT JOIN accounts au ON au.id = cg.user_updated
+WHERE cg.id = $1
+`
+
+type DetailCustomerGroupRow struct {
+	ID                  int32          `json:"id"`
+	Code                string         `json:"code"`
+	Name                string         `json:"name"`
+	Company             int32          `json:"company"`
+	Note                sql.NullString `json:"note"`
+	UserCreated         int32          `json:"user_created"`
+	UserUpdated         sql.NullInt32  `json:"user_updated"`
+	UpdatedAt           sql.NullTime   `json:"updated_at"`
+	CreatedAt           time.Time      `json:"created_at"`
+	ID_2                sql.NullInt32  `json:"id_2"`
+	Username            sql.NullString `json:"username"`
+	HashedPassword      sql.NullString `json:"hashed_password"`
+	FullName            sql.NullString `json:"full_name"`
+	Email               sql.NullString `json:"email"`
+	Type                sql.NullInt32  `json:"type"`
+	IsVerify            sql.NullBool   `json:"is_verify"`
+	PasswordChangedAt   sql.NullTime   `json:"password_changed_at"`
+	CreatedAt_2         sql.NullTime   `json:"created_at_2"`
+	Role                sql.NullInt32  `json:"role"`
+	Gender              NullGender     `json:"gender"`
+	Licence             sql.NullString `json:"licence"`
+	Dob                 sql.NullTime   `json:"dob"`
+	Address             sql.NullInt32  `json:"address"`
+	ID_3                sql.NullInt32  `json:"id_3"`
+	Username_2          sql.NullString `json:"username_2"`
+	HashedPassword_2    sql.NullString `json:"hashed_password_2"`
+	FullName_2          sql.NullString `json:"full_name_2"`
+	Email_2             sql.NullString `json:"email_2"`
+	Type_2              sql.NullInt32  `json:"type_2"`
+	IsVerify_2          sql.NullBool   `json:"is_verify_2"`
+	PasswordChangedAt_2 sql.NullTime   `json:"password_changed_at_2"`
+	CreatedAt_3         sql.NullTime   `json:"created_at_3"`
+	Role_2              sql.NullInt32  `json:"role_2"`
+	Gender_2            NullGender     `json:"gender_2"`
+	Licence_2           sql.NullString `json:"licence_2"`
+	Dob_2               sql.NullTime   `json:"dob_2"`
+	Address_2           sql.NullInt32  `json:"address_2"`
+}
+
+func (q *Queries) DetailCustomerGroup(ctx context.Context, id int32) (DetailCustomerGroupRow, error) {
+	row := q.db.QueryRowContext(ctx, detailCustomerGroup, id)
+	var i DetailCustomerGroupRow
+	err := row.Scan(
+		&i.ID,
+		&i.Code,
+		&i.Name,
+		&i.Company,
+		&i.Note,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.UpdatedAt,
+		&i.CreatedAt,
+		&i.ID_2,
+		&i.Username,
+		&i.HashedPassword,
+		&i.FullName,
+		&i.Email,
+		&i.Type,
+		&i.IsVerify,
+		&i.PasswordChangedAt,
+		&i.CreatedAt_2,
+		&i.Role,
+		&i.Gender,
+		&i.Licence,
+		&i.Dob,
+		&i.Address,
+		&i.ID_3,
+		&i.Username_2,
+		&i.HashedPassword_2,
+		&i.FullName_2,
+		&i.Email_2,
+		&i.Type_2,
+		&i.IsVerify_2,
+		&i.PasswordChangedAt_2,
+		&i.CreatedAt_3,
+		&i.Role_2,
+		&i.Gender_2,
+		&i.Licence_2,
+		&i.Dob_2,
+		&i.Address_2,
 	)
 	return i, err
 }
 
 const getCustomer = `-- name: GetCustomer :one
-SELECT id, full_name, code, company, address, email, phone, license, birthday, user_created, user_updated, updated_at, created_at FROM customers
+SELECT id, full_name, code, company, address, email, phone, license, birthday, user_created, user_updated, updated_at, created_at, "group" FROM customers
 WHERE id = $1
 LIMIT 1
 `
@@ -113,12 +269,13 @@ func (q *Queries) GetCustomer(ctx context.Context, id int32) (Customer, error) {
 		&i.UserUpdated,
 		&i.UpdatedAt,
 		&i.CreatedAt,
+		&i.Group,
 	)
 	return i, err
 }
 
 const listCustomer = `-- name: ListCustomer :many
-SELECT id, full_name, code, company, address, email, phone, license, birthday, user_created, user_updated, updated_at, created_at FROM customers
+SELECT id, full_name, code, company, address, email, phone, license, birthday, user_created, user_updated, updated_at, created_at, "group" FROM customers
 WHERE company = $1::int
 AND (
     full_name ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
@@ -165,6 +322,134 @@ func (q *Queries) ListCustomer(ctx context.Context, arg ListCustomerParams) ([]C
 			&i.UserUpdated,
 			&i.UpdatedAt,
 			&i.CreatedAt,
+			&i.Group,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listCustomerGroup = `-- name: ListCustomerGroup :many
+SELECT cg.id, code, name, company, note, user_created, user_updated, updated_at, cg.created_at, ac.id, ac.username, ac.hashed_password, ac.full_name, ac.email, ac.type, ac.is_verify, ac.password_changed_at, ac.created_at, ac.role, ac.gender, ac.licence, ac.dob, ac.address, au.id, au.username, au.hashed_password, au.full_name, au.email, au.type, au.is_verify, au.password_changed_at, au.created_at, au.role, au.gender, au.licence, au.dob, au.address FROM customer_group cg
+LEFT JOIN accounts ac ON ac.id = cg.user_created
+LEFT JOIN accounts au ON au.id = cg.user_updated
+WHERE cg.company = $1::int
+AND (
+    cg.name ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
+    cg.code ILIKE '%' || COALESCE($2::varchar, '') || '%'
+)
+ORDER BY -cg.id
+LIMIT COALESCE($4::int, 10)
+OFFSET (COALESCE($3::int, 1) - 1) * COALESCE($4::int, 10)
+`
+
+type ListCustomerGroupParams struct {
+	Company int32          `json:"company"`
+	Search  sql.NullString `json:"search"`
+	Page    sql.NullInt32  `json:"page"`
+	Limit   sql.NullInt32  `json:"limit"`
+}
+
+type ListCustomerGroupRow struct {
+	ID                  int32          `json:"id"`
+	Code                string         `json:"code"`
+	Name                string         `json:"name"`
+	Company             int32          `json:"company"`
+	Note                sql.NullString `json:"note"`
+	UserCreated         int32          `json:"user_created"`
+	UserUpdated         sql.NullInt32  `json:"user_updated"`
+	UpdatedAt           sql.NullTime   `json:"updated_at"`
+	CreatedAt           time.Time      `json:"created_at"`
+	ID_2                sql.NullInt32  `json:"id_2"`
+	Username            sql.NullString `json:"username"`
+	HashedPassword      sql.NullString `json:"hashed_password"`
+	FullName            sql.NullString `json:"full_name"`
+	Email               sql.NullString `json:"email"`
+	Type                sql.NullInt32  `json:"type"`
+	IsVerify            sql.NullBool   `json:"is_verify"`
+	PasswordChangedAt   sql.NullTime   `json:"password_changed_at"`
+	CreatedAt_2         sql.NullTime   `json:"created_at_2"`
+	Role                sql.NullInt32  `json:"role"`
+	Gender              NullGender     `json:"gender"`
+	Licence             sql.NullString `json:"licence"`
+	Dob                 sql.NullTime   `json:"dob"`
+	Address             sql.NullInt32  `json:"address"`
+	ID_3                sql.NullInt32  `json:"id_3"`
+	Username_2          sql.NullString `json:"username_2"`
+	HashedPassword_2    sql.NullString `json:"hashed_password_2"`
+	FullName_2          sql.NullString `json:"full_name_2"`
+	Email_2             sql.NullString `json:"email_2"`
+	Type_2              sql.NullInt32  `json:"type_2"`
+	IsVerify_2          sql.NullBool   `json:"is_verify_2"`
+	PasswordChangedAt_2 sql.NullTime   `json:"password_changed_at_2"`
+	CreatedAt_3         sql.NullTime   `json:"created_at_3"`
+	Role_2              sql.NullInt32  `json:"role_2"`
+	Gender_2            NullGender     `json:"gender_2"`
+	Licence_2           sql.NullString `json:"licence_2"`
+	Dob_2               sql.NullTime   `json:"dob_2"`
+	Address_2           sql.NullInt32  `json:"address_2"`
+}
+
+func (q *Queries) ListCustomerGroup(ctx context.Context, arg ListCustomerGroupParams) ([]ListCustomerGroupRow, error) {
+	rows, err := q.db.QueryContext(ctx, listCustomerGroup,
+		arg.Company,
+		arg.Search,
+		arg.Page,
+		arg.Limit,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListCustomerGroupRow{}
+	for rows.Next() {
+		var i ListCustomerGroupRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Code,
+			&i.Name,
+			&i.Company,
+			&i.Note,
+			&i.UserCreated,
+			&i.UserUpdated,
+			&i.UpdatedAt,
+			&i.CreatedAt,
+			&i.ID_2,
+			&i.Username,
+			&i.HashedPassword,
+			&i.FullName,
+			&i.Email,
+			&i.Type,
+			&i.IsVerify,
+			&i.PasswordChangedAt,
+			&i.CreatedAt_2,
+			&i.Role,
+			&i.Gender,
+			&i.Licence,
+			&i.Dob,
+			&i.Address,
+			&i.ID_3,
+			&i.Username_2,
+			&i.HashedPassword_2,
+			&i.FullName_2,
+			&i.Email_2,
+			&i.Type_2,
+			&i.IsVerify_2,
+			&i.PasswordChangedAt_2,
+			&i.CreatedAt_3,
+			&i.Role_2,
+			&i.Gender_2,
+			&i.Licence_2,
+			&i.Dob_2,
+			&i.Address_2,
 		); err != nil {
 			return nil, err
 		}
@@ -188,9 +473,10 @@ SET
     phone = COALESCE($4::varchar, phone),
     license = COALESCE($5::varchar, license),
     birthday = COALESCE($6::timestamp, birthday),
-    user_updated = COALESCE($7::int, user_updated)
-WHERE id = $8
-RETURNING id, full_name, code, company, address, email, phone, license, birthday, user_created, user_updated, updated_at, created_at
+    user_updated = COALESCE($7::int, user_updated),
+    "group" = COALESCE($8::int, "group")
+WHERE id = $9
+RETURNING id, full_name, code, company, address, email, phone, license, birthday, user_created, user_updated, updated_at, created_at, "group"
 `
 
 type UpdateCustomerParams struct {
@@ -201,6 +487,7 @@ type UpdateCustomerParams struct {
 	License     sql.NullString `json:"license"`
 	Birthday    sql.NullTime   `json:"birthday"`
 	UserUpdated sql.NullInt32  `json:"user_updated"`
+	Group       sql.NullInt32  `json:"group"`
 	ID          int32          `json:"id"`
 }
 
@@ -213,6 +500,7 @@ func (q *Queries) UpdateCustomer(ctx context.Context, arg UpdateCustomerParams) 
 		arg.License,
 		arg.Birthday,
 		arg.UserUpdated,
+		arg.Group,
 		arg.ID,
 	)
 	var i Customer
@@ -226,6 +514,50 @@ func (q *Queries) UpdateCustomer(ctx context.Context, arg UpdateCustomerParams) 
 		&i.Phone,
 		&i.License,
 		&i.Birthday,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.UpdatedAt,
+		&i.CreatedAt,
+		&i.Group,
+	)
+	return i, err
+}
+
+const updateCustomerGroup = `-- name: UpdateCustomerGroup :one
+UPDATE customer_group
+SET
+    name = COALESCE($1, name),
+    code = COALESCE($2, code),
+    note = COALESCE($3, note),
+    user_updated = $4,
+    updated_at = now()
+WHERE id = $5
+RETURNING id, code, name, company, note, user_created, user_updated, updated_at, created_at
+`
+
+type UpdateCustomerGroupParams struct {
+	Name        sql.NullString `json:"name"`
+	Code        sql.NullString `json:"code"`
+	Note        sql.NullString `json:"note"`
+	UserUpdated sql.NullInt32  `json:"user_updated"`
+	ID          int32          `json:"id"`
+}
+
+func (q *Queries) UpdateCustomerGroup(ctx context.Context, arg UpdateCustomerGroupParams) (CustomerGroup, error) {
+	row := q.db.QueryRowContext(ctx, updateCustomerGroup,
+		arg.Name,
+		arg.Code,
+		arg.Note,
+		arg.UserUpdated,
+		arg.ID,
+	)
+	var i CustomerGroup
+	err := row.Scan(
+		&i.ID,
+		&i.Code,
+		&i.Name,
+		&i.Company,
+		&i.Note,
 		&i.UserCreated,
 		&i.UserUpdated,
 		&i.UpdatedAt,

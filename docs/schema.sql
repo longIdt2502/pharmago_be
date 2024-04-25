@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml-lang.org)
 -- Database: PostgreSQL
--- Generated at: 2024-04-20T07:25:11.521Z
+-- Generated at: 2024-04-25T02:17:06.278Z
 
 CREATE TYPE "gender" AS ENUM (
   'nam',
@@ -437,6 +437,19 @@ CREATE TABLE "customers" (
   "phone" varchar(20),
   "license" varchar(20),
   "birthday" timestamptz,
+  "group" serial,
+  "user_created" serial NOT NULL,
+  "user_updated" serial,
+  "updated_at" timestamptz,
+  "created_at" timestamptz NOT NULL DEFAULT (now())
+);
+
+CREATE TABLE "customer_group" (
+  "id" serial PRIMARY KEY,
+  "code" varchar UNIQUE NOT NULL,
+  "name" varchar NOT NULL,
+  "company" serial NOT NULL,
+  "note" varchar,
   "user_created" serial NOT NULL,
   "user_updated" serial,
   "updated_at" timestamptz,
@@ -606,6 +619,7 @@ CREATE TABLE "debt_repayment" (
 
 CREATE TABLE "services" (
   "id" serial PRIMARY KEY,
+  "active" bool NOT NULL DEFAULT true,
   "image" serial,
   "code" varchar UNIQUE NOT NULL,
   "title" varchar NOT NULL,
@@ -705,6 +719,8 @@ COMMENT ON COLUMN "company_type"."code" IS '
 💸 1 = CLINIC,
 ✔️ 2 = DRUGSTORE
 ';
+
+COMMENT ON COLUMN "order_items"."consignment" IS 'Không truyền lúc tạo tự chọn theo BE';
 
 COMMENT ON COLUMN "medical_records"."symptom" IS 'Triệu chứng';
 
@@ -891,6 +907,14 @@ ALTER TABLE "customers" ADD FOREIGN KEY ("address") REFERENCES "address" ("id") 
 ALTER TABLE "customers" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id") ON DELETE CASCADE;
 
 ALTER TABLE "customers" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "customers" ADD FOREIGN KEY ("group") REFERENCES "customer_group" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "customer_group" ADD FOREIGN KEY ("company") REFERENCES "companies" ("id") ON DELETE CASCADE;
+
+ALTER TABLE "customer_group" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id") ON DELETE CASCADE;
+
+ALTER TABLE "customer_group" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "medical_records" ADD FOREIGN KEY ("customer") REFERENCES "customers" ("id") ON DELETE SET NULL;
 

@@ -14,6 +14,7 @@ import (
 	"github.com/longIdt2502/pharmago_be/utils"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func (server *ServerGRPC) CustomerList(ctx context.Context, req *pb.CustomerListRequest) (*pb.CustomerListResponse, error) {
@@ -230,6 +231,201 @@ func (server *ServerGRPC) CustomerUpdate(ctx context.Context, req *pb.CustomerUp
 	}
 
 	return &pb.CustomerUpdateResponse{
+		Code:    200,
+		Message: "success",
+	}, nil
+}
+
+func (server *ServerGRPC) CustomerGroupList(ctx context.Context, req *pb.CustomerGroupListRequest) (*pb.CustomerGroupListResponse, error) {
+	customerGroup, err := server.store.ListCustomerGroup(ctx, db.ListCustomerGroupParams{
+		Search: sql.NullString{
+			String: req.GetSearch(),
+			Valid:  req.Search != nil,
+		},
+		Page: sql.NullInt32{
+			Int32: req.GetPage(),
+			Valid: req.Page != nil,
+		},
+		Limit: sql.NullInt32{
+			Int32: req.GetLimit(),
+			Valid: req.Limit != nil,
+		},
+		Company: req.GetCompany(),
+	})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to get list customer group: %e", err))
+	}
+
+	var customerGroupPb []*pb.SimpleData
+	for _, value := range customerGroup {
+		var userCreatedName *string
+		if value.FullName.Valid {
+			name := value.FullName.String
+			userCreatedName = &name
+		}
+
+		var description *string
+		if value.Note.Valid {
+			data := value.Note.String
+			description = &data
+		}
+
+		dataPb := &pb.SimpleData{
+			Id:              value.ID,
+			Name:            value.Name,
+			Code:            value.Code,
+			Description:     description,
+			UserCreatedName: userCreatedName,
+			CreatedAt:       timestamppb.New(value.CreatedAt),
+		}
+		customerGroupPb = append(customerGroupPb, dataPb)
+	}
+
+	return &pb.CustomerGroupListResponse{
+		Code:    200,
+		Message: "success",
+		Details: customerGroupPb,
+	}, nil
+}
+
+func (server *ServerGRPC) CustomerGroupCreate(ctx context.Context, req *pb.CustomerGroupCreateRequest) (*pb.CustomerGroupCreateResponse, error) {
+	tokenPayload, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	code := fmt.Sprintf("CG-%s-%d", utils.RandomString(3), utils.RandomInt(100, 999))
+	if req.Code != nil {
+		code = req.GetCode()
+	}
+	data, err := server.store.CreateCustomerGroup(ctx, db.CreateCustomerGroupParams{
+		Code: code,
+		Name: req.GetName(),
+		Note: sql.NullString{
+			String: req.GetNote(),
+			Valid:  req.Note != nil,
+		},
+		Company:     req.GetCompany(),
+		UserCreated: tokenPayload.UserID,
+	})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to record customer group: %e", err)
+	}
+
+	for _, id := range req.GetCustomers() {
+		server.store.UpdateCustomer(ctx, db.UpdateCustomerParams{
+			ID: id,
+			Group: sql.NullInt32{
+				Int32: data.ID,
+				Valid: true,
+			},
+		})
+	}
+
+	return &pb.CustomerGroupCreateResponse{
+		Code:    200,
+		Message: "success",
+		Details: data.ID,
+	}, nil
+}
+
+func (server *ServerGRPC) CustomerGroupDetail(ctx context.Context, req *pb.CustomerGroupDetailRequest) (*pb.CustomerGroupDetailResponse, error) {
+	_, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	data, err := server.store.DetailCustomerGroup(ctx, req.GetId())
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get detail customer group: %e", err)
+	}
+
+	var userCreatedName *string
+	if data.FullName.Valid {
+		name := data.FullName.String
+		userCreatedName = &name
+	}
+
+	var userUpdatedName *string
+	if data.FullName_2.Valid {
+		nameUd := data.FullName_2.String
+		userUpdatedName = &nameUd
+	}
+
+	var description *string
+	if data.Note.Valid {
+		data := data.Note.String
+		description = &data
+	}
+
+	return &pb.CustomerGroupDetailResponse{
+		Code:    200,
+		Message: "success",
+		Details: &pb.SimpleData{
+			Id:              data.ID,
+			Name:            data.Name,
+			Code:            data.Code,
+			UserCreatedName: userCreatedName,
+			CreatedAt:       timestamppb.New(data.CreatedAt),
+			UserUpdatedName: userUpdatedName,
+			UpdatedAt:       timestamppb.New(data.UpdatedAt.Time),
+			ValueExtra:      nil,
+			Description:     description,
+		},
+	}, nil
+}
+
+func (server *ServerGRPC) CustomerGroupUpdate(ctx context.Context, req *pb.CustomerGroupUpdateRequest) (*pb.CustomerGroupUpdateResponse, error) {
+	tokenPayload, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	data, err := server.store.UpdateCustomerGroup(ctx, db.UpdateCustomerGroupParams{
+		Name: sql.NullString{
+			String: req.GetName(),
+			Valid:  true,
+		},
+		Code: sql.NullString{
+			String: req.GetCode(),
+			Valid:  req.Code != nil,
+		},
+		Note: sql.NullString{
+			String: req.GetNote(),
+			Valid:  req.Note != nil,
+		},
+		ID: req.GetId(),
+		UserUpdated: sql.NullInt32{
+			Int32: tokenPayload.UserID,
+			Valid: true,
+		},
+	})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to update customer group: %e", err)
+	}
+
+	return &pb.CustomerGroupUpdateResponse{
+		Code:    200,
+		Message: "success",
+		Details: data.ID,
+	}, nil
+}
+
+func (server *ServerGRPC) CustomerGroupDelete(ctx context.Context, req *pb.CustomerGroupDeleteRequest) (*pb.CustomerGroupDeleteResponse, error) {
+	_, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	_, err = server.store.DeleteCustomerGroup(ctx, req.GetId())
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, status.Errorf(codes.NotFound, "customer group not exists")
+		}
+		return nil, status.Errorf(codes.Internal, "failed to delete customer group: %e", err)
+	}
+
+	return &pb.CustomerGroupDeleteResponse{
 		Code:    200,
 		Message: "success",
 	}, nil

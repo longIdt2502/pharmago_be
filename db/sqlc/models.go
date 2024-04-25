@@ -213,6 +213,19 @@ type Customer struct {
 	UserUpdated sql.NullInt32  `json:"user_updated"`
 	UpdatedAt   sql.NullTime   `json:"updated_at"`
 	CreatedAt   time.Time      `json:"created_at"`
+	Group       sql.NullInt32  `json:"group"`
+}
+
+type CustomerGroup struct {
+	ID          int32          `json:"id"`
+	Code        string         `json:"code"`
+	Name        string         `json:"name"`
+	Company     int32          `json:"company"`
+	Note        sql.NullString `json:"note"`
+	UserCreated int32          `json:"user_created"`
+	UserUpdated sql.NullInt32  `json:"user_updated"`
+	UpdatedAt   sql.NullTime   `json:"updated_at"`
+	CreatedAt   time.Time      `json:"created_at"`
 }
 
 type DebtNote struct {

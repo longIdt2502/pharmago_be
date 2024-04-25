@@ -104,6 +104,11 @@ const (
 	Pharmago_CustomerCreate_FullMethodName           = "/pb.Pharmago/CustomerCreate"
 	Pharmago_CustomerDetail_FullMethodName           = "/pb.Pharmago/CustomerDetail"
 	Pharmago_CustomerUpdate_FullMethodName           = "/pb.Pharmago/CustomerUpdate"
+	Pharmago_CustomerGroupList_FullMethodName        = "/pb.Pharmago/CustomerGroupList"
+	Pharmago_CustomerGroupCreate_FullMethodName      = "/pb.Pharmago/CustomerGroupCreate"
+	Pharmago_CustomerGroupDetail_FullMethodName      = "/pb.Pharmago/CustomerGroupDetail"
+	Pharmago_CustomerGroupUpdate_FullMethodName      = "/pb.Pharmago/CustomerGroupUpdate"
+	Pharmago_CustomerGroupDelete_FullMethodName      = "/pb.Pharmago/CustomerGroupDelete"
 	Pharmago_ImportCompany_FullMethodName            = "/pb.Pharmago/ImportCompany"
 	Pharmago_ImportProduct_FullMethodName            = "/pb.Pharmago/ImportProduct"
 	Pharmago_ImportProductMasterData_FullMethodName  = "/pb.Pharmago/ImportProductMasterData"
@@ -234,6 +239,11 @@ type PharmagoClient interface {
 	CustomerCreate(ctx context.Context, in *CustomerCreateRequest, opts ...grpc.CallOption) (*CustomerCreateResponse, error)
 	CustomerDetail(ctx context.Context, in *CustomerDetailRequest, opts ...grpc.CallOption) (*CustomerDetailResponse, error)
 	CustomerUpdate(ctx context.Context, in *CustomerUpdateRequest, opts ...grpc.CallOption) (*CustomerUpdateResponse, error)
+	CustomerGroupList(ctx context.Context, in *CustomerGroupListRequest, opts ...grpc.CallOption) (*CustomerGroupListResponse, error)
+	CustomerGroupCreate(ctx context.Context, in *CustomerGroupCreateRequest, opts ...grpc.CallOption) (*CustomerGroupCreateResponse, error)
+	CustomerGroupDetail(ctx context.Context, in *CustomerGroupDetailRequest, opts ...grpc.CallOption) (*CustomerGroupDetailResponse, error)
+	CustomerGroupUpdate(ctx context.Context, in *CustomerGroupUpdateRequest, opts ...grpc.CallOption) (*CustomerGroupUpdateResponse, error)
+	CustomerGroupDelete(ctx context.Context, in *CustomerGroupDeleteRequest, opts ...grpc.CallOption) (*CustomerGroupDeleteResponse, error)
 	// ================== IMPORT ===================
 	ImportCompany(ctx context.Context, in *ImportCompanyRequest, opts ...grpc.CallOption) (*ImportCompanyResponse, error)
 	ImportProduct(ctx context.Context, in *ImportProductRequest, opts ...grpc.CallOption) (*ImportProductResponse, error)
@@ -1058,6 +1068,51 @@ func (c *pharmagoClient) CustomerUpdate(ctx context.Context, in *CustomerUpdateR
 	return out, nil
 }
 
+func (c *pharmagoClient) CustomerGroupList(ctx context.Context, in *CustomerGroupListRequest, opts ...grpc.CallOption) (*CustomerGroupListResponse, error) {
+	out := new(CustomerGroupListResponse)
+	err := c.cc.Invoke(ctx, Pharmago_CustomerGroupList_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) CustomerGroupCreate(ctx context.Context, in *CustomerGroupCreateRequest, opts ...grpc.CallOption) (*CustomerGroupCreateResponse, error) {
+	out := new(CustomerGroupCreateResponse)
+	err := c.cc.Invoke(ctx, Pharmago_CustomerGroupCreate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) CustomerGroupDetail(ctx context.Context, in *CustomerGroupDetailRequest, opts ...grpc.CallOption) (*CustomerGroupDetailResponse, error) {
+	out := new(CustomerGroupDetailResponse)
+	err := c.cc.Invoke(ctx, Pharmago_CustomerGroupDetail_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) CustomerGroupUpdate(ctx context.Context, in *CustomerGroupUpdateRequest, opts ...grpc.CallOption) (*CustomerGroupUpdateResponse, error) {
+	out := new(CustomerGroupUpdateResponse)
+	err := c.cc.Invoke(ctx, Pharmago_CustomerGroupUpdate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) CustomerGroupDelete(ctx context.Context, in *CustomerGroupDeleteRequest, opts ...grpc.CallOption) (*CustomerGroupDeleteResponse, error) {
+	out := new(CustomerGroupDeleteResponse)
+	err := c.cc.Invoke(ctx, Pharmago_CustomerGroupDelete_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *pharmagoClient) ImportCompany(ctx context.Context, in *ImportCompanyRequest, opts ...grpc.CallOption) (*ImportCompanyResponse, error) {
 	out := new(ImportCompanyResponse)
 	err := c.cc.Invoke(ctx, Pharmago_ImportCompany_FullMethodName, in, out, opts...)
@@ -1354,6 +1409,11 @@ type PharmagoServer interface {
 	CustomerCreate(context.Context, *CustomerCreateRequest) (*CustomerCreateResponse, error)
 	CustomerDetail(context.Context, *CustomerDetailRequest) (*CustomerDetailResponse, error)
 	CustomerUpdate(context.Context, *CustomerUpdateRequest) (*CustomerUpdateResponse, error)
+	CustomerGroupList(context.Context, *CustomerGroupListRequest) (*CustomerGroupListResponse, error)
+	CustomerGroupCreate(context.Context, *CustomerGroupCreateRequest) (*CustomerGroupCreateResponse, error)
+	CustomerGroupDetail(context.Context, *CustomerGroupDetailRequest) (*CustomerGroupDetailResponse, error)
+	CustomerGroupUpdate(context.Context, *CustomerGroupUpdateRequest) (*CustomerGroupUpdateResponse, error)
+	CustomerGroupDelete(context.Context, *CustomerGroupDeleteRequest) (*CustomerGroupDeleteResponse, error)
 	// ================== IMPORT ===================
 	ImportCompany(context.Context, *ImportCompanyRequest) (*ImportCompanyResponse, error)
 	ImportProduct(context.Context, *ImportProductRequest) (*ImportProductResponse, error)
@@ -1642,6 +1702,21 @@ func (UnimplementedPharmagoServer) CustomerDetail(context.Context, *CustomerDeta
 }
 func (UnimplementedPharmagoServer) CustomerUpdate(context.Context, *CustomerUpdateRequest) (*CustomerUpdateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CustomerUpdate not implemented")
+}
+func (UnimplementedPharmagoServer) CustomerGroupList(context.Context, *CustomerGroupListRequest) (*CustomerGroupListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CustomerGroupList not implemented")
+}
+func (UnimplementedPharmagoServer) CustomerGroupCreate(context.Context, *CustomerGroupCreateRequest) (*CustomerGroupCreateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CustomerGroupCreate not implemented")
+}
+func (UnimplementedPharmagoServer) CustomerGroupDetail(context.Context, *CustomerGroupDetailRequest) (*CustomerGroupDetailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CustomerGroupDetail not implemented")
+}
+func (UnimplementedPharmagoServer) CustomerGroupUpdate(context.Context, *CustomerGroupUpdateRequest) (*CustomerGroupUpdateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CustomerGroupUpdate not implemented")
+}
+func (UnimplementedPharmagoServer) CustomerGroupDelete(context.Context, *CustomerGroupDeleteRequest) (*CustomerGroupDeleteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CustomerGroupDelete not implemented")
 }
 func (UnimplementedPharmagoServer) ImportCompany(context.Context, *ImportCompanyRequest) (*ImportCompanyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ImportCompany not implemented")
@@ -3257,6 +3332,96 @@ func _Pharmago_CustomerUpdate_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Pharmago_CustomerGroupList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CustomerGroupListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).CustomerGroupList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_CustomerGroupList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).CustomerGroupList(ctx, req.(*CustomerGroupListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_CustomerGroupCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CustomerGroupCreateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).CustomerGroupCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_CustomerGroupCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).CustomerGroupCreate(ctx, req.(*CustomerGroupCreateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_CustomerGroupDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CustomerGroupDetailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).CustomerGroupDetail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_CustomerGroupDetail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).CustomerGroupDetail(ctx, req.(*CustomerGroupDetailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_CustomerGroupUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CustomerGroupUpdateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).CustomerGroupUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_CustomerGroupUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).CustomerGroupUpdate(ctx, req.(*CustomerGroupUpdateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_CustomerGroupDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CustomerGroupDeleteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).CustomerGroupDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_CustomerGroupDelete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).CustomerGroupDelete(ctx, req.(*CustomerGroupDeleteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Pharmago_ImportCompany_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ImportCompanyRequest)
 	if err := dec(in); err != nil {
@@ -3977,6 +4142,26 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CustomerUpdate",
 			Handler:    _Pharmago_CustomerUpdate_Handler,
+		},
+		{
+			MethodName: "CustomerGroupList",
+			Handler:    _Pharmago_CustomerGroupList_Handler,
+		},
+		{
+			MethodName: "CustomerGroupCreate",
+			Handler:    _Pharmago_CustomerGroupCreate_Handler,
+		},
+		{
+			MethodName: "CustomerGroupDetail",
+			Handler:    _Pharmago_CustomerGroupDetail_Handler,
+		},
+		{
+			MethodName: "CustomerGroupUpdate",
+			Handler:    _Pharmago_CustomerGroupUpdate_Handler,
+		},
+		{
+			MethodName: "CustomerGroupDelete",
+			Handler:    _Pharmago_CustomerGroupDelete_Handler,
 		},
 		{
 			MethodName: "ImportCompany",

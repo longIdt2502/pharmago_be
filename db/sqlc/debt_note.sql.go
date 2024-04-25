@@ -103,7 +103,7 @@ func (q *Queries) CreateRepayment(ctx context.Context, arg CreateRepaymentParams
 }
 
 const detailDebtNote = `-- name: DetailDebtNote :one
-SELECT dn.id, dn.code, title, entity, money, paymented, note, dn.type, status, dn.company, dn.user_created, exprise, dabt_note_at, a.id, username, hashed_password, a.full_name, a.email, a.type, is_verify, password_changed_at, a.created_at, role, gender, licence, dob, a.address, c.id, c.full_name, c.code, c.company, c.address, c.email, c.phone, license, birthday, c.user_created, user_updated, updated_at, c.created_at, s.id, s.code, name, deputy_name, s.phone, s.email, s.address, s.company, a.full_name AS a_name, c.full_name AS c_name, s.name AS s_name FROM debt_note dn
+SELECT dn.id, dn.code, title, entity, money, paymented, note, dn.type, status, dn.company, dn.user_created, exprise, dabt_note_at, a.id, username, hashed_password, a.full_name, a.email, a.type, is_verify, password_changed_at, a.created_at, role, gender, licence, dob, a.address, c.id, c.full_name, c.code, c.company, c.address, c.email, c.phone, license, birthday, c.user_created, user_updated, updated_at, c.created_at, "group", s.id, s.code, name, deputy_name, s.phone, s.email, s.address, s.company, a.full_name AS a_name, c.full_name AS c_name, s.name AS s_name FROM debt_note dn
 LEFT JOIN accounts a ON a.id = dn.user_created
 LEFT JOIN customers c ON c.code = dn.entity
 LEFT JOIN suplier s ON s.code = dn.entity
@@ -151,6 +151,7 @@ type DetailDebtNoteRow struct {
 	UserUpdated       sql.NullInt32  `json:"user_updated"`
 	UpdatedAt         sql.NullTime   `json:"updated_at"`
 	CreatedAt_2       sql.NullTime   `json:"created_at_2"`
+	Group             sql.NullInt32  `json:"group"`
 	ID_4              sql.NullInt32  `json:"id_4"`
 	Code_3            sql.NullString `json:"code_3"`
 	Name              sql.NullString `json:"name"`
@@ -208,6 +209,7 @@ func (q *Queries) DetailDebtNote(ctx context.Context, id int32) (DetailDebtNoteR
 		&i.UserUpdated,
 		&i.UpdatedAt,
 		&i.CreatedAt_2,
+		&i.Group,
 		&i.ID_4,
 		&i.Code_3,
 		&i.Name,

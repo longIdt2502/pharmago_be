@@ -1403,6 +1403,195 @@
         ]
       }
     },
+    "/customer-group/v1/create": {
+      "post": {
+        "summary": "Create customer group",
+        "operationId": "Pharmago_CustomerGroupCreate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCustomerGroupCreateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbCustomerGroupCreateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Customer"
+        ]
+      }
+    },
+    "/customer-group/v1/detail/{id}": {
+      "get": {
+        "summary": "Detail customer group",
+        "operationId": "Pharmago_CustomerGroupDetail",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCustomerGroupDetailResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "int32 value field",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Customer"
+        ]
+      },
+      "delete": {
+        "summary": "Delete customer group",
+        "operationId": "Pharmago_CustomerGroupDelete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCustomerGroupDeleteResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "int32 value field",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Customer"
+        ]
+      },
+      "put": {
+        "summary": "Update customer group",
+        "operationId": "Pharmago_CustomerGroupUpdate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCustomerGroupUpdateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "int32 value field",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PharmagoCustomerGroupUpdateBody"
+            }
+          }
+        ],
+        "tags": [
+          "Customer"
+        ]
+      }
+    },
+    "/customer-group/v1/list": {
+      "get": {
+        "summary": "List customer group",
+        "operationId": "Pharmago_CustomerGroupList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCustomerGroupListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "company",
+            "description": "int32 value field",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Customer"
+        ]
+      }
+    },
     "/customer/v1/create": {
       "post": {
         "summary": "Create customer",
@@ -4223,6 +4412,31 @@
         "address"
       ]
     },
+    "PharmagoCustomerGroupUpdateBody": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string",
+          "description": "string value field"
+        },
+        "note": {
+          "type": "string"
+        },
+        "customers": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
     "PharmagoCustomerUpdateBody": {
       "type": "object",
       "properties": {
@@ -5960,6 +6174,115 @@
         },
         "details": {
           "$ref": "#/definitions/pbCustomerDetail"
+        }
+      }
+    },
+    "pbCustomerGroupCreateRequest": {
+      "type": "object",
+      "properties": {
+        "company": {
+          "type": "integer",
+          "format": "int32",
+          "description": "int32 value field"
+        },
+        "code": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string",
+          "description": "string value field"
+        },
+        "note": {
+          "type": "string"
+        },
+        "customers": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "required": [
+        "company",
+        "name"
+      ]
+    },
+    "pbCustomerGroupCreateResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbCustomerGroupDeleteResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "pbCustomerGroupDetailResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "$ref": "#/definitions/pbSimpleData"
+        }
+      }
+    },
+    "pbCustomerGroupListResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbSimpleData"
+          }
+        }
+      }
+    },
+    "pbCustomerGroupUpdateResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },

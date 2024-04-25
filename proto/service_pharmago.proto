@@ -75,6 +75,11 @@ import "rpc/customer/rpc_customer_list.proto";
 import "rpc/customer/rpc_customer_detail.proto";
 import "rpc/customer/rpc_customer_create.proto";
 import "rpc/customer/rpc_customer_update.proto";
+import "rpc/customer/rpc_customer_group_list.proto";
+import "rpc/customer/rpc_customer_group_detail.proto";
+import "rpc/customer/rpc_customer_group_create.proto";
+import "rpc/customer/rpc_customer_group_update.proto";
+import "rpc/customer/rpc_customer_group_delete.proto";
 
 import "rpc/supplier/rpc_supplier_create.proto";
 import "rpc/supplier/rpc_supplier_detail.proto";
@@ -997,6 +1002,53 @@ service Pharmago {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Update customer";
+      tags: "Customer";
+    };
+  };
+  rpc CustomerGroupList (CustomerGroupListRequest) returns (CustomerGroupListResponse) {
+    option (google.api.http) = {
+      get: "/customer-group/v1/list"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List customer group";
+      tags: "Customer";
+    };
+  };
+  rpc CustomerGroupCreate (CustomerGroupCreateRequest) returns (CustomerGroupCreateResponse) {
+    option (google.api.http) = {
+      post: "/customer-group/v1/create"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create customer group";
+      tags: "Customer";
+    };
+  };
+  rpc CustomerGroupDetail (CustomerGroupDetailRequest) returns (CustomerGroupDetailResponse) {
+    option (google.api.http) = {
+      get: "/customer-group/v1/detail/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Detail customer group";
+      tags: "Customer";
+    };
+  };
+  rpc CustomerGroupUpdate (CustomerGroupUpdateRequest) returns (CustomerGroupUpdateResponse) {
+    option (google.api.http) = {
+      put: "/customer-group/v1/detail/{id}"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Update customer group";
+      tags: "Customer";
+    };
+  };
+  rpc CustomerGroupDelete (CustomerGroupDeleteRequest) returns (CustomerGroupDeleteResponse) {
+    option (google.api.http) = {
+      delete: "/customer-group/v1/detail/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Delete customer group";
       tags: "Customer";
     };
   };
