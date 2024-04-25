@@ -48,7 +48,6 @@ func (server *ServerGRPC) VerifyAccount(ctx context.Context, req *pb.VerifyAccou
 			Bool:  true,
 			Valid: true,
 		},
-		ID: sql.NullInt32{},
 		Username: sql.NullString{
 			String: verify.Username,
 			Valid:  true,

@@ -328,7 +328,7 @@ SET
     hashed_password = COALESCE($2::varchar, hashed_password),
     full_name = COALESCE($3::varchar, full_name),
     email = COALESCE($4::varchar, email),
-    account_type = COALESCE($5::int, account_type),
+    type = COALESCE($5::int, type),
     role = COALESCE($6::int, role),
     gender = COALESCE($7::gender, gender),
     licence = COALESCE($8::varchar, licence),
@@ -340,17 +340,17 @@ RETURNING id, username, hashed_password, full_name, email, type, is_verify, pass
 `
 
 type UpdateAccountParams struct {
-	IsVerify    sql.NullBool   `json:"is_verify"`
-	Password    sql.NullString `json:"password"`
-	FullName    sql.NullString `json:"full_name"`
-	Email       sql.NullString `json:"email"`
-	AccountType sql.NullInt32  `json:"account_type"`
-	Role        sql.NullInt32  `json:"role"`
-	Gender      NullGender     `json:"gender"`
-	Licence     sql.NullString `json:"licence"`
-	Dob         sql.NullTime   `json:"dob"`
-	ID          sql.NullInt32  `json:"id"`
-	Username    sql.NullString `json:"username"`
+	IsVerify sql.NullBool   `json:"is_verify"`
+	Password sql.NullString `json:"password"`
+	FullName sql.NullString `json:"full_name"`
+	Email    sql.NullString `json:"email"`
+	Type     sql.NullInt32  `json:"type"`
+	Role     sql.NullInt32  `json:"role"`
+	Gender   NullGender     `json:"gender"`
+	Licence  sql.NullString `json:"licence"`
+	Dob      sql.NullTime   `json:"dob"`
+	ID       sql.NullInt32  `json:"id"`
+	Username sql.NullString `json:"username"`
 }
 
 func (q *Queries) UpdateAccount(ctx context.Context, arg UpdateAccountParams) (Account, error) {
@@ -359,7 +359,7 @@ func (q *Queries) UpdateAccount(ctx context.Context, arg UpdateAccountParams) (A
 		arg.Password,
 		arg.FullName,
 		arg.Email,
-		arg.AccountType,
+		arg.Type,
 		arg.Role,
 		arg.Gender,
 		arg.Licence,

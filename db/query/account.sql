@@ -28,7 +28,7 @@ SET
     hashed_password = COALESCE(sqlc.narg(password)::varchar, hashed_password),
     full_name = COALESCE(sqlc.narg(full_name)::varchar, full_name),
     email = COALESCE(sqlc.narg(email)::varchar, email),
-    account_type = COALESCE(sqlc.narg(account_type)::int, account_type),
+    type = COALESCE(sqlc.narg(type)::int, type),
     role = COALESCE(sqlc.narg(role)::int, role),
     gender = COALESCE(sqlc.narg(gender)::gender, gender),
     licence = COALESCE(sqlc.narg(licence)::varchar, licence),
