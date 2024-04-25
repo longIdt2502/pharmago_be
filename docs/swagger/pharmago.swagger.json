@@ -6302,6 +6302,10 @@
             "type": "object",
             "$ref": "#/definitions/pbCustomerDetail"
           }
+        },
+        "count": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },

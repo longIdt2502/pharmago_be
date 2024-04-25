@@ -167,19 +167,29 @@ func (q *Queries) DetailService(ctx context.Context, id int32) (Service, error) 
 const getListService = `-- name: GetListService :many
 SELECT id, image, code, title, entity, staff, frequency, reminder_time, unit, price, description, company, user_created, user_updated, created_at, updated_at FROM services
 WHERE company = $1::int
+AND (
+    title ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
+    code ILIKE '%' || COALESCE($2::varchar, '') || '%'
+)
 ORDER BY -id
-LIMIT COALESCE($3::int, 10)
-OFFSET (COALESCE($2::int, 1) - 1) * COALESCE($3::int, 10)
+LIMIT COALESCE($4::int, 10)
+OFFSET (COALESCE($3::int, 1) - 1) * COALESCE($4::int, 10)
 `
 
 type GetListServiceParams struct {
-	Company sql.NullInt32 `json:"company"`
-	Page    sql.NullInt32 `json:"page"`
-	Limit   sql.NullInt32 `json:"limit"`
+	Company sql.NullInt32  `json:"company"`
+	Search  sql.NullString `json:"search"`
+	Page    sql.NullInt32  `json:"page"`
+	Limit   sql.NullInt32  `json:"limit"`
 }
 
 func (q *Queries) GetListService(ctx context.Context, arg GetListServiceParams) ([]Service, error) {
-	rows, err := q.db.QueryContext(ctx, getListService, arg.Company, arg.Page, arg.Limit)
+	rows, err := q.db.QueryContext(ctx, getListService,
+		arg.Company,
+		arg.Search,
+		arg.Page,
+		arg.Limit,
+	)
 	if err != nil {
 		return nil, err
 	}

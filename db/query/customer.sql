@@ -15,6 +15,10 @@ ORDER BY -id
 LIMIT COALESCE(sqlc.narg('limit')::int, 10)
 OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10);
 
+-- name: CountCustomer :one
+SELECT COUNT(*) FROM customers
+WHERE company = sqlc.arg(company)::int;
+
 -- name: CreateCustomer :one
 INSERT INTO customers (
     full_name, code, company, address, email, phone ,license, birthday, user_updated, user_created
