@@ -392,7 +392,7 @@ func (q *Queries) GetConsignments(ctx context.Context, arg GetConsignmentsParams
 }
 
 const getDetailTicket = `-- name: GetDetailTicket :one
-SELECT t.id, t.code, t.type, status, note, qr, export_to, import_from, total_price, warehouse, t.user_created, t.user_updated, t.updated_at, t.created_at, s.id, s.code, s.name, deputy_name, s.phone, s.email, s.address, s.company, c.id, c.full_name, c.code, c.company, c.address, c.email, c.phone, license, birthday, c.user_created, c.user_updated, c.updated_at, c.created_at, w.id, w.address, companies, w.name, w.code, tt.id, tt.code, tt.title, ts.id, ts.code, ts.title, m.id, media_url, a_uc.id, a_uc.username, a_uc.hashed_password, a_uc.full_name, a_uc.email, a_uc.type, a_uc.is_verify, a_uc.password_changed_at, a_uc.created_at, a_uc.role, a_uc.gender, a_uc.licence, a_uc.dob, a_uc.address, a_uu.id, a_uu.username, a_uu.hashed_password, a_uu.full_name, a_uu.email, a_uu.type, a_uu.is_verify, a_uu.password_changed_at, a_uu.created_at, a_uu.role, a_uu.gender, a_uu.licence, a_uu.dob, a_uu.address , m.media_url AS qr_url, a_uc.full_name AS user_created_name, a_uu.full_name AS user_updated_name,
+SELECT t.id, t.code, t.type, status, note, qr, export_to, import_from, total_price, warehouse, t.user_created, t.user_updated, t.updated_at, t.created_at, s.id, s.code, s.name, deputy_name, s.phone, s.email, s.address, s.company, c.id, c.full_name, c.code, c.company, c.address, c.email, c.phone, license, birthday, c.user_created, c.user_updated, c.updated_at, c.created_at, "group", w.id, w.address, companies, w.name, w.code, tt.id, tt.code, tt.title, ts.id, ts.code, ts.title, m.id, media_url, a_uc.id, a_uc.username, a_uc.hashed_password, a_uc.full_name, a_uc.email, a_uc.type, a_uc.is_verify, a_uc.password_changed_at, a_uc.created_at, a_uc.role, a_uc.gender, a_uc.licence, a_uc.dob, a_uc.address, a_uu.id, a_uu.username, a_uu.hashed_password, a_uu.full_name, a_uu.email, a_uu.type, a_uu.is_verify, a_uu.password_changed_at, a_uu.created_at, a_uu.role, a_uu.gender, a_uu.licence, a_uu.dob, a_uu.address , m.media_url AS qr_url, a_uc.full_name AS user_created_name, a_uu.full_name AS user_updated_name,
        w.id AS w_id, w.name AS w_name, w.code AS w_code, w.address AS w_address,
         c.id AS c_id, c.full_name AS c_name, c.code AS c_code, c.address AS c_address, c.email AS c_email, c.phone AS c_phone, c.company AS c_company,
         s.id AS s_id, s.code AS s_code, s.name AS s_name, s.deputy_name AS s_deputy, s.phone AS s_phone, s.email AS s_email, s.address AS s_address, s.company AS s_company,
@@ -446,6 +446,7 @@ type GetDetailTicketRow struct {
 	UserUpdated_2       sql.NullInt32  `json:"user_updated_2"`
 	UpdatedAt_2         sql.NullTime   `json:"updated_at_2"`
 	CreatedAt_2         sql.NullTime   `json:"created_at_2"`
+	Group               sql.NullInt32  `json:"group"`
 	ID_4                int32          `json:"id_4"`
 	Address_3           sql.NullInt32  `json:"address_3"`
 	Companies           sql.NullInt32  `json:"companies"`
@@ -556,6 +557,7 @@ func (q *Queries) GetDetailTicket(ctx context.Context, id int32) (GetDetailTicke
 		&i.UserUpdated_2,
 		&i.UpdatedAt_2,
 		&i.CreatedAt_2,
+		&i.Group,
 		&i.ID_4,
 		&i.Address_3,
 		&i.Companies,
