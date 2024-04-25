@@ -3,6 +3,7 @@ package socket
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"sync"
 
 	"github.com/gorilla/mux"
@@ -50,6 +51,10 @@ func broadcastMessage(msg []byte) {
 
 // WebsocketHandler xử lý kết nối WebSocket
 func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
+	// Lấy ID từ URL path
+	params := mux.Vars(r)
+	id, _ := strconv.Atoi(params["company"])
+
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Err(err).Msg("WS")
@@ -76,9 +81,10 @@ func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Err(err)
 		}
-
-		// Xử lý thông điệp
-		handleMessage(message)
+		if payload.Company.Int32 == int32(id) {
+			// Xử lý thông điệp
+			handleMessage(message)
+		}
 	}
 
 	// Xóa client ra khỏi danh sách khi kết nối bị đóng
