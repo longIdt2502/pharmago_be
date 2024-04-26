@@ -52,7 +52,7 @@ func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRe
 			Code:      order.Code,
 		},
 		Phone: customer.Phone.String,
-		Mode:  "development",
+		Mode:  "production",
 	}
 
 	opts := []asynq.Option{
