@@ -11,12 +11,107 @@ import (
 	"time"
 )
 
+const getReportRevenue = `-- name: GetReportRevenue :many
+WITH date_series AS (
+    SELECT
+        generate_series(
+            date_trunc(
+                CASE
+                    WHEN COALESCE($1 :: varchar, 'day') = 'day' THEN 'month'
+                    WHEN COALESCE($1 :: varchar, 'day') = 'month' THEN 'year'
+                    ELSE 'month'
+                END,
+                current_date
+            ),
+            current_date,
+            CASE
+                WHEN COALESCE($1 :: varchar, 'day') = 'day' THEN interval '1 day'
+                WHEN COALESCE($1 :: varchar, 'day') = 'month' THEN interval '1 month'
+                ELSE interval '1 day'
+            END
+        ) :: timestamp AS date
+),
+order_series As (
+    SELECT
+        id, code, total_price, description, vat, discount, service_price, must_paid, customer, address, status, type, ticket, qr, company, payment, user_created, user_updated, created_at, updated_at
+    FROM
+        orders
+    WHERE
+        company = $2 :: int
+        AND (
+            $3 :: varchar IS NULL
+            OR status = $3 :: varchar
+        )
+)
+SELECT
+    ds.date,
+    COALESCE(SUM(o1.total_price), 0)::float AS current_revenue,
+    COALESCE(SUM(o2.total_price), 0)::float AS last_revenue
+FROM
+    date_series ds
+    LEFT JOIN order_series o1 ON date_trunc(
+        COALESCE($1 :: varchar, 'day'),
+        o1.created_at
+    ) = ds.date
+    LEFT JOIN order_series o2 ON date_trunc(
+        COALESCE($1 :: varchar, 'day'),
+        o2.created_at
+    ) = date_trunc(
+        COALESCE($1 :: varchar, 'day'),
+        ds.date - CASE
+            WHEN COALESCE($1 :: varchar, 'day') = 'day' THEN interval '1 month'
+            WHEN COALESCE($1 :: varchar, 'day') = 'month' THEN interval '1 year'
+            ELSE interval '1 day'
+        END
+    )
+GROUP BY
+    ds.date
+`
+
+type GetReportRevenueParams struct {
+	Filter  string         `json:"filter"`
+	Company int32          `json:"company"`
+	Status  sql.NullString `json:"status"`
+}
+
+type GetReportRevenueRow struct {
+	Date           time.Time `json:"date"`
+	CurrentRevenue float64   `json:"current_revenue"`
+	LastRevenue    float64   `json:"last_revenue"`
+}
+
+func (q *Queries) GetReportRevenue(ctx context.Context, arg GetReportRevenueParams) ([]GetReportRevenueRow, error) {
+	rows, err := q.db.QueryContext(ctx, getReportRevenue, arg.Filter, arg.Company, arg.Status)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GetReportRevenueRow{}
+	for rows.Next() {
+		var i GetReportRevenueRow
+		if err := rows.Scan(&i.Date, &i.CurrentRevenue, &i.LastRevenue); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getRevenueCompany = `-- name: GetRevenueCompany :one
-SELECT COALESCE(SUM(total_price), 0)::float AS total_sum
-FROM orders
-WHERE status = 'COMPLETE'
-AND type = 'SELL'
-AND company = $1
+SELECT
+    COALESCE(SUM(total_price), 0) :: float AS total_sum
+FROM
+    orders
+WHERE
+    status = 'COMPLETE'
+    AND type = 'SELL'
+    AND company = $1
 `
 
 func (q *Queries) GetRevenueCompany(ctx context.Context, company int32) (float64, error) {
@@ -28,22 +123,34 @@ func (q *Queries) GetRevenueCompany(ctx context.Context, company int32) (float64
 
 const getVariantBestSale = `-- name: GetVariantBestSale :many
 WITH variant_total AS (
-    SELECT v.id AS variant_id,
-           COALESCE(SUM(oi.total_price), 0)::float AS total_revenue
-    FROM variants v
-    LEFT JOIN order_items oi ON v.id = oi.variant
-    LEFT JOIN orders o ON o.id = oi.order
-    WHERE o.status = 'COMPLETE'
-    GROUP BY v.id
+    SELECT
+        v.id AS variant_id,
+        COALESCE(SUM(oi.total_price), 0) :: float AS total_revenue
+    FROM
+        variants v
+        LEFT JOIN order_items oi ON v.id = oi.variant
+        LEFT JOIN orders o ON o.id = oi.order
+    WHERE
+        o.status = 'COMPLETE'
+    GROUP BY
+        v.id
 )
-SELECT v.id, v.name, v.code, v.barcode, v.decision_number, v.register_number, v.longevity, v.vat, v.product, v.user_created, v.user_updated, v.updated_at, v.created_at, vt.total_revenue AS revenue, m.media_url AS imageUrl FROM variant_total vt
-JOIN variants v ON v.id = vt.variant_id
-JOIN products p ON v.product = p.id
-JOIN variant_media vm ON vm.variant = v.id
-JOIN medias m ON vm.media = m.id
-WHERE p.company = $1
-ORDER BY vt.total_revenue DESC
-LIMIT 3
+SELECT
+    v.id, v.name, v.code, v.barcode, v.decision_number, v.register_number, v.longevity, v.vat, v.product, v.user_created, v.user_updated, v.updated_at, v.created_at,
+    vt.total_revenue AS revenue,
+    m.media_url AS imageUrl
+FROM
+    variant_total vt
+    JOIN variants v ON v.id = vt.variant_id
+    JOIN products p ON v.product = p.id
+    JOIN variant_media vm ON vm.variant = v.id
+    JOIN medias m ON vm.media = m.id
+WHERE
+    p.company = $1
+ORDER BY
+    vt.total_revenue DESC
+LIMIT
+    3
 `
 
 type GetVariantBestSaleRow struct {
@@ -101,4 +208,35 @@ func (q *Queries) GetVariantBestSale(ctx context.Context, company int32) ([]GetV
 		return nil, err
 	}
 	return items, nil
+}
+
+const totalRevenue = `-- name: TotalRevenue :one
+SELECT COALESCE(SUM(total_price), 0)::float AS value FROM orders
+WHERE company = $1 :: int AND date_trunc(
+    COALESCE($2 :: varchar, 'month'),
+    created_at
+) = date_trunc(COALESCE($2 :: varchar, 'month'), current_date - 
+    CASE 
+        WHEN COALESCE($2 :: varchar, 'month') = 'month' THEN MAKE_INTERVAL(
+            months => COALESCE($3 :: int, 0)
+        )::interval
+        WHEN COALESCE($2 :: varchar, 'month') = 'year' THEN MAKE_INTERVAL(
+            years => COALESCE($3 :: int, 0)
+        )::interval
+        ELSE interval '0 month'    
+    END
+    )
+`
+
+type TotalRevenueParams struct {
+	Company  int32  `json:"company"`
+	Filter   string `json:"filter"`
+	Interval int32  `json:"interval"`
+}
+
+func (q *Queries) TotalRevenue(ctx context.Context, arg TotalRevenueParams) (float64, error) {
+	row := q.db.QueryRowContext(ctx, totalRevenue, arg.Company, arg.Filter, arg.Interval)
+	var value float64
+	err := row.Scan(&value)
+	return value, err
 }

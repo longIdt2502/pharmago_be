@@ -3298,6 +3298,66 @@
         ]
       }
     },
+    "/report/v1/revenue": {
+      "get": {
+        "summary": "Revenue",
+        "operationId": "Pharmago_ReportRevenue",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbReportRevenueResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "company",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "filter",
+            "description": "DeepEnum description.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "WEEK",
+              "MONTH",
+              "YEAR",
+              "CUSTOM"
+            ],
+            "default": "WEEK"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
+        "tags": [
+          "Report"
+        ]
+      }
+    },
     "/role/v1/create": {
       "post": {
         "summary": "Role create",
@@ -4649,6 +4709,16 @@
           "$ref": "#/definitions/pbAddressPayload"
         }
       }
+    },
+    "ReportRevenueRequestFILTER": {
+      "type": "string",
+      "enum": [
+        "WEEK",
+        "MONTH",
+        "YEAR",
+        "CUSTOM"
+      ],
+      "default": "WEEK"
     },
     "TicketUpdateStatusRequestSTATUS": {
       "type": "string",
@@ -7981,6 +8051,49 @@
         }
       }
     },
+    "pbReportItem": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "value": {
+          "type": "number",
+          "format": "float"
+        },
+        "valueExtra": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "pbReportRevenueResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbReportItem"
+          }
+        },
+        "currentValue": {
+          "type": "number",
+          "format": "float"
+        },
+        "lastValue": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
     "pbResetPasswordRequest": {
       "type": "object",
       "properties": {
@@ -8418,6 +8531,10 @@
         "updatedAt": {
           "type": "string",
           "format": "date-time"
+        },
+        "value": {
+          "type": "integer",
+          "format": "int32"
         },
         "valueExtra": {
           "type": "integer",

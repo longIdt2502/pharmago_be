@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+
 	"github.com/hibiken/asynq"
 	"github.com/rs/zerolog/log"
 )
@@ -58,8 +59,9 @@ func (processor *RedisTaskProcessor) ProcessorTaskSendVerifyEmail(ctx context.Co
 	// TODO: send email to user
 	subject := "Xin chào đến với Pharmago"
 	content := fmt.Sprintf(`
+		Tài khoản: %s
 		Đây là mã code của bạn: %s
-	`, payload.Code)
+	`, payload.Username, payload.Code)
 	to := []string{user.Email}
 	err = processor.mailer.SendEmail(subject, content, to, nil, nil, nil)
 	if err != nil {

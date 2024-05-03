@@ -10,7 +10,6 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/hibiken/asynq"
-	"github.com/kothar/go-backblaze"
 	_ "github.com/lib/pq"
 	"github.com/longIdt2502/pharmago_be/b2"
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
@@ -65,7 +64,7 @@ func main() {
 	}
 
 	go socket.StartSocket(store)
-	go runTaskProcessor(config, redisOpt, store)
+	go runTaskProcessor(config, redisOpt, store, b2Bucket)
 	go runGatewayServer(config, &store, taskDistributor, b2Bucket)
 	runServerGRPC(config, &store, taskDistributor, b2Bucket)
 
@@ -90,14 +89,14 @@ func runDBMigration(migrationURL string, dbSource string) {
 	log.Info().Msg("db migrated successfully")
 }
 
-func runTaskProcessor(config utils.Config, redisOpt asynq.RedisClientOpt, store db.Store) {
+func runTaskProcessor(config utils.Config, redisOpt asynq.RedisClientOpt, store db.Store, b2Bucket *b2.B2Bucket) {
 	mailer := mail.NewGmailSender(config.EmailSenderName, config.EmailSenderAddress, config.EmailSenderPassword)
 	clientFcm, err := firebase.NewFCM(config.FireKey)
 	if err != nil {
 		log.Fatal().Msg("can't create new client fcm")
 	}
 
-	taskProcessor := woker.NewRedisTaskProcessor(redisOpt, store, mailer, clientFcm)
+	taskProcessor := woker.NewRedisTaskProcessor(redisOpt, store, mailer, clientFcm, b2Bucket)
 	log.Info().Msg("start task processor")
 	err = taskProcessor.Start()
 	if err != nil {
@@ -105,7 +104,7 @@ func runTaskProcessor(config utils.Config, redisOpt asynq.RedisClientOpt, store 
 	}
 }
 
-func runServerGRPC(config utils.Config, store *db.Store, taskDistributor woker.TaskDistributor, b2Bucket *backblaze.Bucket) {
+func runServerGRPC(config utils.Config, store *db.Store, taskDistributor woker.TaskDistributor, b2Bucket *b2.B2Bucket) {
 	server, err := gapi.NewServer(config, store, taskDistributor, b2Bucket)
 	if err != nil {
 		log.Fatal().Err(err).Msg("cannot create server")
@@ -128,7 +127,7 @@ func runServerGRPC(config utils.Config, store *db.Store, taskDistributor woker.T
 	}
 }
 
-func runGatewayServer(config utils.Config, store *db.Store, taskDistributor woker.TaskDistributor, b2Bucket *backblaze.Bucket) {
+func runGatewayServer(config utils.Config, store *db.Store, taskDistributor woker.TaskDistributor, b2Bucket *b2.B2Bucket) {
 	server, err := gapi.NewServer(config, store, taskDistributor, b2Bucket)
 	if err != nil {
 		log.Fatal().Err(err).Msg("cannot create server")
