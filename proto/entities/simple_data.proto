@@ -14,6 +14,13 @@ message SimpleData {
   optional google.protobuf.Timestamp created_at = 5;
   optional string user_updated_name = 6;
   optional google.protobuf.Timestamp updated_at = 7;
-  optional int32 value_extra = 8;
-  optional string description = 9;
+  optional int32 value = 8;
+  optional int32 value_extra = 9;
+  optional string description = 10;
+}
+
+message ReportItem {
+  string title = 1;
+  float value = 2;
+  float value_extra = 3;
 }

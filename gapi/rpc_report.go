@@ -82,3 +82,60 @@ func (server *ServerGRPC) HomeData(ctx context.Context, req *pb.HomeDataRequest)
 		VariantBestSale: variantsPb,
 	}, nil
 }
+
+func (server *ServerGRPC) ReportRevenue(ctx context.Context, req *pb.ReportRevenueRequest) (*pb.ReportRevenueResponse, error) {
+	_, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	filter := "day"
+	switch req.Filter {
+	case pb.ReportRevenueRequest_YEAR:
+		filter = "month"
+	}
+
+	reports, err := server.store.GetReportRevenue(ctx, db.GetReportRevenueParams{
+		Filter:  filter,
+		Company: req.GetCompany(),
+		Status:  sql.NullString{},
+	})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get data: %e", err)
+	}
+
+	var reportsPb []*pb.ReportItem
+	for _, item := range reports {
+		reportsPb = append(reportsPb, &pb.ReportItem{
+			Title:      item.Date.Format("2006-01-02T15:04:05"),
+			Value:      float32(item.CurrentRevenue),
+			ValueExtra: float32(item.LastRevenue),
+		})
+	}
+
+	switch req.Filter {
+	case pb.ReportRevenueRequest_YEAR:
+		filter = "year"
+	case pb.ReportRevenueRequest_MONTH:
+		filter = "month"
+	}
+
+	currentValue, _ := server.store.TotalRevenue(ctx, db.TotalRevenueParams{
+		Company:  req.GetCompany(),
+		Filter:   filter,
+		Interval: 0,
+	})
+	lastValue, _ := server.store.TotalRevenue(ctx, db.TotalRevenueParams{
+		Company:  req.GetCompany(),
+		Filter:   filter,
+		Interval: 1,
+	})
+
+	return &pb.ReportRevenueResponse{
+		Code:         200,
+		Message:      "success",
+		Details:      reportsPb,
+		CurrentValue: float32(currentValue),
+		LastValue:    float32(lastValue),
+	}, nil
+}

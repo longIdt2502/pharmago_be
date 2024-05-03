@@ -6,7 +6,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/kothar/go-backblaze"
+	"github.com/longIdt2502/pharmago_be/b2"
 	"github.com/longIdt2502/pharmago_be/pb"
 	"github.com/longIdt2502/pharmago_be/token"
 	"github.com/longIdt2502/pharmago_be/utils"
@@ -17,7 +17,7 @@ import (
 
 type CreateOrderTxParams struct {
 	*pb.OrderCreateRequest
-	B2Bucket     *backblaze.Bucket
+	B2Bucket     *b2.B2Bucket
 	TokenPayload *token.Payload
 }
 

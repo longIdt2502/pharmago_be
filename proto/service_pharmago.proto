@@ -24,6 +24,7 @@ import "rpc/role/rpc_role.proto";
 import "rpc/role/rpc_app.proto";
 
 import "rpc/report/rpc_home_data.proto";
+import "rpc/report/rpc_report_revenue.proto";
 
 import "rpc/address/rpc_provinces.proto";
 import "rpc/address/rpc_districts.proto";
@@ -369,6 +370,15 @@ service Pharmago {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Home data";
+      tags: "Report";
+    };
+  }
+  rpc ReportRevenue (ReportRevenueRequest) returns (ReportRevenueResponse) {
+    option (google.api.http) = {
+      get: "/report/v1/revenue"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Revenue";
       tags: "Report";
     };
   }

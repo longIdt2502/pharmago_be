@@ -2,7 +2,8 @@ package gapi
 
 import (
 	"fmt"
-	"github.com/kothar/go-backblaze"
+
+	"github.com/longIdt2502/pharmago_be/b2"
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/pb"
 	"github.com/longIdt2502/pharmago_be/token"
@@ -16,10 +17,10 @@ type ServerGRPC struct {
 	store           *db.Store
 	tokenMaker      token.Maker
 	taskDistributor woker.TaskDistributor
-	b2Bucket        *backblaze.Bucket
+	b2Bucket        *b2.B2Bucket
 }
 
-func NewServer(config utils.Config, store *db.Store, taskDistributor woker.TaskDistributor, b2Bucket *backblaze.Bucket) (*ServerGRPC, error) {
+func NewServer(config utils.Config, store *db.Store, taskDistributor woker.TaskDistributor, b2Bucket *b2.B2Bucket) (*ServerGRPC, error) {
 	tokenMaker, err := token.NewPasetoMaker(config.TokenSymmetricKey)
 	if err != nil {
 		return nil, fmt.Errorf("cannot create token maker: %s", err)

@@ -14,6 +14,8 @@ type TaskDistributor interface {
 	) error
 	DistributorTaskSendOrderZns(ctx context.Context, payload *PayloadZNS, opts ...asynq.Option) error
 	DistributorTaskSendFcm(ctx context.Context, payload *PayloadSendFcm, opts ...asynq.Option) error
+	DistributorUploadImageVariant(ctx context.Context, payload *PayloadUploadImageVariant, opts ...asynq.Option) error
+	DistributorUploadImageProduct(ctx context.Context, payload *PayloadUploadImageProduct, opts ...asynq.Option) error
 }
 
 type RedisTaskDistributor struct {

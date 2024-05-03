@@ -41,6 +41,7 @@ const (
 	Pharmago_RoleUpdate_FullMethodName               = "/pb.Pharmago/RoleUpdate"
 	Pharmago_RoleDelete_FullMethodName               = "/pb.Pharmago/RoleDelete"
 	Pharmago_HomeData_FullMethodName                 = "/pb.Pharmago/HomeData"
+	Pharmago_ReportRevenue_FullMethodName            = "/pb.Pharmago/ReportRevenue"
 	Pharmago_CreateCompany_FullMethodName            = "/pb.Pharmago/CreateCompany"
 	Pharmago_ListCompanies_FullMethodName            = "/pb.Pharmago/ListCompanies"
 	Pharmago_ListProvinces_FullMethodName            = "/pb.Pharmago/ListProvinces"
@@ -163,6 +164,7 @@ type PharmagoClient interface {
 	RoleDelete(ctx context.Context, in *RoleDeleteRequest, opts ...grpc.CallOption) (*RoleDeleteResponse, error)
 	// TODO: ==================== REPORT ==========================
 	HomeData(ctx context.Context, in *HomeDataRequest, opts ...grpc.CallOption) (*HomeDataResponse, error)
+	ReportRevenue(ctx context.Context, in *ReportRevenueRequest, opts ...grpc.CallOption) (*ReportRevenueResponse, error)
 	// TODO: ==================== COMPANY ==========================
 	CreateCompany(ctx context.Context, in *CreateCompanyRequest, opts ...grpc.CallOption) (*CreateCompanyResponse, error)
 	ListCompanies(ctx context.Context, in *GetCompaniesRequest, opts ...grpc.CallOption) (*GetCompaniesResponse, error)
@@ -473,6 +475,15 @@ func (c *pharmagoClient) RoleDelete(ctx context.Context, in *RoleDeleteRequest, 
 func (c *pharmagoClient) HomeData(ctx context.Context, in *HomeDataRequest, opts ...grpc.CallOption) (*HomeDataResponse, error) {
 	out := new(HomeDataResponse)
 	err := c.cc.Invoke(ctx, Pharmago_HomeData_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) ReportRevenue(ctx context.Context, in *ReportRevenueRequest, opts ...grpc.CallOption) (*ReportRevenueResponse, error) {
+	out := new(ReportRevenueResponse)
+	err := c.cc.Invoke(ctx, Pharmago_ReportRevenue_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1333,6 +1344,7 @@ type PharmagoServer interface {
 	RoleDelete(context.Context, *RoleDeleteRequest) (*RoleDeleteResponse, error)
 	// TODO: ==================== REPORT ==========================
 	HomeData(context.Context, *HomeDataRequest) (*HomeDataResponse, error)
+	ReportRevenue(context.Context, *ReportRevenueRequest) (*ReportRevenueResponse, error)
 	// TODO: ==================== COMPANY ==========================
 	CreateCompany(context.Context, *CreateCompanyRequest) (*CreateCompanyResponse, error)
 	ListCompanies(context.Context, *GetCompaniesRequest) (*GetCompaniesResponse, error)
@@ -1513,6 +1525,9 @@ func (UnimplementedPharmagoServer) RoleDelete(context.Context, *RoleDeleteReques
 }
 func (UnimplementedPharmagoServer) HomeData(context.Context, *HomeDataRequest) (*HomeDataResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method HomeData not implemented")
+}
+func (UnimplementedPharmagoServer) ReportRevenue(context.Context, *ReportRevenueRequest) (*ReportRevenueResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReportRevenue not implemented")
 }
 func (UnimplementedPharmagoServer) CreateCompany(context.Context, *CreateCompanyRequest) (*CreateCompanyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateCompany not implemented")
@@ -2186,6 +2201,24 @@ func _Pharmago_HomeData_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PharmagoServer).HomeData(ctx, req.(*HomeDataRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_ReportRevenue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReportRevenueRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ReportRevenue(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_ReportRevenue_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ReportRevenue(ctx, req.(*ReportRevenueRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3894,6 +3927,10 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "HomeData",
 			Handler:    _Pharmago_HomeData_Handler,
+		},
+		{
+			MethodName: "ReportRevenue",
+			Handler:    _Pharmago_ReportRevenue_Handler,
 		},
 		{
 			MethodName: "CreateCompany",
