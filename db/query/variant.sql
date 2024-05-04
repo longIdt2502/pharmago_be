@@ -13,7 +13,7 @@ LEFT JOIN variant_media vm ON vm.variant = v.id
 LEFT JOIN medias m ON m.id = vm.media
 JOIN units u ON u.id = p.unit
 JOIN price_list pl ON pl.variant_code = v.code
-WHERE p.company = sqlc.arg(company)::int
+WHERE (p.company = sqlc.arg(company)::int OR v.product = sqlc.arg(product)::int)
 AND (
     v.name ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
     v.code ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
@@ -43,3 +43,7 @@ LIMIT 1;
 SELECT COALESCE(SUM(inventory), 0)::int AS total_inventory
 FROM consignment
 WHERE variant = $1 AND is_available = true;
+
+-- name: GetVariantsByProduct :many
+SELECT * FROM variants
+WHERE product = $1;

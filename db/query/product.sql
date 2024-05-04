@@ -44,6 +44,10 @@ INSERT INTO ingredient (
     sqlc.arg(name)::varchar, sqlc.arg(weight)::float, sqlc.arg(unit)::varchar, sqlc.narg(product)::int
 ) RETURNING *;
 
+-- name: ListIngredient :many
+SELECT * FROM ingredient
+WHERE product = $1;
+
 -- name: CreateProductMedia :one
 INSERT INTO product_media (
     product, media
@@ -70,6 +74,19 @@ WHERE company = sqlc.narg(company)::int AND (
 ORDER BY -id
 LIMIT COALESCE(sqlc.narg('limit')::int, 10)
 OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10);
+
+-- name: DetailProduct :one
+SELECT * FROM products p
+LEFT JOIN product_categories pc ON pc.id = p.product_category
+LEFT JOIN product_type pt ON pt.id = p.type
+LEFT JOIN product_brand pb ON pb.id = p.brand
+LEFT JOIN units u ON u.id = p.unit
+LEFT JOIN production_standard ps ON ps.code = p.tieu_chuan_sx
+LEFT JOIN preparation_type pret ON pret.code = p.dang_bao_che
+LEFT JOIN classify cl ON cl.code = p.phan_loai
+LEFT JOIN company_pharma cp1 ON cp1.id = p.cong_ty_dk
+LEFT JOIN company_pharma cp2 ON cp1.id = p.cong_ty_sx
+WHERE p.id = $1;
 
 -- name: UpdateProduct :one
 UPDATE products

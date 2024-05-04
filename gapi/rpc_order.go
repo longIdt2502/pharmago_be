@@ -71,10 +71,11 @@ func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRe
 
 		for _, item := range services {
 			if item.ReminderTime.Valid {
+				date := time.Unix(time.Now().Unix()+int64(item.ReminderTime.Int32), 0)
 				payloadTaskFcm := &woker.PayloadSendFcm{
 					To:      fmt.Sprintf("/topics/COMPANY_%s", company.Code),
 					Title:   "Thông báo dịch vụ",
-					Body:    fmt.Sprintf("Nhắc khách hàng lưu ý dịch vụ %s", item.Title),
+					Body:    fmt.Sprintf("%s: có lịch dịch vụ %s với khách hàng (%s)", company.Name, item.Title, date.Format("02/01")),
 					Company: company.ID,
 					Data: &woker.DataNoti{
 						Order:   &result.Id,
