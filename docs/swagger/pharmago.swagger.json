@@ -2920,6 +2920,38 @@
         ]
       }
     },
+    "/product/v1/detail/{id}": {
+      "get": {
+        "summary": "Detail Product",
+        "operationId": "Pharmago_DetailProduct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbDetailProductResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Product"
+        ]
+      }
+    },
     "/product/v1/list": {
       "get": {
         "summary": "Create New Product",
@@ -6601,6 +6633,21 @@
         }
       }
     },
+    "pbDetailProductResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "$ref": "#/definitions/pbProductDetail"
+        }
+      }
+    },
     "pbDistrict": {
       "type": "object",
       "properties": {
@@ -6774,6 +6821,21 @@
           "format": "int32"
         },
         "message": {
+          "type": "string"
+        }
+      }
+    },
+    "pbIngredient": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "weight": {
+          "type": "number",
+          "format": "float"
+        },
+        "unit": {
           "type": "string"
         }
       }
@@ -7822,6 +7884,35 @@
           "type": "array",
           "items": {
             "type": "string"
+          }
+        }
+      }
+    },
+    "pbProductDetail": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "$ref": "#/definitions/pbProduct"
+        },
+        "unit": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbUnit"
+          }
+        },
+        "ingredients": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbIngredient"
+          }
+        },
+        "variants": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbVariant"
           }
         }
       }

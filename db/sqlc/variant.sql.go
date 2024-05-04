@@ -61,21 +61,22 @@ LEFT JOIN variant_media vm ON vm.variant = v.id
 LEFT JOIN medias m ON m.id = vm.media
 JOIN units u ON u.id = p.unit
 JOIN price_list pl ON pl.variant_code = v.code
-WHERE p.company = $1::int
+WHERE (p.company = $1::int OR v.product = $2::int)
 AND (
-    v.name ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
-    v.code ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
-    v.barcode ILIKE '%' || COALESCE($2::varchar, '') || '%'
+    v.name ILIKE '%' || COALESCE($3::varchar, '') || '%' OR
+    v.code ILIKE '%' || COALESCE($3::varchar, '') || '%' OR
+    v.barcode ILIKE '%' || COALESCE($3::varchar, '') || '%'
 ) AND (
-    $3::int IS NULL OR v.id = $3::int
+    $4::int IS NULL OR v.id = $4::int
 )
 ORDER BY -v.id
-LIMIT COALESCE($5::int, 10)
-OFFSET (COALESCE($4::int, 1) - 1) * COALESCE($5::int, 10)
+LIMIT COALESCE($6::int, 10)
+OFFSET (COALESCE($5::int, 1) - 1) * COALESCE($6::int, 10)
 `
 
 type GetVariantsParams struct {
 	Company int32          `json:"company"`
+	Product int32          `json:"product"`
 	Search  sql.NullString `json:"search"`
 	ID      sql.NullInt32  `json:"id"`
 	Page    sql.NullInt32  `json:"page"`
@@ -163,6 +164,7 @@ type GetVariantsRow struct {
 func (q *Queries) GetVariants(ctx context.Context, arg GetVariantsParams) ([]GetVariantsRow, error) {
 	rows, err := q.db.QueryContext(ctx, getVariants,
 		arg.Company,
+		arg.Product,
 		arg.Search,
 		arg.ID,
 		arg.Page,
@@ -444,4 +446,46 @@ func (q *Queries) GetVariantsByCode(ctx context.Context, arg GetVariantsByCodePa
 		&i.PlPriceSell,
 	)
 	return i, err
+}
+
+const getVariantsByProduct = `-- name: GetVariantsByProduct :many
+SELECT id, name, code, barcode, decision_number, register_number, longevity, vat, product, user_created, user_updated, updated_at, created_at FROM variants
+WHERE product = $1
+`
+
+func (q *Queries) GetVariantsByProduct(ctx context.Context, product int32) ([]Variant, error) {
+	rows, err := q.db.QueryContext(ctx, getVariantsByProduct, product)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Variant{}
+	for rows.Next() {
+		var i Variant
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Code,
+			&i.Barcode,
+			&i.DecisionNumber,
+			&i.RegisterNumber,
+			&i.Longevity,
+			&i.Vat,
+			&i.Product,
+			&i.UserCreated,
+			&i.UserUpdated,
+			&i.UpdatedAt,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

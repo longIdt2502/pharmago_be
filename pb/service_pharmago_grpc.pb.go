@@ -49,6 +49,7 @@ const (
 	Pharmago_ListWards_FullMethodName                = "/pb.Pharmago/ListWards"
 	Pharmago_CreateProduct_FullMethodName            = "/pb.Pharmago/CreateProduct"
 	Pharmago_ListProduct_FullMethodName              = "/pb.Pharmago/ListProduct"
+	Pharmago_DetailProduct_FullMethodName            = "/pb.Pharmago/DetailProduct"
 	Pharmago_ListVariant_FullMethodName              = "/pb.Pharmago/ListVariant"
 	Pharmago_ScanVariant_FullMethodName              = "/pb.Pharmago/ScanVariant"
 	Pharmago_GetPriceList_FullMethodName             = "/pb.Pharmago/GetPriceList"
@@ -174,6 +175,7 @@ type PharmagoClient interface {
 	// ==================== PRODUCT ========================
 	CreateProduct(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*CreateProductResponse, error)
 	ListProduct(ctx context.Context, in *ListProductRequest, opts ...grpc.CallOption) (*ListProductResponse, error)
+	DetailProduct(ctx context.Context, in *DetailProductRequest, opts ...grpc.CallOption) (*DetailProductResponse, error)
 	// TODO -------- VARIANT --------
 	ListVariant(ctx context.Context, in *ListVariantRequest, opts ...grpc.CallOption) (*ListVariantResponse, error)
 	ScanVariant(ctx context.Context, opts ...grpc.CallOption) (Pharmago_ScanVariantClient, error)
@@ -547,6 +549,15 @@ func (c *pharmagoClient) CreateProduct(ctx context.Context, in *CreateProductReq
 func (c *pharmagoClient) ListProduct(ctx context.Context, in *ListProductRequest, opts ...grpc.CallOption) (*ListProductResponse, error) {
 	out := new(ListProductResponse)
 	err := c.cc.Invoke(ctx, Pharmago_ListProduct_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) DetailProduct(ctx context.Context, in *DetailProductRequest, opts ...grpc.CallOption) (*DetailProductResponse, error) {
+	out := new(DetailProductResponse)
+	err := c.cc.Invoke(ctx, Pharmago_DetailProduct_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1354,6 +1365,7 @@ type PharmagoServer interface {
 	// ==================== PRODUCT ========================
 	CreateProduct(context.Context, *CreateProductRequest) (*CreateProductResponse, error)
 	ListProduct(context.Context, *ListProductRequest) (*ListProductResponse, error)
+	DetailProduct(context.Context, *DetailProductRequest) (*DetailProductResponse, error)
 	// TODO -------- VARIANT --------
 	ListVariant(context.Context, *ListVariantRequest) (*ListVariantResponse, error)
 	ScanVariant(Pharmago_ScanVariantServer) error
@@ -1549,6 +1561,9 @@ func (UnimplementedPharmagoServer) CreateProduct(context.Context, *CreateProduct
 }
 func (UnimplementedPharmagoServer) ListProduct(context.Context, *ListProductRequest) (*ListProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListProduct not implemented")
+}
+func (UnimplementedPharmagoServer) DetailProduct(context.Context, *DetailProductRequest) (*DetailProductResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DetailProduct not implemented")
 }
 func (UnimplementedPharmagoServer) ListVariant(context.Context, *ListVariantRequest) (*ListVariantResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListVariant not implemented")
@@ -2345,6 +2360,24 @@ func _Pharmago_ListProduct_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PharmagoServer).ListProduct(ctx, req.(*ListProductRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_DetailProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DetailProductRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).DetailProduct(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_DetailProduct_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).DetailProduct(ctx, req.(*DetailProductRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3959,6 +3992,10 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListProduct",
 			Handler:    _Pharmago_ListProduct_Handler,
+		},
+		{
+			MethodName: "DetailProduct",
+			Handler:    _Pharmago_DetailProduct_Handler,
 		},
 		{
 			MethodName: "ListVariant",

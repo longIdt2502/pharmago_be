@@ -8,6 +8,7 @@ package db
 import (
 	"context"
 	"database/sql"
+	"time"
 )
 
 const createIngredient = `-- name: CreateIngredient :one
@@ -327,6 +328,227 @@ func (q *Queries) CreateVariantMedia(ctx context.Context, arg CreateVariantMedia
 	return i, err
 }
 
+const detailProduct = `-- name: DetailProduct :one
+SELECT p.id, p.name, p.code, product_category, type, brand, unit, ta_duoc, nong_do, lieu_dung, chi_dinh, chong_chi_dinh, cong_dung, tac_dung_phu, than_trong, tuong_tac, bao_quan, dong_goi, phan_loai, dang_bao_che, tieu_chuan_sx, cong_ty_sx, cong_ty_dk, active, p.company, p.user_created, p.user_updated, p.updated_at, p.created_at, pc.id, pc.code, pc.name, pc.user_created, pc.created_at, pc.company, pc.user_updated, pc.updated_at, pc.description, pt.id, pt.code, pt.name, pt.user_created, pt.created_at, pt.company, pb.id, pb.code, pb.name, pb.user_created, pb.created_at, pb.company, pb.user_updated, pb.updated_at, pb.description, u.id, u.name, sell_price, import_price, weight, weight_unit, u.user_created, u.user_updated, u.updated_at, u.created_at, ps.id, ps.code, ps.name, ps.company, ps.user_created, ps.user_updated, ps.created_at, ps.updated_at, ps.description, pret.id, pret.code, pret.name, pret.company, pret.user_created, pret.user_updated, pret.created_at, pret.updated_at, pret.description, cl.id, cl.code, cl.name, cp1.id, cp1.name, cp1.code, cp1.country, cp1.address, cp1.company_pharma_type, cp1.created_at, cp2.id, cp2.name, cp2.code, cp2.country, cp2.address, cp2.company_pharma_type, cp2.created_at FROM products p
+LEFT JOIN product_categories pc ON pc.id = p.product_category
+LEFT JOIN product_type pt ON pt.id = p.type
+LEFT JOIN product_brand pb ON pb.id = p.brand
+LEFT JOIN units u ON u.id = p.unit
+LEFT JOIN production_standard ps ON ps.code = p.tieu_chuan_sx
+LEFT JOIN preparation_type pret ON pret.code = p.dang_bao_che
+LEFT JOIN classify cl ON cl.code = p.phan_loai
+LEFT JOIN company_pharma cp1 ON cp1.id = p.cong_ty_dk
+LEFT JOIN company_pharma cp2 ON cp1.id = p.cong_ty_sx
+WHERE p.id = $1
+`
+
+type DetailProductRow struct {
+	ID                  int32           `json:"id"`
+	Name                string          `json:"name"`
+	Code                string          `json:"code"`
+	ProductCategory     sql.NullInt32   `json:"product_category"`
+	Type                sql.NullInt32   `json:"type"`
+	Brand               sql.NullInt32   `json:"brand"`
+	Unit                int32           `json:"unit"`
+	TaDuoc              sql.NullString  `json:"ta_duoc"`
+	NongDo              sql.NullString  `json:"nong_do"`
+	LieuDung            string          `json:"lieu_dung"`
+	ChiDinh             string          `json:"chi_dinh"`
+	ChongChiDinh        sql.NullString  `json:"chong_chi_dinh"`
+	CongDung            string          `json:"cong_dung"`
+	TacDungPhu          string          `json:"tac_dung_phu"`
+	ThanTrong           string          `json:"than_trong"`
+	TuongTac            sql.NullString  `json:"tuong_tac"`
+	BaoQuan             string          `json:"bao_quan"`
+	DongGoi             string          `json:"dong_goi"`
+	PhanLoai            sql.NullString  `json:"phan_loai"`
+	DangBaoChe          string          `json:"dang_bao_che"`
+	TieuChuanSx         string          `json:"tieu_chuan_sx"`
+	CongTySx            int32           `json:"cong_ty_sx"`
+	CongTyDk            int32           `json:"cong_ty_dk"`
+	Active              bool            `json:"active"`
+	Company             int32           `json:"company"`
+	UserCreated         int32           `json:"user_created"`
+	UserUpdated         sql.NullInt32   `json:"user_updated"`
+	UpdatedAt           sql.NullTime    `json:"updated_at"`
+	CreatedAt           time.Time       `json:"created_at"`
+	ID_2                sql.NullInt32   `json:"id_2"`
+	Code_2              sql.NullString  `json:"code_2"`
+	Name_2              sql.NullString  `json:"name_2"`
+	UserCreated_2       sql.NullInt32   `json:"user_created_2"`
+	CreatedAt_2         sql.NullTime    `json:"created_at_2"`
+	Company_2           sql.NullInt32   `json:"company_2"`
+	UserUpdated_2       sql.NullInt32   `json:"user_updated_2"`
+	UpdatedAt_2         sql.NullTime    `json:"updated_at_2"`
+	Description         sql.NullString  `json:"description"`
+	ID_3                sql.NullInt32   `json:"id_3"`
+	Code_3              sql.NullString  `json:"code_3"`
+	Name_3              sql.NullString  `json:"name_3"`
+	UserCreated_3       sql.NullInt32   `json:"user_created_3"`
+	CreatedAt_3         sql.NullTime    `json:"created_at_3"`
+	Company_3           sql.NullInt32   `json:"company_3"`
+	ID_4                sql.NullInt32   `json:"id_4"`
+	Code_4              sql.NullString  `json:"code_4"`
+	Name_4              sql.NullString  `json:"name_4"`
+	UserCreated_4       sql.NullInt32   `json:"user_created_4"`
+	CreatedAt_4         sql.NullTime    `json:"created_at_4"`
+	Company_4           sql.NullInt32   `json:"company_4"`
+	UserUpdated_3       sql.NullInt32   `json:"user_updated_3"`
+	UpdatedAt_3         sql.NullTime    `json:"updated_at_3"`
+	Description_2       sql.NullString  `json:"description_2"`
+	ID_5                sql.NullInt32   `json:"id_5"`
+	Name_5              sql.NullString  `json:"name_5"`
+	SellPrice           sql.NullFloat64 `json:"sell_price"`
+	ImportPrice         sql.NullFloat64 `json:"import_price"`
+	Weight              sql.NullFloat64 `json:"weight"`
+	WeightUnit          sql.NullString  `json:"weight_unit"`
+	UserCreated_5       sql.NullInt32   `json:"user_created_5"`
+	UserUpdated_4       sql.NullInt32   `json:"user_updated_4"`
+	UpdatedAt_4         sql.NullTime    `json:"updated_at_4"`
+	CreatedAt_5         sql.NullTime    `json:"created_at_5"`
+	ID_6                sql.NullInt32   `json:"id_6"`
+	Code_5              sql.NullString  `json:"code_5"`
+	Name_6              sql.NullString  `json:"name_6"`
+	Company_5           sql.NullInt32   `json:"company_5"`
+	UserCreated_6       sql.NullInt32   `json:"user_created_6"`
+	UserUpdated_5       sql.NullInt32   `json:"user_updated_5"`
+	CreatedAt_6         sql.NullTime    `json:"created_at_6"`
+	UpdatedAt_5         sql.NullTime    `json:"updated_at_5"`
+	Description_3       sql.NullString  `json:"description_3"`
+	ID_7                sql.NullInt32   `json:"id_7"`
+	Code_6              sql.NullString  `json:"code_6"`
+	Name_7              sql.NullString  `json:"name_7"`
+	Company_6           sql.NullInt32   `json:"company_6"`
+	UserCreated_7       sql.NullInt32   `json:"user_created_7"`
+	UserUpdated_6       sql.NullInt32   `json:"user_updated_6"`
+	CreatedAt_7         sql.NullTime    `json:"created_at_7"`
+	UpdatedAt_6         sql.NullTime    `json:"updated_at_6"`
+	Description_4       sql.NullString  `json:"description_4"`
+	ID_8                sql.NullInt32   `json:"id_8"`
+	Code_7              sql.NullString  `json:"code_7"`
+	Name_8              sql.NullString  `json:"name_8"`
+	ID_9                sql.NullInt32   `json:"id_9"`
+	Name_9              sql.NullString  `json:"name_9"`
+	Code_8              sql.NullString  `json:"code_8"`
+	Country             sql.NullString  `json:"country"`
+	Address             sql.NullString  `json:"address"`
+	CompanyPharmaType   sql.NullString  `json:"company_pharma_type"`
+	CreatedAt_8         sql.NullTime    `json:"created_at_8"`
+	ID_10               sql.NullInt32   `json:"id_10"`
+	Name_10             sql.NullString  `json:"name_10"`
+	Code_9              sql.NullString  `json:"code_9"`
+	Country_2           sql.NullString  `json:"country_2"`
+	Address_2           sql.NullString  `json:"address_2"`
+	CompanyPharmaType_2 sql.NullString  `json:"company_pharma_type_2"`
+	CreatedAt_9         sql.NullTime    `json:"created_at_9"`
+}
+
+func (q *Queries) DetailProduct(ctx context.Context, id int32) (DetailProductRow, error) {
+	row := q.db.QueryRowContext(ctx, detailProduct, id)
+	var i DetailProductRow
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Code,
+		&i.ProductCategory,
+		&i.Type,
+		&i.Brand,
+		&i.Unit,
+		&i.TaDuoc,
+		&i.NongDo,
+		&i.LieuDung,
+		&i.ChiDinh,
+		&i.ChongChiDinh,
+		&i.CongDung,
+		&i.TacDungPhu,
+		&i.ThanTrong,
+		&i.TuongTac,
+		&i.BaoQuan,
+		&i.DongGoi,
+		&i.PhanLoai,
+		&i.DangBaoChe,
+		&i.TieuChuanSx,
+		&i.CongTySx,
+		&i.CongTyDk,
+		&i.Active,
+		&i.Company,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.UpdatedAt,
+		&i.CreatedAt,
+		&i.ID_2,
+		&i.Code_2,
+		&i.Name_2,
+		&i.UserCreated_2,
+		&i.CreatedAt_2,
+		&i.Company_2,
+		&i.UserUpdated_2,
+		&i.UpdatedAt_2,
+		&i.Description,
+		&i.ID_3,
+		&i.Code_3,
+		&i.Name_3,
+		&i.UserCreated_3,
+		&i.CreatedAt_3,
+		&i.Company_3,
+		&i.ID_4,
+		&i.Code_4,
+		&i.Name_4,
+		&i.UserCreated_4,
+		&i.CreatedAt_4,
+		&i.Company_4,
+		&i.UserUpdated_3,
+		&i.UpdatedAt_3,
+		&i.Description_2,
+		&i.ID_5,
+		&i.Name_5,
+		&i.SellPrice,
+		&i.ImportPrice,
+		&i.Weight,
+		&i.WeightUnit,
+		&i.UserCreated_5,
+		&i.UserUpdated_4,
+		&i.UpdatedAt_4,
+		&i.CreatedAt_5,
+		&i.ID_6,
+		&i.Code_5,
+		&i.Name_6,
+		&i.Company_5,
+		&i.UserCreated_6,
+		&i.UserUpdated_5,
+		&i.CreatedAt_6,
+		&i.UpdatedAt_5,
+		&i.Description_3,
+		&i.ID_7,
+		&i.Code_6,
+		&i.Name_7,
+		&i.Company_6,
+		&i.UserCreated_7,
+		&i.UserUpdated_6,
+		&i.CreatedAt_7,
+		&i.UpdatedAt_6,
+		&i.Description_4,
+		&i.ID_8,
+		&i.Code_7,
+		&i.Name_8,
+		&i.ID_9,
+		&i.Name_9,
+		&i.Code_8,
+		&i.Country,
+		&i.Address,
+		&i.CompanyPharmaType,
+		&i.CreatedAt_8,
+		&i.ID_10,
+		&i.Name_10,
+		&i.Code_9,
+		&i.Country_2,
+		&i.Address_2,
+		&i.CompanyPharmaType_2,
+		&i.CreatedAt_9,
+	)
+	return i, err
+}
+
 const getProductMedia = `-- name: GetProductMedia :many
 SELECT pm.product, pm.media, m.media_url FROM product_media pm
 JOIN medias m ON pm.media = m.id
@@ -430,6 +652,40 @@ func (q *Queries) GetProducts(ctx context.Context, arg GetProductsParams) ([]Pro
 			&i.UserUpdated,
 			&i.UpdatedAt,
 			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listIngredient = `-- name: ListIngredient :many
+SELECT id, name, weight, unit, product FROM ingredient
+WHERE product = $1
+`
+
+func (q *Queries) ListIngredient(ctx context.Context, product int32) ([]Ingredient, error) {
+	rows, err := q.db.QueryContext(ctx, listIngredient, product)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Ingredient{}
+	for rows.Next() {
+		var i Ingredient
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Weight,
+			&i.Unit,
+			&i.Product,
 		); err != nil {
 			return nil, err
 		}

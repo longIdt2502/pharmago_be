@@ -33,6 +33,7 @@ import "rpc/company/rpc_create_company.proto";
 import "rpc/company/rpc_companies.proto";
 import "rpc/product/rpc_create_product.proto";
 import "rpc/product/rpc_list_product.proto";
+import "rpc/product/rpc_detail_product.proto";
 import "rpc/product/rpc_price_list.proto";
 import "rpc/product/rpc_detail_price_list.proto";
 import "rpc/product/rpc_update_price_list.proto";
@@ -449,13 +450,21 @@ service Pharmago {
       tags: "Product";
     };
   };
-
   rpc ListProduct (ListProductRequest) returns (ListProductResponse) {
     option (google.api.http) = {
       get: "/product/v1/list"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Create New Product";
+      tags: "Product";
+    };
+  };
+  rpc DetailProduct (DetailProductRequest) returns (DetailProductResponse) {
+    option (google.api.http) = {
+      get: "/product/v1/detail/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Detail Product";
       tags: "Product";
     };
   };
