@@ -111,3 +111,39 @@ WHERE company = sqlc.arg(company) :: int AND date_trunc(
         ELSE interval '0 month'    
     END
     );
+
+-- name: TotalCustomerByMonth :many
+WITH time_generate AS (
+	SELECT
+        generate_series(
+            date_trunc('year',
+                current_date
+            ),
+            date_trunc('year',
+                current_date + INTERVAL '1 year'
+            ),
+            interval '1 month'
+        ) :: timestamp AS date LIMIT 12
+)
+SELECT tg.*, COALESCE(COUNT(c.id), 0)::int AS count from time_generate tg
+LEFT JOIN customers c ON date_trunc('month', c.created_at) = tg.date 
+AND c.company = sqlc.arg(company)::int
+GROUP BY tg.date;
+
+-- name: TotalOrderByMonth :many
+WITH time_generate AS (
+	SELECT
+        generate_series(
+            date_trunc('year',
+                current_date
+            ),
+            date_trunc('year',
+                current_date + INTERVAL '1 year'
+            ),
+            interval '1 month'
+        ) :: timestamp AS date LIMIT 12
+)
+SELECT tg.*, COALESCE(COUNT(o.id), 0)::int AS count from time_generate tg
+LEFT JOIN orders o ON date_trunc('month', o.created_at) = tg.date 
+AND o.company = sqlc.arg(company)::int
+GROUP BY tg.date;

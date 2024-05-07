@@ -4,11 +4,13 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"time"
 
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/gapi/mapper"
 	"github.com/longIdt2502/pharmago_be/pb"
+	"github.com/thoas/go-funk"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -137,5 +139,74 @@ func (server *ServerGRPC) ReportRevenue(ctx context.Context, req *pb.ReportReven
 		Details:      reportsPb,
 		CurrentValue: float32(currentValue),
 		LastValue:    float32(lastValue),
+	}, nil
+}
+
+func (server *ServerGRPC) ReportOrder(ctx context.Context, req *pb.ReportOrderRequest) (*pb.ReportOrderResponse, error) {
+	_, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	report, err := server.store.TotalOrderByMonth(ctx, req.GetCompany())
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get report order: %e", err)
+	}
+
+	var reportPb []*pb.ReportItem
+	for _, item := range report {
+		reportPb = append(reportPb, &pb.ReportItem{
+			Title: item.Date.Format("2006-01-02T15:04:05"),
+			Value: float32(item.Count),
+		})
+	}
+
+	var currentValue db.TotalOrderByMonthRow
+	var lastValue db.TotalOrderByMonthRow
+
+	currentValue = funk.Find(report, func(item db.TotalOrderByMonthRow) bool {
+		return time.Unix(item.Date.Unix(), 0).Month() == time.Now().Month()
+	}).(db.TotalOrderByMonthRow)
+
+	lastValue = funk.Find(report, func(item db.TotalOrderByMonthRow) bool {
+		return time.Unix(item.Date.Unix(), 0).Month() == time.Now().AddDate(0, -1, 0).Month()
+	}).(db.TotalOrderByMonthRow)
+
+	return &pb.ReportOrderResponse{
+		Code:         200,
+		Message:      "success",
+		Details:      reportPb,
+		CurrentValue: float32(currentValue.Count),
+		LastValue:    float32(lastValue.Count),
+	}, nil
+}
+
+func (server *ServerGRPC) ReportCustomer(ctx context.Context, req *pb.ReportCustomerRequest) (*pb.ReportCustomerResponse, error) {
+	_, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	customer, err := server.store.TotalCustomerByMonth(ctx, req.GetCompany())
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get report customer: %e", err)
+	}
+
+	var currentValue db.TotalCustomerByMonthRow
+	var lastValue db.TotalCustomerByMonthRow
+
+	currentValue = funk.Find(customer, func(item db.TotalCustomerByMonthRow) bool {
+		return time.Unix(item.Date.Unix(), 0).Month() == time.Now().Month()
+	}).(db.TotalCustomerByMonthRow)
+
+	lastValue = funk.Find(customer, func(item db.TotalCustomerByMonthRow) bool {
+		return time.Unix(item.Date.Unix(), 0).Month() == time.Now().AddDate(0, -1, 0).Month()
+	}).(db.TotalCustomerByMonthRow)
+
+	return &pb.ReportCustomerResponse{
+		Code:         200,
+		Message:      "success",
+		CurrentValue: float32(currentValue.Count),
+		LastValue:    float32(lastValue.Count),
 	}, nil
 }

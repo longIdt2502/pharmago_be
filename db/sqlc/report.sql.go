@@ -210,6 +210,104 @@ func (q *Queries) GetVariantBestSale(ctx context.Context, company int32) ([]GetV
 	return items, nil
 }
 
+const totalCustomerByMonth = `-- name: TotalCustomerByMonth :many
+WITH time_generate AS (
+	SELECT
+        generate_series(
+            date_trunc('year',
+                current_date
+            ),
+            date_trunc('year',
+                current_date + INTERVAL '1 year'
+            ),
+            interval '1 month'
+        ) :: timestamp AS date LIMIT 12
+)
+SELECT tg.date, COALESCE(COUNT(c.id), 0)::int AS count from time_generate tg
+LEFT JOIN customers c ON date_trunc('month', c.created_at) = tg.date 
+AND c.company = $1::int
+GROUP BY tg.date
+`
+
+type TotalCustomerByMonthRow struct {
+	Date  time.Time `json:"date"`
+	Count int32     `json:"count"`
+}
+
+func (q *Queries) TotalCustomerByMonth(ctx context.Context, company int32) ([]TotalCustomerByMonthRow, error) {
+	rows, err := q.db.QueryContext(ctx, totalCustomerByMonth, company)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []TotalCustomerByMonthRow{}
+	for rows.Next() {
+		var i TotalCustomerByMonthRow
+		if err := rows.Scan(&i.Date, &i.Count); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const totalOrderByMonth = `-- name: TotalOrderByMonth :many
+
+WITH time_generate AS (
+	SELECT
+        generate_series(
+            date_trunc('year',
+                current_date
+            ),
+            date_trunc('year',
+                current_date + INTERVAL '1 year'
+            ),
+            interval '1 month'
+        ) :: timestamp AS date LIMIT 12
+)
+SELECT tg.date, COALESCE(COUNT(o.id), 0)::int AS count from time_generate tg
+LEFT JOIN orders o ON date_trunc('month', o.created_at) = tg.date 
+AND o.company = $1::int
+GROUP BY tg.date
+`
+
+type TotalOrderByMonthRow struct {
+	Date  time.Time `json:"date"`
+	Count int32     `json:"count"`
+}
+
+// SELECT COALESCE(COUNT(id), 0) AS total, date_trunc('month', created_at) AS date FROM customers
+// WHERE company = sqlc.arg(company)::int
+// GROUP BY (date_trunc('month', created_at));
+func (q *Queries) TotalOrderByMonth(ctx context.Context, company int32) ([]TotalOrderByMonthRow, error) {
+	rows, err := q.db.QueryContext(ctx, totalOrderByMonth, company)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []TotalOrderByMonthRow{}
+	for rows.Next() {
+		var i TotalOrderByMonthRow
+		if err := rows.Scan(&i.Date, &i.Count); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const totalRevenue = `-- name: TotalRevenue :one
 SELECT COALESCE(SUM(total_price), 0)::float AS value FROM orders
 WHERE company = $1 :: int AND date_trunc(
