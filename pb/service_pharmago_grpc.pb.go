@@ -42,6 +42,8 @@ const (
 	Pharmago_RoleDelete_FullMethodName               = "/pb.Pharmago/RoleDelete"
 	Pharmago_HomeData_FullMethodName                 = "/pb.Pharmago/HomeData"
 	Pharmago_ReportRevenue_FullMethodName            = "/pb.Pharmago/ReportRevenue"
+	Pharmago_ReportOrder_FullMethodName              = "/pb.Pharmago/ReportOrder"
+	Pharmago_ReportCustomer_FullMethodName           = "/pb.Pharmago/ReportCustomer"
 	Pharmago_CreateCompany_FullMethodName            = "/pb.Pharmago/CreateCompany"
 	Pharmago_ListCompanies_FullMethodName            = "/pb.Pharmago/ListCompanies"
 	Pharmago_ListProvinces_FullMethodName            = "/pb.Pharmago/ListProvinces"
@@ -166,6 +168,8 @@ type PharmagoClient interface {
 	// TODO: ==================== REPORT ==========================
 	HomeData(ctx context.Context, in *HomeDataRequest, opts ...grpc.CallOption) (*HomeDataResponse, error)
 	ReportRevenue(ctx context.Context, in *ReportRevenueRequest, opts ...grpc.CallOption) (*ReportRevenueResponse, error)
+	ReportOrder(ctx context.Context, in *ReportOrderRequest, opts ...grpc.CallOption) (*ReportOrderResponse, error)
+	ReportCustomer(ctx context.Context, in *ReportCustomerRequest, opts ...grpc.CallOption) (*ReportCustomerResponse, error)
 	// TODO: ==================== COMPANY ==========================
 	CreateCompany(ctx context.Context, in *CreateCompanyRequest, opts ...grpc.CallOption) (*CreateCompanyResponse, error)
 	ListCompanies(ctx context.Context, in *GetCompaniesRequest, opts ...grpc.CallOption) (*GetCompaniesResponse, error)
@@ -486,6 +490,24 @@ func (c *pharmagoClient) HomeData(ctx context.Context, in *HomeDataRequest, opts
 func (c *pharmagoClient) ReportRevenue(ctx context.Context, in *ReportRevenueRequest, opts ...grpc.CallOption) (*ReportRevenueResponse, error) {
 	out := new(ReportRevenueResponse)
 	err := c.cc.Invoke(ctx, Pharmago_ReportRevenue_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) ReportOrder(ctx context.Context, in *ReportOrderRequest, opts ...grpc.CallOption) (*ReportOrderResponse, error) {
+	out := new(ReportOrderResponse)
+	err := c.cc.Invoke(ctx, Pharmago_ReportOrder_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) ReportCustomer(ctx context.Context, in *ReportCustomerRequest, opts ...grpc.CallOption) (*ReportCustomerResponse, error) {
+	out := new(ReportCustomerResponse)
+	err := c.cc.Invoke(ctx, Pharmago_ReportCustomer_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1356,6 +1378,8 @@ type PharmagoServer interface {
 	// TODO: ==================== REPORT ==========================
 	HomeData(context.Context, *HomeDataRequest) (*HomeDataResponse, error)
 	ReportRevenue(context.Context, *ReportRevenueRequest) (*ReportRevenueResponse, error)
+	ReportOrder(context.Context, *ReportOrderRequest) (*ReportOrderResponse, error)
+	ReportCustomer(context.Context, *ReportCustomerRequest) (*ReportCustomerResponse, error)
 	// TODO: ==================== COMPANY ==========================
 	CreateCompany(context.Context, *CreateCompanyRequest) (*CreateCompanyResponse, error)
 	ListCompanies(context.Context, *GetCompaniesRequest) (*GetCompaniesResponse, error)
@@ -1540,6 +1564,12 @@ func (UnimplementedPharmagoServer) HomeData(context.Context, *HomeDataRequest) (
 }
 func (UnimplementedPharmagoServer) ReportRevenue(context.Context, *ReportRevenueRequest) (*ReportRevenueResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReportRevenue not implemented")
+}
+func (UnimplementedPharmagoServer) ReportOrder(context.Context, *ReportOrderRequest) (*ReportOrderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReportOrder not implemented")
+}
+func (UnimplementedPharmagoServer) ReportCustomer(context.Context, *ReportCustomerRequest) (*ReportCustomerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReportCustomer not implemented")
 }
 func (UnimplementedPharmagoServer) CreateCompany(context.Context, *CreateCompanyRequest) (*CreateCompanyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateCompany not implemented")
@@ -2234,6 +2264,42 @@ func _Pharmago_ReportRevenue_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PharmagoServer).ReportRevenue(ctx, req.(*ReportRevenueRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_ReportOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReportOrderRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ReportOrder(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_ReportOrder_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ReportOrder(ctx, req.(*ReportOrderRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_ReportCustomer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReportCustomerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ReportCustomer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_ReportCustomer_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ReportCustomer(ctx, req.(*ReportCustomerRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3964,6 +4030,14 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ReportRevenue",
 			Handler:    _Pharmago_ReportRevenue_Handler,
+		},
+		{
+			MethodName: "ReportOrder",
+			Handler:    _Pharmago_ReportOrder_Handler,
+		},
+		{
+			MethodName: "ReportCustomer",
+			Handler:    _Pharmago_ReportCustomer_Handler,
 		},
 		{
 			MethodName: "CreateCompany",

@@ -3298,6 +3298,66 @@
         ]
       }
     },
+    "/report/v1/customer": {
+      "get": {
+        "summary": "Customer",
+        "operationId": "Pharmago_ReportCustomer",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbReportCustomerResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "company",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "filter",
+            "description": "DeepEnum description.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "WEEK",
+              "MONTH",
+              "YEAR",
+              "CUSTOM"
+            ],
+            "default": "WEEK"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
+        "tags": [
+          "Report"
+        ]
+      }
+    },
     "/report/v1/home": {
       "get": {
         "summary": "Home data",
@@ -3323,6 +3383,66 @@
             "required": true,
             "type": "integer",
             "format": "int32"
+          }
+        ],
+        "tags": [
+          "Report"
+        ]
+      }
+    },
+    "/report/v1/order": {
+      "get": {
+        "summary": "Order",
+        "operationId": "Pharmago_ReportOrder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbReportOrderResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "company",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "filter",
+            "description": "DeepEnum description.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "WEEK",
+              "MONTH",
+              "YEAR",
+              "CUSTOM"
+            ],
+            "default": "WEEK"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
           }
         ],
         "tags": [
@@ -4741,16 +4861,6 @@
           "$ref": "#/definitions/pbAddressPayload"
         }
       }
-    },
-    "ReportRevenueRequestFILTER": {
-      "type": "string",
-      "enum": [
-        "WEEK",
-        "MONTH",
-        "YEAR",
-        "CUSTOM"
-      ],
-      "default": "WEEK"
     },
     "TicketUpdateStatusRequestSTATUS": {
       "type": "string",
@@ -8127,6 +8237,43 @@
         }
       }
     },
+    "pbReportCustomerRequestFILTER": {
+      "type": "string",
+      "enum": [
+        "WEEK",
+        "MONTH",
+        "YEAR",
+        "CUSTOM"
+      ],
+      "default": "WEEK"
+    },
+    "pbReportCustomerResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbReportItem"
+          }
+        },
+        "currentValue": {
+          "type": "number",
+          "format": "float"
+        },
+        "lastValue": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
     "pbReportDebtNoteResponse": {
       "type": "object",
       "properties": {
@@ -8157,6 +8304,53 @@
           "format": "float"
         }
       }
+    },
+    "pbReportOrderRequestFILTER": {
+      "type": "string",
+      "enum": [
+        "WEEK",
+        "MONTH",
+        "YEAR",
+        "CUSTOM"
+      ],
+      "default": "WEEK"
+    },
+    "pbReportOrderResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbReportItem"
+          }
+        },
+        "currentValue": {
+          "type": "number",
+          "format": "float"
+        },
+        "lastValue": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "pbReportRevenueRequestFILTER": {
+      "type": "string",
+      "enum": [
+        "WEEK",
+        "MONTH",
+        "YEAR",
+        "CUSTOM"
+      ],
+      "default": "WEEK"
     },
     "pbReportRevenueResponse": {
       "type": "object",
