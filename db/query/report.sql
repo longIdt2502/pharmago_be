@@ -147,3 +147,18 @@ SELECT tg.*, COALESCE(COUNT(o.id), 0)::int AS count from time_generate tg
 LEFT JOIN orders o ON date_trunc('month', o.created_at) = tg.date 
 AND o.company = sqlc.arg(company)::int
 GROUP BY tg.date;
+
+-- name: ReportCustomerRevenue :many
+WITH revenue AS (
+    SELECT COUNT(id) AS count_order, SUM(total_price)::float AS total_price, customer FROM orders
+    WHERE company = sqlc.arg(company)::int
+    GROUP BY customer
+)
+SELECT r.*, c.* FROM revenue r
+LEFT JOIN customers c ON r.customer = c.id
+ORDER BY 
+    CASE WHEN sqlc.arg('order_by')::varchar = 'quantity' THEN -r.count_order
+         WHEN sqlc.arg('order_by')::varchar = 'revenue' THEN -r.total_price
+         ELSE -r.count_order
+    END
+LIMIT 5;

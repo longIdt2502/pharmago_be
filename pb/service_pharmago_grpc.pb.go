@@ -44,6 +44,7 @@ const (
 	Pharmago_ReportRevenue_FullMethodName            = "/pb.Pharmago/ReportRevenue"
 	Pharmago_ReportOrder_FullMethodName              = "/pb.Pharmago/ReportOrder"
 	Pharmago_ReportCustomer_FullMethodName           = "/pb.Pharmago/ReportCustomer"
+	Pharmago_ReportCustomerRevenue_FullMethodName    = "/pb.Pharmago/ReportCustomerRevenue"
 	Pharmago_CreateCompany_FullMethodName            = "/pb.Pharmago/CreateCompany"
 	Pharmago_ListCompanies_FullMethodName            = "/pb.Pharmago/ListCompanies"
 	Pharmago_ListProvinces_FullMethodName            = "/pb.Pharmago/ListProvinces"
@@ -170,6 +171,7 @@ type PharmagoClient interface {
 	ReportRevenue(ctx context.Context, in *ReportRevenueRequest, opts ...grpc.CallOption) (*ReportRevenueResponse, error)
 	ReportOrder(ctx context.Context, in *ReportOrderRequest, opts ...grpc.CallOption) (*ReportOrderResponse, error)
 	ReportCustomer(ctx context.Context, in *ReportCustomerRequest, opts ...grpc.CallOption) (*ReportCustomerResponse, error)
+	ReportCustomerRevenue(ctx context.Context, in *ReportCustomerRevenueRequest, opts ...grpc.CallOption) (*ReportCustomerRevenueResponse, error)
 	// TODO: ==================== COMPANY ==========================
 	CreateCompany(ctx context.Context, in *CreateCompanyRequest, opts ...grpc.CallOption) (*CreateCompanyResponse, error)
 	ListCompanies(ctx context.Context, in *GetCompaniesRequest, opts ...grpc.CallOption) (*GetCompaniesResponse, error)
@@ -508,6 +510,15 @@ func (c *pharmagoClient) ReportOrder(ctx context.Context, in *ReportOrderRequest
 func (c *pharmagoClient) ReportCustomer(ctx context.Context, in *ReportCustomerRequest, opts ...grpc.CallOption) (*ReportCustomerResponse, error) {
 	out := new(ReportCustomerResponse)
 	err := c.cc.Invoke(ctx, Pharmago_ReportCustomer_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) ReportCustomerRevenue(ctx context.Context, in *ReportCustomerRevenueRequest, opts ...grpc.CallOption) (*ReportCustomerRevenueResponse, error) {
+	out := new(ReportCustomerRevenueResponse)
+	err := c.cc.Invoke(ctx, Pharmago_ReportCustomerRevenue_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1380,6 +1391,7 @@ type PharmagoServer interface {
 	ReportRevenue(context.Context, *ReportRevenueRequest) (*ReportRevenueResponse, error)
 	ReportOrder(context.Context, *ReportOrderRequest) (*ReportOrderResponse, error)
 	ReportCustomer(context.Context, *ReportCustomerRequest) (*ReportCustomerResponse, error)
+	ReportCustomerRevenue(context.Context, *ReportCustomerRevenueRequest) (*ReportCustomerRevenueResponse, error)
 	// TODO: ==================== COMPANY ==========================
 	CreateCompany(context.Context, *CreateCompanyRequest) (*CreateCompanyResponse, error)
 	ListCompanies(context.Context, *GetCompaniesRequest) (*GetCompaniesResponse, error)
@@ -1570,6 +1582,9 @@ func (UnimplementedPharmagoServer) ReportOrder(context.Context, *ReportOrderRequ
 }
 func (UnimplementedPharmagoServer) ReportCustomer(context.Context, *ReportCustomerRequest) (*ReportCustomerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReportCustomer not implemented")
+}
+func (UnimplementedPharmagoServer) ReportCustomerRevenue(context.Context, *ReportCustomerRevenueRequest) (*ReportCustomerRevenueResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReportCustomerRevenue not implemented")
 }
 func (UnimplementedPharmagoServer) CreateCompany(context.Context, *CreateCompanyRequest) (*CreateCompanyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateCompany not implemented")
@@ -2300,6 +2315,24 @@ func _Pharmago_ReportCustomer_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PharmagoServer).ReportCustomer(ctx, req.(*ReportCustomerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_ReportCustomerRevenue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReportCustomerRevenueRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ReportCustomerRevenue(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_ReportCustomerRevenue_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ReportCustomerRevenue(ctx, req.(*ReportCustomerRevenueRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -4038,6 +4071,10 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ReportCustomer",
 			Handler:    _Pharmago_ReportCustomer_Handler,
+		},
+		{
+			MethodName: "ReportCustomerRevenue",
+			Handler:    _Pharmago_ReportCustomerRevenue_Handler,
 		},
 		{
 			MethodName: "CreateCompany",

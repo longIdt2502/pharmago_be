@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package pb;
+
+import "entities/company.proto";
+import "entities/simple_data.proto";
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message ReportCustomerRevenueRequest {
+  int32 company = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    required: [
+      "company"
+    ]
+  }];
+
+  enum ORDER_BY {
+    REVENUE = 0;
+    QUANTITY = 1;
+  }
+  ORDER_BY order_by = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "DeepEnum description."}];
+
+  optional google.protobuf.Timestamp start_date = 3;
+  optional google.protobuf.Timestamp end_date = 4;
+}
+
+message ReportCustomerRevenueResponse {
+  int32 code = 1;
+  string message = 2;
+  repeated CustomerReportItem details = 3;
+  int32 total = 4;
+  float average  = 5;
+}

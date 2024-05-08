@@ -203,6 +203,85 @@ func (x *ReportItem) GetValueExtra() float32 {
 	return 0
 }
 
+type CustomerReportItem struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id       int32   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	FullName string  `protobuf:"bytes,2,opt,name=full_name,json=fullName,proto3" json:"full_name,omitempty"`
+	Image    string  `protobuf:"bytes,3,opt,name=image,proto3" json:"image,omitempty"`
+	Quantity int32   `protobuf:"varint,4,opt,name=quantity,proto3" json:"quantity,omitempty"`
+	Revenue  float32 `protobuf:"fixed32,5,opt,name=revenue,proto3" json:"revenue,omitempty"`
+}
+
+func (x *CustomerReportItem) Reset() {
+	*x = CustomerReportItem{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_entities_simple_data_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CustomerReportItem) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CustomerReportItem) ProtoMessage() {}
+
+func (x *CustomerReportItem) ProtoReflect() protoreflect.Message {
+	mi := &file_entities_simple_data_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CustomerReportItem.ProtoReflect.Descriptor instead.
+func (*CustomerReportItem) Descriptor() ([]byte, []int) {
+	return file_entities_simple_data_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *CustomerReportItem) GetId() int32 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *CustomerReportItem) GetFullName() string {
+	if x != nil {
+		return x.FullName
+	}
+	return ""
+}
+
+func (x *CustomerReportItem) GetImage() string {
+	if x != nil {
+		return x.Image
+	}
+	return ""
+}
+
+func (x *CustomerReportItem) GetQuantity() int32 {
+	if x != nil {
+		return x.Quantity
+	}
+	return 0
+}
+
+func (x *CustomerReportItem) GetRevenue() float32 {
+	if x != nil {
+		return x.Revenue
+	}
+	return 0
+}
+
 var File_entities_simple_data_proto protoreflect.FileDescriptor
 
 var file_entities_simple_data_proto_rawDesc = []byte{
@@ -248,7 +327,16 @@ var file_entities_simple_data_proto_rawDesc = []byte{
 	0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x02, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65,
 	0x12, 0x1f, 0x0a, 0x0b, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x5f, 0x65, 0x78, 0x74, 0x72, 0x61, 0x18,
 	0x03, 0x20, 0x01, 0x28, 0x02, 0x52, 0x0a, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x45, 0x78, 0x74, 0x72,
-	0x61, 0x42, 0x29, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f,
+	0x61, 0x22, 0x8d, 0x01, 0x0a, 0x12, 0x43, 0x75, 0x73, 0x74, 0x6f, 0x6d, 0x65, 0x72, 0x52, 0x65,
+	0x70, 0x6f, 0x72, 0x74, 0x49, 0x74, 0x65, 0x6d, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x05, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1b, 0x0a, 0x09, 0x66, 0x75, 0x6c, 0x6c,
+	0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x66, 0x75, 0x6c,
+	0x6c, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x71,
+	0x75, 0x61, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x18, 0x04, 0x20, 0x01, 0x28, 0x05, 0x52, 0x08, 0x71,
+	0x75, 0x61, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x12, 0x18, 0x0a, 0x07, 0x72, 0x65, 0x76, 0x65, 0x6e,
+	0x75, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x02, 0x52, 0x07, 0x72, 0x65, 0x76, 0x65, 0x6e, 0x75,
+	0x65, 0x42, 0x29, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f,
 	0x48, 0x6f, 0x61, 0x6e, 0x67, 0x4c, 0x6f, 0x6e, 0x67, 0x32, 0x35, 0x30, 0x32, 0x2f, 0x70, 0x68,
 	0x61, 0x72, 0x6d, 0x61, 0x67, 0x6f, 0x5f, 0x62, 0x65, 0x2f, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72,
 	0x6f, 0x74, 0x6f, 0x33,
@@ -266,15 +354,16 @@ func file_entities_simple_data_proto_rawDescGZIP() []byte {
 	return file_entities_simple_data_proto_rawDescData
 }
 
-var file_entities_simple_data_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_entities_simple_data_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_entities_simple_data_proto_goTypes = []interface{}{
 	(*SimpleData)(nil),            // 0: pb.SimpleData
 	(*ReportItem)(nil),            // 1: pb.ReportItem
-	(*timestamppb.Timestamp)(nil), // 2: google.protobuf.Timestamp
+	(*CustomerReportItem)(nil),    // 2: pb.CustomerReportItem
+	(*timestamppb.Timestamp)(nil), // 3: google.protobuf.Timestamp
 }
 var file_entities_simple_data_proto_depIdxs = []int32{
-	2, // 0: pb.SimpleData.created_at:type_name -> google.protobuf.Timestamp
-	2, // 1: pb.SimpleData.updated_at:type_name -> google.protobuf.Timestamp
+	3, // 0: pb.SimpleData.created_at:type_name -> google.protobuf.Timestamp
+	3, // 1: pb.SimpleData.updated_at:type_name -> google.protobuf.Timestamp
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
@@ -312,6 +401,18 @@ func file_entities_simple_data_proto_init() {
 				return nil
 			}
 		}
+		file_entities_simple_data_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CustomerReportItem); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	file_entities_simple_data_proto_msgTypes[0].OneofWrappers = []interface{}{}
 	type x struct{}
@@ -320,7 +421,7 @@ func file_entities_simple_data_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_entities_simple_data_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

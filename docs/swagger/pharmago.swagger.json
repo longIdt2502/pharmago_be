@@ -3358,6 +3358,64 @@
         ]
       }
     },
+    "/report/v1/customer-revenue": {
+      "get": {
+        "summary": "Customer Revenue",
+        "operationId": "Pharmago_ReportCustomerRevenue",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbReportCustomerRevenueResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "company",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "orderBy",
+            "description": "DeepEnum description.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "REVENUE",
+              "QUANTITY"
+            ],
+            "default": "REVENUE"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
+        "tags": [
+          "Report"
+        ]
+      }
+    },
     "/report/v1/home": {
       "get": {
         "summary": "Home data",
@@ -4861,6 +4919,14 @@
           "$ref": "#/definitions/pbAddressPayload"
         }
       }
+    },
+    "ReportCustomerRevenueRequestORDER_BY": {
+      "type": "string",
+      "enum": [
+        "REVENUE",
+        "QUANTITY"
+      ],
+      "default": "REVENUE"
     },
     "TicketUpdateStatusRequestSTATUS": {
       "type": "string",
@@ -6518,6 +6584,29 @@
         "count": {
           "type": "integer",
           "format": "int32"
+        }
+      }
+    },
+    "pbCustomerReportItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "image": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "revenue": {
+          "type": "number",
+          "format": "float"
         }
       }
     },
@@ -8269,6 +8358,33 @@
           "format": "float"
         },
         "lastValue": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "pbReportCustomerRevenueResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbCustomerReportItem"
+          }
+        },
+        "total": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "average": {
           "type": "number",
           "format": "float"
         }
