@@ -93,3 +93,7 @@ SELECT os.code, COALESCE(COUNT(os.code), 0)::int AS count FROM order_status os
 RIGHT JOIN orders o ON os.code = o.status
 WHERE o.company = $1
 GROUP BY os.code;
+
+-- name: CountOrder :one
+SELECT COALESCE(COUNT(id), 0)::int FROM orders
+WHERE company = $1;

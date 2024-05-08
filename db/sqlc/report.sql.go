@@ -210,6 +210,88 @@ func (q *Queries) GetVariantBestSale(ctx context.Context, company int32) ([]GetV
 	return items, nil
 }
 
+const reportCustomerRevenue = `-- name: ReportCustomerRevenue :many
+WITH revenue AS (
+    SELECT COUNT(id) AS count_order, SUM(total_price)::float AS total_price, customer FROM orders
+    WHERE company = $2::int
+    GROUP BY customer
+)
+SELECT r.count_order, r.total_price, r.customer, c.id, c.full_name, c.code, c.company, c.address, c.email, c.phone, c.license, c.birthday, c.user_created, c.user_updated, c.updated_at, c.created_at, c."group" FROM revenue r
+LEFT JOIN customers c ON r.customer = c.id
+ORDER BY 
+    CASE WHEN $1::varchar = 'quantity' THEN -r.count_order
+         WHEN $1::varchar = 'revenue' THEN -r.total_price
+         ELSE -r.count_order
+    END
+LIMIT 5
+`
+
+type ReportCustomerRevenueParams struct {
+	OrderBy string `json:"order_by"`
+	Company int32  `json:"company"`
+}
+
+type ReportCustomerRevenueRow struct {
+	CountOrder  int64          `json:"count_order"`
+	TotalPrice  float64        `json:"total_price"`
+	Customer    sql.NullInt32  `json:"customer"`
+	ID          sql.NullInt32  `json:"id"`
+	FullName    sql.NullString `json:"full_name"`
+	Code        sql.NullString `json:"code"`
+	Company     sql.NullInt32  `json:"company"`
+	Address     sql.NullInt32  `json:"address"`
+	Email       sql.NullString `json:"email"`
+	Phone       sql.NullString `json:"phone"`
+	License     sql.NullString `json:"license"`
+	Birthday    sql.NullTime   `json:"birthday"`
+	UserCreated sql.NullInt32  `json:"user_created"`
+	UserUpdated sql.NullInt32  `json:"user_updated"`
+	UpdatedAt   sql.NullTime   `json:"updated_at"`
+	CreatedAt   sql.NullTime   `json:"created_at"`
+	Group       sql.NullInt32  `json:"group"`
+}
+
+func (q *Queries) ReportCustomerRevenue(ctx context.Context, arg ReportCustomerRevenueParams) ([]ReportCustomerRevenueRow, error) {
+	rows, err := q.db.QueryContext(ctx, reportCustomerRevenue, arg.OrderBy, arg.Company)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ReportCustomerRevenueRow{}
+	for rows.Next() {
+		var i ReportCustomerRevenueRow
+		if err := rows.Scan(
+			&i.CountOrder,
+			&i.TotalPrice,
+			&i.Customer,
+			&i.ID,
+			&i.FullName,
+			&i.Code,
+			&i.Company,
+			&i.Address,
+			&i.Email,
+			&i.Phone,
+			&i.License,
+			&i.Birthday,
+			&i.UserCreated,
+			&i.UserUpdated,
+			&i.UpdatedAt,
+			&i.CreatedAt,
+			&i.Group,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const totalCustomerByMonth = `-- name: TotalCustomerByMonth :many
 WITH time_generate AS (
 	SELECT
@@ -258,7 +340,6 @@ func (q *Queries) TotalCustomerByMonth(ctx context.Context, company int32) ([]To
 }
 
 const totalOrderByMonth = `-- name: TotalOrderByMonth :many
-
 WITH time_generate AS (
 	SELECT
         generate_series(
@@ -282,9 +363,6 @@ type TotalOrderByMonthRow struct {
 	Count int32     `json:"count"`
 }
 
-// SELECT COALESCE(COUNT(id), 0) AS total, date_trunc('month', created_at) AS date FROM customers
-// WHERE company = sqlc.arg(company)::int
-// GROUP BY (date_trunc('month', created_at));
 func (q *Queries) TotalOrderByMonth(ctx context.Context, company int32) ([]TotalOrderByMonthRow, error) {
 	rows, err := q.db.QueryContext(ctx, totalOrderByMonth, company)
 	if err != nil {

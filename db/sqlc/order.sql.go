@@ -11,6 +11,18 @@ import (
 	"time"
 )
 
+const countOrder = `-- name: CountOrder :one
+SELECT COALESCE(COUNT(id), 0)::int FROM orders
+WHERE company = $1
+`
+
+func (q *Queries) CountOrder(ctx context.Context, company int32) (int32, error) {
+	row := q.db.QueryRowContext(ctx, countOrder, company)
+	var column_1 int32
+	err := row.Scan(&column_1)
+	return column_1, err
+}
+
 const countOrderByStatus = `-- name: CountOrderByStatus :many
 SELECT os.code, COALESCE(COUNT(os.code), 0)::int AS count FROM order_status os
 RIGHT JOIN orders o ON os.code = o.status

@@ -210,3 +210,47 @@ func (server *ServerGRPC) ReportCustomer(ctx context.Context, req *pb.ReportCust
 		LastValue:    float32(lastValue.Count),
 	}, nil
 }
+
+func (server *ServerGRPC) ReportCustomerRevenue(ctx context.Context, req *pb.ReportCustomerRevenueRequest) (*pb.ReportCustomerRevenueResponse, error) {
+	_, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	orderBy := "quantity"
+	if req.OrderBy.String() == "REVENUE" {
+		orderBy = "revenue"
+	}
+
+	reports, err := server.store.ReportCustomerRevenue(ctx, db.ReportCustomerRevenueParams{
+		Company: req.GetCompany(),
+		OrderBy: orderBy,
+	})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get report customer: %e", err)
+	}
+
+	var reportPb []*pb.CustomerReportItem
+	for _, item := range reports {
+
+		reportPb = append(reportPb, &pb.CustomerReportItem{
+			Id:       item.ID.Int32,
+			FullName: item.FullName.String,
+			// Image: item.,
+			Quantity: int32(item.CountOrder),
+			Revenue:  float32(item.TotalPrice),
+		})
+	}
+
+	totalOrder, _ := server.store.CountOrder(ctx, req.GetCompany())
+
+	totalCustomer, _ := server.store.CountCustomer(ctx, req.GetCompany())
+
+	return &pb.ReportCustomerRevenueResponse{
+		Code:    200,
+		Message: "success",
+		Details: reportPb,
+		Total:   int32(totalCustomer),
+		Average: float32(totalOrder / int32(totalCustomer)),
+	}, nil
+}

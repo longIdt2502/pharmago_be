@@ -24,3 +24,12 @@ message ReportItem {
   float value = 2;
   float value_extra = 3;
 }
+
+message CustomerReportItem {
+  int32 id = 1;
+  string full_name = 2;
+  string image = 3;
+  int32 quantity = 4;
+  float revenue = 5;
+}
+
