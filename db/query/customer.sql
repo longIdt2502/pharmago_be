@@ -21,9 +21,9 @@ WHERE company = sqlc.arg(company)::int;
 
 -- name: CreateCustomer :one
 INSERT INTO customers (
-    full_name, code, company, address, email, phone ,license, birthday, user_updated, user_created
+    full_name, code, company, address, email, phone ,license, birthday, user_updated, user_created, "group"
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
 ) RETURNING *;
 
 -- name: DetailCustomer :one

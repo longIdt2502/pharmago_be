@@ -25,9 +25,9 @@ func (q *Queries) CountCustomer(ctx context.Context, company int32) (int64, erro
 
 const createCustomer = `-- name: CreateCustomer :one
 INSERT INTO customers (
-    full_name, code, company, address, email, phone ,license, birthday, user_updated, user_created
+    full_name, code, company, address, email, phone ,license, birthday, user_updated, user_created, "group"
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
 ) RETURNING id, full_name, code, company, address, email, phone, license, birthday, user_created, user_updated, updated_at, created_at, "group"
 `
 
@@ -42,6 +42,7 @@ type CreateCustomerParams struct {
 	Birthday    sql.NullTime   `json:"birthday"`
 	UserUpdated sql.NullInt32  `json:"user_updated"`
 	UserCreated int32          `json:"user_created"`
+	Group       sql.NullInt32  `json:"group"`
 }
 
 func (q *Queries) CreateCustomer(ctx context.Context, arg CreateCustomerParams) (Customer, error) {
@@ -56,6 +57,7 @@ func (q *Queries) CreateCustomer(ctx context.Context, arg CreateCustomerParams) 
 		arg.Birthday,
 		arg.UserUpdated,
 		arg.UserCreated,
+		arg.Group,
 	)
 	var i Customer
 	err := row.Scan(

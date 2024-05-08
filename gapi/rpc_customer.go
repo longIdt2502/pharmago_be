@@ -122,6 +122,10 @@ func (server *ServerGRPC) CustomerCreate(ctx context.Context, req *pb.CustomerCr
 			Valid: true,
 		},
 		UserCreated: tokenPayload.UserID,
+		Group: sql.NullInt32{
+			Int32: req.GetGroup(),
+			Valid: req.Group != nil,
+		},
 	})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to record customer: %e", err)
