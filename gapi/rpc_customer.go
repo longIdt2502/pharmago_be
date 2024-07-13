@@ -109,7 +109,7 @@ func (server *ServerGRPC) CustomerCreate(ctx context.Context, req *pb.CustomerCr
 		addressId = address.ID
 	}
 
-	var contactAddressId *int32
+	var contactAddressId int32
 	if req.ContactAddress != nil {
 		address, err := server.store.CreateAddress(ctx, db.CreateAddressParams{
 			Lat: float64(req.ContactAddress.GetLat()),
@@ -133,7 +133,7 @@ func (server *ServerGRPC) CustomerCreate(ctx context.Context, req *pb.CustomerCr
 			return nil, status.Errorf(codes.Internal, "failed to record address: %e", err)
 		}
 
-		contactAddressId = &address.ID
+		contactAddressId = address.ID
 	}
 
 	customer, err := server.store.CreateCustomer(ctx, db.CreateCustomerParams{
@@ -188,8 +188,8 @@ func (server *ServerGRPC) CustomerCreate(ctx context.Context, req *pb.CustomerCr
 			Valid:  req.ContactEmail != nil,
 		},
 		ContactAddress: sql.NullInt32{
-			Int32: *contactAddressId,
-			Valid: contactAddressId != nil,
+			Int32: contactAddressId,
+			Valid: req.ContactAddress != nil,
 		},
 		AccountNumber: sql.NullString{
 			String: req.GetAccountNumber(),
