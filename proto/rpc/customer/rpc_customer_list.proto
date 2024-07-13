@@ -23,6 +23,6 @@ message CustomerListRequest {
 message CustomerListResponse {
   int32 code = 1;
   string message = 2;
-  repeated CustomerDetail details = 3;
+  repeated Customer details = 3;
   int32 count = 4;
 }

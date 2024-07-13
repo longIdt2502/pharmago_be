@@ -43,9 +43,18 @@ func (server *ServerGRPC) CustomerList(ctx context.Context, req *pb.CustomerList
 		return nil, status.Errorf(codes.Internal, "failed to get customer: %e", err)
 	}
 
-	var customersPb []*pb.CustomerDetail
+	var customersPb []*pb.Customer
 	for _, value := range customers {
-		dataPb, _ := mapper.CustomerDetailMapper(ctx, server.store, value)
+		dataPb := &pb.Customer{
+			Id:       value.ID.Int32,
+			Code:     value.Code.String,
+			FullName: value.FullName.String,
+			Company:  value.Company.Int32,
+			Phone:    value.Phone.String,
+			Email:    &value.Email.String,
+			Revenue:  float32(value.TotalRevenue),
+			Orders:   value.TotalOrders,
+		}
 		customersPb = append(customersPb, dataPb)
 	}
 

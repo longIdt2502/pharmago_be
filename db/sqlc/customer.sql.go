@@ -341,14 +341,22 @@ func (q *Queries) GetCustomer(ctx context.Context, id int32) (Customer, error) {
 }
 
 const listCustomer = `-- name: ListCustomer :many
-SELECT id, full_name, code, company, address, email, phone, license, birthday, user_created, user_updated, updated_at, created_at, "group", title, license_date, contact_name, contact_title, contact_phone, contact_email, contact_address, account_number, bank_name, bank_branch FROM customers
-WHERE company = $1::int
-AND (
-    full_name ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
-    code ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
-    phone ILIKE '%' || COALESCE($2::varchar, '') || '%'
+WITH revenue AS (
+    SELECT customer,
+    COALESCE(SUM(total_price), 0)::float AS total_revenue,
+    COALESCE(COUNT(id), 0)::int AS total_orders
+    FROM orders
+    GROUP BY customer
 )
-ORDER BY -id
+SELECT customer, total_revenue, total_orders, id, full_name, code, company, address, email, phone, license, birthday, user_created, user_updated, updated_at, created_at, "group", title, license_date, contact_name, contact_title, contact_phone, contact_email, contact_address, account_number, bank_name, bank_branch FROM revenue r
+LEFT JOIN customers c ON c.id = r.customer 
+WHERE c.company = $1::int
+AND (
+    c.full_name ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
+    c.code ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
+    c.phone ILIKE '%' || COALESCE($2::varchar, '') || '%'
+)
+ORDER BY -c.id
 LIMIT COALESCE($4::int, 10)
 OFFSET (COALESCE($3::int, 1) - 1) * COALESCE($4::int, 10)
 `
@@ -360,7 +368,37 @@ type ListCustomerParams struct {
 	Limit   sql.NullInt32  `json:"limit"`
 }
 
-func (q *Queries) ListCustomer(ctx context.Context, arg ListCustomerParams) ([]Customer, error) {
+type ListCustomerRow struct {
+	Customer       sql.NullInt32  `json:"customer"`
+	TotalRevenue   float64        `json:"total_revenue"`
+	TotalOrders    int32          `json:"total_orders"`
+	ID             sql.NullInt32  `json:"id"`
+	FullName       sql.NullString `json:"full_name"`
+	Code           sql.NullString `json:"code"`
+	Company        sql.NullInt32  `json:"company"`
+	Address        sql.NullInt32  `json:"address"`
+	Email          sql.NullString `json:"email"`
+	Phone          sql.NullString `json:"phone"`
+	License        sql.NullString `json:"license"`
+	Birthday       sql.NullTime   `json:"birthday"`
+	UserCreated    sql.NullInt32  `json:"user_created"`
+	UserUpdated    sql.NullInt32  `json:"user_updated"`
+	UpdatedAt      sql.NullTime   `json:"updated_at"`
+	CreatedAt      sql.NullTime   `json:"created_at"`
+	Group          sql.NullInt32  `json:"group"`
+	Title          sql.NullString `json:"title"`
+	LicenseDate    sql.NullTime   `json:"license_date"`
+	ContactName    sql.NullString `json:"contact_name"`
+	ContactTitle   sql.NullString `json:"contact_title"`
+	ContactPhone   sql.NullString `json:"contact_phone"`
+	ContactEmail   sql.NullString `json:"contact_email"`
+	ContactAddress sql.NullInt32  `json:"contact_address"`
+	AccountNumber  sql.NullString `json:"account_number"`
+	BankName       sql.NullString `json:"bank_name"`
+	BankBranch     sql.NullString `json:"bank_branch"`
+}
+
+func (q *Queries) ListCustomer(ctx context.Context, arg ListCustomerParams) ([]ListCustomerRow, error) {
 	rows, err := q.db.QueryContext(ctx, listCustomer,
 		arg.Company,
 		arg.Search,
@@ -371,10 +409,13 @@ func (q *Queries) ListCustomer(ctx context.Context, arg ListCustomerParams) ([]C
 		return nil, err
 	}
 	defer rows.Close()
-	items := []Customer{}
+	items := []ListCustomerRow{}
 	for rows.Next() {
-		var i Customer
+		var i ListCustomerRow
 		if err := rows.Scan(
+			&i.Customer,
+			&i.TotalRevenue,
+			&i.TotalOrders,
 			&i.ID,
 			&i.FullName,
 			&i.Code,
