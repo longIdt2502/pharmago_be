@@ -6387,6 +6387,17 @@
         },
         "email": {
           "type": "string"
+        },
+        "orders": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "revenue": {
+          "type": "number",
+          "format": "float"
+        },
+        "conversation": {
+          "$ref": "#/definitions/pbConversation"
         }
       }
     },
@@ -6675,7 +6686,7 @@
           "type": "array",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/pbCustomerDetail"
+            "$ref": "#/definitions/pbCustomer"
           }
         },
         "count": {

@@ -4,14 +4,22 @@ WHERE id = sqlc.arg('id')
 LIMIT 1;
 
 -- name: ListCustomer :many
-SELECT * FROM customers
-WHERE company = sqlc.arg(company)::int
-AND (
-    full_name ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
-    code ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
-    phone ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%'
+WITH revenue AS (
+    SELECT customer,
+    COALESCE(SUM(total_price), 0)::float AS total_revenue,
+    COALESCE(COUNT(id), 0)::int AS total_orders
+    FROM orders
+    GROUP BY customer
 )
-ORDER BY -id
+SELECT * FROM revenue r
+LEFT JOIN customers c ON c.id = r.customer 
+WHERE c.company = sqlc.arg(company)::int
+AND (
+    c.full_name ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
+    c.code ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
+    c.phone ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%'
+)
+ORDER BY -c.id
 LIMIT COALESCE(sqlc.narg('limit')::int, 10)
 OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10);
 

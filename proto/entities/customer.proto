@@ -4,6 +4,7 @@ package pb;
 
 import "google/protobuf/timestamp.proto";
 import "entities/address.proto";
+import "entities/conversation.proto";
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
 message Customer {
@@ -14,6 +15,9 @@ message Customer {
   Address address = 5;
   string phone = 6;
   optional string email = 7;
+  int32 orders = 8;
+  float revenue = 9;
+  optional Conversation conversation = 10;
 }
 
 message CustomerDetail {
