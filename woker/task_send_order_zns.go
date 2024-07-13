@@ -11,7 +11,10 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-const TaskSendOrderZns = "task:send_order_zns"
+const (
+	TaskSendOrderZns = "task:send_order_zns"
+	UrlOa            = "https://core.wezolo.com/v1/zns/send/"
+)
 
 type PayloadZNS struct {
 	OaID  string         `json:"oa_id"`

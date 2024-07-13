@@ -21,9 +21,11 @@ WHERE company = sqlc.arg(company)::int;
 
 -- name: CreateCustomer :one
 INSERT INTO customers (
-    full_name, code, company, address, email, phone ,license, birthday, user_updated, user_created, "group"
+    full_name, code, company, address, email, phone ,license, birthday, user_updated, user_created, "group", 
+    title, license_date, contact_name, contact_title, contact_phone, contact_email, contact_address, account_number,
+    bank_name, bank_branch
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21
 ) RETURNING *;
 
 -- name: DetailCustomer :one
@@ -41,7 +43,17 @@ SET
     license = COALESCE(sqlc.narg(license)::varchar, license),
     birthday = COALESCE(sqlc.narg(birthday)::timestamp, birthday),
     user_updated = COALESCE(sqlc.narg(user_updated)::int, user_updated),
-    "group" = COALESCE(sqlc.narg('group')::int, "group")
+    "group" = COALESCE(sqlc.narg('group')::int, "group"),
+    title = COALESCE(sqlc.narg(title)::varchar, title),
+    license_date = COALESCE(sqlc.narg(license_date)::timestamp, license_date),
+    contact_name = COALESCE(sqlc.narg(contact_name)::varchar, contact_name),
+    contact_title = COALESCE(sqlc.narg(contact_title)::varchar, contact_title),
+    contact_phone = COALESCE(sqlc.narg(contact_phone)::varchar, contact_phone),
+    contact_email = COALESCE(sqlc.narg(contact_email)::varchar, contact_email),
+    contact_address = COALESCE(sqlc.narg(contact_address)::int, contact_address),
+    account_number = COALESCE(sqlc.narg(account_number)::varchar, account_number),
+    bank_name = COALESCE(sqlc.narg(bank_name)::varchar, bank_name),
+    bank_branch = COALESCE(sqlc.narg(bank_branch)::varchar, bank_branch)
 WHERE id = sqlc.arg(id)
 RETURNING *;
 

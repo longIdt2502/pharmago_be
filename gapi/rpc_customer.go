@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/longIdt2502/pharmago_be/common"
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/gapi/mapper"
@@ -99,6 +100,33 @@ func (server *ServerGRPC) CustomerCreate(ctx context.Context, req *pb.CustomerCr
 		addressId = address.ID
 	}
 
+	var contactAddressId *int32
+	if req.ContactAddress != nil {
+		address, err := server.store.CreateAddress(ctx, db.CreateAddressParams{
+			Lat: float64(req.ContactAddress.GetLat()),
+			Lng: float64(req.ContactAddress.GetLng()),
+			Province: sql.NullString{
+				String: req.ContactAddress.GetProvince(),
+				Valid:  true,
+			},
+			District: sql.NullString{
+				String: req.ContactAddress.GetDistrict(),
+				Valid:  true,
+			},
+			Ward: sql.NullString{
+				String: req.ContactAddress.GetWard(),
+				Valid:  req.ContactAddress.Ward != nil,
+			},
+			Title:       req.ContactAddress.GetTitle(),
+			UserCreated: tokenPayload.UserID,
+		})
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to record address: %e", err)
+		}
+
+		contactAddressId = &address.ID
+	}
+
 	customer, err := server.store.CreateCustomer(ctx, db.CreateCustomerParams{
 		FullName: req.GetName(),
 		Code:     code,
@@ -126,9 +154,53 @@ func (server *ServerGRPC) CustomerCreate(ctx context.Context, req *pb.CustomerCr
 			Int32: req.GetGroup(),
 			Valid: req.Group != nil,
 		},
+		Title: sql.NullString{
+			String: req.GetTitle(),
+			Valid:  req.Title != nil,
+		},
+		LicenseDate: sql.NullTime{
+			Time:  time.Unix(req.GetLicenseDate().GetSeconds(), 0),
+			Valid: req.Title != nil,
+		},
+		ContactName: sql.NullString{
+			String: req.GetContactName(),
+			Valid:  req.ContactName != nil,
+		},
+		ContactTitle: sql.NullString{
+			String: req.GetContactTitle(),
+			Valid:  req.ContactTitle != nil,
+		},
+		ContactPhone: sql.NullString{
+			String: req.GetContactPhone(),
+			Valid:  req.ContactPhone != nil,
+		},
+		ContactEmail: sql.NullString{
+			String: req.GetContactEmail(),
+			Valid:  req.ContactEmail != nil,
+		},
+		ContactAddress: sql.NullInt32{
+			Int32: *contactAddressId,
+			Valid: contactAddressId != nil,
+		},
+		AccountNumber: sql.NullString{
+			String: req.GetAccountNumber(),
+			Valid:  req.AccountNumber != nil,
+		},
+		BankName: sql.NullString{
+			String: req.GetBankName(),
+			Valid:  req.BankName != nil,
+		},
+		BankBranch: sql.NullString{
+			String: req.GetBankBranch(),
+			Valid:  req.BankBranch != nil,
+		},
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to record customer: %e", err)
+		errLog := common.ErrDB(err)
+		return &pb.CustomerCreateResponse{
+			Code:    int32(errLog.StatusCode),
+			Message: errLog.Message,
+		}, nil
 	}
 
 	return &pb.CustomerCreateResponse{
@@ -211,6 +283,44 @@ func (server *ServerGRPC) CustomerUpdate(ctx context.Context, req *pb.CustomerUp
 		// }
 	}
 
+	if req.ContactAddress != nil {
+		if customerDb.ContactAddress.Valid {
+			_, err = server.store.UpdateAddress(ctx, db.UpdateAddressParams{
+				Lat: sql.NullFloat64{
+					Float64: float64(req.ContactAddress.GetLat()),
+					Valid:   true,
+				},
+				Lng: sql.NullFloat64{
+					Float64: float64(req.ContactAddress.GetLng()),
+					Valid:   true,
+				},
+				Province: sql.NullString{
+					String: req.ContactAddress.GetProvince(),
+					Valid:  true,
+				},
+				District: sql.NullString{
+					String: req.ContactAddress.GetDistrict(),
+					Valid:  true,
+				},
+				Ward: sql.NullString{
+					String: req.ContactAddress.GetWard(),
+					Valid:  req.ContactAddress.Ward != nil,
+				},
+				Title: sql.NullString{
+					String: req.ContactAddress.GetTitle(),
+					Valid:  true,
+				},
+				ID: customerDb.ContactAddress.Int32,
+			})
+			if err != nil {
+				return nil, status.Errorf(codes.Internal, "failed to update contact address address: %e", err)
+			}
+		}
+		// else {
+		// 	// TODO: create new address
+		// }
+	}
+
 	_, err = server.store.UpdateCustomer(ctx, db.UpdateCustomerParams{
 		FullName: sql.NullString{
 			String: req.GetName(),
@@ -235,6 +345,42 @@ func (server *ServerGRPC) CustomerUpdate(ctx context.Context, req *pb.CustomerUp
 			Valid: true,
 		},
 		ID: req.GetId(),
+		Title: sql.NullString{
+			String: req.GetTitle(),
+			Valid:  req.Title != nil,
+		},
+		LicenseDate: sql.NullTime{
+			Time:  time.Unix(req.GetLicenseDate().GetSeconds(), 0),
+			Valid: req.Title != nil,
+		},
+		ContactName: sql.NullString{
+			String: req.GetContactName(),
+			Valid:  req.ContactName != nil,
+		},
+		ContactTitle: sql.NullString{
+			String: req.GetContactTitle(),
+			Valid:  req.ContactTitle != nil,
+		},
+		ContactPhone: sql.NullString{
+			String: req.GetContactPhone(),
+			Valid:  req.ContactPhone != nil,
+		},
+		ContactEmail: sql.NullString{
+			String: req.GetContactEmail(),
+			Valid:  req.ContactEmail != nil,
+		},
+		AccountNumber: sql.NullString{
+			String: req.GetAccountNumber(),
+			Valid:  req.AccountNumber != nil,
+		},
+		BankName: sql.NullString{
+			String: req.GetBankName(),
+			Valid:  req.BankName != nil,
+		},
+		BankBranch: sql.NullString{
+			String: req.GetBankBranch(),
+			Valid:  req.BankBranch != nil,
+		},
 	})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to update customer: %e", err)

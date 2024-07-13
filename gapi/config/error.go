@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/longIdt2502/pharmago_be/common"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -26,5 +27,5 @@ func InvalidArgumentError(violations []*errdetails.BadRequest_FieldViolation) er
 }
 
 func UnauthenticatedError(err error) error {
-	return status.Errorf(codes.Unauthenticated, "unauthorized: %s", err)
+	return common.NewUnauthorized(err, "unauthorized", common.ErrorUnauthorized)
 }

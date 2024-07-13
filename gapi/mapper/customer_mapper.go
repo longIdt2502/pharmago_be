@@ -39,18 +39,46 @@ func CustomerDetailMapper(ctx context.Context, store *db.Store, data db.Customer
 		addressPb = AddressMapper(ctx, store, address)
 	}
 
+	var contactAddressPb *pb.Address
+	if data.ContactAddress.Valid {
+		address, err := store.GetAddress(ctx, data.ContactAddress.Int32)
+		if err != nil {
+			if errors.Is(err, sql.ErrNoRows) {
+				return nil, status.Errorf(codes.NotFound, "address not exists")
+			}
+			return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to get address: %e", err))
+		}
+		contactAddressPb = AddressMapper(ctx, store, address)
+	}
+
 	var birthday *timestamp.Timestamp
 	if data.Birthday.Valid {
 		birthday = timestamppb.New(data.Birthday.Time)
 	}
+
+	var licenseDate *timestamp.Timestamp
+	if data.LicenseDate.Valid {
+		licenseDate = timestamppb.New(data.LicenseDate.Time)
+	}
+
 	return &pb.CustomerDetail{
-		Id:       data.ID,
-		Code:     data.Code,
-		FullName: data.FullName,
-		Company:  data.Company,
-		Address:  addressPb,
-		Phone:    data.Phone.String,
-		Email:    nil,
-		Birthday: birthday,
+		Id:             data.ID,
+		Code:           data.Code,
+		FullName:       data.FullName,
+		Company:        data.Company,
+		Address:        addressPb,
+		Phone:          data.Phone.String,
+		Email:          nil,
+		Birthday:       birthday,
+		Title:          &data.Title.String,
+		LicenseDate:    licenseDate,
+		ContactName:    &data.ContactName.String,
+		ContactTitle:   &data.ContactTitle.String,
+		ContactPhone:   &data.ContactPhone.String,
+		ContactEmail:   &data.ContactEmail.String,
+		ContactAddress: contactAddressPb,
+		AccountNumber:  &data.AccountNumber.String,
+		BankName:       &data.BankName.String,
+		BankBranch:     &data.BankBranch.String,
 	}, nil
 }

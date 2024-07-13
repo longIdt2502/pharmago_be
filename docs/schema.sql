@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml-lang.org)
 -- Database: PostgreSQL
--- Generated at: 2024-04-25T02:17:06.278Z
+-- Generated at: 2024-07-13T04:10:44.218Z
 
 CREATE TYPE "gender" AS ENUM (
   'nam',
@@ -434,10 +434,20 @@ CREATE TABLE "customers" (
   "company" serial NOT NULL,
   "address" serial,
   "email" varchar,
+  "title" varchar,
   "phone" varchar(20),
   "license" varchar(20),
+  "license_date" timestamp,
   "birthday" timestamptz,
   "group" serial,
+  "contact_name" varchar,
+  "contact_title" varchar,
+  "contact_phone" varchar,
+  "contact_email" varchar,
+  "contact_address" serial,
+  "account_number" varchar,
+  "bank_name" varchar,
+  "bank_branch" varchar,
   "user_created" serial NOT NULL,
   "user_updated" serial,
   "updated_at" timestamptz,
@@ -722,6 +732,8 @@ COMMENT ON COLUMN "company_type"."code" IS '
 
 COMMENT ON COLUMN "order_items"."consignment" IS 'Không truyền lúc tạo tự chọn theo BE';
 
+COMMENT ON COLUMN "customers"."title" IS 'Chức danh';
+
 COMMENT ON COLUMN "medical_records"."symptom" IS 'Triệu chứng';
 
 COMMENT ON COLUMN "medical_records"."diagnostic" IS 'Chuẩn đoán';
@@ -903,6 +915,8 @@ ALTER TABLE "service_order_item" ADD FOREIGN KEY ("service") REFERENCES "service
 ALTER TABLE "customers" ADD FOREIGN KEY ("company") REFERENCES "companies" ("id") ON DELETE CASCADE;
 
 ALTER TABLE "customers" ADD FOREIGN KEY ("address") REFERENCES "address" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "customers" ADD FOREIGN KEY ("contact_address") REFERENCES "address" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "customers" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id") ON DELETE CASCADE;
 

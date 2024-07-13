@@ -216,7 +216,7 @@ WITH revenue AS (
     WHERE company = $2::int
     GROUP BY customer
 )
-SELECT r.count_order, r.total_price, r.customer, c.id, c.full_name, c.code, c.company, c.address, c.email, c.phone, c.license, c.birthday, c.user_created, c.user_updated, c.updated_at, c.created_at, c."group" FROM revenue r
+SELECT r.count_order, r.total_price, r.customer, c.id, c.full_name, c.code, c.company, c.address, c.email, c.phone, c.license, c.birthday, c.user_created, c.user_updated, c.updated_at, c.created_at, c."group", c.title, c.license_date, c.contact_name, c.contact_title, c.contact_phone, c.contact_email, c.contact_address, c.account_number, c.bank_name, c.bank_branch FROM revenue r
 LEFT JOIN customers c ON r.customer = c.id
 ORDER BY 
     CASE WHEN $1::varchar = 'quantity' THEN -r.count_order
@@ -232,23 +232,33 @@ type ReportCustomerRevenueParams struct {
 }
 
 type ReportCustomerRevenueRow struct {
-	CountOrder  int64          `json:"count_order"`
-	TotalPrice  float64        `json:"total_price"`
-	Customer    sql.NullInt32  `json:"customer"`
-	ID          sql.NullInt32  `json:"id"`
-	FullName    sql.NullString `json:"full_name"`
-	Code        sql.NullString `json:"code"`
-	Company     sql.NullInt32  `json:"company"`
-	Address     sql.NullInt32  `json:"address"`
-	Email       sql.NullString `json:"email"`
-	Phone       sql.NullString `json:"phone"`
-	License     sql.NullString `json:"license"`
-	Birthday    sql.NullTime   `json:"birthday"`
-	UserCreated sql.NullInt32  `json:"user_created"`
-	UserUpdated sql.NullInt32  `json:"user_updated"`
-	UpdatedAt   sql.NullTime   `json:"updated_at"`
-	CreatedAt   sql.NullTime   `json:"created_at"`
-	Group       sql.NullInt32  `json:"group"`
+	CountOrder     int64          `json:"count_order"`
+	TotalPrice     float64        `json:"total_price"`
+	Customer       sql.NullInt32  `json:"customer"`
+	ID             sql.NullInt32  `json:"id"`
+	FullName       sql.NullString `json:"full_name"`
+	Code           sql.NullString `json:"code"`
+	Company        sql.NullInt32  `json:"company"`
+	Address        sql.NullInt32  `json:"address"`
+	Email          sql.NullString `json:"email"`
+	Phone          sql.NullString `json:"phone"`
+	License        sql.NullString `json:"license"`
+	Birthday       sql.NullTime   `json:"birthday"`
+	UserCreated    sql.NullInt32  `json:"user_created"`
+	UserUpdated    sql.NullInt32  `json:"user_updated"`
+	UpdatedAt      sql.NullTime   `json:"updated_at"`
+	CreatedAt      sql.NullTime   `json:"created_at"`
+	Group          sql.NullInt32  `json:"group"`
+	Title          sql.NullString `json:"title"`
+	LicenseDate    sql.NullTime   `json:"license_date"`
+	ContactName    sql.NullString `json:"contact_name"`
+	ContactTitle   sql.NullString `json:"contact_title"`
+	ContactPhone   sql.NullString `json:"contact_phone"`
+	ContactEmail   sql.NullString `json:"contact_email"`
+	ContactAddress sql.NullInt32  `json:"contact_address"`
+	AccountNumber  sql.NullString `json:"account_number"`
+	BankName       sql.NullString `json:"bank_name"`
+	BankBranch     sql.NullString `json:"bank_branch"`
 }
 
 func (q *Queries) ReportCustomerRevenue(ctx context.Context, arg ReportCustomerRevenueParams) ([]ReportCustomerRevenueRow, error) {
@@ -278,6 +288,16 @@ func (q *Queries) ReportCustomerRevenue(ctx context.Context, arg ReportCustomerR
 			&i.UpdatedAt,
 			&i.CreatedAt,
 			&i.Group,
+			&i.Title,
+			&i.LicenseDate,
+			&i.ContactName,
+			&i.ContactTitle,
+			&i.ContactPhone,
+			&i.ContactEmail,
+			&i.ContactAddress,
+			&i.AccountNumber,
+			&i.BankName,
+			&i.BankBranch,
 		); err != nil {
 			return nil, err
 		}
