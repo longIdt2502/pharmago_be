@@ -214,6 +214,17 @@ type Customer struct {
 	UpdatedAt   sql.NullTime   `json:"updated_at"`
 	CreatedAt   time.Time      `json:"created_at"`
 	Group       sql.NullInt32  `json:"group"`
+	// Chức danh
+	Title          sql.NullString `json:"title"`
+	LicenseDate    sql.NullTime   `json:"license_date"`
+	ContactName    sql.NullString `json:"contact_name"`
+	ContactTitle   sql.NullString `json:"contact_title"`
+	ContactPhone   sql.NullString `json:"contact_phone"`
+	ContactEmail   sql.NullString `json:"contact_email"`
+	ContactAddress sql.NullInt32  `json:"contact_address"`
+	AccountNumber  sql.NullString `json:"account_number"`
+	BankName       sql.NullString `json:"bank_name"`
+	BankBranch     sql.NullString `json:"bank_branch"`
 }
 
 type CustomerGroup struct {

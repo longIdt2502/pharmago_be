@@ -337,7 +337,7 @@ func (q *Queries) DetailOrder(ctx context.Context, arg DetailOrderParams) (Detai
 }
 
 const listOrder = `-- name: ListOrder :many
-SELECT o.id, o.code, o.total_price, description, vat, discount, service_price, must_paid, customer, o.address, o.status, o.type, ticket, o.qr, o.company, payment, o.user_created, o.user_updated, o.created_at, o.updated_at, c.id, c.full_name, c.code, c.company, c.address, c.email, phone, license, birthday, c.user_created, c.user_updated, c.updated_at, c.created_at, "group", t.id, t.code, t.type, t.status, note, t.qr, export_to, import_from, t.total_price, warehouse, t.user_created, t.user_updated, t.updated_at, t.created_at, os.id, os.code, title, a.id, username, hashed_password, a.full_name, a.email, a.type, is_verify, password_changed_at, a.created_at, role, gender, licence, dob, a.address, c.full_name AS c_full_name, os.title AS os_title, os.id AS os_id, a.full_name AS a_full_name FROM orders o
+SELECT o.id, o.code, o.total_price, description, vat, discount, service_price, must_paid, customer, o.address, o.status, o.type, ticket, o.qr, o.company, payment, o.user_created, o.user_updated, o.created_at, o.updated_at, c.id, c.full_name, c.code, c.company, c.address, c.email, phone, license, birthday, c.user_created, c.user_updated, c.updated_at, c.created_at, "group", c.title, license_date, contact_name, contact_title, contact_phone, contact_email, contact_address, account_number, bank_name, bank_branch, t.id, t.code, t.type, t.status, note, t.qr, export_to, import_from, t.total_price, warehouse, t.user_created, t.user_updated, t.updated_at, t.created_at, os.id, os.code, os.title, a.id, username, hashed_password, a.full_name, a.email, a.type, is_verify, password_changed_at, a.created_at, role, gender, licence, dob, a.address, c.full_name AS c_full_name, os.title AS os_title, os.id AS os_id, a.full_name AS a_full_name FROM orders o
 JOIN customers c ON o.customer = c.id
 JOIN tickets t ON o.ticket = t.id
 JOIN order_status os ON os.code = o.status
@@ -424,6 +424,16 @@ type ListOrderRow struct {
 	UpdatedAt_2       sql.NullTime   `json:"updated_at_2"`
 	CreatedAt_2       time.Time      `json:"created_at_2"`
 	Group             sql.NullInt32  `json:"group"`
+	Title             sql.NullString `json:"title"`
+	LicenseDate       sql.NullTime   `json:"license_date"`
+	ContactName       sql.NullString `json:"contact_name"`
+	ContactTitle      sql.NullString `json:"contact_title"`
+	ContactPhone      sql.NullString `json:"contact_phone"`
+	ContactEmail      sql.NullString `json:"contact_email"`
+	ContactAddress    sql.NullInt32  `json:"contact_address"`
+	AccountNumber     sql.NullString `json:"account_number"`
+	BankName          sql.NullString `json:"bank_name"`
+	BankBranch        sql.NullString `json:"bank_branch"`
 	ID_3              int32          `json:"id_3"`
 	Code_3            string         `json:"code_3"`
 	Type_2            sql.NullInt32  `json:"type_2"`
@@ -440,7 +450,7 @@ type ListOrderRow struct {
 	CreatedAt_3       time.Time      `json:"created_at_3"`
 	ID_4              int32          `json:"id_4"`
 	Code_4            string         `json:"code_4"`
-	Title             string         `json:"title"`
+	Title_2           string         `json:"title_2"`
 	ID_5              int32          `json:"id_5"`
 	Username          string         `json:"username"`
 	HashedPassword    string         `json:"hashed_password"`
@@ -517,6 +527,16 @@ func (q *Queries) ListOrder(ctx context.Context, arg ListOrderParams) ([]ListOrd
 			&i.UpdatedAt_2,
 			&i.CreatedAt_2,
 			&i.Group,
+			&i.Title,
+			&i.LicenseDate,
+			&i.ContactName,
+			&i.ContactTitle,
+			&i.ContactPhone,
+			&i.ContactEmail,
+			&i.ContactAddress,
+			&i.AccountNumber,
+			&i.BankName,
+			&i.BankBranch,
 			&i.ID_3,
 			&i.Code_3,
 			&i.Type_2,
@@ -533,7 +553,7 @@ func (q *Queries) ListOrder(ctx context.Context, arg ListOrderParams) ([]ListOrd
 			&i.CreatedAt_3,
 			&i.ID_4,
 			&i.Code_4,
-			&i.Title,
+			&i.Title_2,
 			&i.ID_5,
 			&i.Username,
 			&i.HashedPassword,

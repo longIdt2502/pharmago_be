@@ -4737,6 +4737,37 @@
         "company": {
           "type": "integer",
           "format": "int32"
+        },
+        "title": {
+          "type": "string"
+        },
+        "licenseDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "contactName": {
+          "type": "string"
+        },
+        "contactTitle": {
+          "type": "string"
+        },
+        "contactPhone": {
+          "type": "string"
+        },
+        "contactEmail": {
+          "type": "string"
+        },
+        "contactAddress": {
+          "$ref": "#/definitions/pbAddressPayload"
+        },
+        "accountNumber": {
+          "type": "string"
+        },
+        "bankName": {
+          "type": "string"
+        },
+        "bankBranch": {
+          "type": "string"
         }
       }
     },
@@ -6389,6 +6420,37 @@
         "company": {
           "type": "integer",
           "format": "int32"
+        },
+        "title": {
+          "type": "string"
+        },
+        "licenseDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "contactName": {
+          "type": "string"
+        },
+        "contactTitle": {
+          "type": "string"
+        },
+        "contactPhone": {
+          "type": "string"
+        },
+        "contactEmail": {
+          "type": "string"
+        },
+        "contactAddress": {
+          "$ref": "#/definitions/pbAddressPayload"
+        },
+        "accountNumber": {
+          "type": "string"
+        },
+        "bankName": {
+          "type": "string"
+        },
+        "bankBranch": {
+          "type": "string"
         }
       }
     },
@@ -6437,6 +6499,41 @@
         "birthday": {
           "type": "string",
           "format": "date-time"
+        },
+        "gender": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "title": {
+          "type": "string"
+        },
+        "licenseDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "contactName": {
+          "type": "string"
+        },
+        "contactTitle": {
+          "type": "string"
+        },
+        "contactPhone": {
+          "type": "string"
+        },
+        "contactEmail": {
+          "type": "string"
+        },
+        "contactAddress": {
+          "$ref": "#/definitions/pbAddress"
+        },
+        "accountNumber": {
+          "type": "string"
+        },
+        "bankName": {
+          "type": "string"
+        },
+        "bankBranch": {
+          "type": "string"
         }
       }
     },

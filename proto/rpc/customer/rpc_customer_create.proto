@@ -19,6 +19,16 @@ message CustomerCreateRequest {
   optional int32 gender = 7;
   optional int32 group = 8;
   int32 company = 9;
+  optional string title = 10;
+  optional google.protobuf.Timestamp license_date = 11;
+  optional string contact_name = 12;
+  optional string contact_title = 13;
+  optional string contact_phone = 14;
+  optional string contact_email = 15;
+  optional AddressPayload contact_address = 16;
+  optional string account_number = 17;
+  optional string bank_name = 18;
+  optional string bank_branch = 19;
 }
 
 message CustomerCreateResponse {

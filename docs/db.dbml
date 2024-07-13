@@ -588,10 +588,20 @@ Table customers {
   company serial [not null]
   address serial
   email varchar
+  title varchar [note: "Chức danh"]
   phone varchar(20)
   license varchar(20)
+  license_date timestamp
   birthday timestamptz
   group serial
+  contact_name varchar
+  contact_title varchar
+  contact_phone varchar
+  contact_email varchar
+  contact_address serial
+  account_number varchar
+  bank_name varchar
+  bank_branch varchar
   user_created serial [not null]
   user_updated serial
   updated_at timestamptz
@@ -605,6 +615,7 @@ Table customers {
 
 Ref: customers.company > C.id [delete: cascade]
 Ref: customers.address > address.id [delete: set null]
+Ref: customers.contact_address > address.id [delete: set null]
 Ref: customers.user_created > A.id [delete: cascade]
 Ref: customers.user_updated > A.id [delete: set null]
 Ref: customers.group > customer_group.id [delete: set null]

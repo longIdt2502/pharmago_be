@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/hibiken/asynq"
+	"github.com/longIdt2502/pharmago_be/common"
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/gapi/mapper"
@@ -208,7 +209,7 @@ func (server *ServerGRPC) OrderDetail(ctx context.Context, req *pb.OrderDetailRe
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, status.Errorf(codes.NotFound, "order not exists")
 		}
-		return nil, status.Errorf(codes.Internal, "failed to get order: %e", err)
+		return nil, common.ErrDB(err) // status.Errorf(codes.Internal, "failed to get order: %e", err)
 	}
 
 	orderPb := mapper.OrderDetailMapper(ctx, server.store, orderDb)
