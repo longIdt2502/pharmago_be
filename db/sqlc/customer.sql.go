@@ -348,8 +348,8 @@ WITH revenue AS (
     FROM orders
     GROUP BY customer
 )
-SELECT customer, total_revenue, total_orders, id, full_name, code, company, address, email, phone, license, birthday, user_created, user_updated, updated_at, created_at, "group", title, license_date, contact_name, contact_title, contact_phone, contact_email, contact_address, account_number, bank_name, bank_branch FROM revenue r
-LEFT JOIN customers c ON c.id = r.customer 
+SELECT id, full_name, code, company, address, email, phone, license, birthday, user_created, user_updated, updated_at, created_at, "group", title, license_date, contact_name, contact_title, contact_phone, contact_email, contact_address, account_number, bank_name, bank_branch, customer, total_revenue, total_orders, r.total_revenue, r.total_orders FROM customers c
+LEFT JOIN revenue r ON c.id = r.customer 
 WHERE c.company = $1::int
 AND (
     c.full_name ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
@@ -369,33 +369,35 @@ type ListCustomerParams struct {
 }
 
 type ListCustomerRow struct {
-	Customer       sql.NullInt32  `json:"customer"`
-	TotalRevenue   float64        `json:"total_revenue"`
-	TotalOrders    int32          `json:"total_orders"`
-	ID             sql.NullInt32  `json:"id"`
-	FullName       sql.NullString `json:"full_name"`
-	Code           sql.NullString `json:"code"`
-	Company        sql.NullInt32  `json:"company"`
-	Address        sql.NullInt32  `json:"address"`
-	Email          sql.NullString `json:"email"`
-	Phone          sql.NullString `json:"phone"`
-	License        sql.NullString `json:"license"`
-	Birthday       sql.NullTime   `json:"birthday"`
-	UserCreated    sql.NullInt32  `json:"user_created"`
-	UserUpdated    sql.NullInt32  `json:"user_updated"`
-	UpdatedAt      sql.NullTime   `json:"updated_at"`
-	CreatedAt      sql.NullTime   `json:"created_at"`
-	Group          sql.NullInt32  `json:"group"`
-	Title          sql.NullString `json:"title"`
-	LicenseDate    sql.NullTime   `json:"license_date"`
-	ContactName    sql.NullString `json:"contact_name"`
-	ContactTitle   sql.NullString `json:"contact_title"`
-	ContactPhone   sql.NullString `json:"contact_phone"`
-	ContactEmail   sql.NullString `json:"contact_email"`
-	ContactAddress sql.NullInt32  `json:"contact_address"`
-	AccountNumber  sql.NullString `json:"account_number"`
-	BankName       sql.NullString `json:"bank_name"`
-	BankBranch     sql.NullString `json:"bank_branch"`
+	ID             int32           `json:"id"`
+	FullName       string          `json:"full_name"`
+	Code           string          `json:"code"`
+	Company        int32           `json:"company"`
+	Address        sql.NullInt32   `json:"address"`
+	Email          sql.NullString  `json:"email"`
+	Phone          sql.NullString  `json:"phone"`
+	License        sql.NullString  `json:"license"`
+	Birthday       sql.NullTime    `json:"birthday"`
+	UserCreated    int32           `json:"user_created"`
+	UserUpdated    sql.NullInt32   `json:"user_updated"`
+	UpdatedAt      sql.NullTime    `json:"updated_at"`
+	CreatedAt      time.Time       `json:"created_at"`
+	Group          sql.NullInt32   `json:"group"`
+	Title          sql.NullString  `json:"title"`
+	LicenseDate    sql.NullTime    `json:"license_date"`
+	ContactName    sql.NullString  `json:"contact_name"`
+	ContactTitle   sql.NullString  `json:"contact_title"`
+	ContactPhone   sql.NullString  `json:"contact_phone"`
+	ContactEmail   sql.NullString  `json:"contact_email"`
+	ContactAddress sql.NullInt32   `json:"contact_address"`
+	AccountNumber  sql.NullString  `json:"account_number"`
+	BankName       sql.NullString  `json:"bank_name"`
+	BankBranch     sql.NullString  `json:"bank_branch"`
+	Customer       sql.NullInt32   `json:"customer"`
+	TotalRevenue   sql.NullFloat64 `json:"total_revenue"`
+	TotalOrders    sql.NullInt32   `json:"total_orders"`
+	TotalRevenue_2 sql.NullFloat64 `json:"total_revenue_2"`
+	TotalOrders_2  sql.NullInt32   `json:"total_orders_2"`
 }
 
 func (q *Queries) ListCustomer(ctx context.Context, arg ListCustomerParams) ([]ListCustomerRow, error) {
@@ -413,9 +415,6 @@ func (q *Queries) ListCustomer(ctx context.Context, arg ListCustomerParams) ([]L
 	for rows.Next() {
 		var i ListCustomerRow
 		if err := rows.Scan(
-			&i.Customer,
-			&i.TotalRevenue,
-			&i.TotalOrders,
 			&i.ID,
 			&i.FullName,
 			&i.Code,
@@ -440,6 +439,11 @@ func (q *Queries) ListCustomer(ctx context.Context, arg ListCustomerParams) ([]L
 			&i.AccountNumber,
 			&i.BankName,
 			&i.BankBranch,
+			&i.Customer,
+			&i.TotalRevenue,
+			&i.TotalOrders,
+			&i.TotalRevenue_2,
+			&i.TotalOrders_2,
 		); err != nil {
 			return nil, err
 		}
