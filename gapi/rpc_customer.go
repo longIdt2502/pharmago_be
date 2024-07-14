@@ -46,14 +46,14 @@ func (server *ServerGRPC) CustomerList(ctx context.Context, req *pb.CustomerList
 	var customersPb []*pb.Customer
 	for _, value := range customers {
 		dataPb := &pb.Customer{
-			Id:       value.ID.Int32,
-			Code:     value.Code.String,
-			FullName: value.FullName.String,
-			Company:  value.Company.Int32,
+			Id:       value.ID,
+			Code:     value.Code,
+			FullName: value.FullName,
+			Company:  value.Company,
 			Phone:    value.Phone.String,
 			Email:    &value.Email.String,
-			Revenue:  float32(value.TotalRevenue),
-			Orders:   value.TotalOrders,
+			Revenue:  float32(value.TotalRevenue.Float64),
+			Orders:   value.TotalOrders.Int32,
 		}
 		customersPb = append(customersPb, dataPb)
 	}

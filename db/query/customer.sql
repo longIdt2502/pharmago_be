@@ -11,8 +11,8 @@ WITH revenue AS (
     FROM orders
     GROUP BY customer
 )
-SELECT * FROM revenue r
-LEFT JOIN customers c ON c.id = r.customer 
+SELECT *, r.total_revenue, r.total_orders FROM customers c
+LEFT JOIN revenue r ON c.id = r.customer 
 WHERE c.company = sqlc.arg(company)::int
 AND (
     c.full_name ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
