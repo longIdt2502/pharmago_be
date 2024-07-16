@@ -3298,6 +3298,139 @@
         ]
       }
     },
+    "/promotions/v1/create": {
+      "post": {
+        "summary": "Create Promotions",
+        "operationId": "Pharmago_PromotionCreate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbPromotionCreateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbPromotionCreateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Promotions"
+        ]
+      }
+    },
+    "/promotions/v1/list": {
+      "get": {
+        "summary": "Get Promotions",
+        "operationId": "Pharmago_PromotionCheck",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbPromotionCheckResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "company",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "totalPrice",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "float"
+          },
+          {
+            "name": "products",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "services",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "collectionFormat": "multi"
+          }
+        ],
+        "tags": [
+          "Promotions"
+        ]
+      }
+    },
+    "/promotions/v1/search_by_product_service": {
+      "get": {
+        "summary": "Get Promotions By Product",
+        "operationId": "Pharmago_PromotionByProduct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbPromotionByProductResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "variant",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "service",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Promotions"
+        ]
+      }
+    },
     "/report/v1/customer": {
       "get": {
         "summary": "Customer",
@@ -8359,6 +8492,284 @@
           "type": "string"
         },
         "details": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbPromotion": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/pbSimpleData"
+        },
+        "title": {
+          "type": "string"
+        },
+        "conditionsText": {
+          "type": "string"
+        },
+        "conditionsPointCustomer": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "minValue": {
+          "type": "number",
+          "format": "float"
+        },
+        "isDiscountPercent": {
+          "type": "boolean"
+        },
+        "maxDiscount": {
+          "type": "number",
+          "format": "float"
+        },
+        "timeApply": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "dateStart": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "dateEnd": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "applyMultipleTimes": {
+          "type": "boolean"
+        },
+        "applySimultaneously": {
+          "type": "boolean"
+        },
+        "status": {
+          "type": "boolean"
+        },
+        "userCreated": {
+          "$ref": "#/definitions/pbAccount"
+        },
+        "userUpdated": {
+          "$ref": "#/definitions/pbAccount"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbPromotionItem"
+          }
+        },
+        "company": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "valueDiscount": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "pbPromotionByProductResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "rootErr": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "log": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbPromotion"
+          }
+        }
+      }
+    },
+    "pbPromotionCheckResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "rootErr": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "log": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbPromotion"
+          }
+        }
+      }
+    },
+    "pbPromotionCreateRequest": {
+      "type": "object",
+      "properties": {
+        "company": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "code": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "conditionsText": {
+          "type": "string"
+        },
+        "conditionsPointCustomer": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "minValue": {
+          "type": "number",
+          "format": "float"
+        },
+        "isDiscountPercent": {
+          "type": "boolean"
+        },
+        "maxDiscount": {
+          "type": "number",
+          "format": "float"
+        },
+        "timeApply": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "dateStart": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "dateEnd": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "applyMultipleTimes": {
+          "type": "boolean"
+        },
+        "applySimultaneously": {
+          "type": "boolean"
+        },
+        "status": {
+          "type": "boolean"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbPromotionItemRequest"
+          }
+        },
+        "valueDiscount": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "pbPromotionCreateResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "rootErr": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "log": {
+          "type": "string"
+        },
+        "details": {
+          "type": "string"
+        }
+      }
+    },
+    "pbPromotionItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "minBuy": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "amountGift": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "promotions": {
+          "type": "string"
+        },
+        "variant": {
+          "$ref": "#/definitions/pbVariant"
+        },
+        "service": {
+          "$ref": "#/definitions/pbService"
+        }
+      }
+    },
+    "pbPromotionItemRequest": {
+      "type": "object",
+      "properties": {
+        "minBuy": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "amountGift": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "variant": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "service": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "applicableVariant": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "applicableService": {
           "type": "integer",
           "format": "int32"
         }

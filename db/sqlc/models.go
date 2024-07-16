@@ -551,6 +551,49 @@ type ProductsBank struct {
 	CongTyDk     int32          `json:"cong_ty_dk"`
 }
 
+type Promotion struct {
+	ID                      uuid.UUID       `json:"id"`
+	Code                    string          `json:"code"`
+	Type                    sql.NullString  `json:"type"`
+	Title                   sql.NullString  `json:"title"`
+	ConditionsText          sql.NullString  `json:"conditions_text"`
+	ConditionsPointCustomer sql.NullInt32   `json:"conditions_point_customer"`
+	MinValue                sql.NullFloat64 `json:"min_value"`
+	IsDiscountPercent       bool            `json:"is_discount_percent"`
+	ValueDiscount           float64         `json:"value_discount"`
+	MaxDiscount             sql.NullFloat64 `json:"max_discount"`
+	// null: vố số, int: số lần cụ thể
+	TimeApply           sql.NullInt32 `json:"time_apply"`
+	DateStart           sql.NullTime  `json:"date_start"`
+	DateEnd             sql.NullTime  `json:"date_end"`
+	ApplyMultipleTimes  bool          `json:"apply_multiple_times"`
+	ApplySimultaneously bool          `json:"apply_simultaneously"`
+	// true: áp dụng, false: vô hiệu
+	Status      bool          `json:"status"`
+	Company     sql.NullInt32 `json:"company"`
+	UserCreated int32         `json:"user_created"`
+	UserUpdated sql.NullInt32 `json:"user_updated"`
+	CreatedAt   time.Time     `json:"created_at"`
+	UpdatedAt   sql.NullTime  `json:"updated_at"`
+}
+
+type PromotionItem struct {
+	ID                uuid.UUID     `json:"id"`
+	MinBuy            sql.NullInt32 `json:"min_buy"`
+	AmountGift        sql.NullInt32 `json:"amount_gift"`
+	Promotions        uuid.UUID     `json:"promotions"`
+	ApplicableVariant sql.NullInt32 `json:"applicable_variant"`
+	ApplicableService sql.NullInt32 `json:"applicable_service"`
+	Variant           sql.NullInt32 `json:"variant"`
+	Service           sql.NullInt32 `json:"service"`
+}
+
+type PromotionType struct {
+	Code string `json:"code"`
+	// 1: khuyến mãi giảm giá, 2: khuyến mãi tặng sp
+	Title sql.NullString `json:"title"`
+}
+
 type Province struct {
 	Code                   string        `json:"code"`
 	Name                   string        `json:"name"`
