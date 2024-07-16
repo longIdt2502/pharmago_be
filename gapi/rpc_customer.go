@@ -120,8 +120,6 @@ func (server *ServerGRPC) CustomerList(ctx context.Context, req *pb.CustomerList
 	var customersPb []*pb.Customer
 	for _, value := range customers {
 		conversation := &pb.Conversation{}
-		fmt.Printf("số của khách pmg: %s", formatPhoneNumber(value.Phone.String))
-		fmt.Printf("số của khách oa: %s", responseData.Data.Items[0].GetPhone())
 		for index := range responseData.Data.Items {
 			if responseData.Data.Items[index].GetPhone() == formatPhoneNumber(value.Phone.String) {
 				conversation = &responseData.Data.Items[index]
