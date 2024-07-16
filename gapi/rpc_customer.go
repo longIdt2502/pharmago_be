@@ -1,10 +1,15 @@
 package gapi
 
 import (
+	"bytes"
 	"context"
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"net/http"
+	"strings"
 	"time"
 
 	"github.com/longIdt2502/pharmago_be/common"
@@ -13,10 +18,32 @@ import (
 	"github.com/longIdt2502/pharmago_be/gapi/mapper"
 	"github.com/longIdt2502/pharmago_be/pb"
 	"github.com/longIdt2502/pharmago_be/utils"
+	"github.com/thoas/go-funk"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
+
+type PayloadZaloOAS struct {
+	Page   int      `json:"page"`
+	Limit  int      `json:"limit"`
+	Phones []string `json:"phones"`
+}
+
+type ResponseZaloOAS struct {
+	Data ResponseDataZaloOAS `json:"data"`
+}
+
+type ResponseDataZaloOAS struct {
+	Items []pb.Conversation `json:"items"`
+}
+
+func formatPhoneNumber(phone string) string {
+	if strings.HasPrefix(phone, "0") {
+		return "84" + phone[1:]
+	}
+	return phone
+}
 
 func (server *ServerGRPC) CustomerList(ctx context.Context, req *pb.CustomerListRequest) (*pb.CustomerListResponse, error) {
 	_, err := server.authorizeUser(ctx)
@@ -43,17 +70,73 @@ func (server *ServerGRPC) CustomerList(ctx context.Context, req *pb.CustomerList
 		return nil, status.Errorf(codes.Internal, "failed to get customer: %e", err)
 	}
 
+	client := &http.Client{}
+
+	url := fmt.Sprintf("%s/v1/zalo-oas/6/", server.config.WezoloServerAdress)
+
+	phones := funk.Map(customers, func(value db.ListCustomerRow) string {
+		return formatPhoneNumber(value.Phone.String)
+	})
+
+	payload := PayloadZaloOAS{
+		Page:   1,
+		Limit:  10,
+		Phones: phones.([]string),
+	}
+	jsonData, err := json.Marshal(payload)
+	if err != nil {
+		panic(err)
+	}
+
+	reqHttp, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, fmt.Sprintln("Error creating HTTP request:", err))
+	}
+
+	// Thiết lập các header
+	reqHttp.Header.Set("Content-Type", "application/json")
+	reqHttp.Header.Set("Authorization", "Token 1e21c13f941d67507d9d1099150866b6759d9336")
+
+	// Gửi request và nhận response
+	resp, err := client.Do(reqHttp)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, fmt.Sprintln("Error sending HTTP request:", err))
+	}
+
+	// Đảm bảo rằng response body sẽ được đóng sau khi hoàn tất
+	defer resp.Body.Close()
+
+	// Đọc response body
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, fmt.Sprintln("Error reading response body:", err))
+	}
+
+	var responseData ResponseZaloOAS
+	if err := json.Unmarshal(body, &responseData); err != nil {
+		return nil, status.Errorf(codes.Internal, fmt.Sprintln("Lỗi giải mã JSON:", err))
+	}
+
 	var customersPb []*pb.Customer
 	for _, value := range customers {
+		conversation := &pb.Conversation{}
+		fmt.Printf("số của khách pmg: %s", formatPhoneNumber(value.Phone.String))
+		fmt.Printf("số của khách oa: %s", responseData.Data.Items[0].GetPhone())
+		for index := range responseData.Data.Items {
+			if responseData.Data.Items[index].GetPhone() == formatPhoneNumber(value.Phone.String) {
+				conversation = &responseData.Data.Items[index]
+			}
+		}
 		dataPb := &pb.Customer{
-			Id:       value.ID,
-			Code:     value.Code,
-			FullName: value.FullName,
-			Company:  value.Company,
-			Phone:    value.Phone.String,
-			Email:    &value.Email.String,
-			Revenue:  float32(value.TotalRevenue.Float64),
-			Orders:   value.TotalOrders.Int32,
+			Id:           value.ID,
+			Code:         value.Code,
+			FullName:     value.FullName,
+			Company:      value.Company,
+			Phone:        value.Phone.String,
+			Email:        &value.Email.String,
+			Revenue:      float32(value.TotalRevenue.Float64),
+			Orders:       value.TotalOrders.Int32,
+			Conversation: conversation,
 		}
 		customersPb = append(customersPb, dataPb)
 	}
