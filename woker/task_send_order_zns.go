@@ -21,6 +21,7 @@ type PayloadZNS struct {
 	Data  PayloadZNSData `json:"data"`
 	Phone string         `json:"phone"`
 	Mode  string         `json:"mode"`
+	Type  string         `json:"type"`
 }
 
 type PayloadZNSData struct {
@@ -62,8 +63,11 @@ func (processor *RedisTaskProcessor) ProcessorTaskSendOrderZns(ctx context.Conte
 	jsonStr, _ := json.Marshal(payload)
 
 	client := &http.Client{}
-	url := "https://core.wezolo.com/v1/zns/confirm-order/"
+	url := "https://core.wezolo.com/v1/zns/send/"
 	reqHttp, _ := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
+	reqHttp.Header.Set("Authorization", "Token 1e21c13f941d67507d9d1099150866b6759d9336")
+	reqHttp.Header.Set("X-Application-Id", "4367014412197839377")
+	reqHttp.Header.Set("X-Secret-Key", "6Sr1vfB1Jgh7ll7QkUmU")
 
 	resp, err := client.Do(reqHttp)
 	if err != nil {

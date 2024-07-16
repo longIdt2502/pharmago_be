@@ -5957,6 +5957,9 @@
         },
         "lastMessage": {
           "$ref": "#/definitions/pbMessage"
+        },
+        "phone": {
+          "type": "string"
         }
       }
     },
@@ -7563,6 +7566,9 @@
           "type": "string"
         },
         "zaloImg": {
+          "type": "string"
+        },
+        "message": {
           "type": "string"
         }
       }

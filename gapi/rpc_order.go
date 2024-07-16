@@ -54,6 +54,7 @@ func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRe
 		},
 		Phone: customer.Phone.String,
 		Mode:  "production",
+		Type:  "confirm_order",
 	}
 
 	opts := []asynq.Option{

@@ -15,6 +15,7 @@ message Conversation {
   string zalo_img = 3;
   string user_id = 4;
   optional Message last_message = 5;
+  optional string phone = 6;
 }
 
 message Message {
@@ -26,4 +27,5 @@ message Message {
     string oa_image = 6;
     string zalo_name = 7;
     string zalo_img = 8;
+    string message = 9;
   }
