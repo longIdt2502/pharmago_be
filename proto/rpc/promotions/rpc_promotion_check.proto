@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+import "entities/promotions.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message PromotionCheckRequest {
+  int32 company = 1;
+  float total_price = 2;
+  repeated int32 products = 3;
+  repeated int32 services = 4;
+}
+
+message PromotionCheckResponse {
+  int32 code = 1;
+  string root_err = 2;
+  string message = 3;
+  string log = 4;
+  repeated Promotion details = 5;
+}

@@ -53,6 +53,9 @@ const (
 	Pharmago_CreateProduct_FullMethodName            = "/pb.Pharmago/CreateProduct"
 	Pharmago_ListProduct_FullMethodName              = "/pb.Pharmago/ListProduct"
 	Pharmago_DetailProduct_FullMethodName            = "/pb.Pharmago/DetailProduct"
+	Pharmago_PromotionByProduct_FullMethodName       = "/pb.Pharmago/PromotionByProduct"
+	Pharmago_PromotionCheck_FullMethodName           = "/pb.Pharmago/PromotionCheck"
+	Pharmago_PromotionCreate_FullMethodName          = "/pb.Pharmago/PromotionCreate"
 	Pharmago_ListVariant_FullMethodName              = "/pb.Pharmago/ListVariant"
 	Pharmago_ScanVariant_FullMethodName              = "/pb.Pharmago/ScanVariant"
 	Pharmago_GetPriceList_FullMethodName             = "/pb.Pharmago/GetPriceList"
@@ -182,6 +185,10 @@ type PharmagoClient interface {
 	CreateProduct(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*CreateProductResponse, error)
 	ListProduct(ctx context.Context, in *ListProductRequest, opts ...grpc.CallOption) (*ListProductResponse, error)
 	DetailProduct(ctx context.Context, in *DetailProductRequest, opts ...grpc.CallOption) (*DetailProductResponse, error)
+	// ==================== PROMOTIONS ========================
+	PromotionByProduct(ctx context.Context, in *PromotionByProductRequest, opts ...grpc.CallOption) (*PromotionByProductResponse, error)
+	PromotionCheck(ctx context.Context, in *PromotionCheckRequest, opts ...grpc.CallOption) (*PromotionCheckResponse, error)
+	PromotionCreate(ctx context.Context, in *PromotionCreateRequest, opts ...grpc.CallOption) (*PromotionCreateResponse, error)
 	// TODO -------- VARIANT --------
 	ListVariant(ctx context.Context, in *ListVariantRequest, opts ...grpc.CallOption) (*ListVariantResponse, error)
 	ScanVariant(ctx context.Context, opts ...grpc.CallOption) (Pharmago_ScanVariantClient, error)
@@ -591,6 +598,33 @@ func (c *pharmagoClient) ListProduct(ctx context.Context, in *ListProductRequest
 func (c *pharmagoClient) DetailProduct(ctx context.Context, in *DetailProductRequest, opts ...grpc.CallOption) (*DetailProductResponse, error) {
 	out := new(DetailProductResponse)
 	err := c.cc.Invoke(ctx, Pharmago_DetailProduct_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) PromotionByProduct(ctx context.Context, in *PromotionByProductRequest, opts ...grpc.CallOption) (*PromotionByProductResponse, error) {
+	out := new(PromotionByProductResponse)
+	err := c.cc.Invoke(ctx, Pharmago_PromotionByProduct_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) PromotionCheck(ctx context.Context, in *PromotionCheckRequest, opts ...grpc.CallOption) (*PromotionCheckResponse, error) {
+	out := new(PromotionCheckResponse)
+	err := c.cc.Invoke(ctx, Pharmago_PromotionCheck_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) PromotionCreate(ctx context.Context, in *PromotionCreateRequest, opts ...grpc.CallOption) (*PromotionCreateResponse, error) {
+	out := new(PromotionCreateResponse)
+	err := c.cc.Invoke(ctx, Pharmago_PromotionCreate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1402,6 +1436,10 @@ type PharmagoServer interface {
 	CreateProduct(context.Context, *CreateProductRequest) (*CreateProductResponse, error)
 	ListProduct(context.Context, *ListProductRequest) (*ListProductResponse, error)
 	DetailProduct(context.Context, *DetailProductRequest) (*DetailProductResponse, error)
+	// ==================== PROMOTIONS ========================
+	PromotionByProduct(context.Context, *PromotionByProductRequest) (*PromotionByProductResponse, error)
+	PromotionCheck(context.Context, *PromotionCheckRequest) (*PromotionCheckResponse, error)
+	PromotionCreate(context.Context, *PromotionCreateRequest) (*PromotionCreateResponse, error)
 	// TODO -------- VARIANT --------
 	ListVariant(context.Context, *ListVariantRequest) (*ListVariantResponse, error)
 	ScanVariant(Pharmago_ScanVariantServer) error
@@ -1609,6 +1647,15 @@ func (UnimplementedPharmagoServer) ListProduct(context.Context, *ListProductRequ
 }
 func (UnimplementedPharmagoServer) DetailProduct(context.Context, *DetailProductRequest) (*DetailProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DetailProduct not implemented")
+}
+func (UnimplementedPharmagoServer) PromotionByProduct(context.Context, *PromotionByProductRequest) (*PromotionByProductResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PromotionByProduct not implemented")
+}
+func (UnimplementedPharmagoServer) PromotionCheck(context.Context, *PromotionCheckRequest) (*PromotionCheckResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PromotionCheck not implemented")
+}
+func (UnimplementedPharmagoServer) PromotionCreate(context.Context, *PromotionCreateRequest) (*PromotionCreateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PromotionCreate not implemented")
 }
 func (UnimplementedPharmagoServer) ListVariant(context.Context, *ListVariantRequest) (*ListVariantResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListVariant not implemented")
@@ -2477,6 +2524,60 @@ func _Pharmago_DetailProduct_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PharmagoServer).DetailProduct(ctx, req.(*DetailProductRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_PromotionByProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PromotionByProductRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).PromotionByProduct(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_PromotionByProduct_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).PromotionByProduct(ctx, req.(*PromotionByProductRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_PromotionCheck_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PromotionCheckRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).PromotionCheck(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_PromotionCheck_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).PromotionCheck(ctx, req.(*PromotionCheckRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_PromotionCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PromotionCreateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).PromotionCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_PromotionCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).PromotionCreate(ctx, req.(*PromotionCreateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -4107,6 +4208,18 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DetailProduct",
 			Handler:    _Pharmago_DetailProduct_Handler,
+		},
+		{
+			MethodName: "PromotionByProduct",
+			Handler:    _Pharmago_PromotionByProduct_Handler,
+		},
+		{
+			MethodName: "PromotionCheck",
+			Handler:    _Pharmago_PromotionCheck_Handler,
+		},
+		{
+			MethodName: "PromotionCreate",
+			Handler:    _Pharmago_PromotionCreate_Handler,
 		},
 		{
 			MethodName: "ListVariant",

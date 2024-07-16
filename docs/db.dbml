@@ -503,6 +503,57 @@ Table variant_media {
 Ref: variant_media.variant > V.id [delete: cascade]
 Ref: variant_media.media > M.id [delete: cascade]
 
+Table promotions {
+  id uuid [pk]
+  code varchar [unique, not null]
+  type varchar
+  title varchar
+  conditions_text varchar
+  conditions_point_customer int
+  min_value float [default: 0]
+  is_discount_percent bool [default: false, not null] 
+  value_discount float [default: 0, not null]
+  max_discount float [default: 0]
+  time_apply int [note: "null: vố số, int: số lần cụ thể"]
+  date_start timestamp
+  date_end timestamp
+  apply_multiple_times bool [default: false, not null]
+  apply_simultaneously bool [default: false, not null]
+  status bool [note: "true: áp dụng, false: vô hiệu", not null]
+  company serial
+  user_created serial [not null]
+  user_updated serial
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamptz
+}
+
+Ref: promotions.user_created > A.id [delete: cascade]
+Ref: promotions.company > C.id [delete: set null]
+Ref: promotions.user_updated > A.id [delete: set null]
+Ref: promotions.type > promotion_type.code [delete: set null]
+
+Table promotion_item {
+  id uuid [pk]
+  min_buy int [default: 0]
+  amount_gift int [default: 0]
+  promotions uuid [not null]
+  applicable_variant serial
+  applicable_service serial
+  variant serial
+  service serial
+}
+
+Ref: promotion_item.promotions > promotions.id [delete: cascade]
+Ref: promotion_item.variant > variants.id [delete: set null]
+Ref: promotion_item.service > services.id [delete: set null]
+Ref: promotion_item.applicable_variant > variants.id [delete: set null]
+Ref: promotion_item.applicable_service > services.id [delete: set null]
+
+Table promotion_type {
+  code varchar [pk]
+  title varchar [note: "1: khuyến mãi giảm giá, 2: khuyến mãi tặng sp"]
+}
+
 Table orders as O {
   id serial [pk]
   code varchar(255) [not null, unique]

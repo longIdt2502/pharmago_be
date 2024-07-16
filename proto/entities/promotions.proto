@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+import "entities/account.proto";
+import "entities/simple_data.proto";
+import "entities/variant.proto";
+import "entities/service.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message Promotion {
+  string id = 1;
+  string code = 2;
+  SimpleData type = 3;
+  string title = 4;
+  string conditions_text = 5;
+  int32 conditions_point_customer = 6;
+  float min_value = 7;
+  bool is_discount_percent = 8;
+  float max_discount = 9;
+  optional int32 time_apply = 10;
+  google.protobuf.Timestamp date_start = 11;
+  google.protobuf.Timestamp date_end = 12;
+  bool apply_multiple_times = 13;
+  bool apply_simultaneously = 14;
+  bool status = 15;
+  Account user_created = 16;
+  optional Account user_updated = 17;
+  google.protobuf.Timestamp created_at = 18;
+  google.protobuf.Timestamp updated_at = 19;
+  repeated PromotionItem items = 20;
+  int32 company = 21;
+  float value_discount = 22;
+}
+
+message PromotionItem {
+  string id = 1;
+  int32 min_buy = 2;
+  int32 amount_gift = 3;
+  string promotions = 4;
+  optional Variant variant = 5;
+  optional Service service = 6;
+}
