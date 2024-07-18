@@ -1,11 +1,16 @@
 -- name: GetListService :many
-SELECT * FROM services
-WHERE company = sqlc.narg(company)::int
-AND (
-    title ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
-    code ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%'
+WITH quantity_use AS (
+    SELECT "service", COUNT("service") as quantity_use FROM service_order_item
+    GROUP BY "service"
 )
-ORDER BY -id
+SELECT * FROM services s
+LEFT JOIN quantity_use qu ON s.id = qu.service
+WHERE s.company = sqlc.narg(company)::int
+AND (
+    s.title ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
+    s.code ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%'
+)
+ORDER BY -s.id
 LIMIT COALESCE(sqlc.narg('limit')::int, 10)
 OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10);
 

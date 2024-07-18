@@ -969,6 +969,7 @@ Table appointment_schedules as AS {
   diagnostic varchar [note: "Chuẩn đoán bệnh"]
   qr_code_url varchar
   is_done bool [note: "true: Đã xong, false: Chưa diễn ra", not null]
+  meeting_at timestamp [not null]
   user_created serial [not null]
   user_updated serial
   created_at timestamp [not null, default: `now()`]

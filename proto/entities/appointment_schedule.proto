@@ -11,42 +11,42 @@ import "entities/service.proto";
 import "entities/order.proto";
 import "entities/variant.proto";
 
-// Message cho bảng appointment_schedules
+
+/// ============== ENTITIES ============
 message AppointmentSchedule {
   int32 id = 1;
   string uuid = 2;
   string code = 3;
   int32 customer_id = 4;
-  Account customer = 5;
+  optional Account customer = 5;
   int32 company = 6;
   int32 doctor_id = 7;
   Account doctor = 8;
-  string symptoms = 9;
-  string diagnostic = 10;
-  string qr_code_url = 11;
+  optional string symptoms = 9;
+  optional string diagnostic = 10;
+  optional string qr_code_url = 11;
   bool is_done = 12;
   int32 user_created_id = 13;
   Account user_created = 14;
-  int32 user_updated_id = 15;
-  Account user_updated = 16;
-  google.protobuf.Timestamp created_at = 17;
-  google.protobuf.Timestamp updated_at = 18;
-  repeated AppointmentScheduleService services = 19;
-  repeated AppointmentScheduleUrl urls = 20;
-  repeated AppointmentScheduleDrug drugs = 21;
+  optional int32 user_updated_id = 15;
+  optional Account user_updated = 16;
+  google.protobuf.Timestamp meeting_at = 17;
+  google.protobuf.Timestamp created_at = 18;
+  optional google.protobuf.Timestamp updated_at = 19;
+  repeated AppointmentScheduleService services = 20;
+  repeated AppointmentScheduleUrl urls = 21;
+  repeated AppointmentScheduleDrug drugs = 22;
 }
 
-// Message cho bảng appointment_schedule_service
 message AppointmentScheduleService {
   int32 id = 1;
   string as_uuid = 2;
   Service service = 3;
   int32 service_id = 4;
-  Order order_service = 5;
-  int32 order_id = 6;
+  optional Order order_service = 5;
+  optional int32 order_id = 6;
 }
 
-// Message cho bảng appointment_schedule_url
 message AppointmentScheduleUrl {
   int32 id = 1;
   string as_uuid = 2;
@@ -54,27 +54,40 @@ message AppointmentScheduleUrl {
   string name_doc = 4;
 }
 
-// Message cho bảng appointment_schedule_drug
 message AppointmentScheduleDrug {
   int32 id = 1;
   string as_uuid = 2;
   int32 variant_id = 3;
   Variant variant = 4;
-  string lieu_dung = 5;
+  optional string lieu_dung = 5;
   int32 quantity = 6;
 }
 
-// Example of a request to create an appointment schedule
-message CreateAppointmentScheduleRequest {
-  AppointmentSchedule appointment_schedule = 1;
-}
-
-// Example of a response containing an appointment schedule
+// ===================== REQ/RES ========================
 message AppointmentScheduleResponse {
-  AppointmentSchedule appointment_schedule = 1;
+  int32 code = 1;
+  string message = 2;
+  string message_trans = 3;
+  string log = 4;
+  AppointmentSchedule details = 5;
 }
 
-// Example of a list response containing multiple appointment schedules
-message ListAppointmentSchedulesResponse {
-  repeated AppointmentSchedule appointment_schedules = 1;
+message AppointmentScheduleListRequest {
+  int32 company = 1;
+  optional string search = 2;
+  optional int32 customer = 3;
+  optional int32 doctor = 4;
+  optional google.protobuf.Timestamp time_start = 5;
+  optional google.protobuf.Timestamp time_end = 6;
+  optional int32 page = 7;
+  optional int32 limit = 8;
 }
+
+message AppointmentScheduleListResponse {
+  int32 code = 1;
+  string message = 2;
+  string message_trans = 3;
+  string log = 4;
+  repeated AppointmentSchedule details = 5;
+}
+

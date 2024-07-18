@@ -123,6 +123,8 @@ import "rpc/notification/rpc_notification_list.proto";
 import "rpc/notification/rpc_notification_detail.proto";
 import "rpc/notification/rpc_seen_all_noti.proto";
 
+import "entities/appointment_schedule.proto";
+
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
@@ -1343,4 +1345,46 @@ service Pharmago {
       tags: "Notification";
     };
   };
+
+  // ================== AppointmentSchedule ===================
+  rpc ScheduleCreate (AppointmentSchedule) returns (AppointmentScheduleResponse) {
+    option (google.api.http) = {
+      post: "/appointment_schedule/v1/create"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create Appoitment Schedule";
+      tags: "Appoitment Schedule";
+    };
+  };
+
+  rpc ScheduleList (AppointmentScheduleListRequest) returns (AppointmentScheduleListResponse) {
+    option (google.api.http) = {
+      get: "/appointment_schedule/v1/list"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List Appoitment Schedule";
+      tags: "Appoitment Schedule";
+    };
+  };
+
+  rpc ScheduleDetail (AppointmentSchedule) returns (AppointmentScheduleResponse) {
+    option (google.api.http) = {
+      get: "/appointment_schedule/v1/detail/{uuid}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Detail Appoitment Schedule";
+      tags: "Appoitment Schedule";
+    };
+  };
+
+  // rpc ScheduleUpdate (AppointmentSchedule) returns (AppointmentScheduleResponse) {
+  //   option (google.api.http) = {
+  //     get: "/appointment_schedule/v1/detail/{id}"
+  //   };
+  //   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+  //     summary: "Update Appoitment Schedule";
+  //     tags: "Appoitment Schedule";
+  //   };
+  // };
 }

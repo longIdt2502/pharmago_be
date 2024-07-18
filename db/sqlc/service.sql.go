@@ -166,13 +166,18 @@ func (q *Queries) DetailService(ctx context.Context, id int32) (Service, error) 
 }
 
 const getListService = `-- name: GetListService :many
-SELECT id, image, code, title, entity, staff, frequency, reminder_time, unit, price, description, company, user_created, user_updated, created_at, updated_at FROM services
-WHERE company = $1::int
-AND (
-    title ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
-    code ILIKE '%' || COALESCE($2::varchar, '') || '%'
+WITH quantity_use AS (
+    SELECT "service", COUNT("service") as quantity_use FROM service_order_item
+    GROUP BY "service"
 )
-ORDER BY -id
+SELECT id, image, code, title, entity, staff, frequency, reminder_time, unit, price, description, company, user_created, user_updated, created_at, updated_at, service, quantity_use FROM services s
+LEFT JOIN quantity_use qu ON s.id = qu.service
+WHERE s.company = $1::int
+AND (
+    s.title ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
+    s.code ILIKE '%' || COALESCE($2::varchar, '') || '%'
+)
+ORDER BY -s.id
 LIMIT COALESCE($4::int, 10)
 OFFSET (COALESCE($3::int, 1) - 1) * COALESCE($4::int, 10)
 `
@@ -184,7 +189,28 @@ type GetListServiceParams struct {
 	Limit   sql.NullInt32  `json:"limit"`
 }
 
-func (q *Queries) GetListService(ctx context.Context, arg GetListServiceParams) ([]Service, error) {
+type GetListServiceRow struct {
+	ID           int32          `json:"id"`
+	Image        sql.NullInt32  `json:"image"`
+	Code         string         `json:"code"`
+	Title        string         `json:"title"`
+	Entity       sql.NullString `json:"entity"`
+	Staff        int32          `json:"staff"`
+	Frequency    sql.NullString `json:"frequency"`
+	ReminderTime sql.NullInt32  `json:"reminder_time"`
+	Unit         string         `json:"unit"`
+	Price        float64        `json:"price"`
+	Description  sql.NullString `json:"description"`
+	Company      int32          `json:"company"`
+	UserCreated  int32          `json:"user_created"`
+	UserUpdated  sql.NullInt32  `json:"user_updated"`
+	CreatedAt    time.Time      `json:"created_at"`
+	UpdatedAt    sql.NullTime   `json:"updated_at"`
+	Service      sql.NullInt32  `json:"service"`
+	QuantityUse  sql.NullInt64  `json:"quantity_use"`
+}
+
+func (q *Queries) GetListService(ctx context.Context, arg GetListServiceParams) ([]GetListServiceRow, error) {
 	rows, err := q.db.QueryContext(ctx, getListService,
 		arg.Company,
 		arg.Search,
@@ -195,9 +221,9 @@ func (q *Queries) GetListService(ctx context.Context, arg GetListServiceParams) 
 		return nil, err
 	}
 	defer rows.Close()
-	items := []Service{}
+	items := []GetListServiceRow{}
 	for rows.Next() {
-		var i Service
+		var i GetListServiceRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.Image,
@@ -215,6 +241,8 @@ func (q *Queries) GetListService(ctx context.Context, arg GetListServiceParams) 
 			&i.UserUpdated,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.Service,
+			&i.QuantityUse,
 		); err != nil {
 			return nil, err
 		}
