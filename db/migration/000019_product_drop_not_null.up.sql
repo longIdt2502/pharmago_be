@@ -18,6 +18,10 @@ ALTER TABLE "products" ALTER COLUMN "cong_ty_dk" DROP NOT NULL;
 ALTER TABLE "products" ALTER COLUMN "user_updated" DROP NOT NULL;
 ALTER TABLE "products" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" ("id") ON DELETE SET NULL;
 
+ALTER TABLE "products" ALTER COLUMN "dong_goi" TYPE TEXT;
+ALTER TABLE "products" ALTER COLUMN "nong_do" TYPE TEXT;
+ALTER TABLE "products" ALTER COLUMN "ta_duoc" TYPE TEXT;
+
 ALTER TABLE "variants" ALTER COLUMN "barcode" DROP NOT NULL;
 ALTER TABLE "variants" ALTER COLUMN "decision_number" DROP NOT NULL;
 ALTER TABLE "variants" ALTER COLUMN "register_number" DROP NOT NULL;

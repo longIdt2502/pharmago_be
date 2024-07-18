@@ -910,6 +910,7 @@ ALTER TABLE
 ADD
     FOREIGN KEY ("company") REFERENCES "companies" ("id") ON DELETE CASCADE;
 
+ALTER TABLE "customers" ALTER COLUMN "address" DROP NOT NULL;
 ALTER TABLE
     "customers"
 ADD

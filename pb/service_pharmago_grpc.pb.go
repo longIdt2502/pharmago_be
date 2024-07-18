@@ -138,6 +138,9 @@ const (
 	Pharmago_ListNotification_FullMethodName         = "/pb.Pharmago/ListNotification"
 	Pharmago_DetailNotification_FullMethodName       = "/pb.Pharmago/DetailNotification"
 	Pharmago_SeenAllNoti_FullMethodName              = "/pb.Pharmago/SeenAllNoti"
+	Pharmago_ScheduleCreate_FullMethodName           = "/pb.Pharmago/ScheduleCreate"
+	Pharmago_ScheduleList_FullMethodName             = "/pb.Pharmago/ScheduleList"
+	Pharmago_ScheduleDetail_FullMethodName           = "/pb.Pharmago/ScheduleDetail"
 )
 
 // PharmagoClient is the client API for Pharmago service.
@@ -288,6 +291,10 @@ type PharmagoClient interface {
 	ListNotification(ctx context.Context, in *ListNotificationRequest, opts ...grpc.CallOption) (*ListNotificationResponse, error)
 	DetailNotification(ctx context.Context, in *DetailNotificationRequest, opts ...grpc.CallOption) (*DetailNotificationResponse, error)
 	SeenAllNoti(ctx context.Context, in *SeenAllNotiRequest, opts ...grpc.CallOption) (*SeenAllNotiResponse, error)
+	// ================== AppointmentSchedule ===================
+	ScheduleCreate(ctx context.Context, in *AppointmentSchedule, opts ...grpc.CallOption) (*AppointmentScheduleResponse, error)
+	ScheduleList(ctx context.Context, in *AppointmentScheduleListRequest, opts ...grpc.CallOption) (*AppointmentScheduleListResponse, error)
+	ScheduleDetail(ctx context.Context, in *AppointmentSchedule, opts ...grpc.CallOption) (*AppointmentScheduleResponse, error)
 }
 
 type pharmagoClient struct {
@@ -1391,6 +1398,33 @@ func (c *pharmagoClient) SeenAllNoti(ctx context.Context, in *SeenAllNotiRequest
 	return out, nil
 }
 
+func (c *pharmagoClient) ScheduleCreate(ctx context.Context, in *AppointmentSchedule, opts ...grpc.CallOption) (*AppointmentScheduleResponse, error) {
+	out := new(AppointmentScheduleResponse)
+	err := c.cc.Invoke(ctx, Pharmago_ScheduleCreate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) ScheduleList(ctx context.Context, in *AppointmentScheduleListRequest, opts ...grpc.CallOption) (*AppointmentScheduleListResponse, error) {
+	out := new(AppointmentScheduleListResponse)
+	err := c.cc.Invoke(ctx, Pharmago_ScheduleList_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) ScheduleDetail(ctx context.Context, in *AppointmentSchedule, opts ...grpc.CallOption) (*AppointmentScheduleResponse, error) {
+	out := new(AppointmentScheduleResponse)
+	err := c.cc.Invoke(ctx, Pharmago_ScheduleDetail_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PharmagoServer is the server API for Pharmago service.
 // All implementations must embed UnimplementedPharmagoServer
 // for forward compatibility
@@ -1539,6 +1573,10 @@ type PharmagoServer interface {
 	ListNotification(context.Context, *ListNotificationRequest) (*ListNotificationResponse, error)
 	DetailNotification(context.Context, *DetailNotificationRequest) (*DetailNotificationResponse, error)
 	SeenAllNoti(context.Context, *SeenAllNotiRequest) (*SeenAllNotiResponse, error)
+	// ================== AppointmentSchedule ===================
+	ScheduleCreate(context.Context, *AppointmentSchedule) (*AppointmentScheduleResponse, error)
+	ScheduleList(context.Context, *AppointmentScheduleListRequest) (*AppointmentScheduleListResponse, error)
+	ScheduleDetail(context.Context, *AppointmentSchedule) (*AppointmentScheduleResponse, error)
 	mustEmbedUnimplementedPharmagoServer()
 }
 
@@ -1902,6 +1940,15 @@ func (UnimplementedPharmagoServer) DetailNotification(context.Context, *DetailNo
 }
 func (UnimplementedPharmagoServer) SeenAllNoti(context.Context, *SeenAllNotiRequest) (*SeenAllNotiResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SeenAllNoti not implemented")
+}
+func (UnimplementedPharmagoServer) ScheduleCreate(context.Context, *AppointmentSchedule) (*AppointmentScheduleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ScheduleCreate not implemented")
+}
+func (UnimplementedPharmagoServer) ScheduleList(context.Context, *AppointmentScheduleListRequest) (*AppointmentScheduleListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ScheduleList not implemented")
+}
+func (UnimplementedPharmagoServer) ScheduleDetail(context.Context, *AppointmentSchedule) (*AppointmentScheduleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ScheduleDetail not implemented")
 }
 func (UnimplementedPharmagoServer) mustEmbedUnimplementedPharmagoServer() {}
 
@@ -4066,6 +4113,60 @@ func _Pharmago_SeenAllNoti_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Pharmago_ScheduleCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AppointmentSchedule)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ScheduleCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_ScheduleCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ScheduleCreate(ctx, req.(*AppointmentSchedule))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_ScheduleList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AppointmentScheduleListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ScheduleList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_ScheduleList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ScheduleList(ctx, req.(*AppointmentScheduleListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_ScheduleDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AppointmentSchedule)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ScheduleDetail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_ScheduleDetail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ScheduleDetail(ctx, req.(*AppointmentSchedule))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Pharmago_ServiceDesc is the grpc.ServiceDesc for Pharmago service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -4544,6 +4645,18 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SeenAllNoti",
 			Handler:    _Pharmago_SeenAllNoti_Handler,
+		},
+		{
+			MethodName: "ScheduleCreate",
+			Handler:    _Pharmago_ScheduleCreate_Handler,
+		},
+		{
+			MethodName: "ScheduleList",
+			Handler:    _Pharmago_ScheduleList_Handler,
+		},
+		{
+			MethodName: "ScheduleDetail",
+			Handler:    _Pharmago_ScheduleDetail_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

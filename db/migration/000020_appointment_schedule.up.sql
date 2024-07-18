@@ -9,6 +9,7 @@ CREATE TABLE "appointment_schedules" (
   "diagnostic" varchar,
   "qr_code_url" varchar,
   "is_done" bool NOT NULL,
+  "meeting_at" timestamp NOT NULL,
   "user_created" serial NOT NULL,
   "user_updated" serial,
   "created_at" timestamp NOT NULL DEFAULT (now()),

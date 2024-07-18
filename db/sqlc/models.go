@@ -143,6 +143,7 @@ type AppointmentSchedule struct {
 	QrCodeUrl  sql.NullString `json:"qr_code_url"`
 	// true: Đã xong, false: Chưa diễn ra
 	IsDone      bool          `json:"is_done"`
+	MeetingAt   time.Time     `json:"meeting_at"`
 	UserCreated int32         `json:"user_created"`
 	UserUpdated sql.NullInt32 `json:"user_updated"`
 	CreatedAt   time.Time     `json:"created_at"`

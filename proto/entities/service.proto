@@ -20,4 +20,5 @@ message Service {
     int32 company = 10;
     repeated Variant variants = 11;
     optional int32 reminder_time = 12;
+    int32 used = 13;
 }

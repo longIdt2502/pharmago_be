@@ -41,7 +41,7 @@ func (server *ServerGRPC) ServiceList(ctx context.Context, req *pb.ServiceListRe
 
 	var servicePb []*pb.Service
 	for _, item := range serviceDb {
-		servicePb = append(servicePb, mapper.ServiceMapper(item))
+		servicePb = append(servicePb, mapper.ServiceGetListServiceRowMapper(item))
 	}
 
 	return &pb.ServiceListResponse{

@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml-lang.org)
 -- Database: PostgreSQL
--- Generated at: 2024-07-17T09:21:23.823Z
+-- Generated at: 2024-07-18T07:38:56.160Z
 
 CREATE TYPE "gender" AS ENUM (
   'nam',
@@ -720,6 +720,7 @@ CREATE TABLE "appointment_schedules" (
   "diagnostic" varchar,
   "qr_code_url" varchar,
   "is_done" bool NOT NULL,
+  "meeting_at" timestamp NOT NULL,
   "user_created" serial NOT NULL,
   "user_updated" serial,
   "created_at" timestamp NOT NULL DEFAULT (now()),
