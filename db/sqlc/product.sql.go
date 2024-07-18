@@ -68,23 +68,23 @@ type CreateProductParams struct {
 	Unit            int32          `json:"unit"`
 	Taduoc          sql.NullString `json:"taduoc"`
 	Nongdo          sql.NullString `json:"nongdo"`
-	Lieudung        string         `json:"lieudung"`
-	Chidinh         string         `json:"chidinh"`
+	Lieudung        sql.NullString `json:"lieudung"`
+	Chidinh         sql.NullString `json:"chidinh"`
 	Chongchidinh    sql.NullString `json:"chongchidinh"`
-	Congdung        string         `json:"congdung"`
-	Tacdungphu      string         `json:"tacdungphu"`
-	Thantrong       string         `json:"thantrong"`
+	Congdung        sql.NullString `json:"congdung"`
+	Tacdungphu      sql.NullString `json:"tacdungphu"`
+	Thantrong       sql.NullString `json:"thantrong"`
 	Tuongtac        sql.NullString `json:"tuongtac"`
-	Baoquan         string         `json:"baoquan"`
-	Donggoi         string         `json:"donggoi"`
-	Congtysx        int32          `json:"congtysx"`
-	Congtydk        int32          `json:"congtydk"`
+	Baoquan         sql.NullString `json:"baoquan"`
+	Donggoi         sql.NullString `json:"donggoi"`
+	Congtysx        sql.NullInt32  `json:"congtysx"`
+	Congtydk        sql.NullInt32  `json:"congtydk"`
 	Company         int32          `json:"company"`
 	UserCreated     int32          `json:"user_created"`
 	UserUpdated     int32          `json:"user_updated"`
-	Phanloai        string         `json:"phanloai"`
-	Dangbaoche      string         `json:"dangbaoche"`
-	Tieuchuansx     string         `json:"tieuchuansx"`
+	Phanloai        sql.NullString `json:"phanloai"`
+	Dangbaoche      sql.NullString `json:"dangbaoche"`
+	Tieuchuansx     sql.NullString `json:"tieuchuansx"`
 }
 
 func (q *Queries) CreateProduct(ctx context.Context, arg CreateProductParams) (Product, error) {
@@ -257,25 +257,27 @@ func (q *Queries) CreateUnitChange(ctx context.Context, arg CreateUnitChangePara
 
 const createVariant = `-- name: CreateVariant :one
 INSERT INTO variants (
-    name, code, barcode, vat, decision_number, register_number, longevity, product, user_created, user_updated
+    name, code, barcode, vat, decision_number, register_number, longevity, product, user_created, user_updated, initial_inventory, real_inventory
 ) values (
     $1::varchar, $2::varchar, $3::varchar, $4::float,
     $5::varchar, $6::varchar, $7::varchar,
-    $8::int, $9::int, $10::int
-) RETURNING id, name, code, barcode, decision_number, register_number, longevity, vat, product, user_created, user_updated, updated_at, created_at
+    $8::int, $9::int, $10::int, $11::int, $12::int
+) RETURNING id, name, code, barcode, decision_number, register_number, longevity, vat, product, user_created, user_updated, updated_at, created_at, initial_inventory, real_inventory
 `
 
 type CreateVariantParams struct {
-	Name           string          `json:"name"`
-	Code           string          `json:"code"`
-	Barcode        string          `json:"barcode"`
-	Vat            sql.NullFloat64 `json:"vat"`
-	DecisionNumber string          `json:"decision_number"`
-	RegisterNumber string          `json:"register_number"`
-	Longevity      string          `json:"longevity"`
-	Product        int32           `json:"product"`
-	UserCreated    int32           `json:"user_created"`
-	UserUpdated    int32           `json:"user_updated"`
+	Name             string          `json:"name"`
+	Code             string          `json:"code"`
+	Barcode          sql.NullString  `json:"barcode"`
+	Vat              sql.NullFloat64 `json:"vat"`
+	DecisionNumber   sql.NullString  `json:"decision_number"`
+	RegisterNumber   sql.NullString  `json:"register_number"`
+	Longevity        sql.NullString  `json:"longevity"`
+	Product          int32           `json:"product"`
+	UserCreated      int32           `json:"user_created"`
+	UserUpdated      int32           `json:"user_updated"`
+	InitialInventory int32           `json:"initial_inventory"`
+	RealInventory    int32           `json:"real_inventory"`
 }
 
 func (q *Queries) CreateVariant(ctx context.Context, arg CreateVariantParams) (Variant, error) {
@@ -290,6 +292,8 @@ func (q *Queries) CreateVariant(ctx context.Context, arg CreateVariantParams) (V
 		arg.Product,
 		arg.UserCreated,
 		arg.UserUpdated,
+		arg.InitialInventory,
+		arg.RealInventory,
 	)
 	var i Variant
 	err := row.Scan(
@@ -306,6 +310,8 @@ func (q *Queries) CreateVariant(ctx context.Context, arg CreateVariantParams) (V
 		&i.UserUpdated,
 		&i.UpdatedAt,
 		&i.CreatedAt,
+		&i.InitialInventory,
+		&i.RealInventory,
 	)
 	return i, err
 }
@@ -352,20 +358,20 @@ type DetailProductRow struct {
 	Unit                int32           `json:"unit"`
 	TaDuoc              sql.NullString  `json:"ta_duoc"`
 	NongDo              sql.NullString  `json:"nong_do"`
-	LieuDung            string          `json:"lieu_dung"`
-	ChiDinh             string          `json:"chi_dinh"`
+	LieuDung            sql.NullString  `json:"lieu_dung"`
+	ChiDinh             sql.NullString  `json:"chi_dinh"`
 	ChongChiDinh        sql.NullString  `json:"chong_chi_dinh"`
-	CongDung            string          `json:"cong_dung"`
-	TacDungPhu          string          `json:"tac_dung_phu"`
-	ThanTrong           string          `json:"than_trong"`
+	CongDung            sql.NullString  `json:"cong_dung"`
+	TacDungPhu          sql.NullString  `json:"tac_dung_phu"`
+	ThanTrong           sql.NullString  `json:"than_trong"`
 	TuongTac            sql.NullString  `json:"tuong_tac"`
-	BaoQuan             string          `json:"bao_quan"`
-	DongGoi             string          `json:"dong_goi"`
+	BaoQuan             sql.NullString  `json:"bao_quan"`
+	DongGoi             sql.NullString  `json:"dong_goi"`
 	PhanLoai            sql.NullString  `json:"phan_loai"`
-	DangBaoChe          string          `json:"dang_bao_che"`
-	TieuChuanSx         string          `json:"tieu_chuan_sx"`
-	CongTySx            int32           `json:"cong_ty_sx"`
-	CongTyDk            int32           `json:"cong_ty_dk"`
+	DangBaoChe          sql.NullString  `json:"dang_bao_che"`
+	TieuChuanSx         sql.NullString  `json:"tieu_chuan_sx"`
+	CongTySx            sql.NullInt32   `json:"cong_ty_sx"`
+	CongTyDk            sql.NullInt32   `json:"cong_ty_dk"`
 	Active              bool            `json:"active"`
 	Company             int32           `json:"company"`
 	UserCreated         int32           `json:"user_created"`
@@ -666,6 +672,76 @@ func (q *Queries) GetProducts(ctx context.Context, arg GetProductsParams) ([]Pro
 	return items, nil
 }
 
+const getProductsByCode = `-- name: GetProductsByCode :one
+SELECT id, name, code, product_category, type, brand, unit, ta_duoc, nong_do, lieu_dung, chi_dinh, chong_chi_dinh, cong_dung, tac_dung_phu, than_trong, tuong_tac, bao_quan, dong_goi, phan_loai, dang_bao_che, tieu_chuan_sx, cong_ty_sx, cong_ty_dk, active, company, user_created, user_updated, updated_at, created_at FROM products
+WHERE code = $1
+`
+
+func (q *Queries) GetProductsByCode(ctx context.Context, code string) (Product, error) {
+	row := q.db.QueryRowContext(ctx, getProductsByCode, code)
+	var i Product
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Code,
+		&i.ProductCategory,
+		&i.Type,
+		&i.Brand,
+		&i.Unit,
+		&i.TaDuoc,
+		&i.NongDo,
+		&i.LieuDung,
+		&i.ChiDinh,
+		&i.ChongChiDinh,
+		&i.CongDung,
+		&i.TacDungPhu,
+		&i.ThanTrong,
+		&i.TuongTac,
+		&i.BaoQuan,
+		&i.DongGoi,
+		&i.PhanLoai,
+		&i.DangBaoChe,
+		&i.TieuChuanSx,
+		&i.CongTySx,
+		&i.CongTyDk,
+		&i.Active,
+		&i.Company,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.UpdatedAt,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const getVariantByProduct = `-- name: GetVariantByProduct :one
+SELECT id, name, code, barcode, decision_number, register_number, longevity, vat, product, user_created, user_updated, updated_at, created_at, initial_inventory, real_inventory FROM variants
+WHERE product = $1
+`
+
+func (q *Queries) GetVariantByProduct(ctx context.Context, product int32) (Variant, error) {
+	row := q.db.QueryRowContext(ctx, getVariantByProduct, product)
+	var i Variant
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Code,
+		&i.Barcode,
+		&i.DecisionNumber,
+		&i.RegisterNumber,
+		&i.Longevity,
+		&i.Vat,
+		&i.Product,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.UpdatedAt,
+		&i.CreatedAt,
+		&i.InitialInventory,
+		&i.RealInventory,
+	)
+	return i, err
+}
+
 const listIngredient = `-- name: ListIngredient :many
 SELECT id, name, weight, unit, product FROM ingredient
 WHERE product = $1
@@ -748,6 +824,42 @@ func (q *Queries) UpdateProduct(ctx context.Context, arg UpdateProductParams) (P
 		&i.UserUpdated,
 		&i.UpdatedAt,
 		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const updateVariant = `-- name: UpdateVariant :one
+UPDATE variants 
+SET
+    real_inventory = COALESCE($2::int, real_inventory)
+WHERE id = $1
+RETURNING id, name, code, barcode, decision_number, register_number, longevity, vat, product, user_created, user_updated, updated_at, created_at, initial_inventory, real_inventory
+`
+
+type UpdateVariantParams struct {
+	ID            int32         `json:"id"`
+	RealInventory sql.NullInt32 `json:"real_inventory"`
+}
+
+func (q *Queries) UpdateVariant(ctx context.Context, arg UpdateVariantParams) (Variant, error) {
+	row := q.db.QueryRowContext(ctx, updateVariant, arg.ID, arg.RealInventory)
+	var i Variant
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Code,
+		&i.Barcode,
+		&i.DecisionNumber,
+		&i.RegisterNumber,
+		&i.Longevity,
+		&i.Vat,
+		&i.Product,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.UpdatedAt,
+		&i.CreatedAt,
+		&i.InitialInventory,
+		&i.RealInventory,
 	)
 	return i, err
 }

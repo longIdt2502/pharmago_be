@@ -2451,6 +2451,13 @@
             "required": false,
             "type": "string",
             "format": "date-time"
+          },
+          {
+            "name": "customer",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
           }
         ],
         "tags": [
@@ -6479,6 +6486,10 @@
         "image": {
           "type": "string",
           "format": "byte"
+        },
+        "initialInventory": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -7786,6 +7797,12 @@
           "format": "int32"
         },
         "message": {
+          "type": "string"
+        },
+        "messageTrans": {
+          "type": "string"
+        },
+        "log": {
           "type": "string"
         },
         "details": {
@@ -10030,6 +10047,14 @@
         "revenue": {
           "type": "number",
           "format": "float"
+        },
+        "initialInventory": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "realInventory": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },

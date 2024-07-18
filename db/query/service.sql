@@ -9,6 +9,15 @@ ORDER BY -id
 LIMIT COALESCE(sqlc.narg('limit')::int, 10)
 OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10);
 
+-- name: ServicesUsedByCustomer :many
+SELECT s.*, COUNT(s.id) AS number_of_uses FROM service_order_item soi
+JOIN orders o ON o.id = soi.order
+JOIN services s ON s.id = soi.service
+WHERE o.customer = sqlc.arg('customer')::int
+GROUP BY s.id
+LIMIT COALESCE(sqlc.narg('limit')::int, 10)
+OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10);
+
 -- name: CreateService :one
 INSERT INTO services (
     code, image, title, entity, staff, frequency, unit, price, description, company, user_created, user_updated, reminder_time

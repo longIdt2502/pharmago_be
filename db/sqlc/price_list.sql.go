@@ -56,7 +56,7 @@ func (q *Queries) CreateProductPriceList(ctx context.Context, arg CreateProductP
 }
 
 const detailPriceList = `-- name: DetailPriceList :one
-SELECT pl.id, variant_code, variant_name, price_import, price_sell, unit, pl.user_created, pl.user_updated, pl.updated_at, pl.created_at, u.id, u.name, sell_price, import_price, weight, weight_unit, u.user_created, u.user_updated, u.updated_at, u.created_at, v.id, v.name, code, barcode, decision_number, register_number, longevity, vat, product, v.user_created, v.user_updated, v.updated_at, v.created_at, a.id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, a.created_at, role, gender, licence, dob, address, vm.id, variant, media, m.id, media_url, u.name AS unit_name, m.media_url AS variant_media,
+SELECT pl.id, variant_code, variant_name, price_import, price_sell, unit, pl.user_created, pl.user_updated, pl.updated_at, pl.created_at, u.id, u.name, sell_price, import_price, weight, weight_unit, u.user_created, u.user_updated, u.updated_at, u.created_at, v.id, v.name, code, barcode, decision_number, register_number, longevity, vat, product, v.user_created, v.user_updated, v.updated_at, v.created_at, initial_inventory, real_inventory, a.id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, a.created_at, role, gender, licence, dob, address, vm.id, variant, media, m.id, media_url, u.name AS unit_name, m.media_url AS variant_media,
        a.full_name AS user_created_name FROM price_list pl
 JOIN units u ON pl.unit = u.id
 JOIN variants v ON pl.variant_code = v.code
@@ -90,16 +90,18 @@ type DetailPriceListRow struct {
 	ID_3              int32           `json:"id_3"`
 	Name_2            string          `json:"name_2"`
 	Code              string          `json:"code"`
-	Barcode           string          `json:"barcode"`
-	DecisionNumber    string          `json:"decision_number"`
-	RegisterNumber    string          `json:"register_number"`
-	Longevity         string          `json:"longevity"`
-	Vat               float64         `json:"vat"`
+	Barcode           sql.NullString  `json:"barcode"`
+	DecisionNumber    sql.NullString  `json:"decision_number"`
+	RegisterNumber    sql.NullString  `json:"register_number"`
+	Longevity         sql.NullString  `json:"longevity"`
+	Vat               sql.NullFloat64 `json:"vat"`
 	Product           int32           `json:"product"`
 	UserCreated_3     int32           `json:"user_created_3"`
 	UserUpdated_3     sql.NullInt32   `json:"user_updated_3"`
 	UpdatedAt_3       sql.NullTime    `json:"updated_at_3"`
 	CreatedAt_3       time.Time       `json:"created_at_3"`
+	InitialInventory  int32           `json:"initial_inventory"`
+	RealInventory     int32           `json:"real_inventory"`
 	ID_4              int32           `json:"id_4"`
 	Username          string          `json:"username"`
 	HashedPassword    string          `json:"hashed_password"`
@@ -161,6 +163,8 @@ func (q *Queries) DetailPriceList(ctx context.Context, id int32) (DetailPriceLis
 		&i.UserUpdated_3,
 		&i.UpdatedAt_3,
 		&i.CreatedAt_3,
+		&i.InitialInventory,
+		&i.RealInventory,
 		&i.ID_4,
 		&i.Username,
 		&i.HashedPassword,
@@ -188,7 +192,7 @@ func (q *Queries) DetailPriceList(ctx context.Context, id int32) (DetailPriceLis
 }
 
 const getPriceLists = `-- name: GetPriceLists :many
-SELECT pl.id, variant_code, variant_name, price_import, price_sell, pl.unit, pl.user_created, pl.user_updated, pl.updated_at, pl.created_at, u.id, u.name, sell_price, import_price, weight, weight_unit, u.user_created, u.user_updated, u.updated_at, u.created_at, v.id, v.name, v.code, barcode, decision_number, register_number, longevity, vat, product, v.user_created, v.user_updated, v.updated_at, v.created_at, a.id, username, hashed_password, full_name, email, a.type, is_verify, password_changed_at, a.created_at, role, gender, licence, dob, address, vm.id, variant, media, m.id, media_url, p.id, p.name, p.code, product_category, p.type, brand, p.unit, ta_duoc, nong_do, lieu_dung, chi_dinh, chong_chi_dinh, cong_dung, tac_dung_phu, than_trong, tuong_tac, bao_quan, dong_goi, phan_loai, dang_bao_che, tieu_chuan_sx, cong_ty_sx, cong_ty_dk, active, company, p.user_created, p.user_updated, p.updated_at, p.created_at, u.name AS unit_name, p.company AS company, m.media_url AS variant_media,
+SELECT pl.id, variant_code, variant_name, price_import, price_sell, pl.unit, pl.user_created, pl.user_updated, pl.updated_at, pl.created_at, u.id, u.name, sell_price, import_price, weight, weight_unit, u.user_created, u.user_updated, u.updated_at, u.created_at, v.id, v.name, v.code, barcode, decision_number, register_number, longevity, vat, product, v.user_created, v.user_updated, v.updated_at, v.created_at, initial_inventory, real_inventory, a.id, username, hashed_password, full_name, email, a.type, is_verify, password_changed_at, a.created_at, role, gender, licence, dob, address, vm.id, variant, media, m.id, media_url, p.id, p.name, p.code, product_category, p.type, brand, p.unit, ta_duoc, nong_do, lieu_dung, chi_dinh, chong_chi_dinh, cong_dung, tac_dung_phu, than_trong, tuong_tac, bao_quan, dong_goi, phan_loai, dang_bao_che, tieu_chuan_sx, cong_ty_sx, cong_ty_dk, active, company, p.user_created, p.user_updated, p.updated_at, p.created_at, u.name AS unit_name, p.company AS company, m.media_url AS variant_media,
        a.full_name AS user_created_name FROM price_list pl
 JOIN units u ON pl.unit = u.id
 JOIN variants v ON pl.variant_code = v.code
@@ -247,16 +251,18 @@ type GetPriceListsRow struct {
 	ID_3              int32           `json:"id_3"`
 	Name_2            string          `json:"name_2"`
 	Code              string          `json:"code"`
-	Barcode           string          `json:"barcode"`
-	DecisionNumber    string          `json:"decision_number"`
-	RegisterNumber    string          `json:"register_number"`
-	Longevity         string          `json:"longevity"`
-	Vat               float64         `json:"vat"`
+	Barcode           sql.NullString  `json:"barcode"`
+	DecisionNumber    sql.NullString  `json:"decision_number"`
+	RegisterNumber    sql.NullString  `json:"register_number"`
+	Longevity         sql.NullString  `json:"longevity"`
+	Vat               sql.NullFloat64 `json:"vat"`
 	Product           int32           `json:"product"`
 	UserCreated_3     int32           `json:"user_created_3"`
 	UserUpdated_3     sql.NullInt32   `json:"user_updated_3"`
 	UpdatedAt_3       sql.NullTime    `json:"updated_at_3"`
 	CreatedAt_3       time.Time       `json:"created_at_3"`
+	InitialInventory  int32           `json:"initial_inventory"`
+	RealInventory     int32           `json:"real_inventory"`
 	ID_4              int32           `json:"id_4"`
 	Username          string          `json:"username"`
 	HashedPassword    string          `json:"hashed_password"`
@@ -285,20 +291,20 @@ type GetPriceListsRow struct {
 	Unit_2            int32           `json:"unit_2"`
 	TaDuoc            sql.NullString  `json:"ta_duoc"`
 	NongDo            sql.NullString  `json:"nong_do"`
-	LieuDung          string          `json:"lieu_dung"`
-	ChiDinh           string          `json:"chi_dinh"`
+	LieuDung          sql.NullString  `json:"lieu_dung"`
+	ChiDinh           sql.NullString  `json:"chi_dinh"`
 	ChongChiDinh      sql.NullString  `json:"chong_chi_dinh"`
-	CongDung          string          `json:"cong_dung"`
-	TacDungPhu        string          `json:"tac_dung_phu"`
-	ThanTrong         string          `json:"than_trong"`
+	CongDung          sql.NullString  `json:"cong_dung"`
+	TacDungPhu        sql.NullString  `json:"tac_dung_phu"`
+	ThanTrong         sql.NullString  `json:"than_trong"`
 	TuongTac          sql.NullString  `json:"tuong_tac"`
-	BaoQuan           string          `json:"bao_quan"`
-	DongGoi           string          `json:"dong_goi"`
+	BaoQuan           sql.NullString  `json:"bao_quan"`
+	DongGoi           sql.NullString  `json:"dong_goi"`
 	PhanLoai          sql.NullString  `json:"phan_loai"`
-	DangBaoChe        string          `json:"dang_bao_che"`
-	TieuChuanSx       string          `json:"tieu_chuan_sx"`
-	CongTySx          int32           `json:"cong_ty_sx"`
-	CongTyDk          int32           `json:"cong_ty_dk"`
+	DangBaoChe        sql.NullString  `json:"dang_bao_che"`
+	TieuChuanSx       sql.NullString  `json:"tieu_chuan_sx"`
+	CongTySx          sql.NullInt32   `json:"cong_ty_sx"`
+	CongTyDk          sql.NullInt32   `json:"cong_ty_dk"`
 	Active            bool            `json:"active"`
 	Company           int32           `json:"company"`
 	UserCreated_4     int32           `json:"user_created_4"`
@@ -363,6 +369,8 @@ func (q *Queries) GetPriceLists(ctx context.Context, arg GetPriceListsParams) ([
 			&i.UserUpdated_3,
 			&i.UpdatedAt_3,
 			&i.CreatedAt_3,
+			&i.InitialInventory,
+			&i.RealInventory,
 			&i.ID_4,
 			&i.Username,
 			&i.HashedPassword,

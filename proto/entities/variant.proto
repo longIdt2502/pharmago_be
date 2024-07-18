@@ -11,11 +11,11 @@ message Variant {
   int32 id = 1;
   string code = 2;
   string name = 3;
-  string barcode = 4;
-  string decision_number = 5;
-  string register_number = 6;
-  string longevity = 7;
-  float vat = 8;
+  optional string barcode = 4;
+  optional string decision_number = 5;
+  optional string register_number = 6;
+  optional string longevity = 7;
+  optional float vat = 8;
   int32 product = 9;
   string media = 10;
   optional int32 quantity_in_stock = 11;
@@ -23,6 +23,8 @@ message Variant {
   float price_sell = 13;
   float price_import = 14;
   optional float revenue = 15;
+  int32 initial_inventory = 16;
+  int32 real_inventory = 17;
 }
 
 message Unit {

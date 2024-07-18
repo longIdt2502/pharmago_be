@@ -18,3 +18,8 @@ OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::
 SELECT * FROM companies
 WHERE id = $1
 LIMIT 1;
+
+-- name: GetCompanyByPhone :one
+SELECT * FROM companies
+WHERE phone = $1
+LIMIT 1;

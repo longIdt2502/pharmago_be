@@ -18,6 +18,7 @@ message OrderListRequest {
   optional google.protobuf.Timestamp created_end = 9;
   optional google.protobuf.Timestamp updated_start = 10;
   optional google.protobuf.Timestamp updated_end = 11;
+  optional int32 customer = 12;
 }
 
 message OrderListResponse {

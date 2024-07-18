@@ -350,35 +350,39 @@ AND (
     $3::int IS NULL OR t.warehouse = $3::int
 )
 AND (
-    o.code ILIKE '%' || COALESCE($4::varchar, '') || '%' OR
-    c.full_name ILIKE '%' || COALESCE($4::varchar, '') || '%'
+    $4::int IS NULL OR o.customer = $4::int
+)
+AND (
+    o.code ILIKE '%' || COALESCE($5::varchar, '') || '%' OR
+    c.full_name ILIKE '%' || COALESCE($5::varchar, '') || '%'
 )
 AND  ((
-    $5::timestamp IS NULL AND $6::timestamp  IS NULL
+    $6::timestamp IS NULL AND $7::timestamp  IS NULL
 ) OR (
-    ($5::timestamp IS NULL OR o.created_at >= $5::timestamp) AND
-    ($6::timestamp IS NULL OR o.created_at <= $6::timestamp)
+    ($6::timestamp IS NULL OR o.created_at >= $6::timestamp) AND
+    ($7::timestamp IS NULL OR o.created_at <= $7::timestamp)
 ))
 AND ((
-    $7::timestamp IS NULL AND $8::timestamp  IS NULL
+    $8::timestamp IS NULL AND $9::timestamp  IS NULL
 ) OR (
-    (o.updated_at >= $7::timestamp OR $7::timestamp  IS NULL) AND
-    (o.updated_at <= $8::timestamp OR $8::timestamp  IS NULL)
+    (o.updated_at >= $8::timestamp OR $8::timestamp  IS NULL) AND
+    (o.updated_at <= $9::timestamp OR $9::timestamp  IS NULL)
 ))
 ORDER BY
-    CASE WHEN $9::varchar = 'created_at' THEN o.created_at END DESC,
-    CASE WHEN $9::varchar = '-created_at' THEN o.created_at END ASC,
-    CASE WHEN $9::varchar = 'updated_at' THEN o.updated_at END DESC,
-    CASE WHEN $9::varchar = '-updated_at' THEN o.updated_at END ASC,
-    CASE WHEN $9::varchar IS NULL THEN o.id END DESC
-LIMIT COALESCE($11::int, 10)
-OFFSET (COALESCE($10::int, 1) - 1) * COALESCE($11::int, 10)
+    CASE WHEN $10::varchar = 'created_at' THEN o.created_at END DESC,
+    CASE WHEN $10::varchar = '-created_at' THEN o.created_at END ASC,
+    CASE WHEN $10::varchar = 'updated_at' THEN o.updated_at END DESC,
+    CASE WHEN $10::varchar = '-updated_at' THEN o.updated_at END ASC,
+    CASE WHEN $10::varchar IS NULL THEN o.id END DESC
+LIMIT COALESCE($12::int, 10)
+OFFSET (COALESCE($11::int, 1) - 1) * COALESCE($12::int, 10)
 `
 
 type ListOrderParams struct {
 	Company      sql.NullInt32  `json:"company"`
 	Status       sql.NullString `json:"status"`
 	Warehouse    sql.NullInt32  `json:"warehouse"`
+	Customer     sql.NullInt32  `json:"customer"`
 	Search       sql.NullString `json:"search"`
 	CreatedStart sql.NullTime   `json:"created_start"`
 	CreatedEnd   sql.NullTime   `json:"created_end"`
@@ -476,6 +480,7 @@ func (q *Queries) ListOrder(ctx context.Context, arg ListOrderParams) ([]ListOrd
 		arg.Company,
 		arg.Status,
 		arg.Warehouse,
+		arg.Customer,
 		arg.Search,
 		arg.CreatedStart,
 		arg.CreatedEnd,
@@ -587,7 +592,7 @@ func (q *Queries) ListOrder(ctx context.Context, arg ListOrderParams) ([]ListOrd
 }
 
 const listOrderItem = `-- name: ListOrderItem :many
-SELECT oi.id, "order", oi.variant, value, total_price, consignment, consignment_log, v.id, name, v.code, barcode, decision_number, register_number, longevity, vat, product, v.user_created, v.user_updated, v.updated_at, v.created_at, c.id, c.code, quantity, inventory, ticket, expired_at, producted_at, is_available, c.user_created, c.user_updated, c.updated_at, c.created_at, c.variant, vm.id, vm.variant, media, m.id, media_url FROM order_items oi
+SELECT oi.id, "order", oi.variant, value, total_price, consignment, consignment_log, v.id, name, v.code, barcode, decision_number, register_number, longevity, vat, product, v.user_created, v.user_updated, v.updated_at, v.created_at, initial_inventory, real_inventory, c.id, c.code, quantity, inventory, ticket, expired_at, producted_at, is_available, c.user_created, c.user_updated, c.updated_at, c.created_at, c.variant, vm.id, vm.variant, media, m.id, media_url FROM order_items oi
 JOIN variants v ON v.id = oi.variant
 JOIN consignment c ON c.id = oi.consignment
 JOIN variant_media vm ON vm.variant = v.id
@@ -596,44 +601,46 @@ WHERE oi.order = $1
 `
 
 type ListOrderItemRow struct {
-	ID             int32         `json:"id"`
-	Order          int32         `json:"order"`
-	Variant        int32         `json:"variant"`
-	Value          int32         `json:"value"`
-	TotalPrice     float64       `json:"total_price"`
-	Consignment    sql.NullInt32 `json:"consignment"`
-	ConsignmentLog sql.NullInt32 `json:"consignment_log"`
-	ID_2           int32         `json:"id_2"`
-	Name           string        `json:"name"`
-	Code           string        `json:"code"`
-	Barcode        string        `json:"barcode"`
-	DecisionNumber string        `json:"decision_number"`
-	RegisterNumber string        `json:"register_number"`
-	Longevity      string        `json:"longevity"`
-	Vat            float64       `json:"vat"`
-	Product        int32         `json:"product"`
-	UserCreated    int32         `json:"user_created"`
-	UserUpdated    sql.NullInt32 `json:"user_updated"`
-	UpdatedAt      sql.NullTime  `json:"updated_at"`
-	CreatedAt      time.Time     `json:"created_at"`
-	ID_3           int32         `json:"id_3"`
-	Code_2         string        `json:"code_2"`
-	Quantity       int32         `json:"quantity"`
-	Inventory      int32         `json:"inventory"`
-	Ticket         sql.NullInt32 `json:"ticket"`
-	ExpiredAt      time.Time     `json:"expired_at"`
-	ProductedAt    time.Time     `json:"producted_at"`
-	IsAvailable    bool          `json:"is_available"`
-	UserCreated_2  sql.NullInt32 `json:"user_created_2"`
-	UserUpdated_2  sql.NullInt32 `json:"user_updated_2"`
-	UpdatedAt_2    sql.NullTime  `json:"updated_at_2"`
-	CreatedAt_2    time.Time     `json:"created_at_2"`
-	Variant_2      sql.NullInt32 `json:"variant_2"`
-	ID_4           int32         `json:"id_4"`
-	Variant_3      int32         `json:"variant_3"`
-	Media          int32         `json:"media"`
-	ID_5           int32         `json:"id_5"`
-	MediaUrl       string        `json:"media_url"`
+	ID               int32           `json:"id"`
+	Order            int32           `json:"order"`
+	Variant          int32           `json:"variant"`
+	Value            int32           `json:"value"`
+	TotalPrice       float64         `json:"total_price"`
+	Consignment      sql.NullInt32   `json:"consignment"`
+	ConsignmentLog   sql.NullInt32   `json:"consignment_log"`
+	ID_2             int32           `json:"id_2"`
+	Name             string          `json:"name"`
+	Code             string          `json:"code"`
+	Barcode          sql.NullString  `json:"barcode"`
+	DecisionNumber   sql.NullString  `json:"decision_number"`
+	RegisterNumber   sql.NullString  `json:"register_number"`
+	Longevity        sql.NullString  `json:"longevity"`
+	Vat              sql.NullFloat64 `json:"vat"`
+	Product          int32           `json:"product"`
+	UserCreated      int32           `json:"user_created"`
+	UserUpdated      sql.NullInt32   `json:"user_updated"`
+	UpdatedAt        sql.NullTime    `json:"updated_at"`
+	CreatedAt        time.Time       `json:"created_at"`
+	InitialInventory int32           `json:"initial_inventory"`
+	RealInventory    int32           `json:"real_inventory"`
+	ID_3             int32           `json:"id_3"`
+	Code_2           string          `json:"code_2"`
+	Quantity         int32           `json:"quantity"`
+	Inventory        int32           `json:"inventory"`
+	Ticket           sql.NullInt32   `json:"ticket"`
+	ExpiredAt        time.Time       `json:"expired_at"`
+	ProductedAt      time.Time       `json:"producted_at"`
+	IsAvailable      bool            `json:"is_available"`
+	UserCreated_2    sql.NullInt32   `json:"user_created_2"`
+	UserUpdated_2    sql.NullInt32   `json:"user_updated_2"`
+	UpdatedAt_2      sql.NullTime    `json:"updated_at_2"`
+	CreatedAt_2      time.Time       `json:"created_at_2"`
+	Variant_2        sql.NullInt32   `json:"variant_2"`
+	ID_4             int32           `json:"id_4"`
+	Variant_3        int32           `json:"variant_3"`
+	Media            int32           `json:"media"`
+	ID_5             int32           `json:"id_5"`
+	MediaUrl         string          `json:"media_url"`
 }
 
 func (q *Queries) ListOrderItem(ctx context.Context, order int32) ([]ListOrderItemRow, error) {
@@ -666,6 +673,8 @@ func (q *Queries) ListOrderItem(ctx context.Context, order int32) ([]ListOrderIt
 			&i.UserUpdated,
 			&i.UpdatedAt,
 			&i.CreatedAt,
+			&i.InitialInventory,
+			&i.RealInventory,
 			&i.ID_3,
 			&i.Code_2,
 			&i.Quantity,

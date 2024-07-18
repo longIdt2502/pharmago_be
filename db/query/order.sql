@@ -35,6 +35,9 @@ AND (
     sqlc.narg('warehouse')::int IS NULL OR t.warehouse = sqlc.narg('warehouse')::int
 )
 AND (
+    sqlc.narg('customer')::int IS NULL OR o.customer = sqlc.narg('customer')::int
+)
+AND (
     o.code ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
     c.full_name ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%'
 )

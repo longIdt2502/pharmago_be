@@ -7,12 +7,11 @@ import (
 	"fmt"
 
 	"github.com/longIdt2502/pharmago_be/b2"
+	"github.com/longIdt2502/pharmago_be/common"
 	"github.com/longIdt2502/pharmago_be/pb"
 	"github.com/longIdt2502/pharmago_be/token"
 	"github.com/longIdt2502/pharmago_be/utils"
 	"github.com/skip2/go-qrcode"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 type CreateOrderTxParams struct {
@@ -41,12 +40,12 @@ func (store *Store) CreateOrderTx(ctx context.Context, req CreateOrderTxParams) 
 			customer, err := q.GetCustomer(ctx, req.Order.GetCustomer())
 			if err != nil {
 				if errors.Is(err, sql.ErrNoRows) {
-					return err
+					return common.ErrDBWithMsg(err, "Khách hàng chưa có trong hệ thống")
 				}
-				return err
+				return common.ErrDB(err)
 			}
 			if !customer.Address.Valid {
-				return status.Error(codes.InvalidArgument, "customer address is null")
+				return common.ErrDBWithMsg(err, "Khách hàng chưa có địa chỉ")
 			}
 			addressOrder = customer.Address.Int32
 		}
@@ -56,7 +55,7 @@ func (store *Store) CreateOrderTx(ctx context.Context, req CreateOrderTxParams) 
 
 		warehouse, err := q.GetWarehouse(ctx, req.GetWarehouse())
 		if err != nil {
-			return err
+			return common.ErrDB(err)
 		}
 
 		paymentCode := fmt.Sprintf("PM-%s-%d", utils.RandomString(6), utils.RandomInt(100, 999))
@@ -67,7 +66,7 @@ func (store *Store) CreateOrderTx(ctx context.Context, req CreateOrderTxParams) 
 			NeedPay:  float64(req.Payment.GetNeedPay()),
 		})
 		if err != nil {
-			return err
+			return common.ErrDBWithMsg(err, "Lỗi tạo thanh toán cho đơn hàng")
 		}
 
 		for _, value := range req.PaymentItems {
@@ -82,19 +81,17 @@ func (store *Store) CreateOrderTx(ctx context.Context, req CreateOrderTxParams) 
 				},
 			})
 			if err != nil {
-				return err
+				return common.ErrDBWithMsg(err, "Lỗi tạo thanh toán chi tiết")
 			}
 		}
 
 		ticketType, _ := q.GetTicketType(ctx, GetTicketTypeParams{
-			ID: sql.NullInt32{},
 			Code: sql.NullString{
 				String: "EXPORT",
 				Valid:  true,
 			},
 		})
 		ticketStatus, _ := q.GetTicketStatus(ctx, GetTicketStatusParams{
-			ID: sql.NullInt32{},
 			Code: sql.NullString{
 				String: "NEW",
 				Valid:  true,
@@ -105,12 +102,12 @@ func (store *Store) CreateOrderTx(ctx context.Context, req CreateOrderTxParams) 
 		var png []byte
 		png, err = qrcode.Encode(codeTicket, qrcode.Medium, 256)
 		if err != nil {
-			return err
+			return common.ErrInternalWithMsg(err, "Lỗi tạo qrcode phiếu xuất hàng")
 		}
 		file, _ := utils.NewFileFromImage(png)
 		_, err = req.B2Bucket.UploadFile(file.Name, file.Meta, file.File)
 		if err != nil {
-			return err
+			return common.ErrInternal(err)
 		}
 		urlQr, _ := req.B2Bucket.FileURL(file.Name)
 
@@ -151,7 +148,7 @@ func (store *Store) CreateOrderTx(ctx context.Context, req CreateOrderTxParams) 
 			},
 		})
 		if err != nil {
-			return err
+			return common.ErrDBWithMsg(err, "Lỗi tạo phiếu xuất hàng")
 		}
 
 		var orderCode string
@@ -164,12 +161,12 @@ func (store *Store) CreateOrderTx(ctx context.Context, req CreateOrderTxParams) 
 		var pngOrder []byte
 		pngOrder, err = qrcode.Encode(orderCode, qrcode.Medium, 256)
 		if err != nil {
-			return err
+			return common.ErrInternalWithMsg(err, "Lỗi tạo qrcode phiếu xuất hàng đơn hàng")
 		}
 		fileOrder, _ := utils.NewFileFromImage(pngOrder)
 		_, err = req.B2Bucket.UploadFile(fileOrder.Name, fileOrder.Meta, fileOrder.File)
 		if err != nil {
-			return err
+			return common.ErrInternal(err)
 		}
 		urlQrOrder, _ := req.B2Bucket.FileURL(fileOrder.Name)
 
@@ -222,62 +219,78 @@ func (store *Store) CreateOrderTx(ctx context.Context, req CreateOrderTxParams) 
 			},
 		})
 		if err != nil {
-			return err
+			return common.ErrDBWithMsg(err, "lỗi tạo đơn hàng")
 		}
 
 		for _, value := range req.GetOrderItems() {
-			var consignmentLog ConsignmentLog
-			var consignment Consignment
-			if value.Consignment != nil {
-				consignment, err = q.GetConsignment(ctx, GetConsignmentParams{
-					ID: value.GetConsignment(),
-					Variant: sql.NullInt32{
-						Int32: value.GetVariant(),
-						Valid: true,
-					},
-				})
-				if err != nil {
-					return err
-				}
-			} else {
-				consignment, err = q.SuggestConsignmentForVariant(ctx, SuggestConsignmentForVariantParams{
-					Variant: sql.NullInt32{
-						Int32: value.GetVariant(),
-						Valid: true,
-					},
-					Inventory: value.GetValue(),
-				})
-				if err != nil {
-					return err
-				}
+			// var consignmentLog ConsignmentLog
+			// var consignment Consignment
+			// if value.Consignment != nil {
+			// 	consignment, err = q.GetConsignment(ctx, GetConsignmentParams{
+			// 		ID: value.GetConsignment(),
+			// 		Variant: sql.NullInt32{
+			// 			Int32: value.GetVariant(),
+			// 			Valid: true,
+			// 		},
+			// 	})
+			// 	if err != nil {
+			// 		return common.ErrDBWithMsg(err, fmt.Sprintf("Không thể lấy lô hàng sản phẩm phù hợp: id = %d", value.Variant))
+			// 	}
+			// } else {
+			// 	consignment, err = q.SuggestConsignmentForVariant(ctx, SuggestConsignmentForVariantParams{
+			// 		Variant: sql.NullInt32{
+			// 			Int32: value.GetVariant(),
+			// 			Valid: true,
+			// 		},
+			// 		Inventory: value.GetValue(),
+			// 	})
+			// 	if err != nil {
+			// 		return common.ErrDBWithMsg(err, fmt.Sprintf("Không thể lấy lô hàng sản phẩm phù hợp: id = %d", value.Variant))
+			// 	}
+			// }
+
+			// var amount int32
+			// if req.Order.Type == "SELL" {
+			// 	amount = -value.GetValue()
+			// } else {
+			// 	amount = value.GetValue()
+			// }
+			// _, _ = q.UpdateConsignment(ctx, UpdateConsignmentParams{
+			// 	Amount: amount,
+			// 	ID:     consignment.ID,
+			// })
+
+			// consignmentLog, err = q.CreateConsignmentLog(ctx, CreateConsignmentLogParams{
+			// 	Consignment:  consignment.ID,
+			// 	Inventory:    consignment.Inventory,
+			// 	AmountChange: amount,
+			// 	UserCreated: sql.NullInt32{
+			// 		Int32: req.TokenPayload.UserID,
+			// 		Valid: true,
+			// 	},
+			// })
+			// if err != nil {
+			// 	return common.ErrDBWithMsg(err, "Lỗi tạo log lô hàng")
+			// }
+
+			variantDb, err := q.GetVariantById(ctx, value.Variant)
+			if err != nil {
+				return common.ErrDB(err)
 			}
 
-			if consignment.Inventory < value.GetValue() {
-				return status.Errorf(codes.Internal, "inventory not enough")
+			if value.GetValue() > variantDb.RealInventory {
+				return common.ErrInternalWithMsg(errors.New("invalid inventory"), "Tồn kho không đủ")
 			}
 
-			var amount int32
-			if req.Order.Type == "SELL" {
-				amount = -value.GetValue()
-			} else {
-				amount = value.GetValue()
-			}
-			_, _ = q.UpdateConsignment(ctx, UpdateConsignmentParams{
-				Amount: amount,
-				ID:     consignment.ID,
-			})
-
-			consignmentLog, err = q.CreateConsignmentLog(ctx, CreateConsignmentLogParams{
-				Consignment:  consignment.ID,
-				Inventory:    consignment.Inventory,
-				AmountChange: amount,
-				UserCreated: sql.NullInt32{
-					Int32: req.TokenPayload.UserID,
+			_, err = q.UpdateVariant(ctx, UpdateVariantParams{
+				ID: value.Variant,
+				RealInventory: sql.NullInt32{
+					Int32: variantDb.RealInventory - value.GetValue(),
 					Valid: true,
 				},
 			})
 			if err != nil {
-				return status.Errorf(codes.InvalidArgument, "failed to record consignment log: %e", err)
+				return common.ErrDBWithMsg(err, "lỗi update tồn kho sản phẩm")
 			}
 
 			_, err = q.CreateOrderItem(ctx, CreateOrderItemParams{
@@ -285,17 +298,17 @@ func (store *Store) CreateOrderTx(ctx context.Context, req CreateOrderTxParams) 
 				Variant:    value.GetVariant(),
 				Value:      value.GetValue(),
 				TotalPrice: float64(value.GetTotalPrice()),
-				Consignment: sql.NullInt32{
-					Int32: consignment.ID,
-					Valid: true,
-				},
-				ConsignmentLog: sql.NullInt32{
-					Int32: consignmentLog.ID,
-					Valid: true,
-				},
+				// Consignment: sql.NullInt32{
+				// 	Int32: consignment.ID,
+				// 	Valid: true,
+				// },
+				// ConsignmentLog: sql.NullInt32{
+				// 	Int32: consignmentLog.ID,
+				// 	Valid: true,
+				// },
 			})
 			if err != nil {
-				return err
+				return common.ErrDBWithMsg(err, "Lỗi tạo sản phẩm đơn hàng")
 			}
 		}
 
@@ -311,7 +324,7 @@ func (store *Store) CreateOrderTx(ctx context.Context, req CreateOrderTxParams) 
 				Discount:   float64(item.GetDiscount()),
 			})
 			if err != nil {
-				return err // status.Errorf(codes.Internal, "failed to record order service: %e", err)
+				return common.ErrDBWithMsg(err, "Lỗi tạo dịch vụ đơn hàng") // status.Errorf(codes.Internal, "failed to record order service: %e", err)
 			}
 		}
 		result.Id = order.ID

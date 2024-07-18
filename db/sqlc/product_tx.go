@@ -96,29 +96,65 @@ func (store *Store) CreateProductTx(ctx context.Context, req CreateProductTxPara
 				String: productData.GetNongDo(),
 				Valid:  productData.NongDo != nil,
 			},
-			Lieudung: productData.GetLieuDung(),
-			Chidinh:  productData.GetChiDinh(),
+			Lieudung: sql.NullString{
+				String: productData.GetLieuDung(),
+				Valid:  productData.LieuDung != nil,
+			},
+			Chidinh: sql.NullString{
+				String: productData.GetChiDinh(),
+				Valid:  productData.ChiDinh != nil,
+			},
 			Chongchidinh: sql.NullString{
 				String: productData.GetChongChiDinh(),
 				Valid:  productData.ChongChiDinh != nil,
 			},
-			Congdung:   productData.GetCongDung(),
-			Tacdungphu: productData.GetTacDungPhu(),
-			Thantrong:  productData.GetThanTrong(),
+			Congdung: sql.NullString{
+				String: productData.GetCongDung(),
+				Valid:  productData.CongDung != nil,
+			},
+			Tacdungphu: sql.NullString{
+				String: productData.GetTacDungPhu(),
+				Valid:  productData.TacDungPhu != nil,
+			},
+			Thantrong: sql.NullString{
+				String: productData.GetThanTrong(),
+				Valid:  productData.ThanTrong != nil,
+			},
 			Tuongtac: sql.NullString{
 				String: productData.GetTuongTac(),
 				Valid:  productData.TuongTac != nil,
 			},
-			Baoquan:     productData.GetBaoQuan(),
-			Donggoi:     productData.GetDongGoi(),
-			Congtysx:    productData.GetCongTySx(),
-			Congtydk:    productData.GetCongTyDk(),
+			Baoquan: sql.NullString{
+				String: productData.GetBaoQuan(),
+				Valid:  productData.BaoQuan != nil,
+			},
+			Donggoi: sql.NullString{
+				String: productData.GetDongGoi(),
+				Valid:  productData.DongGoi != nil,
+			},
+			Congtysx: sql.NullInt32{
+				Int32: productData.GetCongTySx(),
+				Valid: productData.CongTySx != nil,
+			},
+			Congtydk: sql.NullInt32{
+				Int32: productData.GetCongTyDk(),
+				Valid: productData.CongTyDk != nil,
+			},
 			Company:     productData.GetCompany(),
 			UserCreated: req.Account.ID,
 			UserUpdated: req.Account.ID,
-			Phanloai:    productData.GetPhanLoai(),
-			Dangbaoche:  productData.GetDangBaoChe(),
-			Tieuchuansx: productData.GetTieuChuanSx(),
+			Phanloai: sql.NullString{
+				String: productData.GetPhanLoai(),
+				Valid:  productData.DongGoi != nil,
+			},
+			Dangbaoche: sql.NullString{
+				String: productData.GetDangBaoChe(),
+				Valid:  productData.DangBaoChe != nil,
+			},
+			Tieuchuansx: sql.NullString{
+				String: productData.GetTieuChuanSx(),
+				Valid:  productData.TieuChuanSx != nil,
+			},
 		})
 		if err != nil {
 			return status.Errorf(codes.Internal, fmt.Sprintf("failed to record product data: %e", err))
@@ -170,19 +206,32 @@ func (store *Store) CreateProductTx(ctx context.Context, req CreateProductTxPara
 		for _, value := range variantData {
 			codeVariant := fmt.Sprintf("VARIANT-%s-%s-%d", product.Code, utils.RandomString(6), utils.RandomInt(100, 999))
 			variant, err := q.CreateVariant(ctx, CreateVariantParams{
-				Name:    value.GetName(),
-				Code:    codeVariant,
-				Barcode: value.GetCode(),
+				Name: value.GetName(),
+				Code: codeVariant,
+				Barcode: sql.NullString{
+					String: value.GetBarcode(),
+					Valid:  value.Barcode != nil,
+				},
 				Vat: sql.NullFloat64{
 					Float64: 0,
 					Valid:   true,
 				},
-				DecisionNumber: value.GetDecisionNumber(),
-				RegisterNumber: value.GetRegisterNumber(),
-				Longevity:      value.GetLongevity(),
-				Product:        product.ID,
-				UserCreated:    req.Account.ID,
-				UserUpdated:    req.Account.ID,
+				DecisionNumber: sql.NullString{
+					String: value.GetDecisionNumber(),
+					Valid:  value.DecisionNumber != nil,
+				},
+				RegisterNumber: sql.NullString{
+					String: value.GetRegisterNumber(),
+					Valid:  value.RegisterNumber != nil,
+				},
+				Longevity: sql.NullString{
+					String: value.GetLongevity(),
+					Valid:  value.Longevity != nil,
+				},
+				Product:          product.ID,
+				UserCreated:      req.Account.ID,
+				InitialInventory: value.InitialInventory,
+				RealInventory:    value.InitialInventory,
 			})
 			if err != nil {
 				return status.Errorf(codes.Internal, "failed to record variant data: %e", err)

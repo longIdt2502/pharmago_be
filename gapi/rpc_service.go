@@ -94,10 +94,13 @@ func (server *ServerGRPC) ServiceDetail(ctx context.Context, req *pb.ServiceDeta
 	var variantsPb []*pb.Variant
 	for _, item := range serviceVariants {
 		data := mapper.VariantMapper(ctx, server.store, db.GetVariantsRow{
-			ID:      item.ID_2.Int32,
-			Name:    item.Name.String,
-			Code:    item.Code.String,
-			Barcode: item.Barcode.String,
+			ID:   item.ID_2.Int32,
+			Name: item.Name.String,
+			Code: item.Code.String,
+			Barcode: sql.NullString{
+				String: item.Barcode.String,
+				Valid:  item.Barcode.Valid,
+			},
 		})
 		variantsPb = append(variantsPb, data)
 	}
