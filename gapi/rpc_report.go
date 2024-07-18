@@ -58,21 +58,22 @@ func (server *ServerGRPC) HomeData(ctx context.Context, req *pb.HomeDataRequest)
 		f64 := float32(value.Revenue)
 		revenue = &f64
 		dataPb := &pb.Variant{
-			Id:              value.ID,
-			Code:            value.Code,
-			Name:            value.Name,
-			Barcode:         value.Barcode,
-			DecisionNumber:  value.DecisionNumber,
-			RegisterNumber:  value.RegisterNumber,
-			Longevity:       value.Longevity,
-			Vat:             float32(value.Vat),
-			Product:         value.Product,
-			Media:           value.Imageurl,
-			QuantityInStock: nil,
-			Units:           nil,
-			PriceSell:       0,
-			PriceImport:     0,
-			Revenue:         revenue,
+			Id:               value.ID,
+			Code:             value.Code,
+			Name:             value.Name,
+			Barcode:          &value.Barcode.String,
+			DecisionNumber:   &value.DecisionNumber.String,
+			RegisterNumber:   &value.RegisterNumber.String,
+			Longevity:        &value.Longevity.String,
+			Product:          value.Product,
+			Media:            value.Imageurl,
+			QuantityInStock:  nil,
+			Units:            nil,
+			PriceSell:        0,
+			PriceImport:      0,
+			Revenue:          revenue,
+			InitialInventory: value.InitialInventory,
+			RealInventory:    value.RealInventory,
 		}
 		variantsPb = append(variantsPb, dataPb)
 	}

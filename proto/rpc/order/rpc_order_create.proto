@@ -59,5 +59,7 @@ message OrderCreateRequest {
 message OrderCreateResponse {
   int32 code = 1;
   string message = 2;
-  int32 details = 3;
+  string message_trans = 3;
+  string log = 4;
+  int32 details = 5;
 }

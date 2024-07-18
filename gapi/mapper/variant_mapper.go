@@ -3,6 +3,7 @@ package mapper
 import (
 	"context"
 	"database/sql"
+
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/pb"
 	"github.com/rs/zerolog/log"
@@ -48,21 +49,29 @@ func VariantMapper(ctx context.Context, store *db.Store, data db.GetVariantsRow)
 		})
 	}
 
+	var vat *float32
+	if data.Vat.Valid {
+		vat32 := float32(data.Vat.Float64)
+		vat = &vat32
+	}
+
 	return &pb.Variant{
-		Id:              data.ID,
-		Code:            data.Code,
-		Name:            data.Name,
-		Barcode:         data.Name,
-		DecisionNumber:  data.DecisionNumber,
-		RegisterNumber:  data.RegisterNumber,
-		Longevity:       data.Longevity,
-		Vat:             float32(data.Vat),
-		Product:         data.Product,
-		Media:           media.MediaUrl,
-		QuantityInStock: totalInventory,
-		Units:           units,
-		PriceSell:       float32(data.PlPriceSell),
-		PriceImport:     float32(data.PlPriceImport),
+		Id:               data.ID,
+		Code:             data.Code,
+		Name:             data.Name,
+		Barcode:          &data.Barcode.String,
+		DecisionNumber:   &data.DecisionNumber.String,
+		RegisterNumber:   &data.RegisterNumber.String,
+		Longevity:        &data.Longevity.String,
+		Product:          data.Product,
+		Media:            media.MediaUrl,
+		QuantityInStock:  totalInventory,
+		Units:            units,
+		Vat:              vat,
+		PriceSell:        float32(data.PlPriceSell.Float64),
+		PriceImport:      float32(data.PlPriceImport.Float64),
+		InitialInventory: data.InitialInventory,
+		RealInventory:    data.RealInventory,
 	}
 }
 
@@ -70,16 +79,24 @@ func VariantPreviewMapper(ctx context.Context, store *db.Store, data db.Variant)
 
 	media, _ := store.GetMediaVariant(ctx, data.ID)
 
+	var vat *float32
+	if data.Vat.Valid {
+		vat32 := float32(data.Vat.Float64)
+		vat = &vat32
+	}
+
 	return &pb.Variant{
-		Id:             data.ID,
-		Code:           data.Code,
-		Name:           data.Name,
-		Barcode:        data.Name,
-		DecisionNumber: data.DecisionNumber,
-		RegisterNumber: data.RegisterNumber,
-		Longevity:      data.Longevity,
-		Vat:            float32(data.Vat),
-		Product:        data.Product,
-		Media:          media.MediaUrl,
+		Id:               data.ID,
+		Code:             data.Code,
+		Name:             data.Name,
+		Barcode:          &data.Barcode.String,
+		DecisionNumber:   &data.DecisionNumber.String,
+		RegisterNumber:   &data.RegisterNumber.String,
+		Longevity:        &data.Longevity.String,
+		Vat:              vat,
+		Product:          data.Product,
+		Media:            media.MediaUrl,
+		InitialInventory: data.InitialInventory,
+		RealInventory:    data.RealInventory,
 	}
 }

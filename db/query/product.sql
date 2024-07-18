@@ -5,21 +5,32 @@ INSERT INTO products (
     company, user_created, user_updated, phan_loai, dang_bao_che, tieu_chuan_sx
 ) values (
     sqlc.arg(name)::varchar, sqlc.arg(code)::varchar, sqlc.narg(product_category)::int, sqlc.narg(type)::int, sqlc.narg(brand)::int,
-    sqlc.arg(unit)::int, sqlc.narg(taDuoc)::varchar, sqlc.narg(nongDo)::varchar, sqlc.arg(lieuDung)::varchar,
-    sqlc.arg(chiDinh)::varchar, sqlc.narg(chongChiDinh)::varchar, sqlc.arg(congDung)::varchar, sqlc.arg(tacDungPhu)::varchar,
-    sqlc.arg(thanTrong)::varchar, sqlc.narg(tuongTac)::varchar, sqlc.arg(baoQuan)::varchar, sqlc.arg(dongGoi)::varchar,
-    sqlc.arg(congTySx)::int, sqlc.arg(congTyDk)::int, sqlc.arg(company)::int,
-    sqlc.arg(user_created)::int, sqlc.arg(user_updated)::int, sqlc.arg(phanLoai)::varchar, sqlc.arg(dangBaoche)::varchar, sqlc.arg(tieuChuanSx)::varchar
+    sqlc.arg(unit)::int, sqlc.narg(taDuoc)::varchar, sqlc.narg(nongDo)::varchar, sqlc.narg(lieuDung)::varchar,
+    sqlc.narg(chiDinh)::varchar, sqlc.narg(chongChiDinh)::varchar, sqlc.narg(congDung)::varchar, sqlc.narg(tacDungPhu)::varchar,
+    sqlc.narg(thanTrong)::varchar, sqlc.narg(tuongTac)::varchar, sqlc.narg(baoQuan)::varchar, sqlc.narg(dongGoi)::varchar,
+    sqlc.narg(congTySx)::int, sqlc.narg(congTyDk)::int, sqlc.arg(company)::int,
+    sqlc.arg(user_created)::int, sqlc.arg(user_updated)::int, sqlc.narg(phanLoai)::varchar, sqlc.narg(dangBaoche)::varchar, sqlc.narg(tieuChuanSx)::varchar
 ) RETURNING *;
 
 -- name: CreateVariant :one
 INSERT INTO variants (
-    name, code, barcode, vat, decision_number, register_number, longevity, product, user_created, user_updated
+    name, code, barcode, vat, decision_number, register_number, longevity, product, user_created, user_updated, initial_inventory, real_inventory
 ) values (
-    sqlc.arg(name)::varchar, sqlc.arg(code)::varchar, sqlc.arg(barcode)::varchar, sqlc.narg(vat)::float,
-    sqlc.arg(decision_number)::varchar, sqlc.arg(register_number)::varchar, sqlc.arg(longevity)::varchar,
-    sqlc.arg(product)::int, sqlc.arg(user_created)::int, sqlc.arg(user_updated)::int
+    sqlc.arg(name)::varchar, sqlc.arg(code)::varchar, sqlc.narg(barcode)::varchar, sqlc.narg(vat)::float,
+    sqlc.narg(decision_number)::varchar, sqlc.narg(register_number)::varchar, sqlc.narg(longevity)::varchar,
+    sqlc.arg(product)::int, sqlc.arg(user_created)::int, sqlc.arg(user_updated)::int, sqlc.arg(initial_inventory)::int, sqlc.arg(real_inventory)::int
 ) RETURNING *;
+
+-- name: UpdateVariant :one
+UPDATE variants 
+SET
+    real_inventory = COALESCE(sqlc.narg(real_inventory)::int, real_inventory)
+WHERE id = $1
+RETURNING *;
+
+-- name: GetVariantByProduct :one
+SELECT * FROM variants
+WHERE product = $1;
 
 -- name: CreateUnit :one
 INSERT INTO units (
@@ -74,6 +85,10 @@ WHERE company = sqlc.narg(company)::int AND (
 ORDER BY -id
 LIMIT COALESCE(sqlc.narg('limit')::int, 10)
 OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10);
+
+-- name: GetProductsByCode :one
+SELECT * FROM products
+WHERE code = $1;
 
 -- name: DetailProduct :one
 SELECT * FROM products p

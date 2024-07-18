@@ -145,7 +145,7 @@ func (q *Queries) CreatePromotionItem(ctx context.Context, arg CreatePromotionIt
 }
 
 const getByVariantOrService = `-- name: GetByVariantOrService :many
-SELECT pi.id, min_buy, amount_gift, promotions, applicable_variant, applicable_service, variant, service, p.id, p.code, type, p.title, conditions_text, conditions_point_customer, min_value, is_discount_percent, value_discount, max_discount, time_apply, date_start, date_end, apply_multiple_times, apply_simultaneously, status, p.company, p.user_created, p.user_updated, p.created_at, p.updated_at, v.id, name, v.code, barcode, decision_number, register_number, longevity, vat, product, v.user_created, v.user_updated, v.updated_at, v.created_at, s.id, image, s.code, s.title, entity, staff, frequency, reminder_time, unit, price, description, s.company, s.user_created, s.user_updated, s.created_at, s.updated_at, pt.code, pt.title, v.name AS v_name, v.code AS v_code, s.title AS s_name, s.code AS s_code FROM promotion_item pi
+SELECT pi.id, min_buy, amount_gift, promotions, applicable_variant, applicable_service, variant, service, p.id, p.code, type, p.title, conditions_text, conditions_point_customer, min_value, is_discount_percent, value_discount, max_discount, time_apply, date_start, date_end, apply_multiple_times, apply_simultaneously, status, p.company, p.user_created, p.user_updated, p.created_at, p.updated_at, v.id, name, v.code, barcode, decision_number, register_number, longevity, vat, product, v.user_created, v.user_updated, v.updated_at, v.created_at, initial_inventory, real_inventory, s.id, image, s.code, s.title, entity, staff, frequency, reminder_time, unit, price, description, s.company, s.user_created, s.user_updated, s.created_at, s.updated_at, pt.code, pt.title, v.name AS v_name, v.code AS v_code, s.title AS s_name, s.code AS s_code FROM promotion_item pi
 LEFT JOIN promotions p ON p.id = pi.promotions
 LEFT JOIN variants v ON pi.variant = v.id
 LEFT JOIN services s ON pi.service = s.id
@@ -202,6 +202,8 @@ type GetByVariantOrServiceRow struct {
 	UserUpdated_2           sql.NullInt32   `json:"user_updated_2"`
 	UpdatedAt_2             sql.NullTime    `json:"updated_at_2"`
 	CreatedAt_2             sql.NullTime    `json:"created_at_2"`
+	InitialInventory        sql.NullInt32   `json:"initial_inventory"`
+	RealInventory           sql.NullInt32   `json:"real_inventory"`
 	ID_4                    sql.NullInt32   `json:"id_4"`
 	Image                   sql.NullInt32   `json:"image"`
 	Code_3                  sql.NullString  `json:"code_3"`
@@ -278,6 +280,8 @@ func (q *Queries) GetByVariantOrService(ctx context.Context, arg GetByVariantOrS
 			&i.UserUpdated_2,
 			&i.UpdatedAt_2,
 			&i.CreatedAt_2,
+			&i.InitialInventory,
+			&i.RealInventory,
 			&i.ID_4,
 			&i.Image,
 			&i.Code_3,

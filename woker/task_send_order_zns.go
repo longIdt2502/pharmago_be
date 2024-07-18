@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 
 	"github.com/hibiken/asynq"
@@ -65,6 +66,7 @@ func (processor *RedisTaskProcessor) ProcessorTaskSendOrderZns(ctx context.Conte
 	client := &http.Client{}
 	url := "https://core.wezolo.com/v1/zns/send/"
 	reqHttp, _ := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
+	reqHttp.Header.Set("Content-Type", "application/json")
 	reqHttp.Header.Set("Authorization", "Token 1e21c13f941d67507d9d1099150866b6759d9336")
 	reqHttp.Header.Set("X-Application-Id", "4367014412197839377")
 	reqHttp.Header.Set("X-Secret-Key", "6Sr1vfB1Jgh7ll7QkUmU")
@@ -76,9 +78,12 @@ func (processor *RedisTaskProcessor) ProcessorTaskSendOrderZns(ctx context.Conte
 
 	defer resp.Body.Close()
 
+	body, _ := io.ReadAll(resp.Body)
+
 	log.Info().
 		Str("type", task.Type()).
 		Bytes("payload", task.Payload()).
+		Bytes("response", body).
 		Str("phone", payload.Phone).
 		Msg("processor task")
 

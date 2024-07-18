@@ -129,6 +129,48 @@ type App struct {
 	Level  sql.NullInt32  `json:"level"`
 }
 
+type AppointmentSchedule struct {
+	ID       int32         `json:"id"`
+	Uuid     uuid.UUID     `json:"uuid"`
+	Code     string        `json:"code"`
+	Customer sql.NullInt32 `json:"customer"`
+	Company  sql.NullInt32 `json:"company"`
+	Doctor   sql.NullInt32 `json:"doctor"`
+	// Triệu chứng bệnh
+	Symptoms sql.NullString `json:"symptoms"`
+	// Chuẩn đoán bệnh
+	Diagnostic sql.NullString `json:"diagnostic"`
+	QrCodeUrl  sql.NullString `json:"qr_code_url"`
+	// true: Đã xong, false: Chưa diễn ra
+	IsDone      bool          `json:"is_done"`
+	UserCreated int32         `json:"user_created"`
+	UserUpdated sql.NullInt32 `json:"user_updated"`
+	CreatedAt   time.Time     `json:"created_at"`
+	UpdatedAt   sql.NullTime  `json:"updated_at"`
+}
+
+type AppointmentScheduleDrug struct {
+	ID       int32          `json:"id"`
+	AsUuid   uuid.UUID      `json:"as_uuid"`
+	Variant  sql.NullInt32  `json:"variant"`
+	LieuDung sql.NullString `json:"lieu_dung"`
+	Quantity int32          `json:"quantity"`
+}
+
+type AppointmentScheduleService struct {
+	ID           int32         `json:"id"`
+	AsUuid       uuid.UUID     `json:"as_uuid"`
+	Service      sql.NullInt32 `json:"service"`
+	OrderService sql.NullInt32 `json:"order_service"`
+}
+
+type AppointmentScheduleUrl struct {
+	ID      int32          `json:"id"`
+	AsUuid  uuid.UUID      `json:"as_uuid"`
+	Url     sql.NullString `json:"url"`
+	NameDoc sql.NullString `json:"name_doc"`
+}
+
 type Classify struct {
 	ID   int32  `json:"id"`
 	Code string `json:"code"`
@@ -456,20 +498,20 @@ type Product struct {
 	Unit            int32          `json:"unit"`
 	TaDuoc          sql.NullString `json:"ta_duoc"`
 	NongDo          sql.NullString `json:"nong_do"`
-	LieuDung        string         `json:"lieu_dung"`
-	ChiDinh         string         `json:"chi_dinh"`
+	LieuDung        sql.NullString `json:"lieu_dung"`
+	ChiDinh         sql.NullString `json:"chi_dinh"`
 	ChongChiDinh    sql.NullString `json:"chong_chi_dinh"`
-	CongDung        string         `json:"cong_dung"`
-	TacDungPhu      string         `json:"tac_dung_phu"`
-	ThanTrong       string         `json:"than_trong"`
+	CongDung        sql.NullString `json:"cong_dung"`
+	TacDungPhu      sql.NullString `json:"tac_dung_phu"`
+	ThanTrong       sql.NullString `json:"than_trong"`
 	TuongTac        sql.NullString `json:"tuong_tac"`
-	BaoQuan         string         `json:"bao_quan"`
-	DongGoi         string         `json:"dong_goi"`
+	BaoQuan         sql.NullString `json:"bao_quan"`
+	DongGoi         sql.NullString `json:"dong_goi"`
 	PhanLoai        sql.NullString `json:"phan_loai"`
-	DangBaoChe      string         `json:"dang_bao_che"`
-	TieuChuanSx     string         `json:"tieu_chuan_sx"`
-	CongTySx        int32          `json:"cong_ty_sx"`
-	CongTyDk        int32          `json:"cong_ty_dk"`
+	DangBaoChe      sql.NullString `json:"dang_bao_che"`
+	TieuChuanSx     sql.NullString `json:"tieu_chuan_sx"`
+	CongTySx        sql.NullInt32  `json:"cong_ty_sx"`
+	CongTyDk        sql.NullInt32  `json:"cong_ty_dk"`
 	Active          bool           `json:"active"`
 	Company         int32          `json:"company"`
 	UserCreated     int32          `json:"user_created"`
@@ -735,19 +777,21 @@ type UnitChange struct {
 }
 
 type Variant struct {
-	ID             int32         `json:"id"`
-	Name           string        `json:"name"`
-	Code           string        `json:"code"`
-	Barcode        string        `json:"barcode"`
-	DecisionNumber string        `json:"decision_number"`
-	RegisterNumber string        `json:"register_number"`
-	Longevity      string        `json:"longevity"`
-	Vat            float64       `json:"vat"`
-	Product        int32         `json:"product"`
-	UserCreated    int32         `json:"user_created"`
-	UserUpdated    sql.NullInt32 `json:"user_updated"`
-	UpdatedAt      sql.NullTime  `json:"updated_at"`
-	CreatedAt      time.Time     `json:"created_at"`
+	ID               int32           `json:"id"`
+	Name             string          `json:"name"`
+	Code             string          `json:"code"`
+	Barcode          sql.NullString  `json:"barcode"`
+	DecisionNumber   sql.NullString  `json:"decision_number"`
+	RegisterNumber   sql.NullString  `json:"register_number"`
+	Longevity        sql.NullString  `json:"longevity"`
+	Vat              sql.NullFloat64 `json:"vat"`
+	Product          int32           `json:"product"`
+	UserCreated      int32           `json:"user_created"`
+	UserUpdated      sql.NullInt32   `json:"user_updated"`
+	UpdatedAt        sql.NullTime    `json:"updated_at"`
+	CreatedAt        time.Time       `json:"created_at"`
+	InitialInventory int32           `json:"initial_inventory"`
+	RealInventory    int32           `json:"real_inventory"`
 }
 
 type VariantMedium struct {

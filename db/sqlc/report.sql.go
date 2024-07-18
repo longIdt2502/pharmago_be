@@ -136,7 +136,7 @@ WITH variant_total AS (
         v.id
 )
 SELECT
-    v.id, v.name, v.code, v.barcode, v.decision_number, v.register_number, v.longevity, v.vat, v.product, v.user_created, v.user_updated, v.updated_at, v.created_at,
+    v.id, v.name, v.code, v.barcode, v.decision_number, v.register_number, v.longevity, v.vat, v.product, v.user_created, v.user_updated, v.updated_at, v.created_at, v.initial_inventory, v.real_inventory,
     vt.total_revenue AS revenue,
     m.media_url AS imageUrl
 FROM
@@ -154,21 +154,23 @@ LIMIT
 `
 
 type GetVariantBestSaleRow struct {
-	ID             int32         `json:"id"`
-	Name           string        `json:"name"`
-	Code           string        `json:"code"`
-	Barcode        string        `json:"barcode"`
-	DecisionNumber string        `json:"decision_number"`
-	RegisterNumber string        `json:"register_number"`
-	Longevity      string        `json:"longevity"`
-	Vat            float64       `json:"vat"`
-	Product        int32         `json:"product"`
-	UserCreated    int32         `json:"user_created"`
-	UserUpdated    sql.NullInt32 `json:"user_updated"`
-	UpdatedAt      sql.NullTime  `json:"updated_at"`
-	CreatedAt      time.Time     `json:"created_at"`
-	Revenue        float64       `json:"revenue"`
-	Imageurl       string        `json:"imageurl"`
+	ID               int32           `json:"id"`
+	Name             string          `json:"name"`
+	Code             string          `json:"code"`
+	Barcode          sql.NullString  `json:"barcode"`
+	DecisionNumber   sql.NullString  `json:"decision_number"`
+	RegisterNumber   sql.NullString  `json:"register_number"`
+	Longevity        sql.NullString  `json:"longevity"`
+	Vat              sql.NullFloat64 `json:"vat"`
+	Product          int32           `json:"product"`
+	UserCreated      int32           `json:"user_created"`
+	UserUpdated      sql.NullInt32   `json:"user_updated"`
+	UpdatedAt        sql.NullTime    `json:"updated_at"`
+	CreatedAt        time.Time       `json:"created_at"`
+	InitialInventory int32           `json:"initial_inventory"`
+	RealInventory    int32           `json:"real_inventory"`
+	Revenue          float64         `json:"revenue"`
+	Imageurl         string          `json:"imageurl"`
 }
 
 func (q *Queries) GetVariantBestSale(ctx context.Context, company int32) ([]GetVariantBestSaleRow, error) {
@@ -194,6 +196,8 @@ func (q *Queries) GetVariantBestSale(ctx context.Context, company int32) ([]GetV
 			&i.UserUpdated,
 			&i.UpdatedAt,
 			&i.CreatedAt,
+			&i.InitialInventory,
+			&i.RealInventory,
 			&i.Revenue,
 			&i.Imageurl,
 		); err != nil {

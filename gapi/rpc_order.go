@@ -31,7 +31,13 @@ func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRe
 		TokenPayload:       tokenPayload,
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.InvalidArgument, fmt.Sprintf("failed: %e", err))
+		errApp := err.(*common.AppError)
+		return &pb.OrderCreateResponse{
+			Code:         int32(errApp.StatusCode),
+			Message:      errApp.Message,
+			MessageTrans: errApp.MessageTrans,
+			Log:          errApp.Log,
+		}, nil
 	}
 
 	company, _ := server.store.GetCompanyById(ctx, req.Order.Company)
@@ -45,12 +51,13 @@ func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRe
 	payload := &woker.PayloadZNS{
 		OaID: company.OaID.String,
 		Data: woker.PayloadZNSData{
-			Name:      customer.FullName,
-			Status:    "Chờ xác nhận",
-			CreatedAt: time.Now().Format("15:04:05 02/01/2006"),
-			Total:     strconv.FormatFloat(float64(req.Order.GetTotalPrice()), 'f', -1, 64),
-			Phone:     customer.Phone.String,
-			Code:      order.Code,
+			Name:       customer.FullName,
+			Status:     "Chờ xác nhận",
+			CreatedAt:  time.Now().Format("15:04:05 02/01/2006"),
+			Total:      strconv.FormatFloat(float64(req.Order.GetTotalPrice()), 'f', -1, 64),
+			Phone:      customer.Phone.String,
+			Code:       order.Code,
+			OrderItems: "Thuốc",
 		},
 		Phone: customer.Phone.String,
 		Mode:  "production",
@@ -98,7 +105,7 @@ func (server *ServerGRPC) OrderCreate(ctx context.Context, req *pb.OrderCreateRe
 
 	return &pb.OrderCreateResponse{
 		Code:    200,
-		Message: fmt.Sprintf("success: %e", err),
+		Message: "success",
 		Details: result.Id,
 	}, nil
 }

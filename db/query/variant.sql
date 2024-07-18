@@ -12,7 +12,7 @@ JOIN products p ON v.product = p.id
 LEFT JOIN variant_media vm ON vm.variant = v.id
 LEFT JOIN medias m ON m.id = vm.media
 JOIN units u ON u.id = p.unit
-JOIN price_list pl ON pl.variant_code = v.code
+LEFT JOIN price_list pl ON pl.variant_code = v.code
 WHERE (p.company = sqlc.arg(company)::int OR v.product = sqlc.arg(product)::int)
 AND (
     v.name ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
