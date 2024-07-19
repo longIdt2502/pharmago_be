@@ -32,8 +32,7 @@ func NewFileFromImage(data []byte) (file *File, err error) {
 	}, nil
 }
 
-func NewFileFromFile(data []byte) (file *File, err error) {
-	fileName := fmt.Sprintf("%s.pdf", RandomString(12))
+func NewFileFromFile(data []byte, fileName string) (file *File, err error) {
 	tempDir := os.TempDir()
 	tempFilePath := filepath.Join(tempDir, fileName)
 	err = os.WriteFile(tempFilePath, data, 0644)

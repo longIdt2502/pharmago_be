@@ -6,11 +6,16 @@ option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
 import "entities/customer.proto";
 
+message FileItem {
+    string name = 1;
+    bytes file = 2;
+}
+
 message MedicalRecordCreateRequest {
     MedicalRecordType type = 1;
     int32 customer = 2;
     optional string appointment_schedule = 3;
-    repeated bytes files = 4; 
+    repeated FileItem files = 4; 
 }
 
 message MedicalRecordCreateResponse {
