@@ -10,6 +10,7 @@ UPDATE "customers" SET "contact_address" = NULL;
 ALTER TABLE "customers" ADD COLUMN IF NOT EXISTS "account_number" varchar;
 ALTER TABLE "customers" ADD COLUMN IF NOT EXISTS "bank_name" varchar;
 ALTER TABLE "customers" ADD COLUMN IF NOT EXISTS "bank_branch" varchar;
+ALTER TABLE "customers" ADD COLUMN IF NOT EXISTS "issued_by" varchar;
 
 COMMENT ON COLUMN "customers"."title" IS 'Chức danh';
 
