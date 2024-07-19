@@ -21,6 +21,55 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type MedicalRecordType int32
+
+const (
+	MedicalRecordType_test       MedicalRecordType = 0
+	MedicalRecordType_patient    MedicalRecordType = 1
+	MedicalRecordType_diagnostic MedicalRecordType = 2
+)
+
+// Enum value maps for MedicalRecordType.
+var (
+	MedicalRecordType_name = map[int32]string{
+		0: "test",
+		1: "patient",
+		2: "diagnostic",
+	}
+	MedicalRecordType_value = map[string]int32{
+		"test":       0,
+		"patient":    1,
+		"diagnostic": 2,
+	}
+)
+
+func (x MedicalRecordType) Enum() *MedicalRecordType {
+	p := new(MedicalRecordType)
+	*p = x
+	return p
+}
+
+func (x MedicalRecordType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (MedicalRecordType) Descriptor() protoreflect.EnumDescriptor {
+	return file_entities_customer_proto_enumTypes[0].Descriptor()
+}
+
+func (MedicalRecordType) Type() protoreflect.EnumType {
+	return &file_entities_customer_proto_enumTypes[0]
+}
+
+func (x MedicalRecordType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use MedicalRecordType.Descriptor instead.
+func (MedicalRecordType) EnumDescriptor() ([]byte, []int) {
+	return file_entities_customer_proto_rawDescGZIP(), []int{0}
+}
+
 type Customer struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -331,6 +380,117 @@ func (x *CustomerDetail) GetBankBranch() string {
 	return ""
 }
 
+type MedicalRecordLink struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id                  int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`                                                                   // serial
+	Uuid                string                 `protobuf:"bytes,2,opt,name=uuid,proto3" json:"uuid,omitempty"`                                                                // uuid
+	Type                MedicalRecordType      `protobuf:"varint,3,opt,name=type,proto3,enum=pb.MedicalRecordType" json:"type,omitempty"`                                     // medical_record_type
+	Title               string                 `protobuf:"bytes,4,opt,name=title,proto3" json:"title,omitempty"`                                                              // varchar
+	Url                 string                 `protobuf:"bytes,5,opt,name=url,proto3" json:"url,omitempty"`                                                                  // varchar
+	Customer            int32                  `protobuf:"varint,6,opt,name=customer,proto3" json:"customer,omitempty"`                                                       // serial
+	AppointmentSchedule *string                `protobuf:"bytes,7,opt,name=appointment_schedule,json=appointmentSchedule,proto3,oneof" json:"appointment_schedule,omitempty"` // uuid
+	UserCreated         int32                  `protobuf:"varint,8,opt,name=user_created,json=userCreated,proto3" json:"user_created,omitempty"`                              // serial
+	CreatedAt           *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`                                     // timestamp
+}
+
+func (x *MedicalRecordLink) Reset() {
+	*x = MedicalRecordLink{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_entities_customer_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *MedicalRecordLink) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MedicalRecordLink) ProtoMessage() {}
+
+func (x *MedicalRecordLink) ProtoReflect() protoreflect.Message {
+	mi := &file_entities_customer_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MedicalRecordLink.ProtoReflect.Descriptor instead.
+func (*MedicalRecordLink) Descriptor() ([]byte, []int) {
+	return file_entities_customer_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *MedicalRecordLink) GetId() int32 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *MedicalRecordLink) GetUuid() string {
+	if x != nil {
+		return x.Uuid
+	}
+	return ""
+}
+
+func (x *MedicalRecordLink) GetType() MedicalRecordType {
+	if x != nil {
+		return x.Type
+	}
+	return MedicalRecordType_test
+}
+
+func (x *MedicalRecordLink) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *MedicalRecordLink) GetUrl() string {
+	if x != nil {
+		return x.Url
+	}
+	return ""
+}
+
+func (x *MedicalRecordLink) GetCustomer() int32 {
+	if x != nil {
+		return x.Customer
+	}
+	return 0
+}
+
+func (x *MedicalRecordLink) GetAppointmentSchedule() string {
+	if x != nil && x.AppointmentSchedule != nil {
+		return *x.AppointmentSchedule
+	}
+	return ""
+}
+
+func (x *MedicalRecordLink) GetUserCreated() int32 {
+	if x != nil {
+		return x.UserCreated
+	}
+	return 0
+}
+
+func (x *MedicalRecordLink) GetCreatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return nil
+}
+
 var File_entities_customer_proto protoreflect.FileDescriptor
 
 var file_entities_customer_proto_rawDesc = []byte{
@@ -419,10 +579,35 @@ var file_entities_customer_proto_rawDesc = []byte{
 	0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x42, 0x11, 0x0a, 0x0f, 0x5f, 0x61, 0x63, 0x63, 0x6f,
 	0x75, 0x6e, 0x74, 0x5f, 0x6e, 0x75, 0x6d, 0x62, 0x65, 0x72, 0x42, 0x0c, 0x0a, 0x0a, 0x5f, 0x62,
 	0x61, 0x6e, 0x6b, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x42, 0x0e, 0x0a, 0x0c, 0x5f, 0x62, 0x61, 0x6e,
-	0x6b, 0x5f, 0x62, 0x72, 0x61, 0x6e, 0x63, 0x68, 0x42, 0x29, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68,
-	0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x48, 0x6f, 0x61, 0x6e, 0x67, 0x4c, 0x6f, 0x6e, 0x67,
-	0x32, 0x35, 0x30, 0x32, 0x2f, 0x70, 0x68, 0x61, 0x72, 0x6d, 0x61, 0x67, 0x6f, 0x5f, 0x62, 0x65,
-	0x2f, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6b, 0x5f, 0x62, 0x72, 0x61, 0x6e, 0x63, 0x68, 0x22, 0xd5, 0x02, 0x0a, 0x11, 0x4d, 0x65, 0x64,
+	0x69, 0x63, 0x61, 0x6c, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x4c, 0x69, 0x6e, 0x6b, 0x12, 0x0e,
+	0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x02, 0x69, 0x64, 0x12, 0x12,
+	0x0a, 0x04, 0x75, 0x75, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x75, 0x75,
+	0x69, 0x64, 0x12, 0x29, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0e,
+	0x32, 0x15, 0x2e, 0x70, 0x62, 0x2e, 0x4d, 0x65, 0x64, 0x69, 0x63, 0x61, 0x6c, 0x52, 0x65, 0x63,
+	0x6f, 0x72, 0x64, 0x54, 0x79, 0x70, 0x65, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x14, 0x0a,
+	0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x69,
+	0x74, 0x6c, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x75, 0x72, 0x6c, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x03, 0x75, 0x72, 0x6c, 0x12, 0x1a, 0x0a, 0x08, 0x63, 0x75, 0x73, 0x74, 0x6f, 0x6d, 0x65,
+	0x72, 0x18, 0x06, 0x20, 0x01, 0x28, 0x05, 0x52, 0x08, 0x63, 0x75, 0x73, 0x74, 0x6f, 0x6d, 0x65,
+	0x72, 0x12, 0x36, 0x0a, 0x14, 0x61, 0x70, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x6d, 0x65, 0x6e, 0x74,
+	0x5f, 0x73, 0x63, 0x68, 0x65, 0x64, 0x75, 0x6c, 0x65, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x48,
+	0x00, 0x52, 0x13, 0x61, 0x70, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x53, 0x63,
+	0x68, 0x65, 0x64, 0x75, 0x6c, 0x65, 0x88, 0x01, 0x01, 0x12, 0x21, 0x0a, 0x0c, 0x75, 0x73, 0x65,
+	0x72, 0x5f, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x18, 0x08, 0x20, 0x01, 0x28, 0x05, 0x52,
+	0x0b, 0x75, 0x73, 0x65, 0x72, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x12, 0x39, 0x0a, 0x0a,
+	0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x5f, 0x61, 0x74, 0x18, 0x09, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
+	0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x52, 0x09, 0x63, 0x72,
+	0x65, 0x61, 0x74, 0x65, 0x64, 0x41, 0x74, 0x42, 0x17, 0x0a, 0x15, 0x5f, 0x61, 0x70, 0x70, 0x6f,
+	0x69, 0x6e, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x5f, 0x73, 0x63, 0x68, 0x65, 0x64, 0x75, 0x6c, 0x65,
+	0x2a, 0x3a, 0x0a, 0x11, 0x4d, 0x65, 0x64, 0x69, 0x63, 0x61, 0x6c, 0x52, 0x65, 0x63, 0x6f, 0x72,
+	0x64, 0x54, 0x79, 0x70, 0x65, 0x12, 0x08, 0x0a, 0x04, 0x74, 0x65, 0x73, 0x74, 0x10, 0x00, 0x12,
+	0x0b, 0x0a, 0x07, 0x70, 0x61, 0x74, 0x69, 0x65, 0x6e, 0x74, 0x10, 0x01, 0x12, 0x0e, 0x0a, 0x0a,
+	0x64, 0x69, 0x61, 0x67, 0x6e, 0x6f, 0x73, 0x74, 0x69, 0x63, 0x10, 0x02, 0x42, 0x29, 0x5a, 0x27,
+	0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x48, 0x6f, 0x61, 0x6e, 0x67,
+	0x4c, 0x6f, 0x6e, 0x67, 0x32, 0x35, 0x30, 0x32, 0x2f, 0x70, 0x68, 0x61, 0x72, 0x6d, 0x61, 0x67,
+	0x6f, 0x5f, 0x62, 0x65, 0x2f, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -437,26 +622,31 @@ func file_entities_customer_proto_rawDescGZIP() []byte {
 	return file_entities_customer_proto_rawDescData
 }
 
-var file_entities_customer_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_entities_customer_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_entities_customer_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_entities_customer_proto_goTypes = []interface{}{
-	(*Customer)(nil),              // 0: pb.Customer
-	(*CustomerDetail)(nil),        // 1: pb.CustomerDetail
-	(*Address)(nil),               // 2: pb.Address
-	(*Conversation)(nil),          // 3: pb.Conversation
-	(*timestamppb.Timestamp)(nil), // 4: google.protobuf.Timestamp
+	(MedicalRecordType)(0),        // 0: pb.MedicalRecordType
+	(*Customer)(nil),              // 1: pb.Customer
+	(*CustomerDetail)(nil),        // 2: pb.CustomerDetail
+	(*MedicalRecordLink)(nil),     // 3: pb.MedicalRecordLink
+	(*Address)(nil),               // 4: pb.Address
+	(*Conversation)(nil),          // 5: pb.Conversation
+	(*timestamppb.Timestamp)(nil), // 6: google.protobuf.Timestamp
 }
 var file_entities_customer_proto_depIdxs = []int32{
-	2, // 0: pb.Customer.address:type_name -> pb.Address
-	3, // 1: pb.Customer.conversation:type_name -> pb.Conversation
-	2, // 2: pb.CustomerDetail.address:type_name -> pb.Address
-	4, // 3: pb.CustomerDetail.birthday:type_name -> google.protobuf.Timestamp
-	4, // 4: pb.CustomerDetail.license_date:type_name -> google.protobuf.Timestamp
-	2, // 5: pb.CustomerDetail.contact_address:type_name -> pb.Address
-	6, // [6:6] is the sub-list for method output_type
-	6, // [6:6] is the sub-list for method input_type
-	6, // [6:6] is the sub-list for extension type_name
-	6, // [6:6] is the sub-list for extension extendee
-	0, // [0:6] is the sub-list for field type_name
+	4, // 0: pb.Customer.address:type_name -> pb.Address
+	5, // 1: pb.Customer.conversation:type_name -> pb.Conversation
+	4, // 2: pb.CustomerDetail.address:type_name -> pb.Address
+	6, // 3: pb.CustomerDetail.birthday:type_name -> google.protobuf.Timestamp
+	6, // 4: pb.CustomerDetail.license_date:type_name -> google.protobuf.Timestamp
+	4, // 5: pb.CustomerDetail.contact_address:type_name -> pb.Address
+	0, // 6: pb.MedicalRecordLink.type:type_name -> pb.MedicalRecordType
+	6, // 7: pb.MedicalRecordLink.created_at:type_name -> google.protobuf.Timestamp
+	8, // [8:8] is the sub-list for method output_type
+	8, // [8:8] is the sub-list for method input_type
+	8, // [8:8] is the sub-list for extension type_name
+	8, // [8:8] is the sub-list for extension extendee
+	0, // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_entities_customer_proto_init() }
@@ -491,21 +681,35 @@ func file_entities_customer_proto_init() {
 				return nil
 			}
 		}
+		file_entities_customer_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MedicalRecordLink); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	file_entities_customer_proto_msgTypes[0].OneofWrappers = []interface{}{}
 	file_entities_customer_proto_msgTypes[1].OneofWrappers = []interface{}{}
+	file_entities_customer_proto_msgTypes[2].OneofWrappers = []interface{}{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_entities_customer_proto_rawDesc,
-			NumEnums:      0,
-			NumMessages:   2,
+			NumEnums:      1,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_entities_customer_proto_goTypes,
 		DependencyIndexes: file_entities_customer_proto_depIdxs,
+		EnumInfos:         file_entities_customer_proto_enumTypes,
 		MessageInfos:      file_entities_customer_proto_msgTypes,
 	}.Build()
 	File_entities_customer_proto = out.File

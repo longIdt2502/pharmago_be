@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/longIdt2502/pharmago_be/common"
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
@@ -288,8 +289,10 @@ func (server *ServerGRPC) CustomerCreate(ctx context.Context, req *pb.CustomerCr
 	if err != nil {
 		errLog := common.ErrDB(err)
 		return &pb.CustomerCreateResponse{
-			Code:    int32(errLog.StatusCode),
-			Message: errLog.Message,
+			Code:         int32(errLog.StatusCode),
+			Message:      errLog.Message,
+			MessageTrans: "Lỗi tạo khách hàng",
+			Log:          errLog.Log,
 		}, nil
 	}
 
@@ -675,4 +678,210 @@ func (server *ServerGRPC) CustomerGroupDelete(ctx context.Context, req *pb.Custo
 		Code:    200,
 		Message: "success",
 	}, nil
+}
+
+func (server *ServerGRPC) MedicalRecordCreate(ctx context.Context, req *pb.MedicalRecordCreateRequest) (*pb.MedicalRecordCreateResponse, error) {
+	tokenPayload, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	var asUuid uuid.UUID
+	if req.AppointmentSchedule != nil {
+		asUuid, err = uuid.Parse(req.GetAppointmentSchedule())
+		if err != nil {
+			errApp := common.ErrInternalWithMsg(err, "lịch hẹn không tồn tại")
+			return &pb.MedicalRecordCreateResponse{
+				Code:         int32(errApp.StatusCode),
+				Message:      errApp.Message,
+				MessageTrans: errApp.MessageTrans,
+				Log:          errApp.Log,
+			}, nil
+		}
+	}
+
+	var res *pb.MedicalRecordCreateResponse
+
+	for _, item := range req.GetFiles() {
+		file, _ := utils.NewFileFromFile(item)
+		_, err = server.b2Bucket.UploadFile(file.Name, file.Meta, file.File)
+		if err != nil {
+			errApp := common.ErrInternal(err)
+			return &pb.MedicalRecordCreateResponse{
+				Code:         int32(errApp.StatusCode),
+				Message:      errApp.Message,
+				MessageTrans: errApp.MessageTrans,
+				Log:          errApp.Log,
+			}, nil
+		}
+		title := file.Name
+		url, _ := server.b2Bucket.FileURL(file.Name)
+
+		record, err := server.store.CreateMedicalRecordLink(ctx, db.CreateMedicalRecordLinkParams{
+			Uuid:                uuid.New(),
+			Type:                db.MedicalRecordLinkType(req.GetType().String()),
+			Title:               sql.NullString{String: title, Valid: true},
+			Url:                 url,
+			Customer:            sql.NullInt32{Int32: req.GetCustomer(), Valid: true},
+			AppointmentSchedule: uuid.NullUUID{UUID: asUuid, Valid: req.AppointmentSchedule != nil},
+			UserCreated:         sql.NullInt32{Int32: tokenPayload.UserID, Valid: true},
+		})
+		if err != nil {
+			errApp := common.ErrDBWithMsg(err, "Tải lên file thất bại")
+			res = &pb.MedicalRecordCreateResponse{
+				Code:         int32(errApp.StatusCode),
+				Message:      errApp.Message,
+				MessageTrans: errApp.MessageTrans,
+				Log:          errApp.Log,
+			}
+		} else {
+			res = &pb.MedicalRecordCreateResponse{
+				Code:    200,
+				Message: "success",
+				Details: record.ID,
+			}
+		}
+	}
+
+	return res, nil
+}
+
+func (server *ServerGRPC) MedicalRecordCreateStream(req *pb.MedicalRecordCreateRequest, stream pb.Pharmago_MedicalRecordCreateStreamServer) error {
+	ctx := stream.Context()
+
+	tokenPayload, err := server.authorizeUser(ctx)
+	if err != nil {
+		return config.UnauthenticatedError(err)
+	}
+
+	var asUuid uuid.UUID
+	if req.AppointmentSchedule != nil {
+		asUuid, err = uuid.Parse(req.GetAppointmentSchedule())
+		if err != nil {
+			errApp := common.ErrInternalWithMsg(err, "lịch hẹn không tồn tại")
+			return errApp
+		}
+	}
+
+	for _, item := range req.GetFiles() {
+		file, _ := utils.NewFileFromImage(item)
+		_, err = server.b2Bucket.UploadFile(file.Name, file.Meta, file.File)
+		if err != nil {
+			return common.ErrInternal(err)
+		}
+		title := file.Name
+		url, _ := server.b2Bucket.FileURL(file.Name)
+
+		var res *pb.MedicalRecordCreateResponse
+		record, err := server.store.CreateMedicalRecordLink(ctx, db.CreateMedicalRecordLinkParams{
+			Uuid:                uuid.New(),
+			Type:                db.MedicalRecordLinkType(req.GetType().String()),
+			Title:               sql.NullString{String: title, Valid: true},
+			Url:                 url,
+			Customer:            sql.NullInt32{Int32: req.GetCustomer(), Valid: true},
+			AppointmentSchedule: uuid.NullUUID{UUID: asUuid, Valid: req.AppointmentSchedule != nil},
+			UserCreated:         sql.NullInt32{Int32: tokenPayload.UserID, Valid: true},
+		})
+		if err != nil {
+			errApp := common.ErrDBWithMsg(err, "Tải lên file thất bại")
+			res = &pb.MedicalRecordCreateResponse{
+				Code:         int32(errApp.StatusCode),
+				Message:      errApp.Message,
+				MessageTrans: errApp.MessageTrans,
+				Log:          errApp.Log,
+			}
+		} else {
+			res = &pb.MedicalRecordCreateResponse{
+				Code:    200,
+				Message: "success",
+				Details: record.ID,
+			}
+		}
+		stream.Send(res)
+	}
+
+	stream.Send(&pb.MedicalRecordCreateResponse{
+		Code:    200,
+		Message: "stream end",
+	})
+
+	return nil
+}
+
+func (server *ServerGRPC) MedicalRecordList(ctx context.Context, req *pb.MedicalRecordListRequest) (*pb.MedicalRecordListResponse, error) {
+	_, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	var asUuid uuid.UUID
+	if req.AppointmentSchedule != nil {
+		asUuid, err = uuid.Parse(req.GetAppointmentSchedule())
+		if err != nil {
+			errApp := common.ErrInternalWithMsg(err, "lịch hẹn không tồn tại")
+			return &pb.MedicalRecordListResponse{
+				Code:         int32(errApp.StatusCode),
+				Message:      errApp.Message,
+				MessageTrans: errApp.MessageTrans,
+				Log:          errApp.Log,
+			}, nil
+		}
+	}
+
+	medicalRecords, err := server.store.ListMedicalRecordLink(ctx, db.ListMedicalRecordLinkParams{
+		Customer: sql.NullInt32{Int32: req.GetCustomer(), Valid: req.Customer != nil},
+		TypeMrl: db.NullMedicalRecordLinkType{
+			MedicalRecordLinkType: db.MedicalRecordLinkType(req.GetType().String()),
+			Valid:                 req.Type != nil,
+		},
+		Schedule: uuid.NullUUID{UUID: asUuid, Valid: req.AppointmentSchedule != nil},
+	})
+	if err != nil {
+		errApp := common.ErrDBWithMsg(err, "Dữ liệu tài liệu lỗi")
+		return &pb.MedicalRecordListResponse{
+			Code:         int32(errApp.StatusCode),
+			Message:      errApp.Message,
+			MessageTrans: errApp.MessageTrans,
+			Log:          errApp.Log,
+		}, nil
+	}
+
+	var medicalRecordsPb []*pb.MedicalRecordLink
+	for _, item := range medicalRecords {
+		var as_uuid *string
+		if item.AppointmentSchedule.Valid {
+			s := item.AppointmentSchedule.UUID.String()
+			as_uuid = &s
+		}
+		medicalRecordsPb = append(medicalRecordsPb, &pb.MedicalRecordLink{
+			Id:                  item.ID,
+			Uuid:                item.Uuid.String(),
+			Type:                convertDBTypeToPBType(item.Type),
+			Title:               item.Title.String,
+			Url:                 item.Url,
+			Customer:            item.Customer.Int32,
+			AppointmentSchedule: as_uuid,
+			UserCreated:         item.UserCreated.Int32,
+			CreatedAt:           timestamppb.New(item.CreatedAt),
+		})
+	}
+
+	return &pb.MedicalRecordListResponse{
+		Code:    200,
+		Message: "success",
+		Details: medicalRecordsPb,
+	}, nil
+}
+
+func convertDBTypeToPBType(dbType db.MedicalRecordLinkType) pb.MedicalRecordType {
+	switch dbType {
+	case db.MedicalRecordLinkTypeTest:
+		return pb.MedicalRecordType_test
+	case db.MedicalRecordLinkTypePatient:
+		return pb.MedicalRecordType_patient
+	case db.MedicalRecordLinkTypeDiagnostic:
+		return pb.MedicalRecordType_diagnostic
+	default:
+		return pb.MedicalRecordType_test
+	}
 }

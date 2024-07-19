@@ -1012,3 +1012,25 @@ Table appointment_schedule_drug as ASD {
 
 Ref: ASD.as_uuid > AS.uuid
 Ref: ASD.variant > variants.id [delete: set null]
+
+enum medical_record_link_type {
+  test
+  patient
+  diagnostic
+}
+
+Table medical_record_link as MRL {
+  id serial [pk]
+  uuid uuid [not null]
+  type medical_record_type [not null]
+  title varchar
+  url varchar [not null]
+  customer serial
+  appointment_schedule uuid
+  user_created serial
+  created_at timestamp [not null, default: `now()`]
+}
+
+Ref: MRL.customer > customers.id [delete: cascade]
+Ref: MRL.appointment_schedule > appointment_schedules.uuid [delete: set null]
+Ref: MRL.user_created > A.id [delete: set null]
