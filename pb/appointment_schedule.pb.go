@@ -744,6 +744,188 @@ func (x *AppointmentScheduleListResponse) GetDetails() []*AppointmentSchedule {
 	return nil
 }
 
+type AppointmentScheduleUpdateRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Company   int32                  `protobuf:"varint,1,opt,name=company,proto3" json:"company,omitempty"`
+	Search    *string                `protobuf:"bytes,2,opt,name=search,proto3,oneof" json:"search,omitempty"`
+	Customer  *int32                 `protobuf:"varint,3,opt,name=customer,proto3,oneof" json:"customer,omitempty"`
+	Doctor    *int32                 `protobuf:"varint,4,opt,name=doctor,proto3,oneof" json:"doctor,omitempty"`
+	TimeStart *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=time_start,json=timeStart,proto3,oneof" json:"time_start,omitempty"`
+	TimeEnd   *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=time_end,json=timeEnd,proto3,oneof" json:"time_end,omitempty"`
+	Page      *int32                 `protobuf:"varint,7,opt,name=page,proto3,oneof" json:"page,omitempty"`
+	Limit     *int32                 `protobuf:"varint,8,opt,name=limit,proto3,oneof" json:"limit,omitempty"`
+}
+
+func (x *AppointmentScheduleUpdateRequest) Reset() {
+	*x = AppointmentScheduleUpdateRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_entities_appointment_schedule_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AppointmentScheduleUpdateRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AppointmentScheduleUpdateRequest) ProtoMessage() {}
+
+func (x *AppointmentScheduleUpdateRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_entities_appointment_schedule_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AppointmentScheduleUpdateRequest.ProtoReflect.Descriptor instead.
+func (*AppointmentScheduleUpdateRequest) Descriptor() ([]byte, []int) {
+	return file_entities_appointment_schedule_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *AppointmentScheduleUpdateRequest) GetCompany() int32 {
+	if x != nil {
+		return x.Company
+	}
+	return 0
+}
+
+func (x *AppointmentScheduleUpdateRequest) GetSearch() string {
+	if x != nil && x.Search != nil {
+		return *x.Search
+	}
+	return ""
+}
+
+func (x *AppointmentScheduleUpdateRequest) GetCustomer() int32 {
+	if x != nil && x.Customer != nil {
+		return *x.Customer
+	}
+	return 0
+}
+
+func (x *AppointmentScheduleUpdateRequest) GetDoctor() int32 {
+	if x != nil && x.Doctor != nil {
+		return *x.Doctor
+	}
+	return 0
+}
+
+func (x *AppointmentScheduleUpdateRequest) GetTimeStart() *timestamppb.Timestamp {
+	if x != nil {
+		return x.TimeStart
+	}
+	return nil
+}
+
+func (x *AppointmentScheduleUpdateRequest) GetTimeEnd() *timestamppb.Timestamp {
+	if x != nil {
+		return x.TimeEnd
+	}
+	return nil
+}
+
+func (x *AppointmentScheduleUpdateRequest) GetPage() int32 {
+	if x != nil && x.Page != nil {
+		return *x.Page
+	}
+	return 0
+}
+
+func (x *AppointmentScheduleUpdateRequest) GetLimit() int32 {
+	if x != nil && x.Limit != nil {
+		return *x.Limit
+	}
+	return 0
+}
+
+type AppointmentScheduleUpdateResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Code         int32                  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Message      string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	MessageTrans string                 `protobuf:"bytes,3,opt,name=message_trans,json=messageTrans,proto3" json:"message_trans,omitempty"`
+	Log          string                 `protobuf:"bytes,4,opt,name=log,proto3" json:"log,omitempty"`
+	Details      []*AppointmentSchedule `protobuf:"bytes,5,rep,name=details,proto3" json:"details,omitempty"`
+}
+
+func (x *AppointmentScheduleUpdateResponse) Reset() {
+	*x = AppointmentScheduleUpdateResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_entities_appointment_schedule_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AppointmentScheduleUpdateResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AppointmentScheduleUpdateResponse) ProtoMessage() {}
+
+func (x *AppointmentScheduleUpdateResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_entities_appointment_schedule_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AppointmentScheduleUpdateResponse.ProtoReflect.Descriptor instead.
+func (*AppointmentScheduleUpdateResponse) Descriptor() ([]byte, []int) {
+	return file_entities_appointment_schedule_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *AppointmentScheduleUpdateResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *AppointmentScheduleUpdateResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *AppointmentScheduleUpdateResponse) GetMessageTrans() string {
+	if x != nil {
+		return x.MessageTrans
+	}
+	return ""
+}
+
+func (x *AppointmentScheduleUpdateResponse) GetLog() string {
+	if x != nil {
+		return x.Log
+	}
+	return ""
+}
+
+func (x *AppointmentScheduleUpdateResponse) GetDetails() []*AppointmentSchedule {
+	if x != nil {
+		return x.Details
+	}
+	return nil
+}
+
 var File_entities_appointment_schedule_proto protoreflect.FileDescriptor
 
 var file_entities_appointment_schedule_proto_rawDesc = []byte{
@@ -906,10 +1088,48 @@ var file_entities_appointment_schedule_proto_rawDesc = []byte{
 	0x28, 0x09, 0x52, 0x03, 0x6c, 0x6f, 0x67, 0x12, 0x31, 0x0a, 0x07, 0x64, 0x65, 0x74, 0x61, 0x69,
 	0x6c, 0x73, 0x18, 0x05, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x70, 0x62, 0x2e, 0x41, 0x70,
 	0x70, 0x6f, 0x69, 0x6e, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x53, 0x63, 0x68, 0x65, 0x64, 0x75, 0x6c,
-	0x65, 0x52, 0x07, 0x64, 0x65, 0x74, 0x61, 0x69, 0x6c, 0x73, 0x42, 0x29, 0x5a, 0x27, 0x67, 0x69,
-	0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x48, 0x6f, 0x61, 0x6e, 0x67, 0x4c, 0x6f,
-	0x6e, 0x67, 0x32, 0x35, 0x30, 0x32, 0x2f, 0x70, 0x68, 0x61, 0x72, 0x6d, 0x61, 0x67, 0x6f, 0x5f,
-	0x62, 0x65, 0x2f, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x52, 0x07, 0x64, 0x65, 0x74, 0x61, 0x69, 0x6c, 0x73, 0x22, 0x99, 0x03, 0x0a, 0x20, 0x41,
+	0x70, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x53, 0x63, 0x68, 0x65, 0x64, 0x75,
+	0x6c, 0x65, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
+	0x18, 0x0a, 0x07, 0x63, 0x6f, 0x6d, 0x70, 0x61, 0x6e, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05,
+	0x52, 0x07, 0x63, 0x6f, 0x6d, 0x70, 0x61, 0x6e, 0x79, 0x12, 0x1b, 0x0a, 0x06, 0x73, 0x65, 0x61,
+	0x72, 0x63, 0x68, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x48, 0x00, 0x52, 0x06, 0x73, 0x65, 0x61,
+	0x72, 0x63, 0x68, 0x88, 0x01, 0x01, 0x12, 0x1f, 0x0a, 0x08, 0x63, 0x75, 0x73, 0x74, 0x6f, 0x6d,
+	0x65, 0x72, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x48, 0x01, 0x52, 0x08, 0x63, 0x75, 0x73, 0x74,
+	0x6f, 0x6d, 0x65, 0x72, 0x88, 0x01, 0x01, 0x12, 0x1b, 0x0a, 0x06, 0x64, 0x6f, 0x63, 0x74, 0x6f,
+	0x72, 0x18, 0x04, 0x20, 0x01, 0x28, 0x05, 0x48, 0x02, 0x52, 0x06, 0x64, 0x6f, 0x63, 0x74, 0x6f,
+	0x72, 0x88, 0x01, 0x01, 0x12, 0x3e, 0x0a, 0x0a, 0x74, 0x69, 0x6d, 0x65, 0x5f, 0x73, 0x74, 0x61,
+	0x72, 0x74, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c,
+	0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73,
+	0x74, 0x61, 0x6d, 0x70, 0x48, 0x03, 0x52, 0x09, 0x74, 0x69, 0x6d, 0x65, 0x53, 0x74, 0x61, 0x72,
+	0x74, 0x88, 0x01, 0x01, 0x12, 0x3a, 0x0a, 0x08, 0x74, 0x69, 0x6d, 0x65, 0x5f, 0x65, 0x6e, 0x64,
+	0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61,
+	0x6d, 0x70, 0x48, 0x04, 0x52, 0x07, 0x74, 0x69, 0x6d, 0x65, 0x45, 0x6e, 0x64, 0x88, 0x01, 0x01,
+	0x12, 0x17, 0x0a, 0x04, 0x70, 0x61, 0x67, 0x65, 0x18, 0x07, 0x20, 0x01, 0x28, 0x05, 0x48, 0x05,
+	0x52, 0x04, 0x70, 0x61, 0x67, 0x65, 0x88, 0x01, 0x01, 0x12, 0x19, 0x0a, 0x05, 0x6c, 0x69, 0x6d,
+	0x69, 0x74, 0x18, 0x08, 0x20, 0x01, 0x28, 0x05, 0x48, 0x06, 0x52, 0x05, 0x6c, 0x69, 0x6d, 0x69,
+	0x74, 0x88, 0x01, 0x01, 0x42, 0x09, 0x0a, 0x07, 0x5f, 0x73, 0x65, 0x61, 0x72, 0x63, 0x68, 0x42,
+	0x0b, 0x0a, 0x09, 0x5f, 0x63, 0x75, 0x73, 0x74, 0x6f, 0x6d, 0x65, 0x72, 0x42, 0x09, 0x0a, 0x07,
+	0x5f, 0x64, 0x6f, 0x63, 0x74, 0x6f, 0x72, 0x42, 0x0d, 0x0a, 0x0b, 0x5f, 0x74, 0x69, 0x6d, 0x65,
+	0x5f, 0x73, 0x74, 0x61, 0x72, 0x74, 0x42, 0x0b, 0x0a, 0x09, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x5f,
+	0x65, 0x6e, 0x64, 0x42, 0x07, 0x0a, 0x05, 0x5f, 0x70, 0x61, 0x67, 0x65, 0x42, 0x08, 0x0a, 0x06,
+	0x5f, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x22, 0xbb, 0x01, 0x0a, 0x21, 0x41, 0x70, 0x70, 0x6f, 0x69,
+	0x6e, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x53, 0x63, 0x68, 0x65, 0x64, 0x75, 0x6c, 0x65, 0x55, 0x70,
+	0x64, 0x61, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a, 0x04,
+	0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65,
+	0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x23, 0x0a, 0x0d, 0x6d, 0x65,
+	0x73, 0x73, 0x61, 0x67, 0x65, 0x5f, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x0c, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x12,
+	0x10, 0x0a, 0x03, 0x6c, 0x6f, 0x67, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6c, 0x6f,
+	0x67, 0x12, 0x31, 0x0a, 0x07, 0x64, 0x65, 0x74, 0x61, 0x69, 0x6c, 0x73, 0x18, 0x05, 0x20, 0x03,
+	0x28, 0x0b, 0x32, 0x17, 0x2e, 0x70, 0x62, 0x2e, 0x41, 0x70, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x6d,
+	0x65, 0x6e, 0x74, 0x53, 0x63, 0x68, 0x65, 0x64, 0x75, 0x6c, 0x65, 0x52, 0x07, 0x64, 0x65, 0x74,
+	0x61, 0x69, 0x6c, 0x73, 0x42, 0x29, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63,
+	0x6f, 0x6d, 0x2f, 0x48, 0x6f, 0x61, 0x6e, 0x67, 0x4c, 0x6f, 0x6e, 0x67, 0x32, 0x35, 0x30, 0x32,
+	0x2f, 0x70, 0x68, 0x61, 0x72, 0x6d, 0x61, 0x67, 0x6f, 0x5f, 0x62, 0x65, 0x2f, 0x70, 0x62, 0x62,
+	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -924,44 +1144,49 @@ func file_entities_appointment_schedule_proto_rawDescGZIP() []byte {
 	return file_entities_appointment_schedule_proto_rawDescData
 }
 
-var file_entities_appointment_schedule_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_entities_appointment_schedule_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_entities_appointment_schedule_proto_goTypes = []interface{}{
-	(*AppointmentSchedule)(nil),             // 0: pb.AppointmentSchedule
-	(*AppointmentScheduleService)(nil),      // 1: pb.AppointmentScheduleService
-	(*AppointmentScheduleUrl)(nil),          // 2: pb.AppointmentScheduleUrl
-	(*AppointmentScheduleDrug)(nil),         // 3: pb.AppointmentScheduleDrug
-	(*AppointmentScheduleResponse)(nil),     // 4: pb.AppointmentScheduleResponse
-	(*AppointmentScheduleListRequest)(nil),  // 5: pb.AppointmentScheduleListRequest
-	(*AppointmentScheduleListResponse)(nil), // 6: pb.AppointmentScheduleListResponse
-	(*Account)(nil),                         // 7: pb.Account
-	(*timestamppb.Timestamp)(nil),           // 8: google.protobuf.Timestamp
-	(*Service)(nil),                         // 9: pb.Service
-	(*Order)(nil),                           // 10: pb.Order
-	(*Variant)(nil),                         // 11: pb.Variant
+	(*AppointmentSchedule)(nil),               // 0: pb.AppointmentSchedule
+	(*AppointmentScheduleService)(nil),        // 1: pb.AppointmentScheduleService
+	(*AppointmentScheduleUrl)(nil),            // 2: pb.AppointmentScheduleUrl
+	(*AppointmentScheduleDrug)(nil),           // 3: pb.AppointmentScheduleDrug
+	(*AppointmentScheduleResponse)(nil),       // 4: pb.AppointmentScheduleResponse
+	(*AppointmentScheduleListRequest)(nil),    // 5: pb.AppointmentScheduleListRequest
+	(*AppointmentScheduleListResponse)(nil),   // 6: pb.AppointmentScheduleListResponse
+	(*AppointmentScheduleUpdateRequest)(nil),  // 7: pb.AppointmentScheduleUpdateRequest
+	(*AppointmentScheduleUpdateResponse)(nil), // 8: pb.AppointmentScheduleUpdateResponse
+	(*Account)(nil),                           // 9: pb.Account
+	(*timestamppb.Timestamp)(nil),             // 10: google.protobuf.Timestamp
+	(*Service)(nil),                           // 11: pb.Service
+	(*Order)(nil),                             // 12: pb.Order
+	(*Variant)(nil),                           // 13: pb.Variant
 }
 var file_entities_appointment_schedule_proto_depIdxs = []int32{
-	7,  // 0: pb.AppointmentSchedule.customer:type_name -> pb.Account
-	7,  // 1: pb.AppointmentSchedule.doctor:type_name -> pb.Account
-	7,  // 2: pb.AppointmentSchedule.user_created:type_name -> pb.Account
-	7,  // 3: pb.AppointmentSchedule.user_updated:type_name -> pb.Account
-	8,  // 4: pb.AppointmentSchedule.meeting_at:type_name -> google.protobuf.Timestamp
-	8,  // 5: pb.AppointmentSchedule.created_at:type_name -> google.protobuf.Timestamp
-	8,  // 6: pb.AppointmentSchedule.updated_at:type_name -> google.protobuf.Timestamp
+	9,  // 0: pb.AppointmentSchedule.customer:type_name -> pb.Account
+	9,  // 1: pb.AppointmentSchedule.doctor:type_name -> pb.Account
+	9,  // 2: pb.AppointmentSchedule.user_created:type_name -> pb.Account
+	9,  // 3: pb.AppointmentSchedule.user_updated:type_name -> pb.Account
+	10, // 4: pb.AppointmentSchedule.meeting_at:type_name -> google.protobuf.Timestamp
+	10, // 5: pb.AppointmentSchedule.created_at:type_name -> google.protobuf.Timestamp
+	10, // 6: pb.AppointmentSchedule.updated_at:type_name -> google.protobuf.Timestamp
 	1,  // 7: pb.AppointmentSchedule.services:type_name -> pb.AppointmentScheduleService
 	2,  // 8: pb.AppointmentSchedule.urls:type_name -> pb.AppointmentScheduleUrl
 	3,  // 9: pb.AppointmentSchedule.drugs:type_name -> pb.AppointmentScheduleDrug
-	9,  // 10: pb.AppointmentScheduleService.service:type_name -> pb.Service
-	10, // 11: pb.AppointmentScheduleService.order_service:type_name -> pb.Order
-	11, // 12: pb.AppointmentScheduleDrug.variant:type_name -> pb.Variant
+	11, // 10: pb.AppointmentScheduleService.service:type_name -> pb.Service
+	12, // 11: pb.AppointmentScheduleService.order_service:type_name -> pb.Order
+	13, // 12: pb.AppointmentScheduleDrug.variant:type_name -> pb.Variant
 	0,  // 13: pb.AppointmentScheduleResponse.details:type_name -> pb.AppointmentSchedule
-	8,  // 14: pb.AppointmentScheduleListRequest.time_start:type_name -> google.protobuf.Timestamp
-	8,  // 15: pb.AppointmentScheduleListRequest.time_end:type_name -> google.protobuf.Timestamp
+	10, // 14: pb.AppointmentScheduleListRequest.time_start:type_name -> google.protobuf.Timestamp
+	10, // 15: pb.AppointmentScheduleListRequest.time_end:type_name -> google.protobuf.Timestamp
 	0,  // 16: pb.AppointmentScheduleListResponse.details:type_name -> pb.AppointmentSchedule
-	17, // [17:17] is the sub-list for method output_type
-	17, // [17:17] is the sub-list for method input_type
-	17, // [17:17] is the sub-list for extension type_name
-	17, // [17:17] is the sub-list for extension extendee
-	0,  // [0:17] is the sub-list for field type_name
+	10, // 17: pb.AppointmentScheduleUpdateRequest.time_start:type_name -> google.protobuf.Timestamp
+	10, // 18: pb.AppointmentScheduleUpdateRequest.time_end:type_name -> google.protobuf.Timestamp
+	0,  // 19: pb.AppointmentScheduleUpdateResponse.details:type_name -> pb.AppointmentSchedule
+	20, // [20:20] is the sub-list for method output_type
+	20, // [20:20] is the sub-list for method input_type
+	20, // [20:20] is the sub-list for extension type_name
+	20, // [20:20] is the sub-list for extension extendee
+	0,  // [0:20] is the sub-list for field type_name
 }
 
 func init() { file_entities_appointment_schedule_proto_init() }
@@ -1058,18 +1283,43 @@ func file_entities_appointment_schedule_proto_init() {
 				return nil
 			}
 		}
+		file_entities_appointment_schedule_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AppointmentScheduleUpdateRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_entities_appointment_schedule_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AppointmentScheduleUpdateResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	file_entities_appointment_schedule_proto_msgTypes[0].OneofWrappers = []interface{}{}
 	file_entities_appointment_schedule_proto_msgTypes[1].OneofWrappers = []interface{}{}
 	file_entities_appointment_schedule_proto_msgTypes[3].OneofWrappers = []interface{}{}
 	file_entities_appointment_schedule_proto_msgTypes[5].OneofWrappers = []interface{}{}
+	file_entities_appointment_schedule_proto_msgTypes[7].OneofWrappers = []interface{}{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_entities_appointment_schedule_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

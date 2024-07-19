@@ -311,6 +311,7 @@ type Customer struct {
 	AccountNumber  sql.NullString `json:"account_number"`
 	BankName       sql.NullString `json:"bank_name"`
 	BankBranch     sql.NullString `json:"bank_branch"`
+	IssuedBy       sql.NullString `json:"issued_by"`
 }
 
 type CustomerGroup struct {

@@ -27,12 +27,12 @@ func (q *Queries) CountCustomer(ctx context.Context, company int32) (int64, erro
 
 const createCustomer = `-- name: CreateCustomer :one
 INSERT INTO customers (
-    full_name, code, company, address, email, phone ,license, birthday, user_updated, user_created, "group", 
+    full_name, code, company, address, email, phone ,license, issued_by, birthday, user_updated, user_created, "group", 
     title, license_date, contact_name, contact_title, contact_phone, contact_email, contact_address, account_number,
     bank_name, bank_branch
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21
-) RETURNING id, full_name, code, company, address, email, phone, license, birthday, user_created, user_updated, updated_at, created_at, "group", title, license_date, contact_name, contact_title, contact_phone, contact_email, contact_address, account_number, bank_name, bank_branch
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22
+) RETURNING id, full_name, code, company, address, email, phone, license, birthday, user_created, user_updated, updated_at, created_at, "group", title, license_date, contact_name, contact_title, contact_phone, contact_email, contact_address, account_number, bank_name, bank_branch, issued_by
 `
 
 type CreateCustomerParams struct {
@@ -43,6 +43,7 @@ type CreateCustomerParams struct {
 	Email          sql.NullString `json:"email"`
 	Phone          sql.NullString `json:"phone"`
 	License        sql.NullString `json:"license"`
+	IssuedBy       sql.NullString `json:"issued_by"`
 	Birthday       sql.NullTime   `json:"birthday"`
 	UserUpdated    sql.NullInt32  `json:"user_updated"`
 	UserCreated    int32          `json:"user_created"`
@@ -68,6 +69,7 @@ func (q *Queries) CreateCustomer(ctx context.Context, arg CreateCustomerParams) 
 		arg.Email,
 		arg.Phone,
 		arg.License,
+		arg.IssuedBy,
 		arg.Birthday,
 		arg.UserUpdated,
 		arg.UserCreated,
@@ -109,6 +111,7 @@ func (q *Queries) CreateCustomer(ctx context.Context, arg CreateCustomerParams) 
 		&i.AccountNumber,
 		&i.BankName,
 		&i.BankBranch,
+		&i.IssuedBy,
 	)
 	return i, err
 }
@@ -218,7 +221,7 @@ func (q *Queries) DeleteCustomerGroup(ctx context.Context, id int32) (CustomerGr
 }
 
 const detailCustomer = `-- name: DetailCustomer :one
-SELECT id, full_name, code, company, address, email, phone, license, birthday, user_created, user_updated, updated_at, created_at, "group", title, license_date, contact_name, contact_title, contact_phone, contact_email, contact_address, account_number, bank_name, bank_branch FROM customers
+SELECT id, full_name, code, company, address, email, phone, license, birthday, user_created, user_updated, updated_at, created_at, "group", title, license_date, contact_name, contact_title, contact_phone, contact_email, contact_address, account_number, bank_name, bank_branch, issued_by FROM customers
 WHERE id = $1
 LIMIT 1
 `
@@ -251,6 +254,7 @@ func (q *Queries) DetailCustomer(ctx context.Context, id int32) (Customer, error
 		&i.AccountNumber,
 		&i.BankName,
 		&i.BankBranch,
+		&i.IssuedBy,
 	)
 	return i, err
 }
@@ -348,7 +352,7 @@ func (q *Queries) DetailCustomerGroup(ctx context.Context, id int32) (DetailCust
 }
 
 const getCustomer = `-- name: GetCustomer :one
-SELECT id, full_name, code, company, address, email, phone, license, birthday, user_created, user_updated, updated_at, created_at, "group", title, license_date, contact_name, contact_title, contact_phone, contact_email, contact_address, account_number, bank_name, bank_branch FROM customers
+SELECT id, full_name, code, company, address, email, phone, license, birthday, user_created, user_updated, updated_at, created_at, "group", title, license_date, contact_name, contact_title, contact_phone, contact_email, contact_address, account_number, bank_name, bank_branch, issued_by FROM customers
 WHERE id = $1
 LIMIT 1
 `
@@ -381,6 +385,7 @@ func (q *Queries) GetCustomer(ctx context.Context, id int32) (Customer, error) {
 		&i.AccountNumber,
 		&i.BankName,
 		&i.BankBranch,
+		&i.IssuedBy,
 	)
 	return i, err
 }
@@ -393,7 +398,7 @@ WITH revenue AS (
     FROM orders
     GROUP BY customer
 )
-SELECT id, full_name, code, company, address, email, phone, license, birthday, user_created, user_updated, updated_at, created_at, "group", title, license_date, contact_name, contact_title, contact_phone, contact_email, contact_address, account_number, bank_name, bank_branch, customer, total_revenue, total_orders, r.total_revenue, r.total_orders FROM customers c
+SELECT id, full_name, code, company, address, email, phone, license, birthday, user_created, user_updated, updated_at, created_at, "group", title, license_date, contact_name, contact_title, contact_phone, contact_email, contact_address, account_number, bank_name, bank_branch, issued_by, customer, total_revenue, total_orders, r.total_revenue, r.total_orders FROM customers c
 LEFT JOIN revenue r ON c.id = r.customer 
 WHERE c.company = $1::int
 AND (
@@ -438,6 +443,7 @@ type ListCustomerRow struct {
 	AccountNumber  sql.NullString  `json:"account_number"`
 	BankName       sql.NullString  `json:"bank_name"`
 	BankBranch     sql.NullString  `json:"bank_branch"`
+	IssuedBy       sql.NullString  `json:"issued_by"`
 	Customer       sql.NullInt32   `json:"customer"`
 	TotalRevenue   sql.NullFloat64 `json:"total_revenue"`
 	TotalOrders    sql.NullInt32   `json:"total_orders"`
@@ -484,6 +490,7 @@ func (q *Queries) ListCustomer(ctx context.Context, arg ListCustomerParams) ([]L
 			&i.AccountNumber,
 			&i.BankName,
 			&i.BankBranch,
+			&i.IssuedBy,
 			&i.Customer,
 			&i.TotalRevenue,
 			&i.TotalOrders,
@@ -698,7 +705,7 @@ SET
     bank_name = COALESCE($17::varchar, bank_name),
     bank_branch = COALESCE($18::varchar, bank_branch)
 WHERE id = $19
-RETURNING id, full_name, code, company, address, email, phone, license, birthday, user_created, user_updated, updated_at, created_at, "group", title, license_date, contact_name, contact_title, contact_phone, contact_email, contact_address, account_number, bank_name, bank_branch
+RETURNING id, full_name, code, company, address, email, phone, license, birthday, user_created, user_updated, updated_at, created_at, "group", title, license_date, contact_name, contact_title, contact_phone, contact_email, contact_address, account_number, bank_name, bank_branch, issued_by
 `
 
 type UpdateCustomerParams struct {
@@ -771,6 +778,7 @@ func (q *Queries) UpdateCustomer(ctx context.Context, arg UpdateCustomerParams) 
 		&i.AccountNumber,
 		&i.BankName,
 		&i.BankBranch,
+		&i.IssuedBy,
 	)
 	return i, err
 }

@@ -10,3 +10,4 @@ ALTER TABLE "customers" DROP COLUMN IF EXISTS "contact_address";
 ALTER TABLE "customers" DROP COLUMN IF EXISTS "account_number";
 ALTER TABLE "customers" DROP COLUMN IF EXISTS "bank_name";
 ALTER TABLE "customers" DROP COLUMN IF EXISTS "bank_branch";
+ALTER TABLE "customers" DROP COLUMN IF EXISTS "issued_by";

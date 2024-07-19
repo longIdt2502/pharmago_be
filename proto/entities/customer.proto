@@ -32,14 +32,16 @@ message CustomerDetail {
   optional int32 gender = 9;
   optional string title = 10;
   optional google.protobuf.Timestamp license_date = 11;
-  optional string contact_name = 12;
-  optional string contact_title = 13;
-  optional string contact_phone = 14;
-  optional string contact_email = 15;
-  optional Address contact_address = 16;
-  optional string account_number = 17;
-  optional string bank_name = 18;
-  optional string bank_branch = 19;
+  optional string issued_by = 12;
+  optional string contact_name = 13;
+  optional string contact_title = 14;
+  optional string contact_phone = 15;
+  optional string contact_email = 16;
+  optional Address contact_address = 17;
+  optional string account_number = 18;
+  optional string bank_name = 19;
+  optional string bank_branch = 20;
+  optional string license = 21;
 }
 
 enum MedicalRecordType {

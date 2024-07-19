@@ -3062,6 +3062,7 @@
           },
           {
             "name": "type",
+            "description": "test: Kết quả xét nghiệm, patient: bệnh án, diagnostic: chuẩn đoán.",
             "in": "query",
             "required": false,
             "type": "string",
@@ -8128,6 +8129,9 @@
         "name": {
           "type": "string"
         },
+        "email": {
+          "type": "string"
+        },
         "phone": {
           "type": "string"
         },
@@ -8157,6 +8161,9 @@
           "type": "string",
           "format": "date-time"
         },
+        "issuedBy": {
+          "type": "string"
+        },
         "contactName": {
           "type": "string"
         },
@@ -8179,6 +8186,9 @@
           "type": "string"
         },
         "bankBranch": {
+          "type": "string"
+        },
+        "license": {
           "type": "string"
         }
       }
@@ -8246,6 +8256,9 @@
           "type": "string",
           "format": "date-time"
         },
+        "issuedBy": {
+          "type": "string"
+        },
         "contactName": {
           "type": "string"
         },
@@ -8268,6 +8281,9 @@
           "type": "string"
         },
         "bankBranch": {
+          "type": "string"
+        },
+        "license": {
           "type": "string"
         }
       }

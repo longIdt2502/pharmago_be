@@ -226,12 +226,18 @@ func (server *ServerGRPC) CustomerCreate(ctx context.Context, req *pb.CustomerCr
 			Int32: addressId,
 			Valid: req.Address != nil,
 		},
-		Email: sql.NullString{},
+		Email: sql.NullString{
+			String: req.GetEmail(),
+			Valid:  req.Email != nil,
+		},
 		Phone: sql.NullString{
 			String: req.GetPhone(),
 			Valid:  true,
 		},
-		License: sql.NullString{},
+		License: sql.NullString{
+			String: req.GetLicense(),
+			Valid:  req.License != nil,
+		},
 		Birthday: sql.NullTime{
 			Time:  time.Unix(req.GetBirthday().GetSeconds(), 0),
 			Valid: req.Birthday != nil,
@@ -252,6 +258,10 @@ func (server *ServerGRPC) CustomerCreate(ctx context.Context, req *pb.CustomerCr
 		LicenseDate: sql.NullTime{
 			Time:  time.Unix(req.GetLicenseDate().GetSeconds(), 0),
 			Valid: req.Title != nil,
+		},
+		IssuedBy: sql.NullString{
+			String: req.GetIssuedBy(),
+			Valid:  req.IssuedBy != nil,
 		},
 		ContactName: sql.NullString{
 			String: req.GetContactName(),
