@@ -133,7 +133,7 @@ func (store *Store) CreateOrderTx(ctx context.Context, req CreateOrderTxParams) 
 			},
 			ExportTo: sql.NullInt32{
 				Int32: addressOrder,
-				Valid: req.Order.Customer != nil,
+				Valid: addressOrder != 0,
 			},
 			ImportFrom: sql.NullInt32{
 				Int32: warehouse.Address.Int32,
