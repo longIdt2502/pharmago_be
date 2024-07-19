@@ -9,6 +9,8 @@ import (
 	"context"
 	"database/sql"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 const countCustomer = `-- name: CountCustomer :one
@@ -145,6 +147,49 @@ func (q *Queries) CreateCustomerGroup(ctx context.Context, arg CreateCustomerGro
 		&i.UserCreated,
 		&i.UserUpdated,
 		&i.UpdatedAt,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const createMedicalRecordLink = `-- name: CreateMedicalRecordLink :one
+INSERT INTO medical_record_link (
+    uuid, "type", title, url, customer, appointment_schedule, user_created
+) VALUES (
+    $1, $2, $3, $4, $5, $6, $7
+) RETURNING id, uuid, type, title, url, customer, appointment_schedule, user_created, created_at
+`
+
+type CreateMedicalRecordLinkParams struct {
+	Uuid                uuid.UUID             `json:"uuid"`
+	Type                MedicalRecordLinkType `json:"type"`
+	Title               sql.NullString        `json:"title"`
+	Url                 string                `json:"url"`
+	Customer            sql.NullInt32         `json:"customer"`
+	AppointmentSchedule uuid.NullUUID         `json:"appointment_schedule"`
+	UserCreated         sql.NullInt32         `json:"user_created"`
+}
+
+func (q *Queries) CreateMedicalRecordLink(ctx context.Context, arg CreateMedicalRecordLinkParams) (MedicalRecordLink, error) {
+	row := q.db.QueryRowContext(ctx, createMedicalRecordLink,
+		arg.Uuid,
+		arg.Type,
+		arg.Title,
+		arg.Url,
+		arg.Customer,
+		arg.AppointmentSchedule,
+		arg.UserCreated,
+	)
+	var i MedicalRecordLink
+	err := row.Scan(
+		&i.ID,
+		&i.Uuid,
+		&i.Type,
+		&i.Title,
+		&i.Url,
+		&i.Customer,
+		&i.AppointmentSchedule,
+		&i.UserCreated,
 		&i.CreatedAt,
 	)
 	return i, err
@@ -571,6 +616,52 @@ func (q *Queries) ListCustomerGroup(ctx context.Context, arg ListCustomerGroupPa
 			&i.Licence_2,
 			&i.Dob_2,
 			&i.Address_2,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listMedicalRecordLink = `-- name: ListMedicalRecordLink :many
+SELECT id, uuid, type, title, url, customer, appointment_schedule, user_created, created_at FROM medical_record_link
+WHERE ($1::int IS NULL OR $1::int = customer)
+AND ($2::medical_record_link_type IS NULL OR $2::medical_record_link_type = "type")
+AND ($3::uuid IS NULL OR $3::uuid = appointment_schedule)
+`
+
+type ListMedicalRecordLinkParams struct {
+	Customer sql.NullInt32             `json:"customer"`
+	TypeMrl  NullMedicalRecordLinkType `json:"type_mrl"`
+	Schedule uuid.NullUUID             `json:"schedule"`
+}
+
+func (q *Queries) ListMedicalRecordLink(ctx context.Context, arg ListMedicalRecordLinkParams) ([]MedicalRecordLink, error) {
+	rows, err := q.db.QueryContext(ctx, listMedicalRecordLink, arg.Customer, arg.TypeMrl, arg.Schedule)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []MedicalRecordLink{}
+	for rows.Next() {
+		var i MedicalRecordLink
+		if err := rows.Scan(
+			&i.ID,
+			&i.Uuid,
+			&i.Type,
+			&i.Title,
+			&i.Url,
+			&i.Customer,
+			&i.AppointmentSchedule,
+			&i.UserCreated,
+			&i.CreatedAt,
 		); err != nil {
 			return nil, err
 		}

@@ -90,6 +90,8 @@ import "rpc/customer/rpc_customer_group_detail.proto";
 import "rpc/customer/rpc_customer_group_create.proto";
 import "rpc/customer/rpc_customer_group_update.proto";
 import "rpc/customer/rpc_customer_group_delete.proto";
+import "rpc/customer/rpc_medical_record_list.proto";
+import "rpc/customer/rpc_medical_record_create.proto";
 
 import "rpc/supplier/rpc_supplier_create.proto";
 import "rpc/supplier/rpc_supplier_detail.proto";
@@ -1135,6 +1137,26 @@ service Pharmago {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Delete customer group";
+      tags: "Customer";
+    };
+  };
+  rpc MedicalRecordCreate (MedicalRecordCreateRequest) returns (MedicalRecordCreateResponse) {
+    option (google.api.http) = {
+      post: "/customer/v1/medical_record"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Upload medical record customer";
+      tags: "Customer";
+    };
+  };
+  rpc MedicalRecordCreateStream (MedicalRecordCreateRequest) returns (stream MedicalRecordCreateResponse) {};
+  rpc MedicalRecordList (MedicalRecordListRequest) returns (MedicalRecordListResponse) {
+    option (google.api.http) = {
+      get: "/customer/v1/medical_record"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List medical record customer";
       tags: "Customer";
     };
   };

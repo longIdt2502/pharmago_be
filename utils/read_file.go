@@ -31,3 +31,22 @@ func NewFileFromImage(data []byte) (file *File, err error) {
 		File: reader,
 	}, nil
 }
+
+func NewFileFromFile(data []byte) (file *File, err error) {
+	fileName := fmt.Sprintf("%s.pdf", RandomString(12))
+	tempDir := os.TempDir()
+	tempFilePath := filepath.Join(tempDir, fileName)
+	err = os.WriteFile(tempFilePath, data, 0644)
+	if err != nil {
+		return nil, fmt.Errorf("failed to save image: %v", err)
+	}
+
+	reader, _ := os.Open(tempFilePath)
+	metadata := make(map[string]string)
+
+	return &File{
+		Name: fileName,
+		Meta: metadata,
+		File: reader,
+	}, nil
+}

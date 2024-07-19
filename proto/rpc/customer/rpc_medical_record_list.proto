@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+import "entities/customer.proto";
+
+message MedicalRecordListRequest {
+    optional int32 company = 1;
+    optional int32 customer = 2;
+    optional string appointment_schedule = 3;
+    optional MedicalRecordType type = 4;
+}
+
+message MedicalRecordListResponse {
+    int32 code = 1;
+    string message = 2;
+    string message_trans = 3;
+    string log = 4;
+    repeated MedicalRecordLink details = 5;
+}

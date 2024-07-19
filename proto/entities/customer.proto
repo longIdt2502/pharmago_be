@@ -41,3 +41,21 @@ message CustomerDetail {
   optional string bank_name = 18;
   optional string bank_branch = 19;
 }
+
+enum MedicalRecordType {
+  test = 0;
+  patient = 1;
+  diagnostic = 2;
+}
+
+message MedicalRecordLink {
+  int32 id = 1; // serial
+  string uuid = 2; // uuid
+  MedicalRecordType type = 3; // medical_record_type
+  string title = 4; // varchar
+  string url = 5; // varchar
+  int32 customer = 6; // serial
+  optional string appointment_schedule = 7; // uuid
+  int32 user_created = 8; // serial
+  google.protobuf.Timestamp created_at = 9; // timestamp
+}

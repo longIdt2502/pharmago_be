@@ -19,128 +19,131 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Pharmago_Login_FullMethodName                    = "/pb.Pharmago/Login"
-	Pharmago_CheckToken_FullMethodName               = "/pb.Pharmago/CheckToken"
-	Pharmago_CreateAccount_FullMethodName            = "/pb.Pharmago/CreateAccount"
-	Pharmago_VerifyAccount_FullMethodName            = "/pb.Pharmago/VerifyAccount"
-	Pharmago_SendCode_FullMethodName                 = "/pb.Pharmago/SendCode"
-	Pharmago_VerifyCode_FullMethodName               = "/pb.Pharmago/VerifyCode"
-	Pharmago_ResetPassword_FullMethodName            = "/pb.Pharmago/ResetPassword"
-	Pharmago_CheckEmail_FullMethodName               = "/pb.Pharmago/CheckEmail"
-	Pharmago_CheckPhone_FullMethodName               = "/pb.Pharmago/CheckPhone"
-	Pharmago_AccountDetail_FullMethodName            = "/pb.Pharmago/AccountDetail"
-	Pharmago_AccountInactive_FullMethodName          = "/pb.Pharmago/AccountInactive"
-	Pharmago_AccountList_FullMethodName              = "/pb.Pharmago/AccountList"
-	Pharmago_CreateEmployee_FullMethodName           = "/pb.Pharmago/CreateEmployee"
-	Pharmago_UpdateEmployee_FullMethodName           = "/pb.Pharmago/UpdateEmployee"
-	Pharmago_DetailEmployee_FullMethodName           = "/pb.Pharmago/DetailEmployee"
-	Pharmago_AppList_FullMethodName                  = "/pb.Pharmago/AppList"
-	Pharmago_RoleCreate_FullMethodName               = "/pb.Pharmago/RoleCreate"
-	Pharmago_RoleList_FullMethodName                 = "/pb.Pharmago/RoleList"
-	Pharmago_RoleDetail_FullMethodName               = "/pb.Pharmago/RoleDetail"
-	Pharmago_RoleUpdate_FullMethodName               = "/pb.Pharmago/RoleUpdate"
-	Pharmago_RoleDelete_FullMethodName               = "/pb.Pharmago/RoleDelete"
-	Pharmago_HomeData_FullMethodName                 = "/pb.Pharmago/HomeData"
-	Pharmago_ReportRevenue_FullMethodName            = "/pb.Pharmago/ReportRevenue"
-	Pharmago_ReportOrder_FullMethodName              = "/pb.Pharmago/ReportOrder"
-	Pharmago_ReportCustomer_FullMethodName           = "/pb.Pharmago/ReportCustomer"
-	Pharmago_ReportCustomerRevenue_FullMethodName    = "/pb.Pharmago/ReportCustomerRevenue"
-	Pharmago_CreateCompany_FullMethodName            = "/pb.Pharmago/CreateCompany"
-	Pharmago_ListCompanies_FullMethodName            = "/pb.Pharmago/ListCompanies"
-	Pharmago_ListProvinces_FullMethodName            = "/pb.Pharmago/ListProvinces"
-	Pharmago_ListDistricts_FullMethodName            = "/pb.Pharmago/ListDistricts"
-	Pharmago_ListWards_FullMethodName                = "/pb.Pharmago/ListWards"
-	Pharmago_CreateProduct_FullMethodName            = "/pb.Pharmago/CreateProduct"
-	Pharmago_ListProduct_FullMethodName              = "/pb.Pharmago/ListProduct"
-	Pharmago_DetailProduct_FullMethodName            = "/pb.Pharmago/DetailProduct"
-	Pharmago_PromotionByProduct_FullMethodName       = "/pb.Pharmago/PromotionByProduct"
-	Pharmago_PromotionCheck_FullMethodName           = "/pb.Pharmago/PromotionCheck"
-	Pharmago_PromotionCreate_FullMethodName          = "/pb.Pharmago/PromotionCreate"
-	Pharmago_ListVariant_FullMethodName              = "/pb.Pharmago/ListVariant"
-	Pharmago_ScanVariant_FullMethodName              = "/pb.Pharmago/ScanVariant"
-	Pharmago_GetPriceList_FullMethodName             = "/pb.Pharmago/GetPriceList"
-	Pharmago_DetailPriceList_FullMethodName          = "/pb.Pharmago/DetailPriceList"
-	Pharmago_UpdatePriceList_FullMethodName          = "/pb.Pharmago/UpdatePriceList"
-	Pharmago_ClassifyList_FullMethodName             = "/pb.Pharmago/ClassifyList"
-	Pharmago_ProductionStandardList_FullMethodName   = "/pb.Pharmago/ProductionStandardList"
-	Pharmago_ProductionStandardCreate_FullMethodName = "/pb.Pharmago/ProductionStandardCreate"
-	Pharmago_ProductionStandardDetail_FullMethodName = "/pb.Pharmago/ProductionStandardDetail"
-	Pharmago_ProductionStandardUpdate_FullMethodName = "/pb.Pharmago/ProductionStandardUpdate"
-	Pharmago_ProductionStandardDelete_FullMethodName = "/pb.Pharmago/ProductionStandardDelete"
-	Pharmago_PreparationTypeList_FullMethodName      = "/pb.Pharmago/PreparationTypeList"
-	Pharmago_PreparationTypeCreate_FullMethodName    = "/pb.Pharmago/PreparationTypeCreate"
-	Pharmago_PreparationTypeDetail_FullMethodName    = "/pb.Pharmago/PreparationTypeDetail"
-	Pharmago_PreparationTypeUpdate_FullMethodName    = "/pb.Pharmago/PreparationTypeUpdate"
-	Pharmago_PreparationTypeDelete_FullMethodName    = "/pb.Pharmago/PreparationTypeDelete"
-	Pharmago_CompanyPharmaList_FullMethodName        = "/pb.Pharmago/CompanyPharmaList"
-	Pharmago_CompanyPharmaCreate_FullMethodName      = "/pb.Pharmago/CompanyPharmaCreate"
-	Pharmago_CompanyPharmaDetail_FullMethodName      = "/pb.Pharmago/CompanyPharmaDetail"
-	Pharmago_CompanyPharmaUpdate_FullMethodName      = "/pb.Pharmago/CompanyPharmaUpdate"
-	Pharmago_CompanyPharmaDelete_FullMethodName      = "/pb.Pharmago/CompanyPharmaDelete"
-	Pharmago_BrandList_FullMethodName                = "/pb.Pharmago/BrandList"
-	Pharmago_BrandCreate_FullMethodName              = "/pb.Pharmago/BrandCreate"
-	Pharmago_BrandUpdate_FullMethodName              = "/pb.Pharmago/BrandUpdate"
-	Pharmago_BrandDetail_FullMethodName              = "/pb.Pharmago/BrandDetail"
-	Pharmago_BrandDelete_FullMethodName              = "/pb.Pharmago/BrandDelete"
-	Pharmago_CategoryList_FullMethodName             = "/pb.Pharmago/CategoryList"
-	Pharmago_CategoryCreate_FullMethodName           = "/pb.Pharmago/CategoryCreate"
-	Pharmago_CategoryUpdate_FullMethodName           = "/pb.Pharmago/CategoryUpdate"
-	Pharmago_CategoryDetail_FullMethodName           = "/pb.Pharmago/CategoryDetail"
-	Pharmago_CategoryDelete_FullMethodName           = "/pb.Pharmago/CategoryDelete"
-	Pharmago_ProductTypeList_FullMethodName          = "/pb.Pharmago/ProductTypeList"
-	Pharmago_SupplierCreate_FullMethodName           = "/pb.Pharmago/SupplierCreate"
-	Pharmago_SupplierList_FullMethodName             = "/pb.Pharmago/SupplierList"
-	Pharmago_SupplierDetail_FullMethodName           = "/pb.Pharmago/SupplierDetail"
-	Pharmago_SupplierUpdate_FullMethodName           = "/pb.Pharmago/SupplierUpdate"
-	Pharmago_SupplierDelete_FullMethodName           = "/pb.Pharmago/SupplierDelete"
-	Pharmago_WarehouseCreate_FullMethodName          = "/pb.Pharmago/WarehouseCreate"
-	Pharmago_WarehouseList_FullMethodName            = "/pb.Pharmago/WarehouseList"
-	Pharmago_WarehouseDetail_FullMethodName          = "/pb.Pharmago/WarehouseDetail"
-	Pharmago_WarehouseUpdate_FullMethodName          = "/pb.Pharmago/WarehouseUpdate"
-	Pharmago_WarehouseDelete_FullMethodName          = "/pb.Pharmago/WarehouseDelete"
-	Pharmago_TicketCreate_FullMethodName             = "/pb.Pharmago/TicketCreate"
-	Pharmago_TicketList_FullMethodName               = "/pb.Pharmago/TicketList"
-	Pharmago_TicketDetail_FullMethodName             = "/pb.Pharmago/TicketDetail"
-	Pharmago_TicketUpdateStatus_FullMethodName       = "/pb.Pharmago/TicketUpdateStatus"
-	Pharmago_ConsignmentList_FullMethodName          = "/pb.Pharmago/ConsignmentList"
-	Pharmago_OrderCreate_FullMethodName              = "/pb.Pharmago/OrderCreate"
-	Pharmago_OrderList_FullMethodName                = "/pb.Pharmago/OrderList"
-	Pharmago_OrderDetail_FullMethodName              = "/pb.Pharmago/OrderDetail"
-	Pharmago_OrderUpdateStatus_FullMethodName        = "/pb.Pharmago/OrderUpdateStatus"
-	Pharmago_OrderScan_FullMethodName                = "/pb.Pharmago/OrderScan"
-	Pharmago_CustomerList_FullMethodName             = "/pb.Pharmago/CustomerList"
-	Pharmago_CustomerCreate_FullMethodName           = "/pb.Pharmago/CustomerCreate"
-	Pharmago_CustomerDetail_FullMethodName           = "/pb.Pharmago/CustomerDetail"
-	Pharmago_CustomerUpdate_FullMethodName           = "/pb.Pharmago/CustomerUpdate"
-	Pharmago_CustomerGroupList_FullMethodName        = "/pb.Pharmago/CustomerGroupList"
-	Pharmago_CustomerGroupCreate_FullMethodName      = "/pb.Pharmago/CustomerGroupCreate"
-	Pharmago_CustomerGroupDetail_FullMethodName      = "/pb.Pharmago/CustomerGroupDetail"
-	Pharmago_CustomerGroupUpdate_FullMethodName      = "/pb.Pharmago/CustomerGroupUpdate"
-	Pharmago_CustomerGroupDelete_FullMethodName      = "/pb.Pharmago/CustomerGroupDelete"
-	Pharmago_ImportCompany_FullMethodName            = "/pb.Pharmago/ImportCompany"
-	Pharmago_ImportProduct_FullMethodName            = "/pb.Pharmago/ImportProduct"
-	Pharmago_ImportProductMasterData_FullMethodName  = "/pb.Pharmago/ImportProductMasterData"
-	Pharmago_ListDebtNote_FullMethodName             = "/pb.Pharmago/ListDebtNote"
-	Pharmago_CreateDebtNote_FullMethodName           = "/pb.Pharmago/CreateDebtNote"
-	Pharmago_DetailDebtNote_FullMethodName           = "/pb.Pharmago/DetailDebtNote"
-	Pharmago_ReportDebtNote_FullMethodName           = "/pb.Pharmago/ReportDebtNote"
-	Pharmago_CreateDebtRepayment_FullMethodName      = "/pb.Pharmago/CreateDebtRepayment"
-	Pharmago_ServiceList_FullMethodName              = "/pb.Pharmago/ServiceList"
-	Pharmago_ServiceCreate_FullMethodName            = "/pb.Pharmago/ServiceCreate"
-	Pharmago_ServiceDetail_FullMethodName            = "/pb.Pharmago/ServiceDetail"
-	Pharmago_ServiceUpdate_FullMethodName            = "/pb.Pharmago/ServiceUpdate"
-	Pharmago_ServiceDelete_FullMethodName            = "/pb.Pharmago/ServiceDelete"
-	Pharmago_ConversationList_FullMethodName         = "/pb.Pharmago/ConversationList"
-	Pharmago_MessageList_FullMethodName              = "/pb.Pharmago/MessageList"
-	Pharmago_ListMedicalRecord_FullMethodName        = "/pb.Pharmago/ListMedicalRecord"
-	Pharmago_CreateMedicalRecord_FullMethodName      = "/pb.Pharmago/CreateMedicalRecord"
-	Pharmago_DetailMedicalRecord_FullMethodName      = "/pb.Pharmago/DetailMedicalRecord"
-	Pharmago_ListNotification_FullMethodName         = "/pb.Pharmago/ListNotification"
-	Pharmago_DetailNotification_FullMethodName       = "/pb.Pharmago/DetailNotification"
-	Pharmago_SeenAllNoti_FullMethodName              = "/pb.Pharmago/SeenAllNoti"
-	Pharmago_ScheduleCreate_FullMethodName           = "/pb.Pharmago/ScheduleCreate"
-	Pharmago_ScheduleList_FullMethodName             = "/pb.Pharmago/ScheduleList"
-	Pharmago_ScheduleDetail_FullMethodName           = "/pb.Pharmago/ScheduleDetail"
+	Pharmago_Login_FullMethodName                     = "/pb.Pharmago/Login"
+	Pharmago_CheckToken_FullMethodName                = "/pb.Pharmago/CheckToken"
+	Pharmago_CreateAccount_FullMethodName             = "/pb.Pharmago/CreateAccount"
+	Pharmago_VerifyAccount_FullMethodName             = "/pb.Pharmago/VerifyAccount"
+	Pharmago_SendCode_FullMethodName                  = "/pb.Pharmago/SendCode"
+	Pharmago_VerifyCode_FullMethodName                = "/pb.Pharmago/VerifyCode"
+	Pharmago_ResetPassword_FullMethodName             = "/pb.Pharmago/ResetPassword"
+	Pharmago_CheckEmail_FullMethodName                = "/pb.Pharmago/CheckEmail"
+	Pharmago_CheckPhone_FullMethodName                = "/pb.Pharmago/CheckPhone"
+	Pharmago_AccountDetail_FullMethodName             = "/pb.Pharmago/AccountDetail"
+	Pharmago_AccountInactive_FullMethodName           = "/pb.Pharmago/AccountInactive"
+	Pharmago_AccountList_FullMethodName               = "/pb.Pharmago/AccountList"
+	Pharmago_CreateEmployee_FullMethodName            = "/pb.Pharmago/CreateEmployee"
+	Pharmago_UpdateEmployee_FullMethodName            = "/pb.Pharmago/UpdateEmployee"
+	Pharmago_DetailEmployee_FullMethodName            = "/pb.Pharmago/DetailEmployee"
+	Pharmago_AppList_FullMethodName                   = "/pb.Pharmago/AppList"
+	Pharmago_RoleCreate_FullMethodName                = "/pb.Pharmago/RoleCreate"
+	Pharmago_RoleList_FullMethodName                  = "/pb.Pharmago/RoleList"
+	Pharmago_RoleDetail_FullMethodName                = "/pb.Pharmago/RoleDetail"
+	Pharmago_RoleUpdate_FullMethodName                = "/pb.Pharmago/RoleUpdate"
+	Pharmago_RoleDelete_FullMethodName                = "/pb.Pharmago/RoleDelete"
+	Pharmago_HomeData_FullMethodName                  = "/pb.Pharmago/HomeData"
+	Pharmago_ReportRevenue_FullMethodName             = "/pb.Pharmago/ReportRevenue"
+	Pharmago_ReportOrder_FullMethodName               = "/pb.Pharmago/ReportOrder"
+	Pharmago_ReportCustomer_FullMethodName            = "/pb.Pharmago/ReportCustomer"
+	Pharmago_ReportCustomerRevenue_FullMethodName     = "/pb.Pharmago/ReportCustomerRevenue"
+	Pharmago_CreateCompany_FullMethodName             = "/pb.Pharmago/CreateCompany"
+	Pharmago_ListCompanies_FullMethodName             = "/pb.Pharmago/ListCompanies"
+	Pharmago_ListProvinces_FullMethodName             = "/pb.Pharmago/ListProvinces"
+	Pharmago_ListDistricts_FullMethodName             = "/pb.Pharmago/ListDistricts"
+	Pharmago_ListWards_FullMethodName                 = "/pb.Pharmago/ListWards"
+	Pharmago_CreateProduct_FullMethodName             = "/pb.Pharmago/CreateProduct"
+	Pharmago_ListProduct_FullMethodName               = "/pb.Pharmago/ListProduct"
+	Pharmago_DetailProduct_FullMethodName             = "/pb.Pharmago/DetailProduct"
+	Pharmago_PromotionByProduct_FullMethodName        = "/pb.Pharmago/PromotionByProduct"
+	Pharmago_PromotionCheck_FullMethodName            = "/pb.Pharmago/PromotionCheck"
+	Pharmago_PromotionCreate_FullMethodName           = "/pb.Pharmago/PromotionCreate"
+	Pharmago_ListVariant_FullMethodName               = "/pb.Pharmago/ListVariant"
+	Pharmago_ScanVariant_FullMethodName               = "/pb.Pharmago/ScanVariant"
+	Pharmago_GetPriceList_FullMethodName              = "/pb.Pharmago/GetPriceList"
+	Pharmago_DetailPriceList_FullMethodName           = "/pb.Pharmago/DetailPriceList"
+	Pharmago_UpdatePriceList_FullMethodName           = "/pb.Pharmago/UpdatePriceList"
+	Pharmago_ClassifyList_FullMethodName              = "/pb.Pharmago/ClassifyList"
+	Pharmago_ProductionStandardList_FullMethodName    = "/pb.Pharmago/ProductionStandardList"
+	Pharmago_ProductionStandardCreate_FullMethodName  = "/pb.Pharmago/ProductionStandardCreate"
+	Pharmago_ProductionStandardDetail_FullMethodName  = "/pb.Pharmago/ProductionStandardDetail"
+	Pharmago_ProductionStandardUpdate_FullMethodName  = "/pb.Pharmago/ProductionStandardUpdate"
+	Pharmago_ProductionStandardDelete_FullMethodName  = "/pb.Pharmago/ProductionStandardDelete"
+	Pharmago_PreparationTypeList_FullMethodName       = "/pb.Pharmago/PreparationTypeList"
+	Pharmago_PreparationTypeCreate_FullMethodName     = "/pb.Pharmago/PreparationTypeCreate"
+	Pharmago_PreparationTypeDetail_FullMethodName     = "/pb.Pharmago/PreparationTypeDetail"
+	Pharmago_PreparationTypeUpdate_FullMethodName     = "/pb.Pharmago/PreparationTypeUpdate"
+	Pharmago_PreparationTypeDelete_FullMethodName     = "/pb.Pharmago/PreparationTypeDelete"
+	Pharmago_CompanyPharmaList_FullMethodName         = "/pb.Pharmago/CompanyPharmaList"
+	Pharmago_CompanyPharmaCreate_FullMethodName       = "/pb.Pharmago/CompanyPharmaCreate"
+	Pharmago_CompanyPharmaDetail_FullMethodName       = "/pb.Pharmago/CompanyPharmaDetail"
+	Pharmago_CompanyPharmaUpdate_FullMethodName       = "/pb.Pharmago/CompanyPharmaUpdate"
+	Pharmago_CompanyPharmaDelete_FullMethodName       = "/pb.Pharmago/CompanyPharmaDelete"
+	Pharmago_BrandList_FullMethodName                 = "/pb.Pharmago/BrandList"
+	Pharmago_BrandCreate_FullMethodName               = "/pb.Pharmago/BrandCreate"
+	Pharmago_BrandUpdate_FullMethodName               = "/pb.Pharmago/BrandUpdate"
+	Pharmago_BrandDetail_FullMethodName               = "/pb.Pharmago/BrandDetail"
+	Pharmago_BrandDelete_FullMethodName               = "/pb.Pharmago/BrandDelete"
+	Pharmago_CategoryList_FullMethodName              = "/pb.Pharmago/CategoryList"
+	Pharmago_CategoryCreate_FullMethodName            = "/pb.Pharmago/CategoryCreate"
+	Pharmago_CategoryUpdate_FullMethodName            = "/pb.Pharmago/CategoryUpdate"
+	Pharmago_CategoryDetail_FullMethodName            = "/pb.Pharmago/CategoryDetail"
+	Pharmago_CategoryDelete_FullMethodName            = "/pb.Pharmago/CategoryDelete"
+	Pharmago_ProductTypeList_FullMethodName           = "/pb.Pharmago/ProductTypeList"
+	Pharmago_SupplierCreate_FullMethodName            = "/pb.Pharmago/SupplierCreate"
+	Pharmago_SupplierList_FullMethodName              = "/pb.Pharmago/SupplierList"
+	Pharmago_SupplierDetail_FullMethodName            = "/pb.Pharmago/SupplierDetail"
+	Pharmago_SupplierUpdate_FullMethodName            = "/pb.Pharmago/SupplierUpdate"
+	Pharmago_SupplierDelete_FullMethodName            = "/pb.Pharmago/SupplierDelete"
+	Pharmago_WarehouseCreate_FullMethodName           = "/pb.Pharmago/WarehouseCreate"
+	Pharmago_WarehouseList_FullMethodName             = "/pb.Pharmago/WarehouseList"
+	Pharmago_WarehouseDetail_FullMethodName           = "/pb.Pharmago/WarehouseDetail"
+	Pharmago_WarehouseUpdate_FullMethodName           = "/pb.Pharmago/WarehouseUpdate"
+	Pharmago_WarehouseDelete_FullMethodName           = "/pb.Pharmago/WarehouseDelete"
+	Pharmago_TicketCreate_FullMethodName              = "/pb.Pharmago/TicketCreate"
+	Pharmago_TicketList_FullMethodName                = "/pb.Pharmago/TicketList"
+	Pharmago_TicketDetail_FullMethodName              = "/pb.Pharmago/TicketDetail"
+	Pharmago_TicketUpdateStatus_FullMethodName        = "/pb.Pharmago/TicketUpdateStatus"
+	Pharmago_ConsignmentList_FullMethodName           = "/pb.Pharmago/ConsignmentList"
+	Pharmago_OrderCreate_FullMethodName               = "/pb.Pharmago/OrderCreate"
+	Pharmago_OrderList_FullMethodName                 = "/pb.Pharmago/OrderList"
+	Pharmago_OrderDetail_FullMethodName               = "/pb.Pharmago/OrderDetail"
+	Pharmago_OrderUpdateStatus_FullMethodName         = "/pb.Pharmago/OrderUpdateStatus"
+	Pharmago_OrderScan_FullMethodName                 = "/pb.Pharmago/OrderScan"
+	Pharmago_CustomerList_FullMethodName              = "/pb.Pharmago/CustomerList"
+	Pharmago_CustomerCreate_FullMethodName            = "/pb.Pharmago/CustomerCreate"
+	Pharmago_CustomerDetail_FullMethodName            = "/pb.Pharmago/CustomerDetail"
+	Pharmago_CustomerUpdate_FullMethodName            = "/pb.Pharmago/CustomerUpdate"
+	Pharmago_CustomerGroupList_FullMethodName         = "/pb.Pharmago/CustomerGroupList"
+	Pharmago_CustomerGroupCreate_FullMethodName       = "/pb.Pharmago/CustomerGroupCreate"
+	Pharmago_CustomerGroupDetail_FullMethodName       = "/pb.Pharmago/CustomerGroupDetail"
+	Pharmago_CustomerGroupUpdate_FullMethodName       = "/pb.Pharmago/CustomerGroupUpdate"
+	Pharmago_CustomerGroupDelete_FullMethodName       = "/pb.Pharmago/CustomerGroupDelete"
+	Pharmago_MedicalRecordCreate_FullMethodName       = "/pb.Pharmago/MedicalRecordCreate"
+	Pharmago_MedicalRecordCreateStream_FullMethodName = "/pb.Pharmago/MedicalRecordCreateStream"
+	Pharmago_MedicalRecordList_FullMethodName         = "/pb.Pharmago/MedicalRecordList"
+	Pharmago_ImportCompany_FullMethodName             = "/pb.Pharmago/ImportCompany"
+	Pharmago_ImportProduct_FullMethodName             = "/pb.Pharmago/ImportProduct"
+	Pharmago_ImportProductMasterData_FullMethodName   = "/pb.Pharmago/ImportProductMasterData"
+	Pharmago_ListDebtNote_FullMethodName              = "/pb.Pharmago/ListDebtNote"
+	Pharmago_CreateDebtNote_FullMethodName            = "/pb.Pharmago/CreateDebtNote"
+	Pharmago_DetailDebtNote_FullMethodName            = "/pb.Pharmago/DetailDebtNote"
+	Pharmago_ReportDebtNote_FullMethodName            = "/pb.Pharmago/ReportDebtNote"
+	Pharmago_CreateDebtRepayment_FullMethodName       = "/pb.Pharmago/CreateDebtRepayment"
+	Pharmago_ServiceList_FullMethodName               = "/pb.Pharmago/ServiceList"
+	Pharmago_ServiceCreate_FullMethodName             = "/pb.Pharmago/ServiceCreate"
+	Pharmago_ServiceDetail_FullMethodName             = "/pb.Pharmago/ServiceDetail"
+	Pharmago_ServiceUpdate_FullMethodName             = "/pb.Pharmago/ServiceUpdate"
+	Pharmago_ServiceDelete_FullMethodName             = "/pb.Pharmago/ServiceDelete"
+	Pharmago_ConversationList_FullMethodName          = "/pb.Pharmago/ConversationList"
+	Pharmago_MessageList_FullMethodName               = "/pb.Pharmago/MessageList"
+	Pharmago_ListMedicalRecord_FullMethodName         = "/pb.Pharmago/ListMedicalRecord"
+	Pharmago_CreateMedicalRecord_FullMethodName       = "/pb.Pharmago/CreateMedicalRecord"
+	Pharmago_DetailMedicalRecord_FullMethodName       = "/pb.Pharmago/DetailMedicalRecord"
+	Pharmago_ListNotification_FullMethodName          = "/pb.Pharmago/ListNotification"
+	Pharmago_DetailNotification_FullMethodName        = "/pb.Pharmago/DetailNotification"
+	Pharmago_SeenAllNoti_FullMethodName               = "/pb.Pharmago/SeenAllNoti"
+	Pharmago_ScheduleCreate_FullMethodName            = "/pb.Pharmago/ScheduleCreate"
+	Pharmago_ScheduleList_FullMethodName              = "/pb.Pharmago/ScheduleList"
+	Pharmago_ScheduleDetail_FullMethodName            = "/pb.Pharmago/ScheduleDetail"
 )
 
 // PharmagoClient is the client API for Pharmago service.
@@ -264,6 +267,9 @@ type PharmagoClient interface {
 	CustomerGroupDetail(ctx context.Context, in *CustomerGroupDetailRequest, opts ...grpc.CallOption) (*CustomerGroupDetailResponse, error)
 	CustomerGroupUpdate(ctx context.Context, in *CustomerGroupUpdateRequest, opts ...grpc.CallOption) (*CustomerGroupUpdateResponse, error)
 	CustomerGroupDelete(ctx context.Context, in *CustomerGroupDeleteRequest, opts ...grpc.CallOption) (*CustomerGroupDeleteResponse, error)
+	MedicalRecordCreate(ctx context.Context, in *MedicalRecordCreateRequest, opts ...grpc.CallOption) (*MedicalRecordCreateResponse, error)
+	MedicalRecordCreateStream(ctx context.Context, in *MedicalRecordCreateRequest, opts ...grpc.CallOption) (Pharmago_MedicalRecordCreateStreamClient, error)
+	MedicalRecordList(ctx context.Context, in *MedicalRecordListRequest, opts ...grpc.CallOption) (*MedicalRecordListResponse, error)
 	// ================== IMPORT ===================
 	ImportCompany(ctx context.Context, in *ImportCompanyRequest, opts ...grpc.CallOption) (*ImportCompanyResponse, error)
 	ImportProduct(ctx context.Context, in *ImportProductRequest, opts ...grpc.CallOption) (*ImportProductResponse, error)
@@ -1209,6 +1215,56 @@ func (c *pharmagoClient) CustomerGroupDelete(ctx context.Context, in *CustomerGr
 	return out, nil
 }
 
+func (c *pharmagoClient) MedicalRecordCreate(ctx context.Context, in *MedicalRecordCreateRequest, opts ...grpc.CallOption) (*MedicalRecordCreateResponse, error) {
+	out := new(MedicalRecordCreateResponse)
+	err := c.cc.Invoke(ctx, Pharmago_MedicalRecordCreate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) MedicalRecordCreateStream(ctx context.Context, in *MedicalRecordCreateRequest, opts ...grpc.CallOption) (Pharmago_MedicalRecordCreateStreamClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Pharmago_ServiceDesc.Streams[1], Pharmago_MedicalRecordCreateStream_FullMethodName, opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &pharmagoMedicalRecordCreateStreamClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type Pharmago_MedicalRecordCreateStreamClient interface {
+	Recv() (*MedicalRecordCreateResponse, error)
+	grpc.ClientStream
+}
+
+type pharmagoMedicalRecordCreateStreamClient struct {
+	grpc.ClientStream
+}
+
+func (x *pharmagoMedicalRecordCreateStreamClient) Recv() (*MedicalRecordCreateResponse, error) {
+	m := new(MedicalRecordCreateResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *pharmagoClient) MedicalRecordList(ctx context.Context, in *MedicalRecordListRequest, opts ...grpc.CallOption) (*MedicalRecordListResponse, error) {
+	out := new(MedicalRecordListResponse)
+	err := c.cc.Invoke(ctx, Pharmago_MedicalRecordList_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *pharmagoClient) ImportCompany(ctx context.Context, in *ImportCompanyRequest, opts ...grpc.CallOption) (*ImportCompanyResponse, error) {
 	out := new(ImportCompanyResponse)
 	err := c.cc.Invoke(ctx, Pharmago_ImportCompany_FullMethodName, in, out, opts...)
@@ -1546,6 +1602,9 @@ type PharmagoServer interface {
 	CustomerGroupDetail(context.Context, *CustomerGroupDetailRequest) (*CustomerGroupDetailResponse, error)
 	CustomerGroupUpdate(context.Context, *CustomerGroupUpdateRequest) (*CustomerGroupUpdateResponse, error)
 	CustomerGroupDelete(context.Context, *CustomerGroupDeleteRequest) (*CustomerGroupDeleteResponse, error)
+	MedicalRecordCreate(context.Context, *MedicalRecordCreateRequest) (*MedicalRecordCreateResponse, error)
+	MedicalRecordCreateStream(*MedicalRecordCreateRequest, Pharmago_MedicalRecordCreateStreamServer) error
+	MedicalRecordList(context.Context, *MedicalRecordListRequest) (*MedicalRecordListResponse, error)
 	// ================== IMPORT ===================
 	ImportCompany(context.Context, *ImportCompanyRequest) (*ImportCompanyResponse, error)
 	ImportProduct(context.Context, *ImportProductRequest) (*ImportProductResponse, error)
@@ -1877,6 +1936,15 @@ func (UnimplementedPharmagoServer) CustomerGroupUpdate(context.Context, *Custome
 }
 func (UnimplementedPharmagoServer) CustomerGroupDelete(context.Context, *CustomerGroupDeleteRequest) (*CustomerGroupDeleteResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CustomerGroupDelete not implemented")
+}
+func (UnimplementedPharmagoServer) MedicalRecordCreate(context.Context, *MedicalRecordCreateRequest) (*MedicalRecordCreateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MedicalRecordCreate not implemented")
+}
+func (UnimplementedPharmagoServer) MedicalRecordCreateStream(*MedicalRecordCreateRequest, Pharmago_MedicalRecordCreateStreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method MedicalRecordCreateStream not implemented")
+}
+func (UnimplementedPharmagoServer) MedicalRecordList(context.Context, *MedicalRecordListRequest) (*MedicalRecordListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MedicalRecordList not implemented")
 }
 func (UnimplementedPharmagoServer) ImportCompany(context.Context, *ImportCompanyRequest) (*ImportCompanyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ImportCompany not implemented")
@@ -3735,6 +3803,63 @@ func _Pharmago_CustomerGroupDelete_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Pharmago_MedicalRecordCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MedicalRecordCreateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).MedicalRecordCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_MedicalRecordCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).MedicalRecordCreate(ctx, req.(*MedicalRecordCreateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_MedicalRecordCreateStream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(MedicalRecordCreateRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(PharmagoServer).MedicalRecordCreateStream(m, &pharmagoMedicalRecordCreateStreamServer{stream})
+}
+
+type Pharmago_MedicalRecordCreateStreamServer interface {
+	Send(*MedicalRecordCreateResponse) error
+	grpc.ServerStream
+}
+
+type pharmagoMedicalRecordCreateStreamServer struct {
+	grpc.ServerStream
+}
+
+func (x *pharmagoMedicalRecordCreateStreamServer) Send(m *MedicalRecordCreateResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _Pharmago_MedicalRecordList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MedicalRecordListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).MedicalRecordList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_MedicalRecordList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).MedicalRecordList(ctx, req.(*MedicalRecordListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Pharmago_ImportCompany_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ImportCompanyRequest)
 	if err := dec(in); err != nil {
@@ -4563,6 +4688,14 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Pharmago_CustomerGroupDelete_Handler,
 		},
 		{
+			MethodName: "MedicalRecordCreate",
+			Handler:    _Pharmago_MedicalRecordCreate_Handler,
+		},
+		{
+			MethodName: "MedicalRecordList",
+			Handler:    _Pharmago_MedicalRecordList_Handler,
+		},
+		{
 			MethodName: "ImportCompany",
 			Handler:    _Pharmago_ImportCompany_Handler,
 		},
@@ -4665,6 +4798,11 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 			Handler:       _Pharmago_ScanVariant_Handler,
 			ServerStreams: true,
 			ClientStreams: true,
+		},
+		{
+			StreamName:    "MedicalRecordCreateStream",
+			Handler:       _Pharmago_MedicalRecordCreateStream_Handler,
+			ServerStreams: true,
 		},
 	},
 	Metadata: "service_pharmago.proto",

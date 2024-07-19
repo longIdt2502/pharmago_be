@@ -105,3 +105,16 @@ RETURNING *;
 -- name: DeleteCustomerGroup :one
 DELETE FROM customer_group
 WHERE id = $1 RETURNING *;
+
+-- name: CreateMedicalRecordLink :one
+INSERT INTO medical_record_link (
+    uuid, "type", title, url, customer, appointment_schedule, user_created
+) VALUES (
+    $1, $2, $3, $4, $5, $6, $7
+) RETURNING *;
+
+-- name: ListMedicalRecordLink :many
+SELECT * FROM medical_record_link
+WHERE (sqlc.narg(customer)::int IS NULL OR sqlc.narg(customer)::int = customer)
+AND (sqlc.narg(type_mrl)::medical_record_link_type IS NULL OR sqlc.narg(type_mrl)::medical_record_link_type = "type")
+AND (sqlc.narg(schedule)::uuid IS NULL OR sqlc.narg(schedule)::uuid = appointment_schedule);

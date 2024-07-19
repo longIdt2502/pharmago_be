@@ -1,11 +1,17 @@
 -- SQL dump generated using DBML (dbml-lang.org)
 -- Database: PostgreSQL
--- Generated at: 2024-07-18T07:38:56.160Z
+-- Generated at: 2024-07-19T02:49:04.027Z
 
 CREATE TYPE "gender" AS ENUM (
   'nam',
   'nữ',
   'khác'
+);
+
+CREATE TYPE "medical_record_link_type" AS ENUM (
+  'test',
+  'patient',
+  'diagnostic'
 );
 
 CREATE TABLE "accounts" (
@@ -749,6 +755,18 @@ CREATE TABLE "appointment_schedule_drug" (
   "quantity" int NOT NULL DEFAULT 0
 );
 
+CREATE TABLE "medical_record_link" (
+  "id" serial PRIMARY KEY,
+  "uuid" uuid NOT NULL,
+  "type" medical_record_type NOT NULL,
+  "title" varchar,
+  "url" varchar NOT NULL,
+  "customer" serial,
+  "appointment_schedule" uuid,
+  "user_created" serial,
+  "created_at" timestamp NOT NULL DEFAULT (now())
+);
+
 CREATE UNIQUE INDEX ON "role_item" ("roles", "app");
 
 CREATE INDEX ON "address" ("province");
@@ -1145,3 +1163,9 @@ ALTER TABLE "appointment_schedule_url" ADD FOREIGN KEY ("as_uuid") REFERENCES "a
 ALTER TABLE "appointment_schedule_drug" ADD FOREIGN KEY ("as_uuid") REFERENCES "appointment_schedules" ("uuid");
 
 ALTER TABLE "appointment_schedule_drug" ADD FOREIGN KEY ("variant") REFERENCES "variants" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "medical_record_link" ADD FOREIGN KEY ("customer") REFERENCES "customers" ("id") ON DELETE CASCADE;
+
+ALTER TABLE "medical_record_link" ADD FOREIGN KEY ("appointment_schedule") REFERENCES "appointment_schedules" ("uuid") ON DELETE SET NULL;
+
+ALTER TABLE "medical_record_link" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id") ON DELETE SET NULL;

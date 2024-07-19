@@ -56,6 +56,49 @@ func (ns NullGender) Value() (driver.Value, error) {
 	return string(ns.Gender), nil
 }
 
+type MedicalRecordLinkType string
+
+const (
+	MedicalRecordLinkTypeTest       MedicalRecordLinkType = "test"
+	MedicalRecordLinkTypePatient    MedicalRecordLinkType = "patient"
+	MedicalRecordLinkTypeDiagnostic MedicalRecordLinkType = "diagnostic"
+)
+
+func (e *MedicalRecordLinkType) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = MedicalRecordLinkType(s)
+	case string:
+		*e = MedicalRecordLinkType(s)
+	default:
+		return fmt.Errorf("unsupported scan type for MedicalRecordLinkType: %T", src)
+	}
+	return nil
+}
+
+type NullMedicalRecordLinkType struct {
+	MedicalRecordLinkType MedicalRecordLinkType `json:"medical_record_link_type"`
+	Valid                 bool                  `json:"valid"` // Valid is true if MedicalRecordLinkType is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullMedicalRecordLinkType) Scan(value interface{}) error {
+	if value == nil {
+		ns.MedicalRecordLinkType, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.MedicalRecordLinkType.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullMedicalRecordLinkType) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.MedicalRecordLinkType), nil
+}
+
 type Account struct {
 	ID                int32          `json:"id"`
 	Username          string         `json:"username"`
@@ -360,6 +403,18 @@ type MedicalRecord struct {
 	UpdatedAt     sql.NullTime   `json:"updated_at"`
 	UserCreated   sql.NullInt32  `json:"user_created"`
 	UserUpdated   sql.NullInt32  `json:"user_updated"`
+}
+
+type MedicalRecordLink struct {
+	ID                  int32                 `json:"id"`
+	Uuid                uuid.UUID             `json:"uuid"`
+	Type                MedicalRecordLinkType `json:"type"`
+	Title               sql.NullString        `json:"title"`
+	Url                 string                `json:"url"`
+	Customer            sql.NullInt32         `json:"customer"`
+	AppointmentSchedule uuid.NullUUID         `json:"appointment_schedule"`
+	UserCreated         sql.NullInt32         `json:"user_created"`
+	CreatedAt           time.Time             `json:"created_at"`
 }
 
 type MedicalRecordVariant struct {

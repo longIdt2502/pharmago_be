@@ -3021,6 +3021,94 @@
         ]
       }
     },
+    "/customer/v1/medical_record": {
+      "get": {
+        "summary": "List medical record customer",
+        "operationId": "Pharmago_MedicalRecordList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbMedicalRecordListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "company",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "customer",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "appointmentSchedule",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "test",
+              "patient",
+              "diagnostic"
+            ],
+            "default": "test"
+          }
+        ],
+        "tags": [
+          "Customer"
+        ]
+      },
+      "post": {
+        "summary": "Upload medical record customer",
+        "operationId": "Pharmago_MedicalRecordCreate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbMedicalRecordCreateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbMedicalRecordCreateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Customer"
+        ]
+      }
+    },
     "/debt-note/v1/create": {
       "post": {
         "summary": "Create Debt Note",
@@ -8105,6 +8193,12 @@
         "message": {
           "type": "string"
         },
+        "messageTrans": {
+          "type": "string"
+        },
+        "log": {
+          "type": "string"
+        },
         "details": {
           "type": "integer",
           "format": "int32"
@@ -9032,6 +9126,129 @@
           "$ref": "#/definitions/pbAccount"
         }
       }
+    },
+    "pbMedicalRecordCreateRequest": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/pbMedicalRecordType"
+        },
+        "customer": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "appointmentSchedule": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "byte"
+          }
+        }
+      }
+    },
+    "pbMedicalRecordCreateResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "messageTrans": {
+          "type": "string"
+        },
+        "log": {
+          "type": "string"
+        },
+        "details": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbMedicalRecordLink": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32",
+          "title": "serial"
+        },
+        "uuid": {
+          "type": "string",
+          "title": "uuid"
+        },
+        "type": {
+          "$ref": "#/definitions/pbMedicalRecordType",
+          "title": "medical_record_type"
+        },
+        "title": {
+          "type": "string",
+          "title": "varchar"
+        },
+        "url": {
+          "type": "string",
+          "title": "varchar"
+        },
+        "customer": {
+          "type": "integer",
+          "format": "int32",
+          "title": "serial"
+        },
+        "appointmentSchedule": {
+          "type": "string",
+          "title": "uuid"
+        },
+        "userCreated": {
+          "type": "integer",
+          "format": "int32",
+          "title": "serial"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "timestamp"
+        }
+      }
+    },
+    "pbMedicalRecordListResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "messageTrans": {
+          "type": "string"
+        },
+        "log": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbMedicalRecordLink"
+          }
+        }
+      }
+    },
+    "pbMedicalRecordType": {
+      "type": "string",
+      "enum": [
+        "test",
+        "patient",
+        "diagnostic"
+      ],
+      "default": "test"
     },
     "pbMessage": {
       "type": "object",
