@@ -44,15 +44,14 @@ func (store *Store) CreateOrderTx(ctx context.Context, req CreateOrderTxParams) 
 				}
 				return common.ErrDB(err)
 			}
-			if !customer.Address.Valid {
-				return common.ErrDBWithMsg(err, "Khách hàng chưa có địa chỉ")
+			if customer.Address.Valid {
+				addressOrder = customer.Address.Int32
 			}
-			addressOrder = customer.Address.Int32
 		}
 		// else {
 		// 	// TODO:
 		// }
-
+		fmt.Printf("id address: %d", addressOrder)
 		warehouse, err := q.GetWarehouse(ctx, req.GetWarehouse())
 		if err != nil {
 			return common.ErrDB(err)
@@ -133,7 +132,7 @@ func (store *Store) CreateOrderTx(ctx context.Context, req CreateOrderTxParams) 
 			},
 			ExportTo: sql.NullInt32{
 				Int32: addressOrder,
-				Valid: req.Order.Customer != nil,
+				Valid: addressOrder != 0,
 			},
 			ImportFrom: sql.NullInt32{
 				Int32: warehouse.Address.Int32,
@@ -189,7 +188,7 @@ func (store *Store) CreateOrderTx(ctx context.Context, req CreateOrderTxParams) 
 			},
 			Address: sql.NullInt32{
 				Int32: addressOrder,
-				Valid: req.Order.Customer != nil,
+				Valid: addressOrder != 0,
 			},
 			Status: sql.NullString{
 				String: req.Order.GetStatus(),
