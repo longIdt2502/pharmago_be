@@ -8778,6 +8778,18 @@
         }
       }
     },
+    "pbFileItem": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "file": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
     "pbGetCompaniesResponse": {
       "type": "object",
       "properties": {
@@ -9143,8 +9155,8 @@
         "files": {
           "type": "array",
           "items": {
-            "type": "string",
-            "format": "byte"
+            "type": "object",
+            "$ref": "#/definitions/pbFileItem"
           }
         }
       }

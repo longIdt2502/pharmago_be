@@ -703,7 +703,7 @@ func (server *ServerGRPC) MedicalRecordCreate(ctx context.Context, req *pb.Medic
 	var res *pb.MedicalRecordCreateResponse
 
 	for _, item := range req.GetFiles() {
-		file, _ := utils.NewFileFromFile(item)
+		file, _ := utils.NewFileFromFile(item.GetFile(), item.GetName())
 		_, err = server.b2Bucket.UploadFile(file.Name, file.Meta, file.File)
 		if err != nil {
 			errApp := common.ErrInternal(err)
@@ -764,7 +764,7 @@ func (server *ServerGRPC) MedicalRecordCreateStream(req *pb.MedicalRecordCreateR
 	}
 
 	for _, item := range req.GetFiles() {
-		file, _ := utils.NewFileFromImage(item)
+		file, _ := utils.NewFileFromFile(item.GetFile(), item.GetName())
 		_, err = server.b2Bucket.UploadFile(file.Name, file.Meta, file.File)
 		if err != nil {
 			return common.ErrInternal(err)

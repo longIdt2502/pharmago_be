@@ -5,12 +5,15 @@ package pb;
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
 import "entities/customer.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
 
 message MedicalRecordListRequest {
     optional int32 company = 1;
     optional int32 customer = 2;
     optional string appointment_schedule = 3;
-    optional MedicalRecordType type = 4;
+    optional MedicalRecordType type = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "test: Kết quả xét nghiệm, patient: bệnh án, diagnostic: chuẩn đoán."
+    }];;
 }
 
 message MedicalRecordListResponse {
