@@ -24,6 +24,13 @@ func OrderPreviewMapper(order db.ListOrderRow) *pb.OrderPreview {
 		CustomerName: order.CFullName,
 		UserCreated:  order.AFullName,
 		CreatedAt:    timestamppb.New(order.CreatedAt),
+		Payment: &pb.Payment{
+			Id:       order.ID_6,
+			Code:     order.Code_5,
+			MustPaid: float32(order.MustPaid_2),
+			HadPaid:  float32(order.HadPaid),
+			NeedPay:  float32(order.NeedPay),
+		},
 	}
 }
 
@@ -97,6 +104,7 @@ func OrderDetailMapper(ctx context.Context, store *db.Store, data db.DetailOrder
 		MustPaid:     float32(data.MustPaid),
 		Customer:     customer,
 		Address:      address,
+
 		Type: &pb.SimpleData{
 			Id:   data.OtID,
 			Name: data.OtTitle,
@@ -109,10 +117,10 @@ func OrderDetailMapper(ctx context.Context, store *db.Store, data db.DetailOrder
 		},
 		Qr:           data.QrUrl,
 		Company:      data.Company,
-		UserCreated:  data.Username,
-		UserUpdated:  "",
+		UserCreated:  data.AFullName,
+		UserUpdated:  data.FullName_2,
 		CreatedAt:    timestamppb.New(data.CreatedAt),
-		UpdatedAt:    nil,
+		UpdatedAt:    timestamppb.New(data.UpdatedAt.Time),
 		Payment:      payment,
 		Items:        orderItems,
 		ServiceItems: orderServiceItems,

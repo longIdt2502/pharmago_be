@@ -29,7 +29,7 @@ message CustomerDetail {
   string phone = 6;
   optional string email = 7;
   optional google.protobuf.Timestamp birthday = 8;
-  optional int32 gender = 9;
+  optional string gender = 9;
   optional string title = 10;
   optional google.protobuf.Timestamp license_date = 11;
   optional string issued_by = 12;
@@ -42,6 +42,10 @@ message CustomerDetail {
   optional string bank_name = 19;
   optional string bank_branch = 20;
   optional string license = 21;
+  string user_created = 22;
+  google.protobuf.Timestamp created_at = 23;
+  optional string user_updated = 24;
+  optional google.protobuf.Timestamp updated_at = 25;
 }
 
 enum MedicalRecordType {

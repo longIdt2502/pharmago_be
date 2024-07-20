@@ -641,6 +641,7 @@ Table customers {
   email varchar
   title varchar [note: "Chức danh"]
   phone varchar(20)
+  gender gender
   license varchar(20)
   license_date timestamp
   birthday timestamptz

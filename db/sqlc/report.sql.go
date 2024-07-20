@@ -220,7 +220,7 @@ WITH revenue AS (
     WHERE company = $2::int
     GROUP BY customer
 )
-SELECT r.count_order, r.total_price, r.customer, c.id, c.full_name, c.code, c.company, c.address, c.email, c.phone, c.license, c.birthday, c.user_created, c.user_updated, c.updated_at, c.created_at, c."group", c.title, c.license_date, c.contact_name, c.contact_title, c.contact_phone, c.contact_email, c.contact_address, c.account_number, c.bank_name, c.bank_branch, c.issued_by FROM revenue r
+SELECT r.count_order, r.total_price, r.customer, c.id, c.full_name, c.code, c.company, c.address, c.email, c.phone, c.license, c.birthday, c.user_created, c.user_updated, c.updated_at, c.created_at, c."group", c.title, c.license_date, c.contact_name, c.contact_title, c.contact_phone, c.contact_email, c.contact_address, c.account_number, c.bank_name, c.bank_branch, c.issued_by, c.gender FROM revenue r
 LEFT JOIN customers c ON r.customer = c.id
 ORDER BY 
     CASE WHEN $1::varchar = 'quantity' THEN -r.count_order
@@ -264,6 +264,7 @@ type ReportCustomerRevenueRow struct {
 	BankName       sql.NullString `json:"bank_name"`
 	BankBranch     sql.NullString `json:"bank_branch"`
 	IssuedBy       sql.NullString `json:"issued_by"`
+	Gender         NullGender     `json:"gender"`
 }
 
 func (q *Queries) ReportCustomerRevenue(ctx context.Context, arg ReportCustomerRevenueParams) ([]ReportCustomerRevenueRow, error) {
@@ -304,6 +305,7 @@ func (q *Queries) ReportCustomerRevenue(ctx context.Context, arg ReportCustomerR
 			&i.BankName,
 			&i.BankBranch,
 			&i.IssuedBy,
+			&i.Gender,
 		); err != nil {
 			return nil, err
 		}

@@ -47,3 +47,12 @@ WHERE variant = $1 AND is_available = true;
 -- name: GetVariantsByProduct :many
 SELECT * FROM variants
 WHERE product = $1;
+
+-- name: VariantsCustomerBuy :many
+SELECT v.*, SUM(value) AS quantity_buy FROM order_items oi
+JOIN variants v ON v.id = oi.variant
+JOIN orders o ON o.id = oi.order
+WHERE o.customer = sqlc.arg(customer)::int
+GROUP BY oi.variant, v.id
+LIMIT COALESCE(sqlc.narg('limit')::int, 10)
+OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10);

@@ -27,6 +27,7 @@ JOIN customers c ON o.customer = c.id
 JOIN tickets t ON o.ticket = t.id
 JOIN order_status os ON os.code = o.status
 JOIN accounts a ON a.id = o.user_created
+JOIN payments p ON p.id = o.payment
 WHERE o.company = sqlc.narg(company)::int
 AND (
     sqlc.narg('status')::varchar IS NULL OR o.status = sqlc.narg('status')::varchar
@@ -70,6 +71,7 @@ JOIN medias m ON o.qr = m.id
 JOIN order_type ot ON o.type = ot.code
 JOIN order_status os ON o.status = os.code
 JOIN accounts a ON o.user_created = a.id
+JOIN accounts uu ON o.user_updated = uu.id
 WHERE (o.id = sqlc.narg(id) OR o.code = sqlc.narg(code));
 
 -- name: ListOrderItem :many

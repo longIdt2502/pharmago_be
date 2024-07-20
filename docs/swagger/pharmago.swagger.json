@@ -1687,6 +1687,43 @@
         "tags": [
           "Appoitment Schedule"
         ]
+      },
+      "put": {
+        "summary": "Update Appoitment Schedule",
+        "operationId": "Pharmago_ScheduleUpdate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbAppointmentScheduleUpdateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PharmagoScheduleUpdateBody"
+            }
+          }
+        ],
+        "tags": [
+          "Appoitment Schedule"
+        ]
       }
     },
     "/appointment_schedule/v1/list": {
@@ -4373,6 +4410,59 @@
         ]
       }
     },
+    "/product/v1/variant/customer/{customer}": {
+      "get": {
+        "summary": "Get List Variant",
+        "operationId": "Pharmago_VariantsCustomerBuy",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbVariantsCustomerBuyResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "customer",
+            "description": "int32 value field",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Product"
+        ]
+      }
+    },
     "/product/v1/variant/list": {
       "get": {
         "summary": "Get List Variant",
@@ -5309,6 +5399,58 @@
             "schema": {
               "$ref": "#/definitions/pbServiceCreateRequest"
             }
+          }
+        ],
+        "tags": [
+          "Service"
+        ]
+      }
+    },
+    "/service/v1/customer/{customer}": {
+      "get": {
+        "summary": "List Service By Customer",
+        "operationId": "Pharmago_ServicesByCustomer",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbServicesByCustomerResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "customer",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -6340,6 +6482,27 @@
       },
       "title": "TODO: Update"
     },
+    "PharmagoScheduleUpdateBody": {
+      "type": "object",
+      "properties": {
+        "isDone": {
+          "type": "boolean"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbFileItem"
+          }
+        },
+        "type": {
+          "$ref": "#/definitions/pbMedicalRecordType"
+        },
+        "diagnostic": {
+          "type": "string"
+        }
+      }
+    },
     "PharmagoServiceUpdateBody": {
       "type": "object",
       "properties": {
@@ -6936,6 +7099,24 @@
         "orderId": {
           "type": "integer",
           "format": "int32"
+        }
+      }
+    },
+    "pbAppointmentScheduleUpdateResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "messageTrans": {
+          "type": "string"
+        },
+        "log": {
+          "type": "string"
         }
       }
     },
@@ -8246,8 +8427,7 @@
           "format": "date-time"
         },
         "gender": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string"
         },
         "title": {
           "type": "string"
@@ -8285,6 +8465,20 @@
         },
         "license": {
           "type": "string"
+        },
+        "userCreated": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "userUpdated": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
         }
       }
     },
@@ -9660,6 +9854,9 @@
         },
         "description": {
           "type": "string"
+        },
+        "payment": {
+          "$ref": "#/definitions/pbPayment"
         },
         "customerName": {
           "type": "string"
@@ -11180,6 +11377,25 @@
         }
       }
     },
+    "pbServicesByCustomerResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbService"
+          }
+        }
+      }
+    },
     "pbSimpleData": {
       "type": "object",
       "properties": {
@@ -11787,6 +12003,10 @@
         "realInventory": {
           "type": "integer",
           "format": "int32"
+        },
+        "quantityBuy": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -11802,6 +12022,25 @@
         },
         "details": {
           "$ref": "#/definitions/pbVariant"
+        }
+      }
+    },
+    "pbVariantsCustomerBuyResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbVariant"
+          }
         }
       }
     },

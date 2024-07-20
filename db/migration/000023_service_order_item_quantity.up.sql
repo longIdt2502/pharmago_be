@@ -1,0 +1,1 @@
+ALTER TABLE service_order_item ADD COLUMN IF NOT EXISTS "quantity" INT DEFAULT 0;

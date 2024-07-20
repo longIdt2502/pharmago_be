@@ -501,3 +501,78 @@ func (q *Queries) GetVariantsByProduct(ctx context.Context, product int32) ([]Va
 	}
 	return items, nil
 }
+
+const variantsCustomerBuy = `-- name: VariantsCustomerBuy :many
+SELECT v.id, v.name, v.code, v.barcode, v.decision_number, v.register_number, v.longevity, v.vat, v.product, v.user_created, v.user_updated, v.updated_at, v.created_at, v.initial_inventory, v.real_inventory, SUM(value) AS quantity_buy FROM order_items oi
+JOIN variants v ON v.id = oi.variant
+JOIN orders o ON o.id = oi.order
+WHERE o.customer = $1::int
+GROUP BY oi.variant, v.id
+LIMIT COALESCE($3::int, 10)
+OFFSET (COALESCE($2::int, 1) - 1) * COALESCE($3::int, 10)
+`
+
+type VariantsCustomerBuyParams struct {
+	Customer int32         `json:"customer"`
+	Page     sql.NullInt32 `json:"page"`
+	Limit    sql.NullInt32 `json:"limit"`
+}
+
+type VariantsCustomerBuyRow struct {
+	ID               int32           `json:"id"`
+	Name             string          `json:"name"`
+	Code             string          `json:"code"`
+	Barcode          sql.NullString  `json:"barcode"`
+	DecisionNumber   sql.NullString  `json:"decision_number"`
+	RegisterNumber   sql.NullString  `json:"register_number"`
+	Longevity        sql.NullString  `json:"longevity"`
+	Vat              sql.NullFloat64 `json:"vat"`
+	Product          int32           `json:"product"`
+	UserCreated      int32           `json:"user_created"`
+	UserUpdated      sql.NullInt32   `json:"user_updated"`
+	UpdatedAt        sql.NullTime    `json:"updated_at"`
+	CreatedAt        time.Time       `json:"created_at"`
+	InitialInventory int32           `json:"initial_inventory"`
+	RealInventory    int32           `json:"real_inventory"`
+	QuantityBuy      int64           `json:"quantity_buy"`
+}
+
+func (q *Queries) VariantsCustomerBuy(ctx context.Context, arg VariantsCustomerBuyParams) ([]VariantsCustomerBuyRow, error) {
+	rows, err := q.db.QueryContext(ctx, variantsCustomerBuy, arg.Customer, arg.Page, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []VariantsCustomerBuyRow{}
+	for rows.Next() {
+		var i VariantsCustomerBuyRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Code,
+			&i.Barcode,
+			&i.DecisionNumber,
+			&i.RegisterNumber,
+			&i.Longevity,
+			&i.Vat,
+			&i.Product,
+			&i.UserCreated,
+			&i.UserUpdated,
+			&i.UpdatedAt,
+			&i.CreatedAt,
+			&i.InitialInventory,
+			&i.RealInventory,
+			&i.QuantityBuy,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

@@ -1,0 +1,1 @@
+ALTER TABLE service_order_item DROP COLUMN IF EXISTS "quantity";

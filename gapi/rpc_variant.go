@@ -97,3 +97,37 @@ func (server *ServerGRPC) ScanVariant(srv pb.Pharmago_ScanVariantServer) error {
 		log.Info().Msg("send new response success")
 	}
 }
+
+func (server *ServerGRPC) VariantsCustomerBuy(ctx context.Context, req *pb.VariantsCustomerBuyRequest) (*pb.VariantsCustomerBuyResponse, error) {
+	_, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	variants, err := server.store.VariantsCustomerBuy(ctx, db.VariantsCustomerBuyParams{
+		Customer: req.GetCustomer(),
+		Page: sql.NullInt32{
+			Int32: req.GetPage(),
+			Valid: req.Page != nil,
+		},
+		Limit: sql.NullInt32{
+			Int32: req.GetLimit(),
+			Valid: req.Limit != nil,
+		},
+	})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get variant record: %e", err)
+	}
+
+	var variantsPb []*pb.Variant
+	for _, value := range variants {
+		data := mapper.VariantCustomerBuyMapper(ctx, server.store, value)
+		variantsPb = append(variantsPb, data)
+	}
+
+	return &pb.VariantsCustomerBuyResponse{
+		Code:    200,
+		Message: "success",
+		Details: variantsPb,
+	}, nil
+}

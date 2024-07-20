@@ -100,3 +100,30 @@ func VariantPreviewMapper(ctx context.Context, store *db.Store, data db.Variant)
 		RealInventory:    data.RealInventory,
 	}
 }
+
+func VariantCustomerBuyMapper(ctx context.Context, store *db.Store, data db.VariantsCustomerBuyRow) *pb.Variant {
+
+	media, _ := store.GetMediaVariant(ctx, data.ID)
+
+	var vat *float32
+	if data.Vat.Valid {
+		vat32 := float32(data.Vat.Float64)
+		vat = &vat32
+	}
+
+	return &pb.Variant{
+		Id:               data.ID,
+		Code:             data.Code,
+		Name:             data.Name,
+		Barcode:          &data.Barcode.String,
+		DecisionNumber:   &data.DecisionNumber.String,
+		RegisterNumber:   &data.RegisterNumber.String,
+		Longevity:        &data.Longevity.String,
+		Vat:              vat,
+		Product:          data.Product,
+		Media:            media.MediaUrl,
+		InitialInventory: data.InitialInventory,
+		RealInventory:    data.RealInventory,
+		QuantityBuy:      int32(data.QuantityBuy),
+	}
+}

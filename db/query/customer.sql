@@ -29,11 +29,11 @@ WHERE company = sqlc.arg(company)::int;
 
 -- name: CreateCustomer :one
 INSERT INTO customers (
-    full_name, code, company, address, email, phone ,license, issued_by, birthday, user_updated, user_created, "group", 
+    full_name, code, company, address, email, phone, gender, license, issued_by, birthday, user_updated, user_created, "group", 
     title, license_date, contact_name, contact_title, contact_phone, contact_email, contact_address, account_number,
     bank_name, bank_branch
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23
 ) RETURNING *;
 
 -- name: DetailCustomer :one
@@ -53,6 +53,7 @@ SET
     user_updated = COALESCE(sqlc.narg(user_updated)::int, user_updated),
     "group" = COALESCE(sqlc.narg('group')::int, "group"),
     title = COALESCE(sqlc.narg(title)::varchar, title),
+    gender = COALESCE(sqlc.narg(gender)::gender, gender),
     license_date = COALESCE(sqlc.narg(license_date)::timestamp, license_date),
     contact_name = COALESCE(sqlc.narg(contact_name)::varchar, contact_name),
     contact_title = COALESCE(sqlc.narg(contact_title)::varchar, contact_title),
