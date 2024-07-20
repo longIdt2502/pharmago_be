@@ -10,12 +10,25 @@ import (
 	"database/sql"
 )
 
+const countEmployee = `-- name: CountEmployee :one
+SELECT COUNT(id) AS total FROM account_company
+WHERE company = $1
+GROUP BY id
+`
+
+func (q *Queries) CountEmployee(ctx context.Context, company int32) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countEmployee, company)
+	var total int64
+	err := row.Scan(&total)
+	return total, err
+}
+
 const createCompany = `-- name: CreateCompany :one
 INSERT INTO companies (
-    name, code, type, tax_code, phone, description, address, owner
+    name, code, type, tax_code, phone, description, address, owner, time_open, time_close
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8
-) RETURNING id, name, code, tax_code, phone, description, address, oa_id, created_at, owner, type
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
+) RETURNING id, name, code, tax_code, phone, description, address, oa_id, created_at, owner, type, time_open, time_close
 `
 
 type CreateCompanyParams struct {
@@ -27,6 +40,8 @@ type CreateCompanyParams struct {
 	Description sql.NullString `json:"description"`
 	Address     sql.NullInt32  `json:"address"`
 	Owner       int32          `json:"owner"`
+	TimeOpen    sql.NullTime   `json:"time_open"`
+	TimeClose   sql.NullTime   `json:"time_close"`
 }
 
 func (q *Queries) CreateCompany(ctx context.Context, arg CreateCompanyParams) (Company, error) {
@@ -39,6 +54,8 @@ func (q *Queries) CreateCompany(ctx context.Context, arg CreateCompanyParams) (C
 		arg.Description,
 		arg.Address,
 		arg.Owner,
+		arg.TimeOpen,
+		arg.TimeClose,
 	)
 	var i Company
 	err := row.Scan(
@@ -53,12 +70,14 @@ func (q *Queries) CreateCompany(ctx context.Context, arg CreateCompanyParams) (C
 		&i.CreatedAt,
 		&i.Owner,
 		&i.Type,
+		&i.TimeOpen,
+		&i.TimeClose,
 	)
 	return i, err
 }
 
 const getCompanies = `-- name: GetCompanies :many
-SELECT id, name, code, tax_code, phone, description, address, oa_id, created_at, owner, type FROM companies
+SELECT id, name, code, tax_code, phone, description, address, oa_id, created_at, owner, type, time_open, time_close FROM companies
 WHERE owner = $1::int AND
     (name ILIKE COALESCE($2::varchar, '%') OR
     phone ILIKE COALESCE($2::varchar, '%'))
@@ -100,6 +119,8 @@ func (q *Queries) GetCompanies(ctx context.Context, arg GetCompaniesParams) ([]C
 			&i.CreatedAt,
 			&i.Owner,
 			&i.Type,
+			&i.TimeOpen,
+			&i.TimeClose,
 		); err != nil {
 			return nil, err
 		}
@@ -115,7 +136,7 @@ func (q *Queries) GetCompanies(ctx context.Context, arg GetCompaniesParams) ([]C
 }
 
 const getCompanyById = `-- name: GetCompanyById :one
-SELECT id, name, code, tax_code, phone, description, address, oa_id, created_at, owner, type FROM companies
+SELECT id, name, code, tax_code, phone, description, address, oa_id, created_at, owner, type, time_open, time_close FROM companies
 WHERE id = $1
 LIMIT 1
 `
@@ -135,12 +156,14 @@ func (q *Queries) GetCompanyById(ctx context.Context, id int32) (Company, error)
 		&i.CreatedAt,
 		&i.Owner,
 		&i.Type,
+		&i.TimeOpen,
+		&i.TimeClose,
 	)
 	return i, err
 }
 
 const getCompanyByPhone = `-- name: GetCompanyByPhone :one
-SELECT id, name, code, tax_code, phone, description, address, oa_id, created_at, owner, type FROM companies
+SELECT id, name, code, tax_code, phone, description, address, oa_id, created_at, owner, type, time_open, time_close FROM companies
 WHERE phone = $1
 LIMIT 1
 `
@@ -160,6 +183,8 @@ func (q *Queries) GetCompanyByPhone(ctx context.Context, phone sql.NullString) (
 		&i.CreatedAt,
 		&i.Owner,
 		&i.Type,
+		&i.TimeOpen,
+		&i.TimeClose,
 	)
 	return i, err
 }

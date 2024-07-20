@@ -1,8 +1,8 @@
 -- name: CreateCompany :one
 INSERT INTO companies (
-    name, code, type, tax_code, phone, description, address, owner
+    name, code, type, tax_code, phone, description, address, owner, time_open, time_close
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
 ) RETURNING *;
 
 -- name: GetCompanies :many
@@ -23,3 +23,8 @@ LIMIT 1;
 SELECT * FROM companies
 WHERE phone = $1
 LIMIT 1;
+
+-- name: CountEmployee :one
+SELECT COUNT(id) AS total FROM account_company
+WHERE company = $1
+GROUP BY id;

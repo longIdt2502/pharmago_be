@@ -49,10 +49,12 @@ SELECT * FROM variants
 WHERE product = $1;
 
 -- name: VariantsCustomerBuy :many
-SELECT v.*, SUM(value) AS quantity_buy FROM order_items oi
+SELECT v.*, u.*, SUM(value) AS quantity_buy FROM order_items oi
 JOIN variants v ON v.id = oi.variant
 JOIN orders o ON o.id = oi.order
+JOIN products p ON p.id = v.product
+JOIN units u ON u.id = p.unit
 WHERE o.customer = sqlc.arg(customer)::int
-GROUP BY oi.variant, v.id
+GROUP BY oi.variant, v.id, u.id
 LIMIT COALESCE(sqlc.narg('limit')::int, 10)
 OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10);

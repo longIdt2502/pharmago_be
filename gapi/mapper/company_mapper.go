@@ -19,7 +19,6 @@ func CompanyMapper(ctx context.Context, store *db.Store, data db.Company) *pb.Co
 	}
 
 	var addressPb *pb.Address
-
 	if data.Address.Valid {
 		address, _ := store.GetAddress(ctx, data.Address.Int32)
 
@@ -70,16 +69,33 @@ func CompanyMapper(ctx context.Context, store *db.Store, data db.Company) *pb.Co
 		}
 	}
 
+	var timeOpen *string
+	if data.TimeOpen.Valid {
+		x := data.TimeOpen.Time.Format("15:04:05")
+		timeOpen = &x
+	}
+
+	var timeClose *string
+	if data.TimeClose.Valid {
+		x := data.TimeClose.Time.Format("15:04:05")
+		timeClose = &x
+	}
+
+	totalEmployee, _ := store.CountEmployee(ctx, data.ID)
+
 	return &pb.Company{
-		Id:          int32(data.ID),
-		Name:        data.Name,
-		Code:        data.Code,
-		Type:        data.Type,
-		TaxCode:     taxCode,
-		Phone:       phone,
-		Description: nil,
-		Address:     addressPb,
-		Owner:       int32(data.Owner),
-		OaId:        &data.OaID.String,
+		Id:            int32(data.ID),
+		Name:          data.Name,
+		Code:          data.Code,
+		Type:          data.Type,
+		TaxCode:       taxCode,
+		Phone:         phone,
+		Description:   nil,
+		Address:       addressPb,
+		Owner:         int32(data.Owner),
+		OaId:          &data.OaID.String,
+		TimeOpen:      timeOpen,
+		TimeClose:     timeClose,
+		TotalEmployee: int32(totalEmployee),
 	}
 }

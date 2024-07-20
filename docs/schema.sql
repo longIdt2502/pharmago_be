@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml-lang.org)
 -- Database: PostgreSQL
--- Generated at: 2024-07-20T03:06:14.635Z
+-- Generated at: 2024-07-20T07:07:05.612Z
 
 CREATE TYPE "gender" AS ENUM (
   'nam',
@@ -106,6 +106,8 @@ CREATE TABLE "companies" (
   "description" varchar,
   "address" serial,
   "oa_id" varchar,
+  "time_open" time,
+  "time_close" time,
   "created_at" timestamptz NOT NULL DEFAULT (now()),
   "owner" serial NOT NULL,
   "type" varchar NOT NULL

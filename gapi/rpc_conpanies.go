@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/mapper"
 	"github.com/longIdt2502/pharmago_be/pb"
@@ -46,11 +47,6 @@ func (server *ServerGRPC) ListCompanies(ctx context.Context, req *pb.GetCompanie
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get list company")
 	}
-	print(accountRequest.ID)
-	print(req.GetPage())
-	print(req.GetLimit())
-	print(req.GetSearch())
-	print(companies)
 
 	var companyPb []*pb.Company
 	for _, value := range companies {

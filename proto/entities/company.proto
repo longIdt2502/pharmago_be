@@ -18,4 +18,7 @@ message Company {
   Address address = 8;
   int32 owner = 9;
   optional string oa_id = 10;
+  optional string time_open = 11;
+  optional string time_close = 12;
+  int32 total_employee = 13;
 }
