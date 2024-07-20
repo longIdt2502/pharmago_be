@@ -122,6 +122,10 @@ func (server *ServerGRPC) OrderList(ctx context.Context, req *pb.OrderListReques
 			Int32: req.Company,
 			Valid: true,
 		},
+		Customer: sql.NullInt32{
+			Int32: req.GetCustomer(),
+			Valid: req.Customer != nil,
+		},
 		Status: sql.NullString{
 			String: req.GetStatus(),
 			Valid:  req.Status != nil,

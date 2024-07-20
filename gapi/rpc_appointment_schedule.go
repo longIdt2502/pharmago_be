@@ -175,3 +175,60 @@ func (server *ServerGRPC) ScheduleDetail(ctx context.Context, req *pb.Appointmen
 		Details: itemPb,
 	}, nil
 }
+
+func (server *ServerGRPC) ScheduleUpdate(ctx context.Context, req *pb.AppointmentScheduleUpdateRequest) (*pb.AppointmentScheduleUpdateResponse, error) {
+	tokenPayload, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	uuidParse, _ := uuid.Parse(req.GetUuid())
+
+	schedule, err := server.store.DetailSchedule(ctx, uuidParse)
+	if err != nil {
+		errApp := common.ErrDB(err)
+		return &pb.AppointmentScheduleUpdateResponse{
+			Code:         int32(errApp.StatusCode),
+			Message:      errApp.Message,
+			MessageTrans: "Lỗi lấy dữ liệu lịch hẹn",
+			Log:          errApp.Log,
+		}, nil
+	}
+
+	_, err = server.CreateMannyMediaRecord(ctx, req.GetFiles(), req.GetType().String(), tokenPayload.UserID, schedule.Customer.Int32, &uuidParse)
+	if err != nil {
+		errApp := common.ErrInternal(err)
+		return &pb.AppointmentScheduleUpdateResponse{
+			Code:         int32(errApp.StatusCode),
+			Message:      errApp.Message,
+			MessageTrans: "Lỗi tạo dữ liệu",
+			Log:          errApp.Log,
+		}, nil
+	}
+
+	_, err = server.store.UpdateSchedule(ctx, db.UpdateScheduleParams{
+		Uuid: uuidParse,
+		IsDone: sql.NullBool{
+			Bool:  req.GetIsDone(),
+			Valid: true,
+		},
+		Diagnostic: sql.NullString{
+			String: req.GetDiagnostic(),
+			Valid:  true,
+		},
+	})
+	if err != nil {
+		errApp := common.ErrDB(err)
+		return &pb.AppointmentScheduleUpdateResponse{
+			Code:         int32(errApp.StatusCode),
+			Message:      errApp.Message,
+			MessageTrans: "Lỗi cập nhật dữ liệu lịch hẹn",
+			Log:          errApp.Log,
+		}, nil
+	}
+
+	return &pb.AppointmentScheduleUpdateResponse{
+		Code:    200,
+		Message: "success",
+	}, nil
+}

@@ -895,3 +895,34 @@ func convertDBTypeToPBType(dbType db.MedicalRecordLinkType) pb.MedicalRecordType
 		return pb.MedicalRecordType_test
 	}
 }
+
+func (server *ServerGRPC) CreateMannyMediaRecord(ctx context.Context, list []*pb.FileItem, typeMR string, account, customer int32, as_uuid *uuid.UUID) ([]db.MedicalRecordLink, error) {
+	var results []db.MedicalRecordLink
+
+	for _, item := range list {
+		file, _ := utils.NewFileFromFile(item.GetFile(), item.GetName())
+		_, err := server.b2Bucket.UploadFile(file.Name, file.Meta, file.File)
+		if err != nil {
+			return nil, common.ErrInternal(err)
+		}
+		title := file.Name
+		url, _ := server.b2Bucket.FileURL(file.Name)
+
+		record, err := server.store.CreateMedicalRecordLink(ctx, db.CreateMedicalRecordLinkParams{
+			Uuid:                uuid.New(),
+			Type:                db.MedicalRecordLinkType(typeMR),
+			Title:               sql.NullString{String: title, Valid: true},
+			Url:                 url,
+			Customer:            sql.NullInt32{Int32: customer, Valid: true},
+			AppointmentSchedule: uuid.NullUUID{UUID: *as_uuid, Valid: as_uuid != nil},
+			UserCreated:         sql.NullInt32{Int32: account, Valid: true},
+		})
+		if err != nil {
+			return nil, common.ErrDBWithMsg(err, "Tải lên file thất bại")
+		} else {
+			results = append(results, record)
+		}
+	}
+
+	return results, nil
+}

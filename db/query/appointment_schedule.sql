@@ -19,6 +19,18 @@ AND  ((
 LIMIT COALESCE(sqlc.narg('limit')::int, 10)
 OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10);
 
+-- name: DetailSchedule :one
+SELECT * FROM appointment_schedules
+WHERE uuid = $1;
+
+-- name: UpdateSchedule :one
+UPDATE appointment_schedules
+SET
+    is_done = COALESCE(sqlc.narg(is_done)::bool, is_done),
+    diagnostic = COALESCE(sqlc.narg(diagnostic)::varchar, diagnostic)
+WHERE uuid = sqlc.arg(uuid)::uuid
+RETURNING *;
+
 -- name: GetListScheduleService :many
 SELECT * FROM appointment_schedule_service ass
 JOIN services s ON s.id = ass.service

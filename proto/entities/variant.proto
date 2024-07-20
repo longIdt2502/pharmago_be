@@ -25,6 +25,7 @@ message Variant {
   optional float revenue = 15;
   int32 initial_inventory = 16;
   int32 real_inventory = 17;
+  int32 quantity_buy = 18;
 }
 
 message Unit {

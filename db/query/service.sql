@@ -14,6 +14,15 @@ ORDER BY -s.id
 LIMIT COALESCE(sqlc.narg('limit')::int, 10)
 OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10);
 
+-- name: GetServicesByCustomer :many
+SELECT s.*, SUM(quantity) as quantity_use FROM service_order_item soi
+JOIN orders o ON o.id = soi.order
+JOIN services s ON s.id = soi.service
+WHERE o.customer = sqlc.arg(customer)::int
+GROUP BY soi.service, s.id
+LIMIT COALESCE(sqlc.narg('limit')::int, 10)
+OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10);
+
 -- name: ServicesUsedByCustomer :many
 SELECT s.*, COUNT(s.id) AS number_of_uses FROM service_order_item soi
 JOIN orders o ON o.id = soi.order

@@ -548,6 +548,15 @@ service Pharmago {
       tags: "Product";
     };
   };
+  rpc VariantsCustomerBuy (VariantsCustomerBuyRequest) returns (VariantsCustomerBuyResponse) {
+    option (google.api.http) = {
+      get: "/product/v1/variant/customer/{customer}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get List Variant";
+      tags: "Product";
+    };
+  };
   rpc ScanVariant (stream VariantScanRequest) returns (stream VariantScanResponse) {};
 
 
@@ -1249,6 +1258,15 @@ service Pharmago {
       tags: "Service";
     };
   };
+  rpc ServicesByCustomer (ServicesByCustomerRequest) returns (ServicesByCustomerResponse) {
+    option (google.api.http) = {
+      get: "/service/v1/customer/{customer}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List Service By Customer";
+      tags: "Service";
+    };
+  };
   rpc ServiceCreate (ServiceCreateRequest) returns (ServiceCreateResponse) {
     option (google.api.http) = {
       post: "/service/v1/create"
@@ -1400,13 +1418,14 @@ service Pharmago {
     };
   };
 
-  // rpc ScheduleUpdate (AppointmentSchedule) returns (AppointmentScheduleResponse) {
-  //   option (google.api.http) = {
-  //     get: "/appointment_schedule/v1/detail/{id}"
-  //   };
-  //   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-  //     summary: "Update Appoitment Schedule";
-  //     tags: "Appoitment Schedule";
-  //   };
-  // };
+  rpc ScheduleUpdate (AppointmentScheduleUpdateRequest) returns (AppointmentScheduleUpdateResponse) {
+    option (google.api.http) = {
+      put: "/appointment_schedule/v1/detail/{uuid}"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Update Appoitment Schedule";
+      tags: "Appoitment Schedule";
+    };
+  };
 }

@@ -61,6 +61,24 @@ func CustomerDetailMapper(ctx context.Context, store *db.Store, data db.Customer
 		licenseDate = timestamppb.New(data.LicenseDate.Time)
 	}
 
+	var gender *string
+	if data.Gender.Valid {
+		gender = (*string)(&data.Gender.Gender)
+	}
+
+	userCreate, _ := store.GetAccount(ctx, data.UserCreated)
+
+	var userUpdated *string
+	if data.UserUpdated.Valid {
+		user, _ := store.GetAccount(ctx, data.UserCreated)
+		userUpdated = &user.FullName
+	}
+
+	var updatedAt *timestamppb.Timestamp
+	if data.UserUpdated.Valid {
+		updatedAt = timestamppb.New(data.UpdatedAt.Time)
+	}
+
 	return &pb.CustomerDetail{
 		Id:             data.ID,
 		Code:           data.Code,
@@ -69,6 +87,7 @@ func CustomerDetailMapper(ctx context.Context, store *db.Store, data db.Customer
 		Address:        addressPb,
 		Phone:          data.Phone.String,
 		Email:          &data.Email.String,
+		Gender:         gender,
 		Birthday:       birthday,
 		Title:          &data.Title.String,
 		License:        &data.License.String,
@@ -82,5 +101,9 @@ func CustomerDetailMapper(ctx context.Context, store *db.Store, data db.Customer
 		AccountNumber:  &data.AccountNumber.String,
 		BankName:       &data.BankName.String,
 		BankBranch:     &data.BankBranch.String,
+		UserCreated:    userCreate.FullName,
+		CreatedAt:      timestamppb.New(data.CreatedAt),
+		UserUpdated:    userUpdated,
+		UpdatedAt:      updatedAt,
 	}, nil
 }

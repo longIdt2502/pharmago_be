@@ -18,3 +18,16 @@ message ServiceListResponse {
     string message = 2;
     repeated Service details = 3;
 }
+
+message ServicesByCustomerRequest {
+    optional int32 page = 1;
+    optional int32 limit = 2;
+    optional string search = 3;
+    int32 customer = 4;
+}
+
+message ServicesByCustomerResponse {
+    int32 code = 1;
+    string message = 2;
+    repeated Service details = 3;
+}

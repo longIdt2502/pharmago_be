@@ -155,8 +155,36 @@ func (q *Queries) CreateScheduleUrl(ctx context.Context, arg CreateScheduleUrlPa
 	return i, err
 }
 
+const detailSchedule = `-- name: DetailSchedule :one
+SELECT id, uuid, code, customer, company, doctor, symptoms, diagnostic, qr_code_url, is_done, meeting_at, user_created, user_updated, created_at, updated_at FROM appointment_schedules
+WHERE uuid = $1
+`
+
+func (q *Queries) DetailSchedule(ctx context.Context, argUuid uuid.UUID) (AppointmentSchedule, error) {
+	row := q.db.QueryRowContext(ctx, detailSchedule, argUuid)
+	var i AppointmentSchedule
+	err := row.Scan(
+		&i.ID,
+		&i.Uuid,
+		&i.Code,
+		&i.Customer,
+		&i.Company,
+		&i.Doctor,
+		&i.Symptoms,
+		&i.Diagnostic,
+		&i.QrCodeUrl,
+		&i.IsDone,
+		&i.MeetingAt,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const getListSchedule = `-- name: GetListSchedule :many
-SELECT sch.id, uuid, sch.code, customer, sch.company, doctor, symptoms, diagnostic, qr_code_url, is_done, meeting_at, sch.user_created, sch.user_updated, sch.created_at, sch.updated_at, c.id, c.full_name, c.code, c.company, c.address, c.email, phone, license, birthday, c.user_created, c.user_updated, c.updated_at, c.created_at, "group", title, license_date, contact_name, contact_title, contact_phone, contact_email, contact_address, account_number, bank_name, bank_branch, issued_by, a.id, a.username, a.hashed_password, a.full_name, a.email, a.type, a.is_verify, a.password_changed_at, a.created_at, a.role, a.gender, a.licence, a.dob, a.address, uc.id, uc.username, uc.hashed_password, uc.full_name, uc.email, uc.type, uc.is_verify, uc.password_changed_at, uc.created_at, uc.role, uc.gender, uc.licence, uc.dob, uc.address, uu.id, uu.username, uu.hashed_password, uu.full_name, uu.email, uu.type, uu.is_verify, uu.password_changed_at, uu.created_at, uu.role, uu.gender, uu.licence, uu.dob, uu.address FROM appointment_schedules sch
+SELECT sch.id, uuid, sch.code, customer, sch.company, doctor, symptoms, diagnostic, qr_code_url, is_done, meeting_at, sch.user_created, sch.user_updated, sch.created_at, sch.updated_at, c.id, c.full_name, c.code, c.company, c.address, c.email, phone, license, birthday, c.user_created, c.user_updated, c.updated_at, c.created_at, "group", title, license_date, contact_name, contact_title, contact_phone, contact_email, contact_address, account_number, bank_name, bank_branch, issued_by, c.gender, a.id, a.username, a.hashed_password, a.full_name, a.email, a.type, a.is_verify, a.password_changed_at, a.created_at, a.role, a.gender, a.licence, a.dob, a.address, uc.id, uc.username, uc.hashed_password, uc.full_name, uc.email, uc.type, uc.is_verify, uc.password_changed_at, uc.created_at, uc.role, uc.gender, uc.licence, uc.dob, uc.address, uu.id, uu.username, uu.hashed_password, uu.full_name, uu.email, uu.type, uu.is_verify, uu.password_changed_at, uu.created_at, uu.role, uu.gender, uu.licence, uu.dob, uu.address FROM appointment_schedules sch
 LEFT JOIN customers c ON c.id = sch.customer
 JOIN accounts a ON a.id = sch.doctor
 JOIN accounts uc ON uc.id = sch.user_created
@@ -229,6 +257,7 @@ type GetListScheduleRow struct {
 	BankName            sql.NullString `json:"bank_name"`
 	BankBranch          sql.NullString `json:"bank_branch"`
 	IssuedBy            sql.NullString `json:"issued_by"`
+	Gender              NullGender     `json:"gender"`
 	ID_3                int32          `json:"id_3"`
 	Username            string         `json:"username"`
 	HashedPassword      string         `json:"hashed_password"`
@@ -239,7 +268,7 @@ type GetListScheduleRow struct {
 	PasswordChangedAt   time.Time      `json:"password_changed_at"`
 	CreatedAt_3         time.Time      `json:"created_at_3"`
 	Role                sql.NullInt32  `json:"role"`
-	Gender              NullGender     `json:"gender"`
+	Gender_2            NullGender     `json:"gender_2"`
 	Licence             sql.NullString `json:"licence"`
 	Dob                 sql.NullTime   `json:"dob"`
 	Address_2           sql.NullInt32  `json:"address_2"`
@@ -253,7 +282,7 @@ type GetListScheduleRow struct {
 	PasswordChangedAt_2 time.Time      `json:"password_changed_at_2"`
 	CreatedAt_4         time.Time      `json:"created_at_4"`
 	Role_2              sql.NullInt32  `json:"role_2"`
-	Gender_2            NullGender     `json:"gender_2"`
+	Gender_3            NullGender     `json:"gender_3"`
 	Licence_2           sql.NullString `json:"licence_2"`
 	Dob_2               sql.NullTime   `json:"dob_2"`
 	Address_3           sql.NullInt32  `json:"address_3"`
@@ -267,7 +296,7 @@ type GetListScheduleRow struct {
 	PasswordChangedAt_3 sql.NullTime   `json:"password_changed_at_3"`
 	CreatedAt_5         sql.NullTime   `json:"created_at_5"`
 	Role_3              sql.NullInt32  `json:"role_3"`
-	Gender_3            NullGender     `json:"gender_3"`
+	Gender_4            NullGender     `json:"gender_4"`
 	Licence_3           sql.NullString `json:"licence_3"`
 	Dob_3               sql.NullTime   `json:"dob_3"`
 	Address_4           sql.NullInt32  `json:"address_4"`
@@ -332,6 +361,7 @@ func (q *Queries) GetListSchedule(ctx context.Context, arg GetListScheduleParams
 			&i.BankName,
 			&i.BankBranch,
 			&i.IssuedBy,
+			&i.Gender,
 			&i.ID_3,
 			&i.Username,
 			&i.HashedPassword,
@@ -342,7 +372,7 @@ func (q *Queries) GetListSchedule(ctx context.Context, arg GetListScheduleParams
 			&i.PasswordChangedAt,
 			&i.CreatedAt_3,
 			&i.Role,
-			&i.Gender,
+			&i.Gender_2,
 			&i.Licence,
 			&i.Dob,
 			&i.Address_2,
@@ -356,7 +386,7 @@ func (q *Queries) GetListSchedule(ctx context.Context, arg GetListScheduleParams
 			&i.PasswordChangedAt_2,
 			&i.CreatedAt_4,
 			&i.Role_2,
-			&i.Gender_2,
+			&i.Gender_3,
 			&i.Licence_2,
 			&i.Dob_2,
 			&i.Address_3,
@@ -370,7 +400,7 @@ func (q *Queries) GetListSchedule(ctx context.Context, arg GetListScheduleParams
 			&i.PasswordChangedAt_3,
 			&i.CreatedAt_5,
 			&i.Role_3,
-			&i.Gender_3,
+			&i.Gender_4,
 			&i.Licence_3,
 			&i.Dob_3,
 			&i.Address_4,
@@ -618,4 +648,42 @@ func (q *Queries) GetListScheduleUrl(ctx context.Context, asUuid uuid.UUID) ([]A
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateSchedule = `-- name: UpdateSchedule :one
+UPDATE appointment_schedules
+SET
+    is_done = COALESCE($1::bool, is_done),
+    diagnostic = COALESCE($2::varchar, diagnostic)
+WHERE uuid = $3::uuid
+RETURNING id, uuid, code, customer, company, doctor, symptoms, diagnostic, qr_code_url, is_done, meeting_at, user_created, user_updated, created_at, updated_at
+`
+
+type UpdateScheduleParams struct {
+	IsDone     sql.NullBool   `json:"is_done"`
+	Diagnostic sql.NullString `json:"diagnostic"`
+	Uuid       uuid.UUID      `json:"uuid"`
+}
+
+func (q *Queries) UpdateSchedule(ctx context.Context, arg UpdateScheduleParams) (AppointmentSchedule, error) {
+	row := q.db.QueryRowContext(ctx, updateSchedule, arg.IsDone, arg.Diagnostic, arg.Uuid)
+	var i AppointmentSchedule
+	err := row.Scan(
+		&i.ID,
+		&i.Uuid,
+		&i.Code,
+		&i.Customer,
+		&i.Company,
+		&i.Doctor,
+		&i.Symptoms,
+		&i.Diagnostic,
+		&i.QrCodeUrl,
+		&i.IsDone,
+		&i.MeetingAt,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }

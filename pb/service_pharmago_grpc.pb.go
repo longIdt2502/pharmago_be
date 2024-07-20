@@ -57,6 +57,7 @@ const (
 	Pharmago_PromotionCheck_FullMethodName            = "/pb.Pharmago/PromotionCheck"
 	Pharmago_PromotionCreate_FullMethodName           = "/pb.Pharmago/PromotionCreate"
 	Pharmago_ListVariant_FullMethodName               = "/pb.Pharmago/ListVariant"
+	Pharmago_VariantsCustomerBuy_FullMethodName       = "/pb.Pharmago/VariantsCustomerBuy"
 	Pharmago_ScanVariant_FullMethodName               = "/pb.Pharmago/ScanVariant"
 	Pharmago_GetPriceList_FullMethodName              = "/pb.Pharmago/GetPriceList"
 	Pharmago_DetailPriceList_FullMethodName           = "/pb.Pharmago/DetailPriceList"
@@ -129,6 +130,7 @@ const (
 	Pharmago_ReportDebtNote_FullMethodName            = "/pb.Pharmago/ReportDebtNote"
 	Pharmago_CreateDebtRepayment_FullMethodName       = "/pb.Pharmago/CreateDebtRepayment"
 	Pharmago_ServiceList_FullMethodName               = "/pb.Pharmago/ServiceList"
+	Pharmago_ServicesByCustomer_FullMethodName        = "/pb.Pharmago/ServicesByCustomer"
 	Pharmago_ServiceCreate_FullMethodName             = "/pb.Pharmago/ServiceCreate"
 	Pharmago_ServiceDetail_FullMethodName             = "/pb.Pharmago/ServiceDetail"
 	Pharmago_ServiceUpdate_FullMethodName             = "/pb.Pharmago/ServiceUpdate"
@@ -144,6 +146,7 @@ const (
 	Pharmago_ScheduleCreate_FullMethodName            = "/pb.Pharmago/ScheduleCreate"
 	Pharmago_ScheduleList_FullMethodName              = "/pb.Pharmago/ScheduleList"
 	Pharmago_ScheduleDetail_FullMethodName            = "/pb.Pharmago/ScheduleDetail"
+	Pharmago_ScheduleUpdate_FullMethodName            = "/pb.Pharmago/ScheduleUpdate"
 )
 
 // PharmagoClient is the client API for Pharmago service.
@@ -197,6 +200,7 @@ type PharmagoClient interface {
 	PromotionCreate(ctx context.Context, in *PromotionCreateRequest, opts ...grpc.CallOption) (*PromotionCreateResponse, error)
 	// TODO -------- VARIANT --------
 	ListVariant(ctx context.Context, in *ListVariantRequest, opts ...grpc.CallOption) (*ListVariantResponse, error)
+	VariantsCustomerBuy(ctx context.Context, in *VariantsCustomerBuyRequest, opts ...grpc.CallOption) (*VariantsCustomerBuyResponse, error)
 	ScanVariant(ctx context.Context, opts ...grpc.CallOption) (Pharmago_ScanVariantClient, error)
 	// TODO -------- PRICE_LIST --------
 	GetPriceList(ctx context.Context, in *PriceListRequest, opts ...grpc.CallOption) (*PriceListResponse, error)
@@ -282,6 +286,7 @@ type PharmagoClient interface {
 	CreateDebtRepayment(ctx context.Context, in *CreateDebtRepaymentRequest, opts ...grpc.CallOption) (*CreateDebtRepaymentResponse, error)
 	// ================== SERVICE ===================
 	ServiceList(ctx context.Context, in *ServiceListRequest, opts ...grpc.CallOption) (*ServiceListResponse, error)
+	ServicesByCustomer(ctx context.Context, in *ServicesByCustomerRequest, opts ...grpc.CallOption) (*ServicesByCustomerResponse, error)
 	ServiceCreate(ctx context.Context, in *ServiceCreateRequest, opts ...grpc.CallOption) (*ServiceCreateResponse, error)
 	ServiceDetail(ctx context.Context, in *ServiceDetailRequest, opts ...grpc.CallOption) (*ServiceDetailResponse, error)
 	ServiceUpdate(ctx context.Context, in *ServiceUpdateRequest, opts ...grpc.CallOption) (*ServiceUpdateResponse, error)
@@ -301,6 +306,7 @@ type PharmagoClient interface {
 	ScheduleCreate(ctx context.Context, in *AppointmentSchedule, opts ...grpc.CallOption) (*AppointmentScheduleResponse, error)
 	ScheduleList(ctx context.Context, in *AppointmentScheduleListRequest, opts ...grpc.CallOption) (*AppointmentScheduleListResponse, error)
 	ScheduleDetail(ctx context.Context, in *AppointmentSchedule, opts ...grpc.CallOption) (*AppointmentScheduleResponse, error)
+	ScheduleUpdate(ctx context.Context, in *AppointmentScheduleUpdateRequest, opts ...grpc.CallOption) (*AppointmentScheduleUpdateResponse, error)
 }
 
 type pharmagoClient struct {
@@ -647,6 +653,15 @@ func (c *pharmagoClient) PromotionCreate(ctx context.Context, in *PromotionCreat
 func (c *pharmagoClient) ListVariant(ctx context.Context, in *ListVariantRequest, opts ...grpc.CallOption) (*ListVariantResponse, error) {
 	out := new(ListVariantResponse)
 	err := c.cc.Invoke(ctx, Pharmago_ListVariant_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) VariantsCustomerBuy(ctx context.Context, in *VariantsCustomerBuyRequest, opts ...grpc.CallOption) (*VariantsCustomerBuyResponse, error) {
+	out := new(VariantsCustomerBuyResponse)
+	err := c.cc.Invoke(ctx, Pharmago_VariantsCustomerBuy_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1346,6 +1361,15 @@ func (c *pharmagoClient) ServiceList(ctx context.Context, in *ServiceListRequest
 	return out, nil
 }
 
+func (c *pharmagoClient) ServicesByCustomer(ctx context.Context, in *ServicesByCustomerRequest, opts ...grpc.CallOption) (*ServicesByCustomerResponse, error) {
+	out := new(ServicesByCustomerResponse)
+	err := c.cc.Invoke(ctx, Pharmago_ServicesByCustomer_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *pharmagoClient) ServiceCreate(ctx context.Context, in *ServiceCreateRequest, opts ...grpc.CallOption) (*ServiceCreateResponse, error) {
 	out := new(ServiceCreateResponse)
 	err := c.cc.Invoke(ctx, Pharmago_ServiceCreate_FullMethodName, in, out, opts...)
@@ -1481,6 +1505,15 @@ func (c *pharmagoClient) ScheduleDetail(ctx context.Context, in *AppointmentSche
 	return out, nil
 }
 
+func (c *pharmagoClient) ScheduleUpdate(ctx context.Context, in *AppointmentScheduleUpdateRequest, opts ...grpc.CallOption) (*AppointmentScheduleUpdateResponse, error) {
+	out := new(AppointmentScheduleUpdateResponse)
+	err := c.cc.Invoke(ctx, Pharmago_ScheduleUpdate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PharmagoServer is the server API for Pharmago service.
 // All implementations must embed UnimplementedPharmagoServer
 // for forward compatibility
@@ -1532,6 +1565,7 @@ type PharmagoServer interface {
 	PromotionCreate(context.Context, *PromotionCreateRequest) (*PromotionCreateResponse, error)
 	// TODO -------- VARIANT --------
 	ListVariant(context.Context, *ListVariantRequest) (*ListVariantResponse, error)
+	VariantsCustomerBuy(context.Context, *VariantsCustomerBuyRequest) (*VariantsCustomerBuyResponse, error)
 	ScanVariant(Pharmago_ScanVariantServer) error
 	// TODO -------- PRICE_LIST --------
 	GetPriceList(context.Context, *PriceListRequest) (*PriceListResponse, error)
@@ -1617,6 +1651,7 @@ type PharmagoServer interface {
 	CreateDebtRepayment(context.Context, *CreateDebtRepaymentRequest) (*CreateDebtRepaymentResponse, error)
 	// ================== SERVICE ===================
 	ServiceList(context.Context, *ServiceListRequest) (*ServiceListResponse, error)
+	ServicesByCustomer(context.Context, *ServicesByCustomerRequest) (*ServicesByCustomerResponse, error)
 	ServiceCreate(context.Context, *ServiceCreateRequest) (*ServiceCreateResponse, error)
 	ServiceDetail(context.Context, *ServiceDetailRequest) (*ServiceDetailResponse, error)
 	ServiceUpdate(context.Context, *ServiceUpdateRequest) (*ServiceUpdateResponse, error)
@@ -1636,6 +1671,7 @@ type PharmagoServer interface {
 	ScheduleCreate(context.Context, *AppointmentSchedule) (*AppointmentScheduleResponse, error)
 	ScheduleList(context.Context, *AppointmentScheduleListRequest) (*AppointmentScheduleListResponse, error)
 	ScheduleDetail(context.Context, *AppointmentSchedule) (*AppointmentScheduleResponse, error)
+	ScheduleUpdate(context.Context, *AppointmentScheduleUpdateRequest) (*AppointmentScheduleUpdateResponse, error)
 	mustEmbedUnimplementedPharmagoServer()
 }
 
@@ -1756,6 +1792,9 @@ func (UnimplementedPharmagoServer) PromotionCreate(context.Context, *PromotionCr
 }
 func (UnimplementedPharmagoServer) ListVariant(context.Context, *ListVariantRequest) (*ListVariantResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListVariant not implemented")
+}
+func (UnimplementedPharmagoServer) VariantsCustomerBuy(context.Context, *VariantsCustomerBuyRequest) (*VariantsCustomerBuyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VariantsCustomerBuy not implemented")
 }
 func (UnimplementedPharmagoServer) ScanVariant(Pharmago_ScanVariantServer) error {
 	return status.Errorf(codes.Unimplemented, "method ScanVariant not implemented")
@@ -1973,6 +2012,9 @@ func (UnimplementedPharmagoServer) CreateDebtRepayment(context.Context, *CreateD
 func (UnimplementedPharmagoServer) ServiceList(context.Context, *ServiceListRequest) (*ServiceListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ServiceList not implemented")
 }
+func (UnimplementedPharmagoServer) ServicesByCustomer(context.Context, *ServicesByCustomerRequest) (*ServicesByCustomerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ServicesByCustomer not implemented")
+}
 func (UnimplementedPharmagoServer) ServiceCreate(context.Context, *ServiceCreateRequest) (*ServiceCreateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ServiceCreate not implemented")
 }
@@ -2017,6 +2059,9 @@ func (UnimplementedPharmagoServer) ScheduleList(context.Context, *AppointmentSch
 }
 func (UnimplementedPharmagoServer) ScheduleDetail(context.Context, *AppointmentSchedule) (*AppointmentScheduleResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ScheduleDetail not implemented")
+}
+func (UnimplementedPharmagoServer) ScheduleUpdate(context.Context, *AppointmentScheduleUpdateRequest) (*AppointmentScheduleUpdateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ScheduleUpdate not implemented")
 }
 func (UnimplementedPharmagoServer) mustEmbedUnimplementedPharmagoServer() {}
 
@@ -2711,6 +2756,24 @@ func _Pharmago_ListVariant_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PharmagoServer).ListVariant(ctx, req.(*ListVariantRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_VariantsCustomerBuy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VariantsCustomerBuyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).VariantsCustomerBuy(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_VariantsCustomerBuy_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).VariantsCustomerBuy(ctx, req.(*VariantsCustomerBuyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -4022,6 +4085,24 @@ func _Pharmago_ServiceList_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Pharmago_ServicesByCustomer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ServicesByCustomerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ServicesByCustomer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_ServicesByCustomer_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ServicesByCustomer(ctx, req.(*ServicesByCustomerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Pharmago_ServiceCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ServiceCreateRequest)
 	if err := dec(in); err != nil {
@@ -4292,6 +4373,24 @@ func _Pharmago_ScheduleDetail_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Pharmago_ScheduleUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AppointmentScheduleUpdateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).ScheduleUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_ScheduleUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).ScheduleUpdate(ctx, req.(*AppointmentScheduleUpdateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Pharmago_ServiceDesc is the grpc.ServiceDesc for Pharmago service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -4450,6 +4549,10 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListVariant",
 			Handler:    _Pharmago_ListVariant_Handler,
+		},
+		{
+			MethodName: "VariantsCustomerBuy",
+			Handler:    _Pharmago_VariantsCustomerBuy_Handler,
 		},
 		{
 			MethodName: "GetPriceList",
@@ -4732,6 +4835,10 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Pharmago_ServiceList_Handler,
 		},
 		{
+			MethodName: "ServicesByCustomer",
+			Handler:    _Pharmago_ServicesByCustomer_Handler,
+		},
+		{
 			MethodName: "ServiceCreate",
 			Handler:    _Pharmago_ServiceCreate_Handler,
 		},
@@ -4790,6 +4897,10 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ScheduleDetail",
 			Handler:    _Pharmago_ScheduleDetail_Handler,
+		},
+		{
+			MethodName: "ScheduleUpdate",
+			Handler:    _Pharmago_ScheduleUpdate_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

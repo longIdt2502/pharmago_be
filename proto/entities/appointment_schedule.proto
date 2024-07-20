@@ -10,6 +10,9 @@ import "entities/account.proto";
 import "entities/service.proto";
 import "entities/order.proto";
 import "entities/variant.proto";
+import "entities/customer.proto";
+
+import "rpc/customer/rpc_medical_record_create.proto";
 
 
 /// ============== ENTITIES ============
@@ -92,14 +95,11 @@ message AppointmentScheduleListResponse {
 }
 
 message AppointmentScheduleUpdateRequest {
-  int32 company = 1;
-  optional string search = 2;
-  optional int32 customer = 3;
-  optional int32 doctor = 4;
-  optional google.protobuf.Timestamp time_start = 5;
-  optional google.protobuf.Timestamp time_end = 6;
-  optional int32 page = 7;
-  optional int32 limit = 8;
+  string uuid = 1;
+  bool is_done = 2;
+  repeated FileItem files = 3;
+  MedicalRecordType type = 4;
+  string diagnostic = 5;
 }
 
 message AppointmentScheduleUpdateResponse {
@@ -107,6 +107,5 @@ message AppointmentScheduleUpdateResponse {
   string message = 2;
   string message_trans = 3;
   string log = 4;
-  repeated AppointmentSchedule details = 5;
 }
 

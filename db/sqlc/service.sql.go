@@ -257,6 +257,83 @@ func (q *Queries) GetListService(ctx context.Context, arg GetListServiceParams) 
 	return items, nil
 }
 
+const getServicesByCustomer = `-- name: GetServicesByCustomer :many
+SELECT s.id, s.image, s.code, s.title, s.entity, s.staff, s.frequency, s.reminder_time, s.unit, s.price, s.description, s.company, s.user_created, s.user_updated, s.created_at, s.updated_at, SUM(quantity) as quantity_use FROM service_order_item soi
+JOIN orders o ON o.id = soi.order
+JOIN services s ON s.id = soi.service
+WHERE o.customer = $1::int
+GROUP BY soi.service, s.id
+LIMIT COALESCE($3::int, 10)
+OFFSET (COALESCE($2::int, 1) - 1) * COALESCE($3::int, 10)
+`
+
+type GetServicesByCustomerParams struct {
+	Customer int32         `json:"customer"`
+	Page     sql.NullInt32 `json:"page"`
+	Limit    sql.NullInt32 `json:"limit"`
+}
+
+type GetServicesByCustomerRow struct {
+	ID           int32          `json:"id"`
+	Image        sql.NullInt32  `json:"image"`
+	Code         string         `json:"code"`
+	Title        string         `json:"title"`
+	Entity       sql.NullString `json:"entity"`
+	Staff        int32          `json:"staff"`
+	Frequency    sql.NullString `json:"frequency"`
+	ReminderTime sql.NullInt32  `json:"reminder_time"`
+	Unit         string         `json:"unit"`
+	Price        float64        `json:"price"`
+	Description  sql.NullString `json:"description"`
+	Company      int32          `json:"company"`
+	UserCreated  int32          `json:"user_created"`
+	UserUpdated  sql.NullInt32  `json:"user_updated"`
+	CreatedAt    time.Time      `json:"created_at"`
+	UpdatedAt    sql.NullTime   `json:"updated_at"`
+	QuantityUse  int64          `json:"quantity_use"`
+}
+
+func (q *Queries) GetServicesByCustomer(ctx context.Context, arg GetServicesByCustomerParams) ([]GetServicesByCustomerRow, error) {
+	rows, err := q.db.QueryContext(ctx, getServicesByCustomer, arg.Customer, arg.Page, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GetServicesByCustomerRow{}
+	for rows.Next() {
+		var i GetServicesByCustomerRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Image,
+			&i.Code,
+			&i.Title,
+			&i.Entity,
+			&i.Staff,
+			&i.Frequency,
+			&i.ReminderTime,
+			&i.Unit,
+			&i.Price,
+			&i.Description,
+			&i.Company,
+			&i.UserCreated,
+			&i.UserUpdated,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.QuantityUse,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listServiceVariant = `-- name: ListServiceVariant :many
 SELECT sv.id, service, variant, v.id, name, code, barcode, decision_number, register_number, longevity, vat, product, user_created, user_updated, updated_at, created_at, initial_inventory, real_inventory FROM service_variant sv
 LEFT JOIN variants v ON v.id = sv.variant

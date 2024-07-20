@@ -312,6 +312,7 @@ type Customer struct {
 	BankName       sql.NullString `json:"bank_name"`
 	BankBranch     sql.NullString `json:"bank_branch"`
 	IssuedBy       sql.NullString `json:"issued_by"`
+	Gender         NullGender     `json:"gender"`
 }
 
 type CustomerGroup struct {
@@ -749,6 +750,7 @@ type ServiceOrderItem struct {
 	UnitPrice  float64       `json:"unit_price"`
 	Discount   float64       `json:"discount"`
 	TotalPrice float64       `json:"total_price"`
+	Quantity   sql.NullInt32 `json:"quantity"`
 }
 
 type ServiceVariant struct {

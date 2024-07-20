@@ -25,3 +25,21 @@ message ListVariantResponse {
   string message = 2;
   repeated Variant details = 3;
 }
+
+message VariantsCustomerBuyRequest {
+  int32 customer = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "int32 value field",
+    required: [
+      "company"
+    ],
+  }];
+  optional int32 page = 2;
+  optional int32 limit = 3;
+  optional string search = 4;
+}
+
+message VariantsCustomerBuyResponse {
+  int32 code = 1;
+  string message = 2;
+  repeated Variant details = 3;
+}
