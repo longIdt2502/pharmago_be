@@ -233,6 +233,8 @@ type Company struct {
 	CreatedAt   time.Time      `json:"created_at"`
 	Owner       int32          `json:"owner"`
 	Type        string         `json:"type"`
+	TimeOpen    sql.NullTime   `json:"time_open"`
+	TimeClose   sql.NullTime   `json:"time_close"`
 }
 
 type CompanyPharma struct {

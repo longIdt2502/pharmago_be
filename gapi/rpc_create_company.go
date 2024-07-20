@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"time"
 
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
@@ -80,6 +81,14 @@ func (server *ServerGRPC) CreateCompany(ctx context.Context, req *pb.CreateCompa
 			Valid: true,
 		},
 		Owner: accountRequest.ID,
+		TimeOpen: sql.NullTime{
+			Time:  time.Unix(req.Company.GetTimeOpen().AsTime().Unix(), 0),
+			Valid: req.Company.TimeOpen.IsValid(),
+		},
+		TimeClose: sql.NullTime{
+			Time:  time.Unix(req.Company.GetTimeClose().AsTime().Unix(), 0),
+			Valid: req.Company.TimeClose.IsValid(),
+		},
 	})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to create company: %e", err)

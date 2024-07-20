@@ -125,5 +125,14 @@ func VariantCustomerBuyMapper(ctx context.Context, store *db.Store, data db.Vari
 		InitialInventory: data.InitialInventory,
 		RealInventory:    data.RealInventory,
 		QuantityBuy:      int32(data.QuantityBuy),
+		Units: []*pb.Unit{
+			{
+				Id:          data.ID_2,
+				Name:        data.Name_2,
+				SellPrice:   float32(data.SellPrice),
+				ImportPrice: float32(data.ImportPrice),
+				Default:     true,
+			},
+		},
 	}
 }

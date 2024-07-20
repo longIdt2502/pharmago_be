@@ -7501,6 +7501,16 @@
         },
         "oaId": {
           "type": "string"
+        },
+        "timeOpen": {
+          "type": "string"
+        },
+        "timeClose": {
+          "type": "string"
+        },
+        "totalEmployee": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -7804,6 +7814,14 @@
         },
         "type": {
           "type": "string"
+        },
+        "timeOpen": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "timeClose": {
+          "type": "string",
+          "format": "date-time"
         }
       }
     },

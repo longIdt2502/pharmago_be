@@ -14,6 +14,8 @@ message CreateCompanyDataRequest {
   optional string phone = 3;
   optional string description = 4;
   string type = 5;
+  optional google.protobuf.Timestamp time_open = 6;
+  optional google.protobuf.Timestamp time_close = 7;
 }
 
 message CreateCompanyAddressRequest {

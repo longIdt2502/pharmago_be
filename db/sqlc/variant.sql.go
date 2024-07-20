@@ -503,11 +503,13 @@ func (q *Queries) GetVariantsByProduct(ctx context.Context, product int32) ([]Va
 }
 
 const variantsCustomerBuy = `-- name: VariantsCustomerBuy :many
-SELECT v.id, v.name, v.code, v.barcode, v.decision_number, v.register_number, v.longevity, v.vat, v.product, v.user_created, v.user_updated, v.updated_at, v.created_at, v.initial_inventory, v.real_inventory, SUM(value) AS quantity_buy FROM order_items oi
+SELECT v.id, v.name, v.code, v.barcode, v.decision_number, v.register_number, v.longevity, v.vat, v.product, v.user_created, v.user_updated, v.updated_at, v.created_at, v.initial_inventory, v.real_inventory, u.id, u.name, u.sell_price, u.import_price, u.weight, u.weight_unit, u.user_created, u.user_updated, u.updated_at, u.created_at, SUM(value) AS quantity_buy FROM order_items oi
 JOIN variants v ON v.id = oi.variant
 JOIN orders o ON o.id = oi.order
+JOIN products p ON p.id = v.product
+JOIN units u ON u.id = p.unit
 WHERE o.customer = $1::int
-GROUP BY oi.variant, v.id
+GROUP BY oi.variant, v.id, u.id
 LIMIT COALESCE($3::int, 10)
 OFFSET (COALESCE($2::int, 1) - 1) * COALESCE($3::int, 10)
 `
@@ -534,6 +536,16 @@ type VariantsCustomerBuyRow struct {
 	CreatedAt        time.Time       `json:"created_at"`
 	InitialInventory int32           `json:"initial_inventory"`
 	RealInventory    int32           `json:"real_inventory"`
+	ID_2             int32           `json:"id_2"`
+	Name_2           string          `json:"name_2"`
+	SellPrice        float64         `json:"sell_price"`
+	ImportPrice      float64         `json:"import_price"`
+	Weight           sql.NullFloat64 `json:"weight"`
+	WeightUnit       sql.NullString  `json:"weight_unit"`
+	UserCreated_2    int32           `json:"user_created_2"`
+	UserUpdated_2    sql.NullInt32   `json:"user_updated_2"`
+	UpdatedAt_2      sql.NullTime    `json:"updated_at_2"`
+	CreatedAt_2      time.Time       `json:"created_at_2"`
 	QuantityBuy      int64           `json:"quantity_buy"`
 }
 
@@ -562,6 +574,16 @@ func (q *Queries) VariantsCustomerBuy(ctx context.Context, arg VariantsCustomerB
 			&i.CreatedAt,
 			&i.InitialInventory,
 			&i.RealInventory,
+			&i.ID_2,
+			&i.Name_2,
+			&i.SellPrice,
+			&i.ImportPrice,
+			&i.Weight,
+			&i.WeightUnit,
+			&i.UserCreated_2,
+			&i.UserUpdated_2,
+			&i.UpdatedAt_2,
+			&i.CreatedAt_2,
 			&i.QuantityBuy,
 		); err != nil {
 			return nil, err

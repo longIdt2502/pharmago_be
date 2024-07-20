@@ -1,0 +1,2 @@
+ALTER TABLE companies ADD COLUMN IF NOT EXISTS time_open TIME;
+ALTER TABLE companies ADD COLUMN IF NOT EXISTS time_close TIME;

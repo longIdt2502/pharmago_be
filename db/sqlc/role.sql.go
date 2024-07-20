@@ -141,7 +141,7 @@ func (q *Queries) ListApp(ctx context.Context, arg ListAppParams) ([]App, error)
 }
 
 const listRole = `-- name: ListRole :many
-SELECT r.id, r.code, title, note, company, user_created, user_updated, updated_at, r.created_at, c.id, name, c.code, tax_code, phone, description, c.address, oa_id, c.created_at, owner, c.type, ac.id, ac.username, ac.hashed_password, ac.full_name, ac.email, ac.type, ac.is_verify, ac.password_changed_at, ac.created_at, ac.role, ac.gender, ac.licence, ac.dob, ac.address, au.id, au.username, au.hashed_password, au.full_name, au.email, au.type, au.is_verify, au.password_changed_at, au.created_at, au.role, au.gender, au.licence, au.dob, au.address, ac.full_name AS created_name, au.full_name AS updated_name FROM roles r
+SELECT r.id, r.code, title, note, company, user_created, user_updated, updated_at, r.created_at, c.id, name, c.code, tax_code, phone, description, c.address, oa_id, c.created_at, owner, c.type, time_open, time_close, ac.id, ac.username, ac.hashed_password, ac.full_name, ac.email, ac.type, ac.is_verify, ac.password_changed_at, ac.created_at, ac.role, ac.gender, ac.licence, ac.dob, ac.address, au.id, au.username, au.hashed_password, au.full_name, au.email, au.type, au.is_verify, au.password_changed_at, au.created_at, au.role, au.gender, au.licence, au.dob, au.address, ac.full_name AS created_name, au.full_name AS updated_name FROM roles r
 JOIN companies c ON c.id = r.company
 JOIN accounts ac ON ac.id = r.user_created
 JOIN accounts au ON au.id = r.user_updated
@@ -198,6 +198,8 @@ type ListRoleRow struct {
 	CreatedAt_2         time.Time      `json:"created_at_2"`
 	Owner               int32          `json:"owner"`
 	Type                string         `json:"type"`
+	TimeOpen            sql.NullTime   `json:"time_open"`
+	TimeClose           sql.NullTime   `json:"time_close"`
 	ID_3                int32          `json:"id_3"`
 	Username            string         `json:"username"`
 	HashedPassword      string         `json:"hashed_password"`
@@ -269,6 +271,8 @@ func (q *Queries) ListRole(ctx context.Context, arg ListRoleParams) ([]ListRoleR
 			&i.CreatedAt_2,
 			&i.Owner,
 			&i.Type,
+			&i.TimeOpen,
+			&i.TimeClose,
 			&i.ID_3,
 			&i.Username,
 			&i.HashedPassword,
@@ -365,7 +369,7 @@ func (q *Queries) ListRoleItem(ctx context.Context, roles int32) ([]ListRoleItem
 }
 
 const roleDetail = `-- name: RoleDetail :one
-SELECT r.id, r.code, title, note, company, user_created, user_updated, updated_at, r.created_at, c.id, name, c.code, tax_code, phone, description, c.address, oa_id, c.created_at, owner, c.type, ac.id, ac.username, ac.hashed_password, ac.full_name, ac.email, ac.type, ac.is_verify, ac.password_changed_at, ac.created_at, ac.role, ac.gender, ac.licence, ac.dob, ac.address, au.id, au.username, au.hashed_password, au.full_name, au.email, au.type, au.is_verify, au.password_changed_at, au.created_at, au.role, au.gender, au.licence, au.dob, au.address, ac.full_name AS created_name, au.full_name AS updated_name FROM roles r
+SELECT r.id, r.code, title, note, company, user_created, user_updated, updated_at, r.created_at, c.id, name, c.code, tax_code, phone, description, c.address, oa_id, c.created_at, owner, c.type, time_open, time_close, ac.id, ac.username, ac.hashed_password, ac.full_name, ac.email, ac.type, ac.is_verify, ac.password_changed_at, ac.created_at, ac.role, ac.gender, ac.licence, ac.dob, ac.address, au.id, au.username, au.hashed_password, au.full_name, au.email, au.type, au.is_verify, au.password_changed_at, au.created_at, au.role, au.gender, au.licence, au.dob, au.address, ac.full_name AS created_name, au.full_name AS updated_name FROM roles r
 JOIN companies c ON c.id = r.company
 JOIN accounts ac ON ac.id = r.user_created
 JOIN accounts au ON ac.id = r.user_updated
@@ -393,6 +397,8 @@ type RoleDetailRow struct {
 	CreatedAt_2         time.Time      `json:"created_at_2"`
 	Owner               int32          `json:"owner"`
 	Type                string         `json:"type"`
+	TimeOpen            sql.NullTime   `json:"time_open"`
+	TimeClose           sql.NullTime   `json:"time_close"`
 	ID_3                int32          `json:"id_3"`
 	Username            string         `json:"username"`
 	HashedPassword      string         `json:"hashed_password"`
@@ -449,6 +455,8 @@ func (q *Queries) RoleDetail(ctx context.Context, id int32) (RoleDetailRow, erro
 		&i.CreatedAt_2,
 		&i.Owner,
 		&i.Type,
+		&i.TimeOpen,
+		&i.TimeClose,
 		&i.ID_3,
 		&i.Username,
 		&i.HashedPassword,

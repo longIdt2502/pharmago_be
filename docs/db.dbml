@@ -126,6 +126,8 @@ Table companies as C {
   description varchar
   address serial
   oa_id varchar
+  time_open time
+  time_close time
   created_at timestamptz [not null, default: `now()`]
   owner serial [ref: > A.id, not null]
   type varchar [not null]
