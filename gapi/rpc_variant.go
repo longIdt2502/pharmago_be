@@ -34,6 +34,10 @@ func (server *ServerGRPC) ListVariant(ctx context.Context, req *pb.ListVariantRe
 			Int32: req.GetLimit(),
 			Valid: req.Limit != nil,
 		},
+		Filter: sql.NullString{
+			String: req.GetFilter().String(),
+			Valid:  req.Filter != nil,
+		},
 	})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get variant record: %e", err)
