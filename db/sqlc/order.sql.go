@@ -58,6 +58,41 @@ func (q *Queries) CountOrderByStatus(ctx context.Context, company int32) ([]Coun
 	return items, nil
 }
 
+const countOrderByType = `-- name: CountOrderByType :many
+SELECT ot.code, COALESCE(COUNT(ot.code), 0)::int AS count FROM order_type ot
+RIGHT JOIN orders o ON ot.code = o.type
+WHERE o.company = $1
+GROUP BY ot.code
+`
+
+type CountOrderByTypeRow struct {
+	Code  sql.NullString `json:"code"`
+	Count int32          `json:"count"`
+}
+
+func (q *Queries) CountOrderByType(ctx context.Context, company int32) ([]CountOrderByTypeRow, error) {
+	rows, err := q.db.QueryContext(ctx, countOrderByType, company)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []CountOrderByTypeRow{}
+	for rows.Next() {
+		var i CountOrderByTypeRow
+		if err := rows.Scan(&i.Code, &i.Count); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const createOrder = `-- name: CreateOrder :one
 INSERT INTO orders (
     code, total_price, description, vat, discount, service_price,
@@ -367,12 +402,13 @@ func (q *Queries) DetailOrder(ctx context.Context, arg DetailOrderParams) (Detai
 }
 
 const listOrder = `-- name: ListOrder :many
-SELECT o.id, o.code, o.total_price, description, vat, discount, service_price, o.must_paid, customer, o.address, o.status, o.type, ticket, o.qr, o.company, payment, o.user_created, o.user_updated, o.created_at, o.updated_at, c.id, c.full_name, c.code, c.company, c.address, c.email, phone, license, birthday, c.user_created, c.user_updated, c.updated_at, c.created_at, "group", c.title, license_date, contact_name, contact_title, contact_phone, contact_email, contact_address, account_number, bank_name, bank_branch, issued_by, c.gender, t.id, t.code, t.type, t.status, note, t.qr, export_to, import_from, t.total_price, warehouse, t.user_created, t.user_updated, t.updated_at, t.created_at, os.id, os.code, os.title, a.id, username, hashed_password, a.full_name, a.email, a.type, is_verify, password_changed_at, a.created_at, role, a.gender, licence, dob, a.address, p.id, p.code, p.must_paid, had_paid, need_pay, c.full_name AS c_full_name, os.title AS os_title, os.id AS os_id, a.full_name AS a_full_name FROM orders o
+SELECT o.id, o.code, o.total_price, description, vat, discount, service_price, o.must_paid, customer, o.address, o.status, o.type, ticket, o.qr, o.company, payment, o.user_created, o.user_updated, o.created_at, o.updated_at, c.id, c.full_name, c.code, c.company, c.address, c.email, phone, license, birthday, c.user_created, c.user_updated, c.updated_at, c.created_at, "group", c.title, license_date, contact_name, contact_title, contact_phone, contact_email, contact_address, account_number, bank_name, bank_branch, issued_by, c.gender, t.id, t.code, t.type, t.status, note, t.qr, export_to, import_from, t.total_price, warehouse, t.user_created, t.user_updated, t.updated_at, t.created_at, os.id, os.code, os.title, a.id, username, hashed_password, a.full_name, a.email, a.type, is_verify, password_changed_at, a.created_at, role, a.gender, licence, dob, a.address, p.id, p.code, p.must_paid, had_paid, need_pay, ot.id, ot.code, ot.title, c.full_name AS c_full_name, os.title AS os_title, os.id AS os_id, a.full_name AS a_full_name FROM orders o
 JOIN customers c ON o.customer = c.id
 JOIN tickets t ON o.ticket = t.id
 JOIN order_status os ON os.code = o.status
 JOIN accounts a ON a.id = o.user_created
 JOIN payments p ON p.id = o.payment
+JOIN order_type ot ON ot.code = o.type
 WHERE o.company = $1::int
 AND (
     $2::varchar IS NULL OR o.status = $2::varchar
@@ -381,38 +417,42 @@ AND (
     $3::int IS NULL OR t.warehouse = $3::int
 )
 AND (
-    $4::int IS NULL OR o.customer = $4::int
+    $4::varchar IS NULL OR o.type = $4::varchar
 )
 AND (
-    o.code ILIKE '%' || COALESCE($5::varchar, '') || '%' OR
-    c.full_name ILIKE '%' || COALESCE($5::varchar, '') || '%'
+    $5::int IS NULL OR o.customer = $5::int
+)
+AND (
+    o.code ILIKE '%' || COALESCE($6::varchar, '') || '%' OR
+    c.full_name ILIKE '%' || COALESCE($6::varchar, '') || '%'
 )
 AND  ((
-    $6::timestamp IS NULL AND $7::timestamp  IS NULL
+    $7::timestamp IS NULL AND $8::timestamp  IS NULL
 ) OR (
-    ($6::timestamp IS NULL OR o.created_at >= $6::timestamp) AND
-    ($7::timestamp IS NULL OR o.created_at <= $7::timestamp)
+    ($7::timestamp IS NULL OR o.created_at >= $7::timestamp) AND
+    ($8::timestamp IS NULL OR o.created_at <= $8::timestamp)
 ))
 AND ((
-    $8::timestamp IS NULL AND $9::timestamp  IS NULL
+    $9::timestamp IS NULL AND $10::timestamp  IS NULL
 ) OR (
-    (o.updated_at >= $8::timestamp OR $8::timestamp  IS NULL) AND
-    (o.updated_at <= $9::timestamp OR $9::timestamp  IS NULL)
+    (o.updated_at >= $9::timestamp OR $9::timestamp  IS NULL) AND
+    (o.updated_at <= $10::timestamp OR $10::timestamp  IS NULL)
 ))
 ORDER BY
-    CASE WHEN $10::varchar = 'created_at' THEN o.created_at END DESC,
-    CASE WHEN $10::varchar = '-created_at' THEN o.created_at END ASC,
-    CASE WHEN $10::varchar = 'updated_at' THEN o.updated_at END DESC,
-    CASE WHEN $10::varchar = '-updated_at' THEN o.updated_at END ASC,
-    CASE WHEN $10::varchar IS NULL THEN o.id END DESC
-LIMIT COALESCE($12::int, 10)
-OFFSET (COALESCE($11::int, 1) - 1) * COALESCE($12::int, 10)
+    CASE WHEN $11::varchar = 'created_at' THEN o.created_at END DESC,
+    CASE WHEN $11::varchar = '-created_at' THEN o.created_at END ASC,
+    CASE WHEN $11::varchar = 'updated_at' THEN o.updated_at END DESC,
+    CASE WHEN $11::varchar = '-updated_at' THEN o.updated_at END ASC,
+    CASE WHEN $11::varchar IS NULL THEN o.id END DESC
+LIMIT COALESCE($13::int, 10)
+OFFSET (COALESCE($12::int, 1) - 1) * COALESCE($13::int, 10)
 `
 
 type ListOrderParams struct {
 	Company      sql.NullInt32  `json:"company"`
 	Status       sql.NullString `json:"status"`
 	Warehouse    sql.NullInt32  `json:"warehouse"`
+	Type         sql.NullString `json:"type"`
 	Customer     sql.NullInt32  `json:"customer"`
 	Search       sql.NullString `json:"search"`
 	CreatedStart sql.NullTime   `json:"created_start"`
@@ -507,6 +547,9 @@ type ListOrderRow struct {
 	MustPaid_2        float64        `json:"must_paid_2"`
 	HadPaid           float64        `json:"had_paid"`
 	NeedPay           float64        `json:"need_pay"`
+	ID_7              int32          `json:"id_7"`
+	Code_6            string         `json:"code_6"`
+	Title_3           string         `json:"title_3"`
 	CFullName         string         `json:"c_full_name"`
 	OsTitle           string         `json:"os_title"`
 	OsID              int32          `json:"os_id"`
@@ -518,6 +561,7 @@ func (q *Queries) ListOrder(ctx context.Context, arg ListOrderParams) ([]ListOrd
 		arg.Company,
 		arg.Status,
 		arg.Warehouse,
+		arg.Type,
 		arg.Customer,
 		arg.Search,
 		arg.CreatedStart,
@@ -618,6 +662,9 @@ func (q *Queries) ListOrder(ctx context.Context, arg ListOrderParams) ([]ListOrd
 			&i.MustPaid_2,
 			&i.HadPaid,
 			&i.NeedPay,
+			&i.ID_7,
+			&i.Code_6,
+			&i.Title_3,
 			&i.CFullName,
 			&i.OsTitle,
 			&i.OsID,

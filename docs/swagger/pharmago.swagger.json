@@ -3857,6 +3857,17 @@
             "required": false,
             "type": "integer",
             "format": "int32"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "SELL",
+              "SERVICE"
+            ],
+            "default": "SELL"
           }
         ],
         "tags": [
@@ -9835,19 +9846,11 @@
     "pbOrderListResponseCount": {
       "type": "object",
       "properties": {
-        "draft": {
+        "sell": {
           "type": "integer",
           "format": "int32"
         },
-        "inProcess": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "complete": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "cancel": {
+        "service": {
           "type": "integer",
           "format": "int32"
         }
@@ -9868,6 +9871,9 @@
           "format": "float"
         },
         "status": {
+          "$ref": "#/definitions/pbSimpleData"
+        },
+        "type": {
           "$ref": "#/definitions/pbSimpleData"
         },
         "description": {
@@ -9932,6 +9938,10 @@
         "discount": {
           "type": "number",
           "format": "float"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -9955,6 +9965,14 @@
           "format": "float"
         }
       }
+    },
+    "pbOrderType": {
+      "type": "string",
+      "enum": [
+        "SELL",
+        "SERVICE"
+      ],
+      "default": "SELL"
     },
     "pbOrderUpdateStatusResponse": {
       "type": "object",

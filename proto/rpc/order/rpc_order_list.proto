@@ -6,6 +6,11 @@ import "entities/order.proto";
 import "google/protobuf/timestamp.proto";
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
+enum OrderType {
+  SELL = 0;
+  SERVICE = 1;
+}
+
 message OrderListRequest {
   int32 company = 1;
   optional int32 warehouse = 2;
@@ -19,6 +24,7 @@ message OrderListRequest {
   optional google.protobuf.Timestamp updated_start = 10;
   optional google.protobuf.Timestamp updated_end = 11;
   optional int32 customer = 12;
+  optional OrderType type = 13;
 }
 
 message OrderListResponse {
@@ -29,8 +35,6 @@ message OrderListResponse {
 }
 
 message OrderListResponseCount {
-  int32 draft = 1;
-  int32 in_process = 2;
-  int32 complete = 3;
-  int32 cancel = 4;
+  int32 sell = 1;
+  int32 service = 2;
 }

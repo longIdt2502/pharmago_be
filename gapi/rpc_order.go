@@ -166,6 +166,10 @@ func (server *ServerGRPC) OrderList(ctx context.Context, req *pb.OrderListReques
 			Int32: req.GetLimit(),
 			Valid: req.Limit != nil,
 		},
+		Type: sql.NullString{
+			String: req.GetType().String(),
+			Valid:  req.Type != nil,
+		},
 	})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get orders: %e", err)
@@ -178,22 +182,16 @@ func (server *ServerGRPC) OrderList(ctx context.Context, req *pb.OrderListReques
 		ordersPb = append(ordersPb, dataPb)
 	}
 
-	countData, _ := server.store.CountOrderByStatus(ctx, req.Company)
+	countData, _ := server.store.CountOrderByType(ctx, req.Company)
 
-	draftCount := 0
-	inProcessCount := 0
-	completeCount := 0
-	cancelCount := 0
+	sellCount := 0
+	serviceCount := 0
 	for _, item := range countData {
 		switch item.Code.String {
-		case "DRAFT":
-			draftCount = int(item.Count)
-		case "IN_PROCESS":
-			inProcessCount = int(item.Count)
-		case "COMPLETE":
-			completeCount = int(item.Count)
-		case "CANCEL":
-			cancelCount = int(item.Count)
+		case "SELL":
+			sellCount = int(item.Count)
+		case "SERVICE":
+			serviceCount = int(item.Count)
 		}
 	}
 
@@ -202,10 +200,8 @@ func (server *ServerGRPC) OrderList(ctx context.Context, req *pb.OrderListReques
 		Message: "success",
 		Details: ordersPb,
 		Count: &pb.OrderListResponseCount{
-			Draft:     int32(draftCount),
-			InProcess: int32(inProcessCount),
-			Complete:  int32(completeCount),
-			Cancel:    int32(cancelCount),
+			Sell:    int32(sellCount),
+			Service: int32(serviceCount),
 		},
 	}, nil
 }
