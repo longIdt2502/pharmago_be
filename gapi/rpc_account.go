@@ -132,15 +132,7 @@ func (server *ServerGRPC) AccountList(ctx context.Context, req *pb.AccountListRe
 
 	var accountsPb []*pb.Account
 	for _, item := range accountsDb {
-		accountsPb = append(accountsPb, mapper.AccountMapper(db.Account{
-			ID:        item.ID,
-			Username:  item.Username,
-			FullName:  item.FullName,
-			Email:     item.Email,
-			Type:      item.Type,
-			Role:      item.Role,
-			CreatedAt: item.CreatedAt,
-		}))
+		accountsPb = append(accountsPb, mapper.ListAccountRowMapper(item))
 	}
 
 	return &pb.AccountListResponse{

@@ -834,6 +834,12 @@
             "format": "date-time"
           },
           {
+            "name": "customer.companyName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
             "name": "company",
             "in": "query",
             "required": false,
@@ -1105,6 +1111,12 @@
             "required": false,
             "type": "string",
             "format": "date-time"
+          },
+          {
+            "name": "doctor.companyName",
+            "in": "query",
+            "required": false,
+            "type": "string"
           },
           {
             "name": "symptoms",
@@ -1397,6 +1409,12 @@
             "format": "date-time"
           },
           {
+            "name": "userCreated.companyName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
             "name": "userUpdatedId",
             "in": "query",
             "required": false,
@@ -1661,6 +1679,12 @@
             "required": false,
             "type": "string",
             "format": "date-time"
+          },
+          {
+            "name": "userUpdated.companyName",
+            "in": "query",
+            "required": false,
+            "type": "string"
           },
           {
             "name": "meetingAt",
@@ -6709,6 +6733,9 @@
         "createdAt": {
           "type": "string",
           "format": "date-time"
+        },
+        "companyName": {
+          "type": "string"
         }
       }
     },

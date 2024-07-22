@@ -26,7 +26,9 @@ AND (
 ) AND (
     sqlc.narg('id')::int IS NULL OR v.id = sqlc.narg('id')::int
 ) AND (
-    sqlc.narg('filter')::varchar IS NULL OR (r.total_buy IS NOT NULL AND sqlc.narg('filter') = 'POPULAR')
+    sqlc.narg('filter')::varchar IS NULL 
+    OR sqlc.narg('filter')::varchar = 'NEW'
+    OR (r.total_buy IS NOT NULL AND sqlc.narg('filter') = 'POPULAR')
 )
 ORDER BY 
     CASE
