@@ -189,8 +189,10 @@ func (q *Queries) GetAccountByUseName(ctx context.Context, username string) (Acc
 }
 
 const listAccount = `-- name: ListAccount :many
-SELECT a.id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, created_at, role, gender, licence, dob, address, ac.id, account, company FROM accounts a
+SELECT a.id, username, hashed_password, full_name, email, a.type, is_verify, password_changed_at, a.created_at, role, gender, licence, dob, a.address, ac.id, account, company, c.id, name, c.code, tax_code, phone, description, c.address, oa_id, c.created_at, owner, c.type, time_open, time_close, at.id, at.code, title FROM accounts a
 LEFT JOIN account_company ac ON ac.account = a.id
+LEFT JOIN companies c ON c.id = ac.company
+LEFT JOIN account_type at ON at.id = a.type 
 WHERE ac.company = $1::int
 AND (
     a.full_name ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
@@ -235,6 +237,22 @@ type ListAccountRow struct {
 	ID_2              sql.NullInt32  `json:"id_2"`
 	Account           sql.NullInt32  `json:"account"`
 	Company           sql.NullInt32  `json:"company"`
+	ID_3              sql.NullInt32  `json:"id_3"`
+	Name              sql.NullString `json:"name"`
+	Code              sql.NullString `json:"code"`
+	TaxCode           sql.NullString `json:"tax_code"`
+	Phone             sql.NullString `json:"phone"`
+	Description       sql.NullString `json:"description"`
+	Address_2         sql.NullInt32  `json:"address_2"`
+	OaID              sql.NullString `json:"oa_id"`
+	CreatedAt_2       sql.NullTime   `json:"created_at_2"`
+	Owner             sql.NullInt32  `json:"owner"`
+	Type_2            sql.NullString `json:"type_2"`
+	TimeOpen          sql.NullTime   `json:"time_open"`
+	TimeClose         sql.NullTime   `json:"time_close"`
+	ID_4              sql.NullInt32  `json:"id_4"`
+	Code_2            sql.NullString `json:"code_2"`
+	Title             sql.NullString `json:"title"`
 }
 
 func (q *Queries) ListAccount(ctx context.Context, arg ListAccountParams) ([]ListAccountRow, error) {
@@ -271,6 +289,22 @@ func (q *Queries) ListAccount(ctx context.Context, arg ListAccountParams) ([]Lis
 			&i.ID_2,
 			&i.Account,
 			&i.Company,
+			&i.ID_3,
+			&i.Name,
+			&i.Code,
+			&i.TaxCode,
+			&i.Phone,
+			&i.Description,
+			&i.Address_2,
+			&i.OaID,
+			&i.CreatedAt_2,
+			&i.Owner,
+			&i.Type_2,
+			&i.TimeOpen,
+			&i.TimeClose,
+			&i.ID_4,
+			&i.Code_2,
+			&i.Title,
 		); err != nil {
 			return nil, err
 		}

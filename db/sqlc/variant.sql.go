@@ -76,7 +76,9 @@ AND (
 ) AND (
     $4::int IS NULL OR v.id = $4::int
 ) AND (
-    $5::varchar IS NULL OR (r.total_buy IS NOT NULL AND $5 = 'POPULAR')
+    $5::varchar IS NULL 
+    OR $5::varchar = 'NEW'
+    OR (r.total_buy IS NOT NULL AND $5 = 'POPULAR')
 )
 ORDER BY 
     CASE

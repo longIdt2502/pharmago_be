@@ -24,4 +24,5 @@ message Account {
   optional Role roleData = 13;
   google.protobuf.Timestamp password_changed_at = 14;
   google.protobuf.Timestamp created_at = 15;
+  string companyName = 16;
 }
