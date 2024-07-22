@@ -195,24 +195,27 @@ type AppointmentSchedule struct {
 
 type AppointmentScheduleDrug struct {
 	ID       int32          `json:"id"`
-	AsUuid   uuid.UUID      `json:"as_uuid"`
+	AsUuid   uuid.NullUUID  `json:"as_uuid"`
 	Variant  sql.NullInt32  `json:"variant"`
 	LieuDung sql.NullString `json:"lieu_dung"`
 	Quantity int32          `json:"quantity"`
+	MbUuid   uuid.NullUUID  `json:"mb_uuid"`
 }
 
 type AppointmentScheduleService struct {
 	ID           int32         `json:"id"`
-	AsUuid       uuid.UUID     `json:"as_uuid"`
+	AsUuid       uuid.NullUUID `json:"as_uuid"`
 	Service      sql.NullInt32 `json:"service"`
 	OrderService sql.NullInt32 `json:"order_service"`
+	MbUuid       uuid.NullUUID `json:"mb_uuid"`
 }
 
 type AppointmentScheduleUrl struct {
 	ID      int32          `json:"id"`
-	AsUuid  uuid.UUID      `json:"as_uuid"`
+	AsUuid  uuid.NullUUID  `json:"as_uuid"`
 	Url     sql.NullString `json:"url"`
 	NameDoc sql.NullString `json:"name_doc"`
+	MbUuid  uuid.NullUUID  `json:"mb_uuid"`
 }
 
 type Classify struct {
@@ -386,6 +389,24 @@ type Ingredient struct {
 type Media struct {
 	ID       int32  `json:"id"`
 	MediaUrl string `json:"media_url"`
+}
+
+type MedicalBill struct {
+	ID          int32          `json:"id"`
+	Uuid        uuid.UUID      `json:"uuid"`
+	Code        string         `json:"code"`
+	Customer    sql.NullInt32  `json:"customer"`
+	Company     sql.NullInt32  `json:"company"`
+	Doctor      sql.NullInt32  `json:"doctor"`
+	Symptoms    sql.NullString `json:"symptoms"`
+	Diagnostic  sql.NullString `json:"diagnostic"`
+	QrCodeUrl   sql.NullString `json:"qr_code_url"`
+	IsDone      bool           `json:"is_done"`
+	MeetingAt   time.Time      `json:"meeting_at"`
+	UserCreated int32          `json:"user_created"`
+	UserUpdated sql.NullInt32  `json:"user_updated"`
+	CreatedAt   time.Time      `json:"created_at"`
+	UpdatedAt   sql.NullTime   `json:"updated_at"`
 }
 
 type MedicalRecord struct {

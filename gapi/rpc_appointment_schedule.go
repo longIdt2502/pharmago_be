@@ -49,7 +49,10 @@ func (server *ServerGRPC) ScheduleCreate(ctx context.Context, req *pb.Appointmen
 
 	for _, item := range req.GetServices() {
 		_, err = server.store.CreateScheduleService(ctx, db.CreateScheduleServiceParams{
-			AsUuid: schedule.Uuid,
+			AsUuid: uuid.NullUUID{
+				UUID:  schedule.Uuid,
+				Valid: true,
+			},
 			Service: sql.NullInt32{
 				Int32: item.GetServiceId(),
 				Valid: true,
@@ -68,7 +71,10 @@ func (server *ServerGRPC) ScheduleCreate(ctx context.Context, req *pb.Appointmen
 
 	for _, item := range req.GetDrugs() {
 		_, err = server.store.CreateScheduleDrug(ctx, db.CreateScheduleDrugParams{
-			AsUuid:   schedule.Uuid,
+			AsUuid: uuid.NullUUID{
+				UUID:  schedule.Uuid,
+				Valid: true,
+			},
 			Variant:  sql.NullInt32{Int32: item.GetVariantId(), Valid: true},
 			LieuDung: sql.NullString{String: item.GetLieuDung(), Valid: item.LieuDung != nil},
 			Quantity: item.GetQuantity(),

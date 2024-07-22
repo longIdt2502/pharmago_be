@@ -3,19 +3,30 @@ package mapper
 import (
 	"context"
 
+	"github.com/google/uuid"
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/pb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func AppointmentScheduleMapper(ctx context.Context, store *db.Store, item db.GetListScheduleRow) *pb.AppointmentSchedule {
-	services, _ := store.GetListScheduleService(ctx, item.Uuid)
+	services, _ := store.GetListScheduleService(ctx, db.GetListScheduleServiceParams{
+		AsUuid: uuid.NullUUID{
+			UUID:  item.Uuid,
+			Valid: true,
+		},
+	})
 	var servicesPb []*pb.AppointmentScheduleService
 	for _, item := range services {
 		servicesPb = append(servicesPb, AppointmentScheduleServiceMapper(item))
 	}
 
-	drugs, _ := store.GetListScheduleDrug(ctx, item.Uuid)
+	drugs, _ := store.GetListScheduleDrug(ctx, db.GetListScheduleDrugParams{
+		AsUuid: uuid.NullUUID{
+			UUID:  item.Uuid,
+			Valid: true,
+		},
+	})
 	var drugsPb []*pb.AppointmentScheduleDrug
 	for _, item := range drugs {
 		drugsPb = append(drugsPb, AppointmentScheduleDrugMapper(item))
@@ -67,7 +78,7 @@ func AppointmentScheduleServiceMapper(item db.GetListScheduleServiceRow) *pb.App
 
 	return &pb.AppointmentScheduleService{
 		Id:     item.ID,
-		AsUuid: item.AsUuid.String(),
+		AsUuid: item.AsUuid.UUID.String(),
 		Service: &pb.Service{
 			Id:           item.ID_2,
 			Code:         item.Code,
@@ -89,7 +100,7 @@ func AppointmentScheduleServiceMapper(item db.GetListScheduleServiceRow) *pb.App
 func AppointmentScheduleDrugMapper(item db.GetListScheduleDrugRow) *pb.AppointmentScheduleDrug {
 	return &pb.AppointmentScheduleDrug{
 		Id:        item.ID,
-		AsUuid:    item.AsUuid.String(),
+		AsUuid:    item.AsUuid.UUID.String(),
 		VariantId: item.Variant.Int32,
 		Variant: &pb.Variant{
 			Id:               item.ID_2,

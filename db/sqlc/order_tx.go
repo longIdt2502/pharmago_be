@@ -321,6 +321,7 @@ func (store *Store) CreateOrderTx(ctx context.Context, req CreateOrderTxParams) 
 				UnitPrice:  float64(item.GetUnitPrice()),
 				TotalPrice: float64(item.GetTotalPrice()),
 				Discount:   float64(item.GetDiscount()),
+				Quantity:   sql.NullInt32{Int32: item.GetQuantity(), Valid: true},
 			})
 			if err != nil {
 				return common.ErrDBWithMsg(err, "Lỗi tạo dịch vụ đơn hàng") // status.Errorf(codes.Internal, "failed to record order service: %e", err)
