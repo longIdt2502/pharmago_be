@@ -230,6 +230,7 @@ func (store *Store) CreateProductTx(ctx context.Context, req CreateProductTxPara
 				},
 				Product:          product.ID,
 				UserCreated:      req.Account.ID,
+				UserUpdated:      req.Account.ID,
 				InitialInventory: value.InitialInventory,
 				RealInventory:    value.InitialInventory,
 			})
