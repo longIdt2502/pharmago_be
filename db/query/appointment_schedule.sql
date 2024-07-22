@@ -35,18 +35,18 @@ RETURNING *;
 SELECT * FROM appointment_schedule_service ass
 JOIN services s ON s.id = ass.service
 LEFT JOIN orders os ON os.id = ass.order_service
-WHERE ass.as_uuid = $1;
+WHERE ass.as_uuid = $1 OR ass.mb_uuid = $2;
 
 -- name: GetListScheduleUrl :many
 SELECT * FROM appointment_schedule_url
-WHERE as_uuid = $1;
+WHERE as_uuid = $1 OR mb_uuid = $2;
 
 -- name: GetListScheduleDrug :many
 SELECT * FROM appointment_schedule_drug asd
 JOIN variants v ON v.id = asd.variant
 LEFT JOIN variant_media vm ON vm.variant = v.id
 LEFT JOIN medias m ON m.id = vm.media
-WHERE asd.as_uuid = $1;
+WHERE asd.as_uuid = $1 OR asd.mb_uuid = $2;
 
 -- name: CreateSchedule :one
 INSERT INTO appointment_schedules (
@@ -57,21 +57,21 @@ INSERT INTO appointment_schedules (
 
 -- name: CreateScheduleService :one
 INSERT INTO appointment_schedule_service (
-    as_uuid, "service", order_service
+    as_uuid, mb_uuid, "service", order_service
 ) VALUES (
-    $1, $2, $3
+    $1, $2, $3, $4
 ) RETURNING *;
 
 -- name: CreateScheduleUrl :one
 INSERT INTO appointment_schedule_url (
-    as_uuid, url, name_doc
+    as_uuid, mb_uuid, url, name_doc
 ) VALUES (
-    $1, $2, $3
+    $1, $2, $3, $4
 ) RETURNING *;
 
 -- name: CreateScheduleDrug :one
 INSERT INTO appointment_schedule_drug (
-    as_uuid, variant, lieu_dung, quantity
+    as_uuid, mb_uuid, variant, lieu_dung, quantity
 ) VALUES (
-    $1, $2, $3, $4
+    $1, $2, $3, $4, $5
 ) RETURNING *;

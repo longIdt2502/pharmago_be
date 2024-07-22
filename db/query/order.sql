@@ -16,9 +16,9 @@ INSERT INTO order_items (
 
 -- name: CreateOrderServiceItem :one
 INSERT INTO service_order_item (
-    "order", service, unit_price, total_price, discount
+    "order", service, unit_price, total_price, discount, quantity
 ) VALUES (
-    $1, $2, $3, $4, $5
+    $1, $2, $3, $4, $5, $6
 ) RETURNING *;
 
 -- name: ListOrder :many

@@ -147,6 +147,10 @@ const (
 	Pharmago_ScheduleList_FullMethodName              = "/pb.Pharmago/ScheduleList"
 	Pharmago_ScheduleDetail_FullMethodName            = "/pb.Pharmago/ScheduleDetail"
 	Pharmago_ScheduleUpdate_FullMethodName            = "/pb.Pharmago/ScheduleUpdate"
+	Pharmago_MedicalBillCreate_FullMethodName         = "/pb.Pharmago/MedicalBillCreate"
+	Pharmago_MedicalBillList_FullMethodName           = "/pb.Pharmago/MedicalBillList"
+	Pharmago_MedicalBillDetail_FullMethodName         = "/pb.Pharmago/MedicalBillDetail"
+	Pharmago_MedicalBillUpdate_FullMethodName         = "/pb.Pharmago/MedicalBillUpdate"
 )
 
 // PharmagoClient is the client API for Pharmago service.
@@ -307,6 +311,11 @@ type PharmagoClient interface {
 	ScheduleList(ctx context.Context, in *AppointmentScheduleListRequest, opts ...grpc.CallOption) (*AppointmentScheduleListResponse, error)
 	ScheduleDetail(ctx context.Context, in *AppointmentSchedule, opts ...grpc.CallOption) (*AppointmentScheduleResponse, error)
 	ScheduleUpdate(ctx context.Context, in *AppointmentScheduleUpdateRequest, opts ...grpc.CallOption) (*AppointmentScheduleUpdateResponse, error)
+	// ================== MedicalBill ===================
+	MedicalBillCreate(ctx context.Context, in *MedicalBill, opts ...grpc.CallOption) (*MedicalBillResponse, error)
+	MedicalBillList(ctx context.Context, in *MedicalBillListRequest, opts ...grpc.CallOption) (*MedicalBillListResponse, error)
+	MedicalBillDetail(ctx context.Context, in *MedicalBill, opts ...grpc.CallOption) (*MedicalBillResponse, error)
+	MedicalBillUpdate(ctx context.Context, in *MedicalBillUpdateRequest, opts ...grpc.CallOption) (*MedicalBillUpdateResponse, error)
 }
 
 type pharmagoClient struct {
@@ -1514,6 +1523,42 @@ func (c *pharmagoClient) ScheduleUpdate(ctx context.Context, in *AppointmentSche
 	return out, nil
 }
 
+func (c *pharmagoClient) MedicalBillCreate(ctx context.Context, in *MedicalBill, opts ...grpc.CallOption) (*MedicalBillResponse, error) {
+	out := new(MedicalBillResponse)
+	err := c.cc.Invoke(ctx, Pharmago_MedicalBillCreate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) MedicalBillList(ctx context.Context, in *MedicalBillListRequest, opts ...grpc.CallOption) (*MedicalBillListResponse, error) {
+	out := new(MedicalBillListResponse)
+	err := c.cc.Invoke(ctx, Pharmago_MedicalBillList_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) MedicalBillDetail(ctx context.Context, in *MedicalBill, opts ...grpc.CallOption) (*MedicalBillResponse, error) {
+	out := new(MedicalBillResponse)
+	err := c.cc.Invoke(ctx, Pharmago_MedicalBillDetail_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) MedicalBillUpdate(ctx context.Context, in *MedicalBillUpdateRequest, opts ...grpc.CallOption) (*MedicalBillUpdateResponse, error) {
+	out := new(MedicalBillUpdateResponse)
+	err := c.cc.Invoke(ctx, Pharmago_MedicalBillUpdate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PharmagoServer is the server API for Pharmago service.
 // All implementations must embed UnimplementedPharmagoServer
 // for forward compatibility
@@ -1672,6 +1717,11 @@ type PharmagoServer interface {
 	ScheduleList(context.Context, *AppointmentScheduleListRequest) (*AppointmentScheduleListResponse, error)
 	ScheduleDetail(context.Context, *AppointmentSchedule) (*AppointmentScheduleResponse, error)
 	ScheduleUpdate(context.Context, *AppointmentScheduleUpdateRequest) (*AppointmentScheduleUpdateResponse, error)
+	// ================== MedicalBill ===================
+	MedicalBillCreate(context.Context, *MedicalBill) (*MedicalBillResponse, error)
+	MedicalBillList(context.Context, *MedicalBillListRequest) (*MedicalBillListResponse, error)
+	MedicalBillDetail(context.Context, *MedicalBill) (*MedicalBillResponse, error)
+	MedicalBillUpdate(context.Context, *MedicalBillUpdateRequest) (*MedicalBillUpdateResponse, error)
 	mustEmbedUnimplementedPharmagoServer()
 }
 
@@ -2062,6 +2112,18 @@ func (UnimplementedPharmagoServer) ScheduleDetail(context.Context, *AppointmentS
 }
 func (UnimplementedPharmagoServer) ScheduleUpdate(context.Context, *AppointmentScheduleUpdateRequest) (*AppointmentScheduleUpdateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ScheduleUpdate not implemented")
+}
+func (UnimplementedPharmagoServer) MedicalBillCreate(context.Context, *MedicalBill) (*MedicalBillResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MedicalBillCreate not implemented")
+}
+func (UnimplementedPharmagoServer) MedicalBillList(context.Context, *MedicalBillListRequest) (*MedicalBillListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MedicalBillList not implemented")
+}
+func (UnimplementedPharmagoServer) MedicalBillDetail(context.Context, *MedicalBill) (*MedicalBillResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MedicalBillDetail not implemented")
+}
+func (UnimplementedPharmagoServer) MedicalBillUpdate(context.Context, *MedicalBillUpdateRequest) (*MedicalBillUpdateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MedicalBillUpdate not implemented")
 }
 func (UnimplementedPharmagoServer) mustEmbedUnimplementedPharmagoServer() {}
 
@@ -4391,6 +4453,78 @@ func _Pharmago_ScheduleUpdate_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Pharmago_MedicalBillCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MedicalBill)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).MedicalBillCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_MedicalBillCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).MedicalBillCreate(ctx, req.(*MedicalBill))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_MedicalBillList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MedicalBillListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).MedicalBillList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_MedicalBillList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).MedicalBillList(ctx, req.(*MedicalBillListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_MedicalBillDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MedicalBill)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).MedicalBillDetail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_MedicalBillDetail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).MedicalBillDetail(ctx, req.(*MedicalBill))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_MedicalBillUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MedicalBillUpdateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).MedicalBillUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_MedicalBillUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).MedicalBillUpdate(ctx, req.(*MedicalBillUpdateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Pharmago_ServiceDesc is the grpc.ServiceDesc for Pharmago service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -4901,6 +5035,22 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ScheduleUpdate",
 			Handler:    _Pharmago_ScheduleUpdate_Handler,
+		},
+		{
+			MethodName: "MedicalBillCreate",
+			Handler:    _Pharmago_MedicalBillCreate_Handler,
+		},
+		{
+			MethodName: "MedicalBillList",
+			Handler:    _Pharmago_MedicalBillList_Handler,
+		},
+		{
+			MethodName: "MedicalBillDetail",
+			Handler:    _Pharmago_MedicalBillDetail_Handler,
+		},
+		{
+			MethodName: "MedicalBillUpdate",
+			Handler:    _Pharmago_MedicalBillUpdate_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

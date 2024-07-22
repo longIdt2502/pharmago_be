@@ -210,9 +210,9 @@ func (q *Queries) CreateOrderItem(ctx context.Context, arg CreateOrderItemParams
 
 const createOrderServiceItem = `-- name: CreateOrderServiceItem :one
 INSERT INTO service_order_item (
-    "order", service, unit_price, total_price, discount
+    "order", service, unit_price, total_price, discount, quantity
 ) VALUES (
-    $1, $2, $3, $4, $5
+    $1, $2, $3, $4, $5, $6
 ) RETURNING id, "order", service, unit_price, discount, total_price, quantity
 `
 
@@ -222,6 +222,7 @@ type CreateOrderServiceItemParams struct {
 	UnitPrice  float64       `json:"unit_price"`
 	TotalPrice float64       `json:"total_price"`
 	Discount   float64       `json:"discount"`
+	Quantity   sql.NullInt32 `json:"quantity"`
 }
 
 func (q *Queries) CreateOrderServiceItem(ctx context.Context, arg CreateOrderServiceItemParams) (ServiceOrderItem, error) {
@@ -231,6 +232,7 @@ func (q *Queries) CreateOrderServiceItem(ctx context.Context, arg CreateOrderSer
 		arg.UnitPrice,
 		arg.TotalPrice,
 		arg.Discount,
+		arg.Quantity,
 	)
 	var i ServiceOrderItem
 	err := row.Scan(

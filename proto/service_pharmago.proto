@@ -126,6 +126,7 @@ import "rpc/notification/rpc_notification_detail.proto";
 import "rpc/notification/rpc_seen_all_noti.proto";
 
 import "entities/appointment_schedule.proto";
+import "entities/medical_bill.proto";
 
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
@@ -1426,6 +1427,49 @@ service Pharmago {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Update Appoitment Schedule";
       tags: "Appoitment Schedule";
+    };
+  };
+
+  // ================== MedicalBill ===================
+  rpc MedicalBillCreate (MedicalBill) returns (MedicalBillResponse) {
+    option (google.api.http) = {
+      post: "/medical_bill/v1/create"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create Medical Bill";
+      tags: "Medical Bill";
+    };
+  };
+
+  rpc MedicalBillList (MedicalBillListRequest) returns (MedicalBillListResponse) {
+    option (google.api.http) = {
+      get: "/medical_bill/v1/list"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List Medical Bill";
+      tags: "Medical Bill";
+    };
+  };
+
+  rpc MedicalBillDetail (MedicalBill) returns (MedicalBillResponse) {
+    option (google.api.http) = {
+      get: "/medical_bill/v1/detail/{uuid}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Detail Medical Bill";
+      tags: "Medical Bill";
+    };
+  };
+
+  rpc MedicalBillUpdate (MedicalBillUpdateRequest) returns (MedicalBillUpdateResponse) {
+    option (google.api.http) = {
+      put: "/medical_bill/v1/detail/{uuid}"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Update Medical Bill";
+      tags: "Medical Bill";
     };
   };
 }

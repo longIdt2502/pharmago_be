@@ -72,14 +72,15 @@ func (q *Queries) CreateSchedule(ctx context.Context, arg CreateScheduleParams) 
 
 const createScheduleDrug = `-- name: CreateScheduleDrug :one
 INSERT INTO appointment_schedule_drug (
-    as_uuid, variant, lieu_dung, quantity
+    as_uuid, mb_uuid, variant, lieu_dung, quantity
 ) VALUES (
-    $1, $2, $3, $4
-) RETURNING id, as_uuid, variant, lieu_dung, quantity
+    $1, $2, $3, $4, $5
+) RETURNING id, as_uuid, variant, lieu_dung, quantity, mb_uuid
 `
 
 type CreateScheduleDrugParams struct {
-	AsUuid   uuid.UUID      `json:"as_uuid"`
+	AsUuid   uuid.NullUUID  `json:"as_uuid"`
+	MbUuid   uuid.NullUUID  `json:"mb_uuid"`
 	Variant  sql.NullInt32  `json:"variant"`
 	LieuDung sql.NullString `json:"lieu_dung"`
 	Quantity int32          `json:"quantity"`
@@ -88,6 +89,7 @@ type CreateScheduleDrugParams struct {
 func (q *Queries) CreateScheduleDrug(ctx context.Context, arg CreateScheduleDrugParams) (AppointmentScheduleDrug, error) {
 	row := q.db.QueryRowContext(ctx, createScheduleDrug,
 		arg.AsUuid,
+		arg.MbUuid,
 		arg.Variant,
 		arg.LieuDung,
 		arg.Quantity,
@@ -99,58 +101,73 @@ func (q *Queries) CreateScheduleDrug(ctx context.Context, arg CreateScheduleDrug
 		&i.Variant,
 		&i.LieuDung,
 		&i.Quantity,
+		&i.MbUuid,
 	)
 	return i, err
 }
 
 const createScheduleService = `-- name: CreateScheduleService :one
 INSERT INTO appointment_schedule_service (
-    as_uuid, "service", order_service
+    as_uuid, mb_uuid, "service", order_service
 ) VALUES (
-    $1, $2, $3
-) RETURNING id, as_uuid, service, order_service
+    $1, $2, $3, $4
+) RETURNING id, as_uuid, service, order_service, mb_uuid
 `
 
 type CreateScheduleServiceParams struct {
-	AsUuid       uuid.UUID     `json:"as_uuid"`
+	AsUuid       uuid.NullUUID `json:"as_uuid"`
+	MbUuid       uuid.NullUUID `json:"mb_uuid"`
 	Service      sql.NullInt32 `json:"service"`
 	OrderService sql.NullInt32 `json:"order_service"`
 }
 
 func (q *Queries) CreateScheduleService(ctx context.Context, arg CreateScheduleServiceParams) (AppointmentScheduleService, error) {
-	row := q.db.QueryRowContext(ctx, createScheduleService, arg.AsUuid, arg.Service, arg.OrderService)
+	row := q.db.QueryRowContext(ctx, createScheduleService,
+		arg.AsUuid,
+		arg.MbUuid,
+		arg.Service,
+		arg.OrderService,
+	)
 	var i AppointmentScheduleService
 	err := row.Scan(
 		&i.ID,
 		&i.AsUuid,
 		&i.Service,
 		&i.OrderService,
+		&i.MbUuid,
 	)
 	return i, err
 }
 
 const createScheduleUrl = `-- name: CreateScheduleUrl :one
 INSERT INTO appointment_schedule_url (
-    as_uuid, url, name_doc
+    as_uuid, mb_uuid, url, name_doc
 ) VALUES (
-    $1, $2, $3
-) RETURNING id, as_uuid, url, name_doc
+    $1, $2, $3, $4
+) RETURNING id, as_uuid, url, name_doc, mb_uuid
 `
 
 type CreateScheduleUrlParams struct {
-	AsUuid  uuid.UUID      `json:"as_uuid"`
+	AsUuid  uuid.NullUUID  `json:"as_uuid"`
+	MbUuid  uuid.NullUUID  `json:"mb_uuid"`
 	Url     sql.NullString `json:"url"`
 	NameDoc sql.NullString `json:"name_doc"`
 }
 
 func (q *Queries) CreateScheduleUrl(ctx context.Context, arg CreateScheduleUrlParams) (AppointmentScheduleUrl, error) {
-	row := q.db.QueryRowContext(ctx, createScheduleUrl, arg.AsUuid, arg.Url, arg.NameDoc)
+	row := q.db.QueryRowContext(ctx, createScheduleUrl,
+		arg.AsUuid,
+		arg.MbUuid,
+		arg.Url,
+		arg.NameDoc,
+	)
 	var i AppointmentScheduleUrl
 	err := row.Scan(
 		&i.ID,
 		&i.AsUuid,
 		&i.Url,
 		&i.NameDoc,
+		&i.MbUuid,
 	)
 	return i, err
 }
@@ -419,19 +436,25 @@ func (q *Queries) GetListSchedule(ctx context.Context, arg GetListScheduleParams
 }
 
 const getListScheduleDrug = `-- name: GetListScheduleDrug :many
-SELECT asd.id, as_uuid, asd.variant, lieu_dung, quantity, v.id, name, code, barcode, decision_number, register_number, longevity, vat, product, user_created, user_updated, updated_at, created_at, initial_inventory, real_inventory, vm.id, vm.variant, media, m.id, media_url FROM appointment_schedule_drug asd
+SELECT asd.id, as_uuid, asd.variant, lieu_dung, quantity, mb_uuid, v.id, name, code, barcode, decision_number, register_number, longevity, vat, product, user_created, user_updated, updated_at, created_at, initial_inventory, real_inventory, vm.id, vm.variant, media, m.id, media_url FROM appointment_schedule_drug asd
 JOIN variants v ON v.id = asd.variant
 LEFT JOIN variant_media vm ON vm.variant = v.id
 LEFT JOIN medias m ON m.id = vm.media
-WHERE asd.as_uuid = $1
+WHERE asd.as_uuid = $1 OR asd.mb_uuid = $2
 `
+
+type GetListScheduleDrugParams struct {
+	AsUuid uuid.NullUUID `json:"as_uuid"`
+	MbUuid uuid.NullUUID `json:"mb_uuid"`
+}
 
 type GetListScheduleDrugRow struct {
 	ID               int32           `json:"id"`
-	AsUuid           uuid.UUID       `json:"as_uuid"`
+	AsUuid           uuid.NullUUID   `json:"as_uuid"`
 	Variant          sql.NullInt32   `json:"variant"`
 	LieuDung         sql.NullString  `json:"lieu_dung"`
 	Quantity         int32           `json:"quantity"`
+	MbUuid           uuid.NullUUID   `json:"mb_uuid"`
 	ID_2             int32           `json:"id_2"`
 	Name             string          `json:"name"`
 	Code             string          `json:"code"`
@@ -454,8 +477,8 @@ type GetListScheduleDrugRow struct {
 	MediaUrl         sql.NullString  `json:"media_url"`
 }
 
-func (q *Queries) GetListScheduleDrug(ctx context.Context, asUuid uuid.UUID) ([]GetListScheduleDrugRow, error) {
-	rows, err := q.db.QueryContext(ctx, getListScheduleDrug, asUuid)
+func (q *Queries) GetListScheduleDrug(ctx context.Context, arg GetListScheduleDrugParams) ([]GetListScheduleDrugRow, error) {
+	rows, err := q.db.QueryContext(ctx, getListScheduleDrug, arg.AsUuid, arg.MbUuid)
 	if err != nil {
 		return nil, err
 	}
@@ -469,6 +492,7 @@ func (q *Queries) GetListScheduleDrug(ctx context.Context, asUuid uuid.UUID) ([]
 			&i.Variant,
 			&i.LieuDung,
 			&i.Quantity,
+			&i.MbUuid,
 			&i.ID_2,
 			&i.Name,
 			&i.Code,
@@ -504,17 +528,23 @@ func (q *Queries) GetListScheduleDrug(ctx context.Context, asUuid uuid.UUID) ([]
 }
 
 const getListScheduleService = `-- name: GetListScheduleService :many
-SELECT ass.id, as_uuid, service, order_service, s.id, image, s.code, title, entity, staff, frequency, reminder_time, unit, price, s.description, s.company, s.user_created, s.user_updated, s.created_at, s.updated_at, os.id, os.code, total_price, os.description, vat, discount, service_price, must_paid, customer, address, status, type, ticket, qr, os.company, payment, os.user_created, os.user_updated, os.created_at, os.updated_at FROM appointment_schedule_service ass
+SELECT ass.id, as_uuid, service, order_service, mb_uuid, s.id, image, s.code, title, entity, staff, frequency, reminder_time, unit, price, s.description, s.company, s.user_created, s.user_updated, s.created_at, s.updated_at, os.id, os.code, total_price, os.description, vat, discount, service_price, must_paid, customer, address, status, type, ticket, qr, os.company, payment, os.user_created, os.user_updated, os.created_at, os.updated_at FROM appointment_schedule_service ass
 JOIN services s ON s.id = ass.service
 LEFT JOIN orders os ON os.id = ass.order_service
-WHERE ass.as_uuid = $1
+WHERE ass.as_uuid = $1 OR ass.mb_uuid = $2
 `
+
+type GetListScheduleServiceParams struct {
+	AsUuid uuid.NullUUID `json:"as_uuid"`
+	MbUuid uuid.NullUUID `json:"mb_uuid"`
+}
 
 type GetListScheduleServiceRow struct {
 	ID            int32           `json:"id"`
-	AsUuid        uuid.UUID       `json:"as_uuid"`
+	AsUuid        uuid.NullUUID   `json:"as_uuid"`
 	Service       sql.NullInt32   `json:"service"`
 	OrderService  sql.NullInt32   `json:"order_service"`
+	MbUuid        uuid.NullUUID   `json:"mb_uuid"`
 	ID_2          int32           `json:"id_2"`
 	Image         sql.NullInt32   `json:"image"`
 	Code          string          `json:"code"`
@@ -553,8 +583,8 @@ type GetListScheduleServiceRow struct {
 	UpdatedAt_2   sql.NullTime    `json:"updated_at_2"`
 }
 
-func (q *Queries) GetListScheduleService(ctx context.Context, asUuid uuid.UUID) ([]GetListScheduleServiceRow, error) {
-	rows, err := q.db.QueryContext(ctx, getListScheduleService, asUuid)
+func (q *Queries) GetListScheduleService(ctx context.Context, arg GetListScheduleServiceParams) ([]GetListScheduleServiceRow, error) {
+	rows, err := q.db.QueryContext(ctx, getListScheduleService, arg.AsUuid, arg.MbUuid)
 	if err != nil {
 		return nil, err
 	}
@@ -567,6 +597,7 @@ func (q *Queries) GetListScheduleService(ctx context.Context, asUuid uuid.UUID) 
 			&i.AsUuid,
 			&i.Service,
 			&i.OrderService,
+			&i.MbUuid,
 			&i.ID_2,
 			&i.Image,
 			&i.Code,
@@ -618,12 +649,17 @@ func (q *Queries) GetListScheduleService(ctx context.Context, asUuid uuid.UUID) 
 }
 
 const getListScheduleUrl = `-- name: GetListScheduleUrl :many
-SELECT id, as_uuid, url, name_doc FROM appointment_schedule_url
-WHERE as_uuid = $1
+SELECT id, as_uuid, url, name_doc, mb_uuid FROM appointment_schedule_url
+WHERE as_uuid = $1 OR mb_uuid = $2
 `
 
-func (q *Queries) GetListScheduleUrl(ctx context.Context, asUuid uuid.UUID) ([]AppointmentScheduleUrl, error) {
-	rows, err := q.db.QueryContext(ctx, getListScheduleUrl, asUuid)
+type GetListScheduleUrlParams struct {
+	AsUuid uuid.NullUUID `json:"as_uuid"`
+	MbUuid uuid.NullUUID `json:"mb_uuid"`
+}
+
+func (q *Queries) GetListScheduleUrl(ctx context.Context, arg GetListScheduleUrlParams) ([]AppointmentScheduleUrl, error) {
+	rows, err := q.db.QueryContext(ctx, getListScheduleUrl, arg.AsUuid, arg.MbUuid)
 	if err != nil {
 		return nil, err
 	}
@@ -636,6 +672,7 @@ func (q *Queries) GetListScheduleUrl(ctx context.Context, asUuid uuid.UUID) ([]A
 			&i.AsUuid,
 			&i.Url,
 			&i.NameDoc,
+			&i.MbUuid,
 		); err != nil {
 			return nil, err
 		}

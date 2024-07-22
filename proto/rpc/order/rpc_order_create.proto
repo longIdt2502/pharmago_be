@@ -29,6 +29,7 @@ message OrderServiceItemCreate {
   float unit_price = 2;
   float discount = 3;
   float total_price = 4;
+  int32 quantity = 5;
 }
 
 message OrderCreate {

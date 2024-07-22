@@ -1,0 +1,87 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+import "google/protobuf/timestamp.proto";
+
+import "entities/account.proto";
+import "entities/service.proto";
+import "entities/order.proto";
+import "entities/variant.proto";
+import "entities/customer.proto";
+import "entities/appointment_schedule.proto";
+
+import "rpc/customer/rpc_medical_record_create.proto";
+
+
+/// ============== ENTITIES ============
+message MedicalBill {
+  int32 id = 1;
+  string uuid = 2;
+  string code = 3;
+  int32 customer_id = 4;
+  optional Account customer = 5;
+  int32 company = 6;
+  int32 doctor_id = 7;
+  Account doctor = 8;
+  optional string symptoms = 9;
+  optional string diagnostic = 10;
+  optional string qr_code_url = 11;
+  bool is_done = 12;
+  int32 user_created_id = 13;
+  Account user_created = 14;
+  optional int32 user_updated_id = 15;
+  optional Account user_updated = 16;
+  google.protobuf.Timestamp meeting_at = 17;
+  google.protobuf.Timestamp created_at = 18;
+  optional google.protobuf.Timestamp updated_at = 19;
+  repeated AppointmentScheduleService services = 20;
+  repeated AppointmentScheduleUrl urls = 21;
+  repeated AppointmentScheduleDrug drugs = 22;
+}
+
+// ===================== REQ/RES ========================
+message MedicalBillResponse {
+  int32 code = 1;
+  string message = 2;
+  string message_trans = 3;
+  string log = 4;
+  MedicalBill details = 5;
+}
+
+message MedicalBillListRequest {
+  int32 company = 1;
+  optional string search = 2;
+  optional int32 customer = 3;
+  optional int32 doctor = 4;
+  optional google.protobuf.Timestamp time_start = 5;
+  optional google.protobuf.Timestamp time_end = 6;
+  optional int32 page = 7;
+  optional int32 limit = 8;
+}
+
+message MedicalBillListResponse {
+  int32 code = 1;
+  string message = 2;
+  string message_trans = 3;
+  string log = 4;
+  repeated MedicalBill details = 5;
+}
+
+message MedicalBillUpdateRequest {
+  string uuid = 1;
+  bool is_done = 2;
+  repeated FileItem files = 3;
+  MedicalRecordType type = 4;
+  string diagnostic = 5;
+}
+
+message MedicalBillUpdateResponse {
+  int32 code = 1;
+  string message = 2;
+  string message_trans = 3;
+  string log = 4;
+}
+
