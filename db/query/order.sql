@@ -28,12 +28,16 @@ JOIN tickets t ON o.ticket = t.id
 JOIN order_status os ON os.code = o.status
 JOIN accounts a ON a.id = o.user_created
 JOIN payments p ON p.id = o.payment
+JOIN order_type ot ON ot.code = o.type
 WHERE o.company = sqlc.narg(company)::int
 AND (
     sqlc.narg('status')::varchar IS NULL OR o.status = sqlc.narg('status')::varchar
 )
 AND (
     sqlc.narg('warehouse')::int IS NULL OR t.warehouse = sqlc.narg('warehouse')::int
+)
+AND (
+    sqlc.narg('type')::varchar IS NULL OR o.type = sqlc.narg('type')::varchar
 )
 AND (
     sqlc.narg('customer')::int IS NULL OR o.customer = sqlc.narg('customer')::int
@@ -98,6 +102,12 @@ SELECT os.code, COALESCE(COUNT(os.code), 0)::int AS count FROM order_status os
 RIGHT JOIN orders o ON os.code = o.status
 WHERE o.company = $1
 GROUP BY os.code;
+
+-- name: CountOrderByType :many
+SELECT ot.code, COALESCE(COUNT(ot.code), 0)::int AS count FROM order_type ot
+RIGHT JOIN orders o ON ot.code = o.type
+WHERE o.company = $1
+GROUP BY ot.code;
 
 -- name: CountOrder :one
 SELECT COALESCE(COUNT(id), 0)::int FROM orders

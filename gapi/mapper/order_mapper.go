@@ -31,6 +31,10 @@ func OrderPreviewMapper(order db.ListOrderRow) *pb.OrderPreview {
 			HadPaid:  float32(order.HadPaid),
 			NeedPay:  float32(order.NeedPay),
 		},
+		Type: &pb.SimpleData{
+			Name: order.Title_3,
+			Code: order.Code_6,
+		},
 	}
 }
 
@@ -90,6 +94,7 @@ func OrderDetailMapper(ctx context.Context, store *db.Store, data db.DetailOrder
 				Title: item.Title,
 				Code:  item.Code,
 			}),
+			Quantity: item.Quantity.Int32,
 		})
 	}
 

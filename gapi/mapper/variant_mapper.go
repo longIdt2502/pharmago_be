@@ -6,20 +6,17 @@ import (
 
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/pb"
-	"github.com/rs/zerolog/log"
 )
 
 func VariantMapper(ctx context.Context, store *db.Store, data db.GetVariantsRow) *pb.Variant {
 
-	media, err := store.GetMediaVariant(ctx, data.ID)
-	log.Print(err)
+	media, _ := store.GetMediaVariant(ctx, data.ID)
 
 	var totalInventory *int32
-	inventory, err := store.GetInventoryVariant(ctx, sql.NullInt32{
+	inventory, _ := store.GetInventoryVariant(ctx, sql.NullInt32{
 		Int32: data.ID,
 		Valid: true,
 	})
-	log.Print(err)
 	inventory32 := inventory
 	totalInventory = &inventory32
 
@@ -34,8 +31,7 @@ func VariantMapper(ctx context.Context, store *db.Store, data db.GetVariantsRow)
 		WeightUnit:  data.UnitWeightUnit.String,
 		Default:     true,
 	})
-	unitChangeDb, err := store.GetListUnitChange(ctx, data.UnitID)
-	log.Print(err)
+	unitChangeDb, _ := store.GetListUnitChange(ctx, data.UnitID)
 	for _, value := range unitChangeDb {
 		units = append(units, &pb.Unit{
 			Id:          value.ID,

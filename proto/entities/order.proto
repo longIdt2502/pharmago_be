@@ -29,6 +29,7 @@ message OrderServiceItem {
   float unit_price = 3;
   float total_price = 4;
   float discount = 5;
+  int32 quantity = 6;
 }
 
 message Order {
@@ -60,9 +61,10 @@ message OrderPreview {
   string code = 2;
   float total_price = 3;
   SimpleData status = 4;
-  string description = 5;
-  Payment payment = 6;
-  string customer_name = 7;
-  string user_created = 8;
-  google.protobuf.Timestamp created_at = 9;
+  SimpleData type = 5;
+  string description = 6;
+  Payment payment = 7;
+  string customer_name = 8;
+  string user_created = 9;
+  google.protobuf.Timestamp created_at = 10;
 }
