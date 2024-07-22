@@ -4520,6 +4520,17 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "POPULAR",
+              "NEW"
+            ],
+            "default": "POPULAR"
           }
         ],
         "tags": [
@@ -9243,6 +9254,14 @@
           }
         }
       }
+    },
+    "pbListVariantFilter": {
+      "type": "string",
+      "enum": [
+        "POPULAR",
+        "NEW"
+      ],
+      "default": "POPULAR"
     },
     "pbListVariantResponse": {
       "type": "object",

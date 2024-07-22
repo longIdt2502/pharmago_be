@@ -8,6 +8,11 @@ import "entities/variant.proto";
 
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
+enum ListVariantFilter {
+  POPULAR = 0;
+  NEW = 1;
+}
+
 message ListVariantRequest {
   int32 company = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
     description: "int32 value field",
@@ -18,6 +23,7 @@ message ListVariantRequest {
   optional int32 page = 2;
   optional int32 limit = 3;
   optional string search = 4;
+  optional ListVariantFilter filter = 5;
 }
 
 message ListVariantResponse {

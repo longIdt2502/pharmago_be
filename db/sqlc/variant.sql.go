@@ -54,7 +54,11 @@ func (q *Queries) GetVariantById(ctx context.Context, id int32) (Variant, error)
 }
 
 const getVariants = `-- name: GetVariants :many
-SELECT v.id, v.name, v.code, barcode, decision_number, register_number, longevity, vat, product, v.user_created, v.user_updated, v.updated_at, v.created_at, initial_inventory, real_inventory, p.id, p.name, p.code, product_category, type, brand, p.unit, ta_duoc, nong_do, lieu_dung, chi_dinh, chong_chi_dinh, cong_dung, tac_dung_phu, than_trong, tuong_tac, bao_quan, dong_goi, phan_loai, dang_bao_che, tieu_chuan_sx, cong_ty_sx, cong_ty_dk, active, company, p.user_created, p.user_updated, p.updated_at, p.created_at, vm.id, variant, media, m.id, media_url, u.id, u.name, sell_price, import_price, weight, weight_unit, u.user_created, u.user_updated, u.updated_at, u.created_at, pl.id, variant_code, variant_name, price_import, price_sell, pl.unit, pl.user_created, pl.user_updated, pl.updated_at, pl.created_at, m.media_url AS media,
+WITH revenue AS (
+    SELECT variant, SUM("value") AS total_buy FROM order_items
+    GROUP BY variant
+)
+SELECT v.id, v.name, v.code, barcode, decision_number, register_number, longevity, vat, product, v.user_created, v.user_updated, v.updated_at, v.created_at, initial_inventory, real_inventory, p.id, p.name, p.code, product_category, type, brand, p.unit, ta_duoc, nong_do, lieu_dung, chi_dinh, chong_chi_dinh, cong_dung, tac_dung_phu, than_trong, tuong_tac, bao_quan, dong_goi, phan_loai, dang_bao_che, tieu_chuan_sx, cong_ty_sx, cong_ty_dk, active, company, p.user_created, p.user_updated, p.updated_at, p.created_at, vm.id, vm.variant, media, m.id, media_url, u.id, u.name, sell_price, import_price, weight, weight_unit, u.user_created, u.user_updated, u.updated_at, u.created_at, pl.id, variant_code, variant_name, price_import, price_sell, pl.unit, pl.user_created, pl.user_updated, pl.updated_at, pl.created_at, r.variant, total_buy, m.media_url AS media,
        u.id AS unit_id, u.name AS unit_name, u.sell_price AS unit_sell_price, u.weight AS unit_weight, u.weight_unit AS unit_weight_unit,
        pl.price_import AS pl_price_import, pl.price_sell AS pl_price_sell
 FROM variants v
@@ -63,6 +67,7 @@ LEFT JOIN variant_media vm ON vm.variant = v.id
 LEFT JOIN medias m ON m.id = vm.media
 JOIN units u ON u.id = p.unit
 LEFT JOIN price_list pl ON pl.variant_code = v.code
+LEFT JOIN revenue r ON r.variant = v.id
 WHERE (p.company = $1::int OR v.product = $2::int)
 AND (
     v.name ILIKE '%' || COALESCE($3::varchar, '') || '%' OR
@@ -70,10 +75,15 @@ AND (
     v.barcode ILIKE '%' || COALESCE($3::varchar, '') || '%'
 ) AND (
     $4::int IS NULL OR v.id = $4::int
+) AND (
+    $5::varchar IS NULL OR (r.total_buy IS NOT NULL AND $5 = 'POPULAR')
 )
-ORDER BY -v.id
-LIMIT COALESCE($6::int, 10)
-OFFSET (COALESCE($5::int, 1) - 1) * COALESCE($6::int, 10)
+ORDER BY 
+    CASE
+        WHEN $5 = 'POPULAR' THEN r.total_buy
+    END, -v.id
+LIMIT COALESCE($7::int, 10)
+OFFSET (COALESCE($6::int, 1) - 1) * COALESCE($7::int, 10)
 `
 
 type GetVariantsParams struct {
@@ -81,6 +91,7 @@ type GetVariantsParams struct {
 	Product int32          `json:"product"`
 	Search  sql.NullString `json:"search"`
 	ID      sql.NullInt32  `json:"id"`
+	Filter  sql.NullString `json:"filter"`
 	Page    sql.NullInt32  `json:"page"`
 	Limit   sql.NullInt32  `json:"limit"`
 }
@@ -155,6 +166,8 @@ type GetVariantsRow struct {
 	UserUpdated_4    sql.NullInt32   `json:"user_updated_4"`
 	UpdatedAt_4      sql.NullTime    `json:"updated_at_4"`
 	CreatedAt_4      sql.NullTime    `json:"created_at_4"`
+	Variant_2        sql.NullInt32   `json:"variant_2"`
+	TotalBuy         sql.NullInt64   `json:"total_buy"`
 	Media_2          sql.NullString  `json:"media_2"`
 	UnitID           int32           `json:"unit_id"`
 	UnitName         string          `json:"unit_name"`
@@ -171,6 +184,7 @@ func (q *Queries) GetVariants(ctx context.Context, arg GetVariantsParams) ([]Get
 		arg.Product,
 		arg.Search,
 		arg.ID,
+		arg.Filter,
 		arg.Page,
 		arg.Limit,
 	)
@@ -251,6 +265,8 @@ func (q *Queries) GetVariants(ctx context.Context, arg GetVariantsParams) ([]Get
 			&i.UserUpdated_4,
 			&i.UpdatedAt_4,
 			&i.CreatedAt_4,
+			&i.Variant_2,
+			&i.TotalBuy,
 			&i.Media_2,
 			&i.UnitID,
 			&i.UnitName,
