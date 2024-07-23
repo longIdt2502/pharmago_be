@@ -26,8 +26,8 @@ WHERE uuid = $1;
 -- name: UpdateMedicalBill :one
 UPDATE medical_bills
 SET
-    is_done = COALESCE(sqlc.narg(is_done)::bool, is_done),
-    diagnostic = COALESCE(sqlc.narg(diagnostic)::varchar, diagnostic)
+    diagnostic = COALESCE(sqlc.narg(diagnostic)::varchar, diagnostic),
+    symptoms = COALESCE(sqlc.narg(symptoms)::varchar, symptoms)
 WHERE uuid = sqlc.arg(uuid)::uuid
 RETURNING *;
 

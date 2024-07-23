@@ -1009,19 +1009,6 @@ Table appointment_schedule_url as ASU {
 Ref: ASU.as_uuid > AS.uuid
 Ref: ASU.mb_uuid > MB.uuid
 
-Table appointment_schedule_drug as ASD {
-  id serial [pk]
-  as_uuid uuid
-  mb_uuid uuid
-  variant serial
-  lieu_dung varchar
-  quantity int [not null, default: 0]
-}
-
-Ref: ASD.as_uuid > AS.uuid
-Ref: ASD.mb_uuid > MB.uuid
-Ref: ASD.variant > variants.id [delete: set null]
-
 enum medical_record_link_type {
   test
   patient
@@ -1039,6 +1026,7 @@ Table medical_bills as MB {
   diagnostic varchar [note: "Chuẩn đoán bệnh"]
   qr_code_url varchar
   is_done bool [note: "true: Đã xong, false: Chưa diễn ra", not null]
+  prescription uuid
   meeting_at timestamp [not null]
   user_created serial [not null]
   user_updated serial
@@ -1051,6 +1039,15 @@ Ref: MB.company > C.id [delete: set null]
 Ref: MB.doctor > A.id [delete: set null]
 Ref: MB.user_created > A.id
 Ref: MB.user_updated > A.id [delete: set null]
+Ref: MB.prescription > prescriptions.uuid [delete: set null]
+
+Table medical_bill_order_sell {
+  uuid uuid
+  order serial
+}
+
+Ref: medical_bill_order_sell.uuid > MB.uuid
+Ref: medical_bill_order_sell.order > O.id [delete: set null]
 
 Table medical_record_link as MRL {
   id serial [pk]
@@ -1067,3 +1064,35 @@ Table medical_record_link as MRL {
 Ref: MRL.customer > customers.id [delete: cascade]
 Ref: MRL.appointment_schedule > appointment_schedules.uuid [delete: set null]
 Ref: MRL.user_created > A.id [delete: set null]
+
+Table prescriptions {
+  id serial [pk]
+  uuid uuid [unique, not null]
+  code varchar [unique, not null]
+  symptoms varchar [note: "Triệu chứng bệnh"]
+  diagnostic varchar [note: "Chuẩn đoán bệnh"]
+  customer serial
+  doctor serial
+  company serial [not null]
+  user_created serial [not null]
+  user_updated serial
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamptz
+}
+
+Ref: prescriptions.doctor > A.id [delete: set null]
+Ref: prescriptions.user_created > A.id [delete: set null]
+Ref: prescriptions.user_updated > A.id [delete: set null]
+Ref: prescriptions.customer > customers.id [delete: set null]
+Ref: prescriptions.company > C.id [delete: cascade]
+
+Table prescription_item {
+  id serial [pk]
+  prescription_uuid uuid
+  variant serial
+  lieu_dung varchar
+  quantity int [not null, default: 0]
+}
+
+Ref: prescription_item.prescription_uuid > prescriptions.uuid
+Ref: prescription_item.variant > variants.id [delete: set null]

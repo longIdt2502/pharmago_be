@@ -70,26 +70,26 @@ func (server *ServerGRPC) MedicalBillCreate(ctx context.Context, req *pb.Medical
 		}
 	}
 
-	for _, item := range req.GetDrugs() {
-		_, err = server.store.CreateScheduleDrug(ctx, db.CreateScheduleDrugParams{
-			MbUuid: uuid.NullUUID{
-				UUID:  medicalBill.Uuid,
-				Valid: true,
-			},
-			Variant:  sql.NullInt32{Int32: item.GetVariantId(), Valid: true},
-			LieuDung: sql.NullString{String: item.GetLieuDung(), Valid: item.LieuDung != nil},
-			Quantity: item.GetQuantity(),
-		})
-		if err != nil {
-			errApp := common.ErrDB(err)
-			return &pb.MedicalBillResponse{
-				Code:         int32(errApp.StatusCode),
-				Message:      errApp.Message,
-				MessageTrans: "Lỗi tạo đơn thuốc",
-				Log:          errApp.Log,
-			}, nil
-		}
-	}
+	// for _, item := range req.GetDrugs() {
+	// 	_, err = server.store.CreateScheduleDrug(ctx, db.CreateScheduleDrugParams{
+	// 		MbUuid: uuid.NullUUID{
+	// 			UUID:  medicalBill.Uuid,
+	// 			Valid: true,
+	// 		},
+	// 		Variant:  sql.NullInt32{Int32: item.GetVariantId(), Valid: true},
+	// 		LieuDung: sql.NullString{String: item.GetLieuDung(), Valid: item.LieuDung != nil},
+	// 		Quantity: item.GetQuantity(),
+	// 	})
+	// 	if err != nil {
+	// 		errApp := common.ErrDB(err)
+	// 		return &pb.MedicalBillResponse{
+	// 			Code:         int32(errApp.StatusCode),
+	// 			Message:      errApp.Message,
+	// 			MessageTrans: "Lỗi tạo đơn thuốc",
+	// 			Log:          errApp.Log,
+	// 		}, nil
+	// 	}
+	// }
 
 	return &pb.MedicalBillResponse{
 		Code:    200,
@@ -191,7 +191,7 @@ func (server *ServerGRPC) MedicalBillUpdate(ctx context.Context, req *pb.Medical
 
 	uuidParse, _ := uuid.Parse(req.GetUuid())
 
-	schedule, err := server.store.DetailSchedule(ctx, uuidParse)
+	medicalBill, err := server.store.DetailMedicalBill(ctx, uuidParse)
 	if err != nil {
 		errApp := common.ErrDB(err)
 		return &pb.MedicalBillUpdateResponse{
@@ -202,27 +202,23 @@ func (server *ServerGRPC) MedicalBillUpdate(ctx context.Context, req *pb.Medical
 		}, nil
 	}
 
-	_, err = server.CreateMannyMediaRecord(ctx, req.GetFiles(), req.GetType().String(), tokenPayload.UserID, schedule.Customer.Int32, &uuidParse)
-	if err != nil {
-		errApp := common.ErrInternal(err)
-		return &pb.MedicalBillUpdateResponse{
-			Code:         int32(errApp.StatusCode),
-			Message:      errApp.Message,
-			MessageTrans: "Lỗi tạo dữ liệu",
-			Log:          errApp.Log,
-		}, nil
+	if len(req.Files) != 0 {
+		_, err = server.CreateMannyMediaRecord(ctx, req.GetFiles(), req.GetType().String(), tokenPayload.UserID, medicalBill.Customer.Int32, &uuidParse)
+		if err != nil {
+			errApp := common.ErrInternal(err)
+			return &pb.MedicalBillUpdateResponse{
+				Code:         int32(errApp.StatusCode),
+				Message:      errApp.Message,
+				MessageTrans: "Lỗi tạo dữ liệu",
+				Log:          errApp.Log,
+			}, nil
+		}
 	}
 
-	_, err = server.store.UpdateSchedule(ctx, db.UpdateScheduleParams{
-		Uuid: uuidParse,
-		IsDone: sql.NullBool{
-			Bool:  req.GetIsDone(),
-			Valid: true,
-		},
-		Diagnostic: sql.NullString{
-			String: req.GetDiagnostic(),
-			Valid:  true,
-		},
+	_, err = server.store.UpdateMedicalBill(ctx, db.UpdateMedicalBillParams{
+		Diagnostic: sql.NullString{String: req.GetDiagnostic(), Valid: req.Diagnostic != nil},
+		Symptoms:   sql.NullString{String: req.GetSymptoms(), Valid: req.Symptoms != nil},
+		Uuid:       uuidParse,
 	})
 	if err != nil {
 		errApp := common.ErrDB(err)

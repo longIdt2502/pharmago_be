@@ -8,6 +8,8 @@ package db
 import (
 	"context"
 	"database/sql"
+
+	"github.com/google/uuid"
 )
 
 const createPayment = `-- name: CreatePayment :one
@@ -147,4 +149,52 @@ func (q *Queries) ListPaymentItem(ctx context.Context, payment int32) ([]ListPay
 		return nil, err
 	}
 	return items, nil
+}
+
+const paymentOrderByMedicalBill = `-- name: PaymentOrderByMedicalBill :one
+SELECT SUM(p.must_paid) AS total_must_paid, 
+        SUM(p.had_paid) AS total_had_paid, 
+        SUM(p.need_pay) AS total_need_pay
+    FROM medical_bill_order_sell mbos
+JOIN orders o ON o.id = mbos.order
+JOIN payments p ON p.id = o.payment
+WHERE mbos.uuid = $1::uuid
+GROUP BY mbos.uuid
+`
+
+type PaymentOrderByMedicalBillRow struct {
+	TotalMustPaid int64 `json:"total_must_paid"`
+	TotalHadPaid  int64 `json:"total_had_paid"`
+	TotalNeedPay  int64 `json:"total_need_pay"`
+}
+
+func (q *Queries) PaymentOrderByMedicalBill(ctx context.Context, argUuid uuid.UUID) (PaymentOrderByMedicalBillRow, error) {
+	row := q.db.QueryRowContext(ctx, paymentOrderByMedicalBill, argUuid)
+	var i PaymentOrderByMedicalBillRow
+	err := row.Scan(&i.TotalMustPaid, &i.TotalHadPaid, &i.TotalNeedPay)
+	return i, err
+}
+
+const paymentOrderServiceByMedicalBill = `-- name: PaymentOrderServiceByMedicalBill :one
+SELECT SUM(p.must_paid) AS total_must_paid, 
+        SUM(p.had_paid) AS total_had_paid, 
+        SUM(p.need_pay) AS total_need_pay
+    FROM appointment_schedule_service ass
+JOIN orders o ON o.id = ass.order_service
+JOIN payments p ON p.id = o.payment
+WHERE ass.mb_uuid = $1::uuid
+GROUP BY ass.mb_uuid
+`
+
+type PaymentOrderServiceByMedicalBillRow struct {
+	TotalMustPaid int64 `json:"total_must_paid"`
+	TotalHadPaid  int64 `json:"total_had_paid"`
+	TotalNeedPay  int64 `json:"total_need_pay"`
+}
+
+func (q *Queries) PaymentOrderServiceByMedicalBill(ctx context.Context, argUuid uuid.UUID) (PaymentOrderServiceByMedicalBillRow, error) {
+	row := q.db.QueryRowContext(ctx, paymentOrderServiceByMedicalBill, argUuid)
+	var i PaymentOrderServiceByMedicalBillRow
+	err := row.Scan(&i.TotalMustPaid, &i.TotalHadPaid, &i.TotalNeedPay)
+	return i, err
 }

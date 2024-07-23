@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/hibiken/asynq"
+	"github.com/longIdt2502/pharmago_be/common"
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/gapi/mapper"
@@ -72,6 +73,39 @@ func (server *ServerGRPC) CreateProduct(ctx context.Context, req *pb.CreateProdu
 		Message: "success",
 		Code:    200,
 		Details: productId,
+	}, nil
+}
+
+func (server *ServerGRPC) UpdateProduct(ctx context.Context, req *pb.CreateProductRequest) (*pb.CreateProductResponse, error) {
+	_, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+	// account, err := server.store.GetAccountByUseName(ctx, tokenPayload.Username)
+	// if err != nil {
+	// 	return nil, config.UnauthenticatedError(err)
+	// }
+
+	product, err := server.store.UpdateProduct(ctx, db.UpdateProductParams{
+		Active: sql.NullBool{
+			Bool:  req.Product.GetActive(),
+			Valid: req.Product.Active != nil,
+		},
+		ID: req.GetId(),
+	})
+	if err != nil {
+		errApp := common.ErrDB(err)
+		return &pb.CreateProductResponse{
+			Code:    int32(errApp.StatusCode),
+			Message: errApp.Message,
+			Log:     errApp.Log,
+		}, nil
+	}
+
+	return &pb.CreateProductResponse{
+		Code:    200,
+		Message: "success",
+		Details: product.ID,
 	}, nil
 }
 

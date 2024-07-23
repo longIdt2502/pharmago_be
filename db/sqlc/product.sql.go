@@ -818,19 +818,26 @@ const updateProduct = `-- name: UpdateProduct :one
 UPDATE products
 SET
     brand = COALESCE($1, product_category),
-    product_category = COALESCE($2, product_category)
-WHERE id = $3
+    product_category = COALESCE($2, product_category),
+    active = COALESCE($3::bool, active)
+WHERE id = $4
 RETURNING id, name, code, product_category, type, brand, unit, ta_duoc, nong_do, lieu_dung, chi_dinh, chong_chi_dinh, cong_dung, tac_dung_phu, than_trong, tuong_tac, bao_quan, dong_goi, phan_loai, dang_bao_che, tieu_chuan_sx, cong_ty_sx, cong_ty_dk, active, company, user_created, user_updated, updated_at, created_at
 `
 
 type UpdateProductParams struct {
 	Brand           sql.NullInt32 `json:"brand"`
 	ProductCategory sql.NullInt32 `json:"product_category"`
+	Active          sql.NullBool  `json:"active"`
 	ID              int32         `json:"id"`
 }
 
 func (q *Queries) UpdateProduct(ctx context.Context, arg UpdateProductParams) (Product, error) {
-	row := q.db.QueryRowContext(ctx, updateProduct, arg.Brand, arg.ProductCategory, arg.ID)
+	row := q.db.QueryRowContext(ctx, updateProduct,
+		arg.Brand,
+		arg.ProductCategory,
+		arg.Active,
+		arg.ID,
+	)
 	var i Product
 	err := row.Scan(
 		&i.ID,

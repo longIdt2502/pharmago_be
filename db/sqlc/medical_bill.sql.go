@@ -18,7 +18,7 @@ INSERT INTO medical_bills (
     uuid, code, customer, company, doctor, symptoms, diagnostic, is_done, meeting_at, user_created, user_updated
 ) VALUES (
     $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
-) RETURNING id, uuid, code, customer, company, doctor, symptoms, diagnostic, qr_code_url, is_done, meeting_at, user_created, user_updated, created_at, updated_at
+) RETURNING id, uuid, code, customer, company, doctor, symptoms, diagnostic, qr_code_url, is_done, meeting_at, user_created, user_updated, created_at, updated_at, prescription
 `
 
 type CreateMedicalBillParams struct {
@@ -66,12 +66,13 @@ func (q *Queries) CreateMedicalBill(ctx context.Context, arg CreateMedicalBillPa
 		&i.UserUpdated,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.Prescription,
 	)
 	return i, err
 }
 
 const detailMedicalBill = `-- name: DetailMedicalBill :one
-SELECT id, uuid, code, customer, company, doctor, symptoms, diagnostic, qr_code_url, is_done, meeting_at, user_created, user_updated, created_at, updated_at FROM medical_bills
+SELECT id, uuid, code, customer, company, doctor, symptoms, diagnostic, qr_code_url, is_done, meeting_at, user_created, user_updated, created_at, updated_at, prescription FROM medical_bills
 WHERE uuid = $1
 `
 
@@ -94,12 +95,13 @@ func (q *Queries) DetailMedicalBill(ctx context.Context, argUuid uuid.UUID) (Med
 		&i.UserUpdated,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.Prescription,
 	)
 	return i, err
 }
 
 const getListMedicalBill = `-- name: GetListMedicalBill :many
-SELECT sch.id, uuid, sch.code, customer, sch.company, doctor, symptoms, diagnostic, qr_code_url, is_done, meeting_at, sch.user_created, sch.user_updated, sch.created_at, sch.updated_at, c.id, c.full_name, c.code, c.company, c.address, c.email, phone, license, birthday, c.user_created, c.user_updated, c.updated_at, c.created_at, "group", title, license_date, contact_name, contact_title, contact_phone, contact_email, contact_address, account_number, bank_name, bank_branch, issued_by, c.gender, a.id, a.username, a.hashed_password, a.full_name, a.email, a.type, a.is_verify, a.password_changed_at, a.created_at, a.role, a.gender, a.licence, a.dob, a.address, uc.id, uc.username, uc.hashed_password, uc.full_name, uc.email, uc.type, uc.is_verify, uc.password_changed_at, uc.created_at, uc.role, uc.gender, uc.licence, uc.dob, uc.address, uu.id, uu.username, uu.hashed_password, uu.full_name, uu.email, uu.type, uu.is_verify, uu.password_changed_at, uu.created_at, uu.role, uu.gender, uu.licence, uu.dob, uu.address FROM medical_bills sch
+SELECT sch.id, uuid, sch.code, customer, sch.company, doctor, symptoms, diagnostic, qr_code_url, is_done, meeting_at, sch.user_created, sch.user_updated, sch.created_at, sch.updated_at, prescription, c.id, c.full_name, c.code, c.company, c.address, c.email, phone, license, birthday, c.user_created, c.user_updated, c.updated_at, c.created_at, "group", title, license_date, contact_name, contact_title, contact_phone, contact_email, contact_address, account_number, bank_name, bank_branch, issued_by, c.gender, a.id, a.username, a.hashed_password, a.full_name, a.email, a.type, a.is_verify, a.password_changed_at, a.created_at, a.role, a.gender, a.licence, a.dob, a.address, uc.id, uc.username, uc.hashed_password, uc.full_name, uc.email, uc.type, uc.is_verify, uc.password_changed_at, uc.created_at, uc.role, uc.gender, uc.licence, uc.dob, uc.address, uu.id, uu.username, uu.hashed_password, uu.full_name, uu.email, uu.type, uu.is_verify, uu.password_changed_at, uu.created_at, uu.role, uu.gender, uu.licence, uu.dob, uu.address FROM medical_bills sch
 LEFT JOIN customers c ON c.id = sch.customer
 JOIN accounts a ON a.id = sch.doctor
 JOIN accounts uc ON uc.id = sch.user_created
@@ -147,6 +149,7 @@ type GetListMedicalBillRow struct {
 	UserUpdated         sql.NullInt32  `json:"user_updated"`
 	CreatedAt           time.Time      `json:"created_at"`
 	UpdatedAt           sql.NullTime   `json:"updated_at"`
+	Prescription        uuid.NullUUID  `json:"prescription"`
 	ID_2                sql.NullInt32  `json:"id_2"`
 	FullName            sql.NullString `json:"full_name"`
 	Code_2              sql.NullString `json:"code_2"`
@@ -251,6 +254,7 @@ func (q *Queries) GetListMedicalBill(ctx context.Context, arg GetListMedicalBill
 			&i.UserUpdated,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.Prescription,
 			&i.ID_2,
 			&i.FullName,
 			&i.Code_2,
@@ -336,20 +340,20 @@ func (q *Queries) GetListMedicalBill(ctx context.Context, arg GetListMedicalBill
 const updateMedicalBill = `-- name: UpdateMedicalBill :one
 UPDATE medical_bills
 SET
-    is_done = COALESCE($1::bool, is_done),
-    diagnostic = COALESCE($2::varchar, diagnostic)
+    diagnostic = COALESCE($1::varchar, diagnostic),
+    symptoms = COALESCE($2::varchar, symptoms)
 WHERE uuid = $3::uuid
-RETURNING id, uuid, code, customer, company, doctor, symptoms, diagnostic, qr_code_url, is_done, meeting_at, user_created, user_updated, created_at, updated_at
+RETURNING id, uuid, code, customer, company, doctor, symptoms, diagnostic, qr_code_url, is_done, meeting_at, user_created, user_updated, created_at, updated_at, prescription
 `
 
 type UpdateMedicalBillParams struct {
-	IsDone     sql.NullBool   `json:"is_done"`
 	Diagnostic sql.NullString `json:"diagnostic"`
+	Symptoms   sql.NullString `json:"symptoms"`
 	Uuid       uuid.UUID      `json:"uuid"`
 }
 
 func (q *Queries) UpdateMedicalBill(ctx context.Context, arg UpdateMedicalBillParams) (MedicalBill, error) {
-	row := q.db.QueryRowContext(ctx, updateMedicalBill, arg.IsDone, arg.Diagnostic, arg.Uuid)
+	row := q.db.QueryRowContext(ctx, updateMedicalBill, arg.Diagnostic, arg.Symptoms, arg.Uuid)
 	var i MedicalBill
 	err := row.Scan(
 		&i.ID,
@@ -367,6 +371,7 @@ func (q *Queries) UpdateMedicalBill(ctx context.Context, arg UpdateMedicalBillPa
 		&i.UserUpdated,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.Prescription,
 	)
 	return i, err
 }

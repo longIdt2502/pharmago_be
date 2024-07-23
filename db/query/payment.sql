@@ -21,3 +21,23 @@ WHERE payment = $1;
 SELECT * FROM payments
 WHERE id = $1
 LIMIT 1;
+
+-- name: PaymentOrderByMedicalBill :one
+SELECT SUM(p.must_paid) AS total_must_paid, 
+        SUM(p.had_paid) AS total_had_paid, 
+        SUM(p.need_pay) AS total_need_pay
+    FROM medical_bill_order_sell mbos
+JOIN orders o ON o.id = mbos.order
+JOIN payments p ON p.id = o.payment
+WHERE mbos.uuid = sqlc.arg(uuid)::uuid
+GROUP BY mbos.uuid;
+
+-- name: PaymentOrderServiceByMedicalBill :one
+SELECT SUM(p.must_paid) AS total_must_paid, 
+        SUM(p.had_paid) AS total_had_paid, 
+        SUM(p.need_pay) AS total_need_pay
+    FROM appointment_schedule_service ass
+JOIN orders o ON o.id = ass.order_service
+JOIN payments p ON p.id = o.payment
+WHERE ass.mb_uuid = sqlc.arg(uuid)::uuid
+GROUP BY ass.mb_uuid;

@@ -41,12 +41,12 @@ WHERE ass.as_uuid = $1 OR ass.mb_uuid = $2;
 SELECT * FROM appointment_schedule_url
 WHERE as_uuid = $1 OR mb_uuid = $2;
 
--- name: GetListScheduleDrug :many
-SELECT * FROM appointment_schedule_drug asd
-JOIN variants v ON v.id = asd.variant
-LEFT JOIN variant_media vm ON vm.variant = v.id
-LEFT JOIN medias m ON m.id = vm.media
-WHERE asd.as_uuid = $1 OR asd.mb_uuid = $2;
+-- -- name: GetListScheduleDrug :many
+-- SELECT * FROM appointment_schedule_drug asd
+-- JOIN variants v ON v.id = asd.variant
+-- LEFT JOIN variant_media vm ON vm.variant = v.id
+-- LEFT JOIN medias m ON m.id = vm.media
+-- WHERE asd.as_uuid = $1 OR asd.mb_uuid = $2;
 
 -- name: CreateSchedule :one
 INSERT INTO appointment_schedules (
@@ -69,9 +69,9 @@ INSERT INTO appointment_schedule_url (
     $1, $2, $3, $4
 ) RETURNING *;
 
--- name: CreateScheduleDrug :one
-INSERT INTO appointment_schedule_drug (
-    as_uuid, mb_uuid, variant, lieu_dung, quantity
-) VALUES (
-    $1, $2, $3, $4, $5
-) RETURNING *;
+-- -- name: CreateScheduleDrug :one
+-- INSERT INTO appointment_schedule_drug (
+--     as_uuid, mb_uuid, variant, lieu_dung, quantity
+-- ) VALUES (
+--     $1, $2, $3, $4, $5
+-- ) RETURNING *;

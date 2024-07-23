@@ -21,16 +21,16 @@ func AppointmentScheduleMapper(ctx context.Context, store *db.Store, item db.Get
 		servicesPb = append(servicesPb, AppointmentScheduleServiceMapper(item))
 	}
 
-	drugs, _ := store.GetListScheduleDrug(ctx, db.GetListScheduleDrugParams{
-		AsUuid: uuid.NullUUID{
-			UUID:  item.Uuid,
-			Valid: true,
-		},
-	})
-	var drugsPb []*pb.AppointmentScheduleDrug
-	for _, item := range drugs {
-		drugsPb = append(drugsPb, AppointmentScheduleDrugMapper(item))
-	}
+	// drugs, _ := store.GetListScheduleDrug(ctx, db.GetListScheduleDrugParams{
+	// 	AsUuid: uuid.NullUUID{
+	// 		UUID:  item.Uuid,
+	// 		Valid: true,
+	// 	},
+	// })
+	// var drugsPb []*pb.AppointmentScheduleDrug
+	// for _, item := range drugs {
+	// 	drugsPb = append(drugsPb, AppointmentScheduleDrugMapper(item))
+	// }
 
 	return &pb.AppointmentSchedule{
 		Id:         item.ID,
@@ -67,7 +67,6 @@ func AppointmentScheduleMapper(ctx context.Context, store *db.Store, item db.Get
 		UpdatedAt: timestamppb.New(item.UpdatedAt.Time),
 		Services:  servicesPb,
 		Urls:      []*pb.AppointmentScheduleUrl{},
-		Drugs:     drugsPb,
 	}
 }
 
@@ -98,21 +97,21 @@ func AppointmentScheduleServiceMapper(item db.GetListScheduleServiceRow) *pb.App
 	}
 }
 
-func AppointmentScheduleDrugMapper(item db.GetListScheduleDrugRow) *pb.AppointmentScheduleDrug {
-	return &pb.AppointmentScheduleDrug{
-		Id:        item.ID,
-		AsUuid:    item.AsUuid.UUID.String(),
-		VariantId: item.Variant.Int32,
-		Variant: &pb.Variant{
-			Id:               item.ID_2,
-			Code:             item.Code,
-			Name:             item.Name,
-			Product:          item.Product,
-			Media:            item.MediaUrl.String,
-			InitialInventory: item.InitialInventory,
-			RealInventory:    item.RealInventory,
-		},
-		LieuDung: &item.LieuDung.String,
-		Quantity: item.Quantity,
-	}
-}
+// func AppointmentScheduleDrugMapper(item db.GetListScheduleDrugRow) *pb.AppointmentScheduleDrug {
+// 	return &pb.AppointmentScheduleDrug{
+// 		Id:        item.ID,
+// 		AsUuid:    item.AsUuid.UUID.String(),
+// 		VariantId: item.Variant.Int32,
+// 		Variant: &pb.Variant{
+// 			Id:               item.ID_2,
+// 			Code:             item.Code,
+// 			Name:             item.Name,
+// 			Product:          item.Product,
+// 			Media:            item.MediaUrl.String,
+// 			InitialInventory: item.InitialInventory,
+// 			RealInventory:    item.RealInventory,
+// 		},
+// 		LieuDung: &item.LieuDung.String,
+// 		Quantity: item.Quantity,
+// 	}
+// }

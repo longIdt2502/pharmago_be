@@ -129,6 +129,7 @@ import "rpc/notification/rpc_seen_all_noti.proto";
 
 import "entities/appointment_schedule.proto";
 import "entities/medical_bill.proto";
+import "entities/prescriptions.proto";
 
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
@@ -504,6 +505,16 @@ service Pharmago {
   rpc CreateProduct (CreateProductRequest) returns (CreateProductResponse) {
     option (google.api.http) = {
       post: "/product/v1/create"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create New Product";
+      tags: "Product";
+    };
+  };
+  rpc UpdateProduct (CreateProductRequest) returns (CreateProductResponse) {
+    option (google.api.http) = {
+      put: "/product/v1/detail/{id}"
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -1491,6 +1502,28 @@ service Pharmago {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Update Medical Bill";
       tags: "Medical Bill";
+    };
+  };
+
+  // ================== PRESCRIPTION ===================
+  rpc PrescriptionCreate (Prescription) returns (PrescriptionResponse) {
+    option (google.api.http) = {
+      post: "/prescription/v1/create"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create Prescription";
+      tags: "Prescription";
+    };
+  };
+
+  rpc PrescriptionDetail (Prescription) returns (PrescriptionResponse) {
+    option (google.api.http) = {
+      get: "/prescription/v1/detail/{uuid}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Detail Prescription";
+      tags: "Prescription";
     };
   };
 }

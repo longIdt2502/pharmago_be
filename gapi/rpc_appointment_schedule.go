@@ -69,26 +69,26 @@ func (server *ServerGRPC) ScheduleCreate(ctx context.Context, req *pb.Appointmen
 		}
 	}
 
-	for _, item := range req.GetDrugs() {
-		_, err = server.store.CreateScheduleDrug(ctx, db.CreateScheduleDrugParams{
-			AsUuid: uuid.NullUUID{
-				UUID:  schedule.Uuid,
-				Valid: true,
-			},
-			Variant:  sql.NullInt32{Int32: item.GetVariantId(), Valid: true},
-			LieuDung: sql.NullString{String: item.GetLieuDung(), Valid: item.LieuDung != nil},
-			Quantity: item.GetQuantity(),
-		})
-		if err != nil {
-			errApp := common.ErrDB(err)
-			return &pb.AppointmentScheduleResponse{
-				Code:         int32(errApp.StatusCode),
-				Message:      errApp.Message,
-				MessageTrans: "Lỗi tạo đơn thuốc",
-				Log:          errApp.Log,
-			}, nil
-		}
-	}
+	// for _, item := range req.GetDrugs() {
+	// 	_, err = server.store.CreateScheduleDrug(ctx, db.CreateScheduleDrugParams{
+	// 		AsUuid: uuid.NullUUID{
+	// 			UUID:  schedule.Uuid,
+	// 			Valid: true,
+	// 		},
+	// 		Variant:  sql.NullInt32{Int32: item.GetVariantId(), Valid: true},
+	// 		LieuDung: sql.NullString{String: item.GetLieuDung(), Valid: item.LieuDung != nil},
+	// 		Quantity: item.GetQuantity(),
+	// 	})
+	// 	if err != nil {
+	// 		errApp := common.ErrDB(err)
+	// 		return &pb.AppointmentScheduleResponse{
+	// 			Code:         int32(errApp.StatusCode),
+	// 			Message:      errApp.Message,
+	// 			MessageTrans: "Lỗi tạo đơn thuốc",
+	// 			Log:          errApp.Log,
+	// 		}, nil
+	// 	}
+	// }
 
 	return &pb.AppointmentScheduleResponse{
 		Code:    200,

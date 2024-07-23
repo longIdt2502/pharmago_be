@@ -5594,6 +5594,1204 @@
         ]
       }
     },
+    "/prescription/v1/create": {
+      "post": {
+        "summary": "Create Prescription",
+        "operationId": "Pharmago_PrescriptionCreate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbPrescriptionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbPrescription"
+            }
+          }
+        ],
+        "tags": [
+          "Prescription"
+        ]
+      }
+    },
+    "/prescription/v1/detail/{uuid}": {
+      "get": {
+        "summary": "Detail Prescription",
+        "operationId": "Pharmago_PrescriptionDetail",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbPrescriptionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "customerId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "customer.id",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "customer.username",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "customer.fullName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "customer.email",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "customer.verifyId",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "customer.isActive",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "customer.accountType",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "customer.role",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "customer.gender",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "customer.licence",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "customer.dob",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "customer.address.id",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "customer.address.lat",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "float"
+          },
+          {
+            "name": "customer.address.lng",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "float"
+          },
+          {
+            "name": "customer.address.province.code",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "customer.address.province.name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "customer.address.province.nameEn",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "customer.address.province.fullName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "customer.address.province.fullNameEn",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "customer.address.district.code",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "customer.address.district.name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "customer.address.district.nameEn",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "customer.address.district.fullName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "customer.address.district.fullNameEn",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "customer.address.ward.code",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "customer.address.ward.name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "customer.address.ward.nameEn",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "customer.address.ward.fullName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "customer.address.ward.fullNameEn",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "customer.address.title",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "customer.roleData.id",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "customer.roleData.code",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "customer.roleData.title",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "customer.roleData.note",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "customer.roleData.company",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "customer.roleData.userCreatedName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "customer.roleData.userUpdatedName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "customer.roleData.createdAt",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "customer.roleData.updatedAt",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "customer.passwordChangedAt",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "customer.createdAt",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "customer.companyName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "company",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "doctorId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "doctor.id",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "doctor.username",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "doctor.fullName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "doctor.email",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "doctor.verifyId",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "doctor.isActive",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "doctor.accountType",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "doctor.role",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "doctor.gender",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "doctor.licence",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "doctor.dob",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "doctor.address.id",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "doctor.address.lat",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "float"
+          },
+          {
+            "name": "doctor.address.lng",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "float"
+          },
+          {
+            "name": "doctor.address.province.code",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "doctor.address.province.name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "doctor.address.province.nameEn",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "doctor.address.province.fullName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "doctor.address.province.fullNameEn",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "doctor.address.district.code",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "doctor.address.district.name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "doctor.address.district.nameEn",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "doctor.address.district.fullName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "doctor.address.district.fullNameEn",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "doctor.address.ward.code",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "doctor.address.ward.name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "doctor.address.ward.nameEn",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "doctor.address.ward.fullName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "doctor.address.ward.fullNameEn",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "doctor.address.title",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "doctor.roleData.id",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "doctor.roleData.code",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "doctor.roleData.title",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "doctor.roleData.note",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "doctor.roleData.company",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "doctor.roleData.userCreatedName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "doctor.roleData.userUpdatedName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "doctor.roleData.createdAt",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "doctor.roleData.updatedAt",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "doctor.passwordChangedAt",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "doctor.createdAt",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "doctor.companyName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "symptoms",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "diagnostic",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userCreatedId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "userCreated.id",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "userCreated.username",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userCreated.fullName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userCreated.email",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userCreated.verifyId",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "userCreated.isActive",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "userCreated.accountType",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userCreated.role",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "userCreated.gender",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userCreated.licence",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userCreated.dob",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "userCreated.address.id",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "userCreated.address.lat",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "float"
+          },
+          {
+            "name": "userCreated.address.lng",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "float"
+          },
+          {
+            "name": "userCreated.address.province.code",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userCreated.address.province.name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userCreated.address.province.nameEn",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userCreated.address.province.fullName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userCreated.address.province.fullNameEn",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userCreated.address.district.code",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userCreated.address.district.name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userCreated.address.district.nameEn",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userCreated.address.district.fullName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userCreated.address.district.fullNameEn",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userCreated.address.ward.code",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userCreated.address.ward.name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userCreated.address.ward.nameEn",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userCreated.address.ward.fullName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userCreated.address.ward.fullNameEn",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userCreated.address.title",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userCreated.roleData.id",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "userCreated.roleData.code",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userCreated.roleData.title",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userCreated.roleData.note",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userCreated.roleData.company",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "userCreated.roleData.userCreatedName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userCreated.roleData.userUpdatedName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userCreated.roleData.createdAt",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "userCreated.roleData.updatedAt",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "userCreated.passwordChangedAt",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "userCreated.createdAt",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "userCreated.companyName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userUpdatedId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "userUpdated.id",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "userUpdated.username",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userUpdated.fullName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userUpdated.email",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userUpdated.verifyId",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "userUpdated.isActive",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "userUpdated.accountType",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userUpdated.role",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "userUpdated.gender",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userUpdated.licence",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userUpdated.dob",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "userUpdated.address.id",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "userUpdated.address.lat",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "float"
+          },
+          {
+            "name": "userUpdated.address.lng",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "float"
+          },
+          {
+            "name": "userUpdated.address.province.code",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userUpdated.address.province.name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userUpdated.address.province.nameEn",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userUpdated.address.province.fullName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userUpdated.address.province.fullNameEn",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userUpdated.address.district.code",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userUpdated.address.district.name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userUpdated.address.district.nameEn",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userUpdated.address.district.fullName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userUpdated.address.district.fullNameEn",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userUpdated.address.ward.code",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userUpdated.address.ward.name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userUpdated.address.ward.nameEn",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userUpdated.address.ward.fullName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userUpdated.address.ward.fullNameEn",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userUpdated.address.title",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userUpdated.roleData.id",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "userUpdated.roleData.code",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userUpdated.roleData.title",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userUpdated.roleData.note",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userUpdated.roleData.company",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "userUpdated.roleData.userCreatedName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userUpdated.roleData.userUpdatedName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userUpdated.roleData.createdAt",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "userUpdated.roleData.updatedAt",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "userUpdated.passwordChangedAt",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "userUpdated.createdAt",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "userUpdated.companyName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "createdAt",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "updatedAt",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
+        "tags": [
+          "Prescription"
+        ]
+      }
+    },
     "/price_list/v1/detail/{id}": {
       "get": {
         "summary": "Get Detail Price list",
@@ -5797,6 +6995,44 @@
             "required": true,
             "type": "integer",
             "format": "int32"
+          }
+        ],
+        "tags": [
+          "Product"
+        ]
+      },
+      "put": {
+        "summary": "Create New Product",
+        "operationId": "Pharmago_UpdateProduct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCreateProductResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PharmagoUpdateProductBody"
+            }
           }
         ],
         "tags": [
@@ -7896,6 +9132,9 @@
         },
         "diagnostic": {
           "type": "string"
+        },
+        "symptoms": {
+          "type": "string"
         }
       }
     },
@@ -8121,6 +9360,38 @@
         },
         "active": {
           "type": "boolean"
+        }
+      }
+    },
+    "PharmagoUpdateProductBody": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "$ref": "#/definitions/pbCreateProductRequestData"
+        },
+        "unit": {
+          "$ref": "#/definitions/pbCreateProductRequestUnit"
+        },
+        "variants": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbCreateProductRequestVariant"
+          }
+        },
+        "unitChanges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbCreateProductRequestUnitChange"
+          }
+        },
+        "ingredients": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbCreateProductRequestIngredient"
+          }
         }
       }
     },
@@ -9627,6 +10898,10 @@
             "type": "object",
             "$ref": "#/definitions/pbCreateProductRequestIngredient"
           }
+        },
+        "id": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -9714,6 +10989,9 @@
             "type": "string",
             "format": "byte"
           }
+        },
+        "active": {
+          "type": "boolean"
         }
       }
     },
@@ -9814,6 +11092,12 @@
           "format": "int32"
         },
         "message": {
+          "type": "string"
+        },
+        "messageTrans": {
+          "type": "string"
+        },
+        "log": {
           "type": "string"
         },
         "details": {
@@ -10964,11 +12248,11 @@
             "$ref": "#/definitions/pbAppointmentScheduleUrl"
           }
         },
-        "drugs": {
+        "payment": {
           "type": "array",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/pbAppointmentScheduleDrug"
+            "$ref": "#/definitions/pbPayment"
           }
         }
       },
@@ -11905,6 +13189,130 @@
         }
       }
     },
+    "pbPrescription": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "uuid": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        },
+        "customerId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "customer": {
+          "$ref": "#/definitions/pbAccount"
+        },
+        "company": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "doctorId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "doctor": {
+          "$ref": "#/definitions/pbAccount"
+        },
+        "symptoms": {
+          "type": "string"
+        },
+        "diagnostic": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbPrescriptionItem"
+          }
+        },
+        "payment": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbPayment"
+          }
+        },
+        "userCreatedId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "userCreated": {
+          "$ref": "#/definitions/pbAccount"
+        },
+        "userUpdatedId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "userUpdated": {
+          "$ref": "#/definitions/pbAccount"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "/ ============== ENTITIES ============"
+    },
+    "pbPrescriptionItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "asUuid": {
+          "type": "string"
+        },
+        "variantId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "variant": {
+          "$ref": "#/definitions/pbVariant"
+        },
+        "lieuDung": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbPrescriptionResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "messageTrans": {
+          "type": "string"
+        },
+        "log": {
+          "type": "string"
+        },
+        "details": {
+          "$ref": "#/definitions/pbPrescription"
+        }
+      },
+      "title": "===================== REQ/RES ========================"
+    },
     "pbPriceList": {
       "type": "object",
       "properties": {
@@ -12041,6 +13449,9 @@
         },
         "unit": {
           "$ref": "#/definitions/pbUnit"
+        },
+        "active": {
+          "type": "boolean"
         }
       }
     },
