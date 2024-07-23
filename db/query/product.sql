@@ -81,6 +81,8 @@ WHERE company = sqlc.narg(company)::int AND (
     code ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
     (sqlc.narg(brand)::int IS NULL OR brand = sqlc.narg(brand)::int) OR
     (sqlc.narg(product_category)::int IS NULL OR product_category = sqlc.narg(product_category)::int)
+) AND (
+    sqlc.narg(active)::bool IS NULL OR sqlc.narg(active)::bool = active
 )
 ORDER BY -id
 LIMIT COALESCE(sqlc.narg('limit')::int, 10)
@@ -110,3 +112,8 @@ SET
     product_category = COALESCE(sqlc.narg(product_category), product_category)
 WHERE id = sqlc.arg(id)
 RETURNING *;
+
+-- name: CountProduct :many
+SELECT active, COUNT(active) AS total FROM products
+WHERE company = $1
+GROUP BY active;

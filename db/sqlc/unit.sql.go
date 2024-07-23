@@ -9,6 +9,29 @@ import (
 	"context"
 )
 
+const detailUnit = `-- name: DetailUnit :one
+SELECT id, name, sell_price, import_price, weight, weight_unit, user_created, user_updated, updated_at, created_at FROM units
+WHERE id = $1
+`
+
+func (q *Queries) DetailUnit(ctx context.Context, id int32) (Unit, error) {
+	row := q.db.QueryRowContext(ctx, detailUnit, id)
+	var i Unit
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.SellPrice,
+		&i.ImportPrice,
+		&i.Weight,
+		&i.WeightUnit,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.UpdatedAt,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const getListUnitChange = `-- name: GetListUnitChange :many
 SELECT id, name, value, sell_price, unit, user_created, user_updated, updated_at, created_at FROM unit_changes
 WHERE unit = $1

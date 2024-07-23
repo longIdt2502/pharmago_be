@@ -11,6 +11,40 @@ import (
 	"time"
 )
 
+const countProduct = `-- name: CountProduct :many
+SELECT active, COUNT(active) AS total FROM products
+WHERE company = $1
+GROUP BY active
+`
+
+type CountProductRow struct {
+	Active bool  `json:"active"`
+	Total  int64 `json:"total"`
+}
+
+func (q *Queries) CountProduct(ctx context.Context, company int32) ([]CountProductRow, error) {
+	rows, err := q.db.QueryContext(ctx, countProduct, company)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []CountProductRow{}
+	for rows.Next() {
+		var i CountProductRow
+		if err := rows.Scan(&i.Active, &i.Total); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const createIngredient = `-- name: CreateIngredient :one
 INSERT INTO ingredient (
     name, weight, unit, product
@@ -597,10 +631,12 @@ WHERE company = $1::int AND (
     code ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
     ($3::int IS NULL OR brand = $3::int) OR
     ($4::int IS NULL OR product_category = $4::int)
+) AND (
+    $5::bool IS NULL OR $5::bool = active
 )
 ORDER BY -id
-LIMIT COALESCE($6::int, 10)
-OFFSET (COALESCE($5::int, 1) - 1) * COALESCE($6::int, 10)
+LIMIT COALESCE($7::int, 10)
+OFFSET (COALESCE($6::int, 1) - 1) * COALESCE($7::int, 10)
 `
 
 type GetProductsParams struct {
@@ -608,6 +644,7 @@ type GetProductsParams struct {
 	Search          sql.NullString `json:"search"`
 	Brand           sql.NullInt32  `json:"brand"`
 	ProductCategory sql.NullInt32  `json:"product_category"`
+	Active          sql.NullBool   `json:"active"`
 	Page            sql.NullInt32  `json:"page"`
 	Limit           sql.NullInt32  `json:"limit"`
 }
@@ -618,6 +655,7 @@ func (q *Queries) GetProducts(ctx context.Context, arg GetProductsParams) ([]Pro
 		arg.Search,
 		arg.Brand,
 		arg.ProductCategory,
+		arg.Active,
 		arg.Page,
 		arg.Limit,
 	)
