@@ -14,6 +14,7 @@ import (
 )
 
 const createSchedule = `-- name: CreateSchedule :one
+
 INSERT INTO appointment_schedules (
     uuid, code, customer, company, doctor, symptoms, diagnostic, is_done, meeting_at, user_created, user_updated
 ) VALUES (
@@ -35,6 +36,12 @@ type CreateScheduleParams struct {
 	UserUpdated sql.NullInt32  `json:"user_updated"`
 }
 
+// -- name: GetListScheduleDrug :many
+// SELECT * FROM appointment_schedule_drug asd
+// JOIN variants v ON v.id = asd.variant
+// LEFT JOIN variant_media vm ON vm.variant = v.id
+// LEFT JOIN medias m ON m.id = vm.media
+// WHERE asd.as_uuid = $1 OR asd.mb_uuid = $2;
 func (q *Queries) CreateSchedule(ctx context.Context, arg CreateScheduleParams) (AppointmentSchedule, error) {
 	row := q.db.QueryRowContext(ctx, createSchedule,
 		arg.Uuid,
@@ -66,42 +73,6 @@ func (q *Queries) CreateSchedule(ctx context.Context, arg CreateScheduleParams) 
 		&i.UserUpdated,
 		&i.CreatedAt,
 		&i.UpdatedAt,
-	)
-	return i, err
-}
-
-const createScheduleDrug = `-- name: CreateScheduleDrug :one
-INSERT INTO appointment_schedule_drug (
-    as_uuid, mb_uuid, variant, lieu_dung, quantity
-) VALUES (
-    $1, $2, $3, $4, $5
-) RETURNING id, as_uuid, variant, lieu_dung, quantity, mb_uuid
-`
-
-type CreateScheduleDrugParams struct {
-	AsUuid   uuid.NullUUID  `json:"as_uuid"`
-	MbUuid   uuid.NullUUID  `json:"mb_uuid"`
-	Variant  sql.NullInt32  `json:"variant"`
-	LieuDung sql.NullString `json:"lieu_dung"`
-	Quantity int32          `json:"quantity"`
-}
-
-func (q *Queries) CreateScheduleDrug(ctx context.Context, arg CreateScheduleDrugParams) (AppointmentScheduleDrug, error) {
-	row := q.db.QueryRowContext(ctx, createScheduleDrug,
-		arg.AsUuid,
-		arg.MbUuid,
-		arg.Variant,
-		arg.LieuDung,
-		arg.Quantity,
-	)
-	var i AppointmentScheduleDrug
-	err := row.Scan(
-		&i.ID,
-		&i.AsUuid,
-		&i.Variant,
-		&i.LieuDung,
-		&i.Quantity,
-		&i.MbUuid,
 	)
 	return i, err
 }
@@ -421,98 +392,6 @@ func (q *Queries) GetListSchedule(ctx context.Context, arg GetListScheduleParams
 			&i.Licence_3,
 			&i.Dob_3,
 			&i.Address_4,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const getListScheduleDrug = `-- name: GetListScheduleDrug :many
-SELECT asd.id, as_uuid, asd.variant, lieu_dung, quantity, mb_uuid, v.id, name, code, barcode, decision_number, register_number, longevity, vat, product, user_created, user_updated, updated_at, created_at, initial_inventory, real_inventory, vm.id, vm.variant, media, m.id, media_url FROM appointment_schedule_drug asd
-JOIN variants v ON v.id = asd.variant
-LEFT JOIN variant_media vm ON vm.variant = v.id
-LEFT JOIN medias m ON m.id = vm.media
-WHERE asd.as_uuid = $1 OR asd.mb_uuid = $2
-`
-
-type GetListScheduleDrugParams struct {
-	AsUuid uuid.NullUUID `json:"as_uuid"`
-	MbUuid uuid.NullUUID `json:"mb_uuid"`
-}
-
-type GetListScheduleDrugRow struct {
-	ID               int32           `json:"id"`
-	AsUuid           uuid.NullUUID   `json:"as_uuid"`
-	Variant          sql.NullInt32   `json:"variant"`
-	LieuDung         sql.NullString  `json:"lieu_dung"`
-	Quantity         int32           `json:"quantity"`
-	MbUuid           uuid.NullUUID   `json:"mb_uuid"`
-	ID_2             int32           `json:"id_2"`
-	Name             string          `json:"name"`
-	Code             string          `json:"code"`
-	Barcode          sql.NullString  `json:"barcode"`
-	DecisionNumber   sql.NullString  `json:"decision_number"`
-	RegisterNumber   sql.NullString  `json:"register_number"`
-	Longevity        sql.NullString  `json:"longevity"`
-	Vat              sql.NullFloat64 `json:"vat"`
-	Product          int32           `json:"product"`
-	UserCreated      int32           `json:"user_created"`
-	UserUpdated      sql.NullInt32   `json:"user_updated"`
-	UpdatedAt        sql.NullTime    `json:"updated_at"`
-	CreatedAt        time.Time       `json:"created_at"`
-	InitialInventory int32           `json:"initial_inventory"`
-	RealInventory    int32           `json:"real_inventory"`
-	ID_3             sql.NullInt32   `json:"id_3"`
-	Variant_2        sql.NullInt32   `json:"variant_2"`
-	Media            sql.NullInt32   `json:"media"`
-	ID_4             sql.NullInt32   `json:"id_4"`
-	MediaUrl         sql.NullString  `json:"media_url"`
-}
-
-func (q *Queries) GetListScheduleDrug(ctx context.Context, arg GetListScheduleDrugParams) ([]GetListScheduleDrugRow, error) {
-	rows, err := q.db.QueryContext(ctx, getListScheduleDrug, arg.AsUuid, arg.MbUuid)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []GetListScheduleDrugRow{}
-	for rows.Next() {
-		var i GetListScheduleDrugRow
-		if err := rows.Scan(
-			&i.ID,
-			&i.AsUuid,
-			&i.Variant,
-			&i.LieuDung,
-			&i.Quantity,
-			&i.MbUuid,
-			&i.ID_2,
-			&i.Name,
-			&i.Code,
-			&i.Barcode,
-			&i.DecisionNumber,
-			&i.RegisterNumber,
-			&i.Longevity,
-			&i.Vat,
-			&i.Product,
-			&i.UserCreated,
-			&i.UserUpdated,
-			&i.UpdatedAt,
-			&i.CreatedAt,
-			&i.InitialInventory,
-			&i.RealInventory,
-			&i.ID_3,
-			&i.Variant_2,
-			&i.Media,
-			&i.ID_4,
-			&i.MediaUrl,
 		); err != nil {
 			return nil, err
 		}

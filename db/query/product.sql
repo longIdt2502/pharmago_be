@@ -109,7 +109,8 @@ WHERE p.id = $1;
 UPDATE products
 SET
     brand = COALESCE(sqlc.narg(brand), product_category),
-    product_category = COALESCE(sqlc.narg(product_category), product_category)
+    product_category = COALESCE(sqlc.narg(product_category), product_category),
+    active = COALESCE(sqlc.narg(active)::bool, active)
 WHERE id = sqlc.arg(id)
 RETURNING *;
 

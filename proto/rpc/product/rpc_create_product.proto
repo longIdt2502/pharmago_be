@@ -32,6 +32,7 @@ message CreateProductRequestData {
   optional string dangBaoChe = 22;
   int32 company = 23;
   repeated bytes image = 24;
+  optional bool active = 25;
 }
 
 message CreateProductRequestUnit {
@@ -72,10 +73,13 @@ message CreateProductRequest {
   repeated CreateProductRequestVariant variants = 3;
   repeated CreateProductRequestUnitChange unit_changes = 4;
   repeated CreateProductRequestIngredient ingredients = 5;
+  int32 id = 6; 
 }
 
 message CreateProductResponse {
   int32 code = 1;
   string message = 2;
-  int32 details = 3;
+  string message_trans = 3;
+  string log = 4;
+  int32 details = 5;
 }

@@ -39,15 +39,11 @@ func ProductMapper(ctx context.Context, store *db.Store, data db.Product) *pb.Pr
 		TuongTac:     config.NewStringOptional(data.TuongTac),
 		BaoQuan:      data.BaoQuan.String,
 		DongGoi:      data.DongGoi.String,
+		NoiSx:        "",
 		CongTySx:     data.CongTySx.Int32,
 		CongTyDk:     data.CongTyDk.Int32,
 		Image:        name,
-		Unit: &pb.Unit{
-			Id:          unit.ID,
-			Name:        unit.Name,
-			SellPrice:   float32(unit.SellPrice),
-			ImportPrice: float32(unit.ImportPrice),
-			Default:     true,
-		},
+		Unit:         &pb.Unit{Id: unit.ID, Name: unit.Name, SellPrice: float32(unit.SellPrice), ImportPrice: float32(unit.ImportPrice), Default: true},
+		Active:       data.Active,
 	}
 }

@@ -12,6 +12,7 @@ import "entities/order.proto";
 import "entities/variant.proto";
 import "entities/customer.proto";
 import "entities/appointment_schedule.proto";
+import "entities/payment.proto";
 
 import "rpc/customer/rpc_medical_record_create.proto";
 
@@ -39,7 +40,7 @@ message MedicalBill {
   optional google.protobuf.Timestamp updated_at = 19;
   repeated AppointmentScheduleService services = 20;
   repeated AppointmentScheduleUrl urls = 21;
-  repeated AppointmentScheduleDrug drugs = 22;
+  repeated Payment payment = 22;
 }
 
 // ===================== REQ/RES ========================
@@ -75,7 +76,8 @@ message MedicalBillUpdateRequest {
   bool is_done = 2;
   repeated FileItem files = 3;
   MedicalRecordType type = 4;
-  string diagnostic = 5;
+  optional string diagnostic = 5;
+  optional string symptoms = 6;
 }
 
 message MedicalBillUpdateResponse {

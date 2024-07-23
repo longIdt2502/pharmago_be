@@ -53,6 +53,7 @@ const (
 	Pharmago_ListDistricts_FullMethodName             = "/pb.Pharmago/ListDistricts"
 	Pharmago_ListWards_FullMethodName                 = "/pb.Pharmago/ListWards"
 	Pharmago_CreateProduct_FullMethodName             = "/pb.Pharmago/CreateProduct"
+	Pharmago_UpdateProduct_FullMethodName             = "/pb.Pharmago/UpdateProduct"
 	Pharmago_ListProduct_FullMethodName               = "/pb.Pharmago/ListProduct"
 	Pharmago_DetailProduct_FullMethodName             = "/pb.Pharmago/DetailProduct"
 	Pharmago_PromotionByProduct_FullMethodName        = "/pb.Pharmago/PromotionByProduct"
@@ -153,6 +154,8 @@ const (
 	Pharmago_MedicalBillList_FullMethodName           = "/pb.Pharmago/MedicalBillList"
 	Pharmago_MedicalBillDetail_FullMethodName         = "/pb.Pharmago/MedicalBillDetail"
 	Pharmago_MedicalBillUpdate_FullMethodName         = "/pb.Pharmago/MedicalBillUpdate"
+	Pharmago_PrescriptionCreate_FullMethodName        = "/pb.Pharmago/PrescriptionCreate"
+	Pharmago_PrescriptionDetail_FullMethodName        = "/pb.Pharmago/PrescriptionDetail"
 )
 
 // PharmagoClient is the client API for Pharmago service.
@@ -201,6 +204,7 @@ type PharmagoClient interface {
 	ListWards(ctx context.Context, in *WardsRequest, opts ...grpc.CallOption) (*WardsResponse, error)
 	// ==================== PRODUCT ========================
 	CreateProduct(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*CreateProductResponse, error)
+	UpdateProduct(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*CreateProductResponse, error)
 	ListProduct(ctx context.Context, in *ListProductRequest, opts ...grpc.CallOption) (*ListProductResponse, error)
 	DetailProduct(ctx context.Context, in *DetailProductRequest, opts ...grpc.CallOption) (*DetailProductResponse, error)
 	// ==================== PROMOTIONS ========================
@@ -321,6 +325,9 @@ type PharmagoClient interface {
 	MedicalBillList(ctx context.Context, in *MedicalBillListRequest, opts ...grpc.CallOption) (*MedicalBillListResponse, error)
 	MedicalBillDetail(ctx context.Context, in *MedicalBill, opts ...grpc.CallOption) (*MedicalBillResponse, error)
 	MedicalBillUpdate(ctx context.Context, in *MedicalBillUpdateRequest, opts ...grpc.CallOption) (*MedicalBillUpdateResponse, error)
+	// ================== PRESCRIPTION ===================
+	PrescriptionCreate(ctx context.Context, in *Prescription, opts ...grpc.CallOption) (*PrescriptionResponse, error)
+	PrescriptionDetail(ctx context.Context, in *Prescription, opts ...grpc.CallOption) (*PrescriptionResponse, error)
 }
 
 type pharmagoClient struct {
@@ -631,6 +638,15 @@ func (c *pharmagoClient) ListWards(ctx context.Context, in *WardsRequest, opts .
 func (c *pharmagoClient) CreateProduct(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*CreateProductResponse, error) {
 	out := new(CreateProductResponse)
 	err := c.cc.Invoke(ctx, Pharmago_CreateProduct_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) UpdateProduct(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*CreateProductResponse, error) {
+	out := new(CreateProductResponse)
+	err := c.cc.Invoke(ctx, Pharmago_UpdateProduct_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1582,6 +1598,24 @@ func (c *pharmagoClient) MedicalBillUpdate(ctx context.Context, in *MedicalBillU
 	return out, nil
 }
 
+func (c *pharmagoClient) PrescriptionCreate(ctx context.Context, in *Prescription, opts ...grpc.CallOption) (*PrescriptionResponse, error) {
+	out := new(PrescriptionResponse)
+	err := c.cc.Invoke(ctx, Pharmago_PrescriptionCreate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) PrescriptionDetail(ctx context.Context, in *Prescription, opts ...grpc.CallOption) (*PrescriptionResponse, error) {
+	out := new(PrescriptionResponse)
+	err := c.cc.Invoke(ctx, Pharmago_PrescriptionDetail_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PharmagoServer is the server API for Pharmago service.
 // All implementations must embed UnimplementedPharmagoServer
 // for forward compatibility
@@ -1628,6 +1662,7 @@ type PharmagoServer interface {
 	ListWards(context.Context, *WardsRequest) (*WardsResponse, error)
 	// ==================== PRODUCT ========================
 	CreateProduct(context.Context, *CreateProductRequest) (*CreateProductResponse, error)
+	UpdateProduct(context.Context, *CreateProductRequest) (*CreateProductResponse, error)
 	ListProduct(context.Context, *ListProductRequest) (*ListProductResponse, error)
 	DetailProduct(context.Context, *DetailProductRequest) (*DetailProductResponse, error)
 	// ==================== PROMOTIONS ========================
@@ -1748,6 +1783,9 @@ type PharmagoServer interface {
 	MedicalBillList(context.Context, *MedicalBillListRequest) (*MedicalBillListResponse, error)
 	MedicalBillDetail(context.Context, *MedicalBill) (*MedicalBillResponse, error)
 	MedicalBillUpdate(context.Context, *MedicalBillUpdateRequest) (*MedicalBillUpdateResponse, error)
+	// ================== PRESCRIPTION ===================
+	PrescriptionCreate(context.Context, *Prescription) (*PrescriptionResponse, error)
+	PrescriptionDetail(context.Context, *Prescription) (*PrescriptionResponse, error)
 	mustEmbedUnimplementedPharmagoServer()
 }
 
@@ -1856,6 +1894,9 @@ func (UnimplementedPharmagoServer) ListWards(context.Context, *WardsRequest) (*W
 }
 func (UnimplementedPharmagoServer) CreateProduct(context.Context, *CreateProductRequest) (*CreateProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateProduct not implemented")
+}
+func (UnimplementedPharmagoServer) UpdateProduct(context.Context, *CreateProductRequest) (*CreateProductResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateProduct not implemented")
 }
 func (UnimplementedPharmagoServer) ListProduct(context.Context, *ListProductRequest) (*ListProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListProduct not implemented")
@@ -2156,6 +2197,12 @@ func (UnimplementedPharmagoServer) MedicalBillDetail(context.Context, *MedicalBi
 }
 func (UnimplementedPharmagoServer) MedicalBillUpdate(context.Context, *MedicalBillUpdateRequest) (*MedicalBillUpdateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MedicalBillUpdate not implemented")
+}
+func (UnimplementedPharmagoServer) PrescriptionCreate(context.Context, *Prescription) (*PrescriptionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PrescriptionCreate not implemented")
+}
+func (UnimplementedPharmagoServer) PrescriptionDetail(context.Context, *Prescription) (*PrescriptionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PrescriptionDetail not implemented")
 }
 func (UnimplementedPharmagoServer) mustEmbedUnimplementedPharmagoServer() {}
 
@@ -2778,6 +2825,24 @@ func _Pharmago_CreateProduct_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PharmagoServer).CreateProduct(ctx, req.(*CreateProductRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_UpdateProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateProductRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).UpdateProduct(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_UpdateProduct_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).UpdateProduct(ctx, req.(*CreateProductRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -4593,6 +4658,42 @@ func _Pharmago_MedicalBillUpdate_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Pharmago_PrescriptionCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Prescription)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).PrescriptionCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_PrescriptionCreate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).PrescriptionCreate(ctx, req.(*Prescription))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_PrescriptionDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Prescription)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).PrescriptionDetail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_PrescriptionDetail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).PrescriptionDetail(ctx, req.(*Prescription))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Pharmago_ServiceDesc is the grpc.ServiceDesc for Pharmago service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -4735,6 +4836,10 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateProduct",
 			Handler:    _Pharmago_CreateProduct_Handler,
+		},
+		{
+			MethodName: "UpdateProduct",
+			Handler:    _Pharmago_UpdateProduct_Handler,
 		},
 		{
 			MethodName: "ListProduct",
@@ -5127,6 +5232,14 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "MedicalBillUpdate",
 			Handler:    _Pharmago_MedicalBillUpdate_Handler,
+		},
+		{
+			MethodName: "PrescriptionCreate",
+			Handler:    _Pharmago_PrescriptionCreate_Handler,
+		},
+		{
+			MethodName: "PrescriptionDetail",
+			Handler:    _Pharmago_PrescriptionDetail_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml-lang.org)
 -- Database: PostgreSQL
--- Generated at: 2024-07-22T08:15:45.698Z
+-- Generated at: 2024-07-23T13:23:14.111Z
 
 CREATE TYPE "gender" AS ENUM (
   'nam',
@@ -752,15 +752,6 @@ CREATE TABLE "appointment_schedule_url" (
   "name_doc" varchar
 );
 
-CREATE TABLE "appointment_schedule_drug" (
-  "id" serial PRIMARY KEY,
-  "as_uuid" uuid,
-  "mb_uuid" uuid,
-  "variant" serial,
-  "lieu_dung" varchar,
-  "quantity" int NOT NULL DEFAULT 0
-);
-
 CREATE TABLE "medical_bills" (
   "id" serial PRIMARY KEY,
   "uuid" uuid UNIQUE NOT NULL,
@@ -772,11 +763,17 @@ CREATE TABLE "medical_bills" (
   "diagnostic" varchar,
   "qr_code_url" varchar,
   "is_done" bool NOT NULL,
+  "prescription" uuid,
   "meeting_at" timestamp NOT NULL,
   "user_created" serial NOT NULL,
   "user_updated" serial,
   "created_at" timestamp NOT NULL DEFAULT (now()),
   "updated_at" timestamptz
+);
+
+CREATE TABLE "medical_bill_order_sell" (
+  "uuid" uuid,
+  "order" serial
 );
 
 CREATE TABLE "medical_record_link" (
@@ -789,6 +786,29 @@ CREATE TABLE "medical_record_link" (
   "appointment_schedule" uuid,
   "user_created" serial,
   "created_at" timestamp NOT NULL DEFAULT (now())
+);
+
+CREATE TABLE "prescriptions" (
+  "id" serial PRIMARY KEY,
+  "uuid" uuid UNIQUE NOT NULL,
+  "code" varchar UNIQUE NOT NULL,
+  "symptoms" varchar,
+  "diagnostic" varchar,
+  "customer" serial,
+  "doctor" serial,
+  "company" serial NOT NULL,
+  "user_created" serial NOT NULL,
+  "user_updated" serial,
+  "created_at" timestamp NOT NULL DEFAULT (now()),
+  "updated_at" timestamptz
+);
+
+CREATE TABLE "prescription_item" (
+  "id" serial PRIMARY KEY,
+  "prescription_uuid" uuid,
+  "variant" serial,
+  "lieu_dung" varchar,
+  "quantity" int NOT NULL DEFAULT 0
 );
 
 CREATE UNIQUE INDEX ON "role_item" ("roles", "app");
@@ -883,6 +903,10 @@ COMMENT ON COLUMN "medical_bills"."symptoms" IS 'Triệu chứng bệnh';
 COMMENT ON COLUMN "medical_bills"."diagnostic" IS 'Chuẩn đoán bệnh';
 
 COMMENT ON COLUMN "medical_bills"."is_done" IS 'true: Đã xong, false: Chưa diễn ra';
+
+COMMENT ON COLUMN "prescriptions"."symptoms" IS 'Triệu chứng bệnh';
+
+COMMENT ON COLUMN "prescriptions"."diagnostic" IS 'Chuẩn đoán bệnh';
 
 ALTER TABLE "accounts" ADD FOREIGN KEY ("type") REFERENCES "account_type" ("id") ON DELETE CASCADE;
 
@@ -1194,12 +1218,6 @@ ALTER TABLE "appointment_schedule_url" ADD FOREIGN KEY ("as_uuid") REFERENCES "a
 
 ALTER TABLE "appointment_schedule_url" ADD FOREIGN KEY ("mb_uuid") REFERENCES "medical_bills" ("uuid");
 
-ALTER TABLE "appointment_schedule_drug" ADD FOREIGN KEY ("as_uuid") REFERENCES "appointment_schedules" ("uuid");
-
-ALTER TABLE "appointment_schedule_drug" ADD FOREIGN KEY ("mb_uuid") REFERENCES "medical_bills" ("uuid");
-
-ALTER TABLE "appointment_schedule_drug" ADD FOREIGN KEY ("variant") REFERENCES "variants" ("id") ON DELETE SET NULL;
-
 ALTER TABLE "medical_bills" ADD FOREIGN KEY ("customer") REFERENCES "customers" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "medical_bills" ADD FOREIGN KEY ("company") REFERENCES "companies" ("id") ON DELETE SET NULL;
@@ -1210,8 +1228,28 @@ ALTER TABLE "medical_bills" ADD FOREIGN KEY ("user_created") REFERENCES "account
 
 ALTER TABLE "medical_bills" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" ("id") ON DELETE SET NULL;
 
+ALTER TABLE "medical_bills" ADD FOREIGN KEY ("prescription") REFERENCES "prescriptions" ("uuid") ON DELETE SET NULL;
+
+ALTER TABLE "medical_bill_order_sell" ADD FOREIGN KEY ("uuid") REFERENCES "medical_bills" ("uuid");
+
+ALTER TABLE "medical_bill_order_sell" ADD FOREIGN KEY ("order") REFERENCES "orders" ("id") ON DELETE SET NULL;
+
 ALTER TABLE "medical_record_link" ADD FOREIGN KEY ("customer") REFERENCES "customers" ("id") ON DELETE CASCADE;
 
 ALTER TABLE "medical_record_link" ADD FOREIGN KEY ("appointment_schedule") REFERENCES "appointment_schedules" ("uuid") ON DELETE SET NULL;
 
 ALTER TABLE "medical_record_link" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "prescriptions" ADD FOREIGN KEY ("doctor") REFERENCES "accounts" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "prescriptions" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "prescriptions" ADD FOREIGN KEY ("user_updated") REFERENCES "accounts" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "prescriptions" ADD FOREIGN KEY ("customer") REFERENCES "customers" ("id") ON DELETE SET NULL;
+
+ALTER TABLE "prescriptions" ADD FOREIGN KEY ("company") REFERENCES "companies" ("id") ON DELETE CASCADE;
+
+ALTER TABLE "prescription_item" ADD FOREIGN KEY ("prescription_uuid") REFERENCES "prescriptions" ("uuid");
+
+ALTER TABLE "prescription_item" ADD FOREIGN KEY ("variant") REFERENCES "variants" ("id") ON DELETE SET NULL;
