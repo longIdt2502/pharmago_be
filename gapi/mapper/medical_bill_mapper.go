@@ -46,6 +46,7 @@ func MedicalBillMapper(ctx context.Context, store *db.Store, item db.GetListMedi
 		Doctor: &pb.Account{
 			Id:       item.ID_3,
 			FullName: item.FullName_2,
+			Username: item.Username,
 		},
 		Symptoms:      &item.Symptoms.String,
 		Diagnostic:    &item.Diagnostic.String,
