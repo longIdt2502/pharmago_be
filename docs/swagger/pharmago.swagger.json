@@ -4748,6 +4748,12 @@
             "required": false,
             "type": "string",
             "format": "date-time"
+          },
+          {
+            "name": "prescription",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -6785,6 +6791,12 @@
             "required": false,
             "type": "string",
             "format": "date-time"
+          },
+          {
+            "name": "mbUuid",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -12254,6 +12266,9 @@
             "type": "object",
             "$ref": "#/definitions/pbPayment"
           }
+        },
+        "prescription": {
+          "type": "string"
         }
       },
       "title": "/ ============== ENTITIES ============"
@@ -13261,6 +13276,9 @@
         "updatedAt": {
           "type": "string",
           "format": "date-time"
+        },
+        "mbUuid": {
+          "type": "string"
         }
       },
       "title": "/ ============== ENTITIES ============"

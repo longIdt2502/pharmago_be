@@ -37,6 +37,7 @@ message Prescription {
   optional Account user_updated = 16;
   google.protobuf.Timestamp created_at = 18;
   optional google.protobuf.Timestamp updated_at = 19;
+  optional string mb_uuid = 20;
 }
 
 message PrescriptionItem {

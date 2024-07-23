@@ -39,6 +39,30 @@ func (server *ServerGRPC) PrescriptionCreate(ctx context.Context, req *pb.Prescr
 		}, nil
 	}
 
+	if req.MbUuid != nil {
+		mbUuidParse, err := uuid.Parse(req.GetMbUuid())
+		if err != nil {
+			errApp := common.ErrInternal(err)
+			return &pb.PrescriptionResponse{
+				Code:    int32(errApp.StatusCode),
+				Message: errApp.Message,
+				Log:     errApp.Log,
+			}, nil
+		}
+		_, err = server.store.UpdateMedicalBill(ctx, db.UpdateMedicalBillParams{
+			Prescription: uuid.NullUUID{UUID: prescription.Uuid, Valid: true},
+			Uuid:         mbUuidParse,
+		})
+		if err != nil {
+			errApp := common.ErrDB(err)
+			return &pb.PrescriptionResponse{
+				Code:    int32(errApp.StatusCode),
+				Message: errApp.Message,
+				Log:     errApp.Log,
+			}, nil
+		}
+	}
+
 	for _, item := range req.GetItems() {
 		_, err = server.store.CreatePrescriptionItem(ctx, db.CreatePrescriptionItemParams{
 			PrescriptionUuid: uuid.NullUUID{
