@@ -4,6 +4,7 @@ package pb;
 
 import "google/protobuf/timestamp.proto";
 import "entities/address.proto";
+import "entities/account.proto";
 
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
@@ -17,8 +18,11 @@ message Company {
   optional string description = 7;
   Address address = 8;
   int32 owner = 9;
-  optional string oa_id = 10;
-  optional string time_open = 11;
-  optional string time_close = 12;
-  int32 total_employee = 13;
+  optional Account manager = 10;
+  optional string oa_id = 11;
+  optional string time_open = 12;
+  optional string time_close = 13;
+  int32 total_employee = 14;
+  Account user_created = 15;
+  optional Account user_updated = 16;
 }

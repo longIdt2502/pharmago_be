@@ -238,6 +238,12 @@ type Company struct {
 	Type        string         `json:"type"`
 	TimeOpen    sql.NullTime   `json:"time_open"`
 	TimeClose   sql.NullTime   `json:"time_close"`
+	Parent      sql.NullInt32  `json:"parent"`
+	IsActive    bool           `json:"is_active"`
+	Manager     sql.NullInt32  `json:"manager"`
+	UserCreated sql.NullInt32  `json:"user_created"`
+	UserUpdated sql.NullInt32  `json:"user_updated"`
+	UpdatedAt   sql.NullTime   `json:"updated_at"`
 }
 
 type CompanyPharma struct {

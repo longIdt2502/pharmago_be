@@ -35,6 +35,7 @@ func (server *ServerGRPC) MedicalBillCreate(ctx context.Context, req *pb.Medical
 		UserCreated: account.UserID,
 		UserUpdated: sql.NullInt32{
 			Int32: account.UserID,
+			Valid: true,
 		},
 	})
 	if err != nil {

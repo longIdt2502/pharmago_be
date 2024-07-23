@@ -33,6 +33,8 @@ import "rpc/address/rpc_provinces.proto";
 import "rpc/address/rpc_districts.proto";
 import "rpc/address/rpc_wards.proto";
 import "rpc/company/rpc_create_company.proto";
+import "rpc/company/rpc_update_company.proto";
+import "rpc/company/rpc_detail_company.proto";
 import "rpc/company/rpc_companies.proto";
 
 import "rpc/product/rpc_create_product.proto";
@@ -435,7 +437,25 @@ service Pharmago {
       tags: "Company";
     };
   };
-
+  rpc UpdateCompany (UpdateCompanyDataRequest) returns (UpdateCompanyResponse) {
+    option (google.api.http) = {
+      put: "/company/v1/detail/{id}"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Update company";
+      tags: "Company";
+    };
+  };
+  rpc DetailCompany (DetailCompanyDataRequest) returns (DetailCompanyResponse) {
+    option (google.api.http) = {
+      get: "/company/v1/detail/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Detail company";
+      tags: "Company";
+    };
+  };
   rpc ListCompanies (GetCompaniesRequest) returns (GetCompaniesResponse) {
     option (google.api.http) = {
       get: "/company/v1/list"
@@ -446,6 +466,7 @@ service Pharmago {
     };
   };
 
+  // TODO: ==================== ADDRESS ==========================
   rpc ListProvinces (ProvincesRequest) returns (ProvincesResponse) {
     option (google.api.http) = {
       post: "/address/v1/province"
