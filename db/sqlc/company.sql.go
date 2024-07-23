@@ -8,6 +8,7 @@ package db
 import (
 	"context"
 	"database/sql"
+	"time"
 )
 
 const countEmployee = `-- name: CountEmployee :one
@@ -25,10 +26,10 @@ func (q *Queries) CountEmployee(ctx context.Context, company int32) (int64, erro
 
 const createCompany = `-- name: CreateCompany :one
 INSERT INTO companies (
-    name, code, type, tax_code, phone, description, address, owner, time_open, time_close
+    name, code, type, tax_code, phone, description, address, owner, time_open, time_close, user_created, user_updated, parent, manager
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
-) RETURNING id, name, code, tax_code, phone, description, address, oa_id, created_at, owner, type, time_open, time_close
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14
+) RETURNING id, name, code, tax_code, phone, description, address, oa_id, created_at, owner, type, time_open, time_close, parent, is_active, manager, user_created, user_updated, updated_at
 `
 
 type CreateCompanyParams struct {
@@ -42,6 +43,10 @@ type CreateCompanyParams struct {
 	Owner       int32          `json:"owner"`
 	TimeOpen    sql.NullTime   `json:"time_open"`
 	TimeClose   sql.NullTime   `json:"time_close"`
+	UserCreated sql.NullInt32  `json:"user_created"`
+	UserUpdated sql.NullInt32  `json:"user_updated"`
+	Parent      sql.NullInt32  `json:"parent"`
+	Manager     sql.NullInt32  `json:"manager"`
 }
 
 func (q *Queries) CreateCompany(ctx context.Context, arg CreateCompanyParams) (Company, error) {
@@ -56,6 +61,10 @@ func (q *Queries) CreateCompany(ctx context.Context, arg CreateCompanyParams) (C
 		arg.Owner,
 		arg.TimeOpen,
 		arg.TimeClose,
+		arg.UserCreated,
+		arg.UserUpdated,
+		arg.Parent,
+		arg.Manager,
 	)
 	var i Company
 	err := row.Scan(
@@ -72,23 +81,192 @@ func (q *Queries) CreateCompany(ctx context.Context, arg CreateCompanyParams) (C
 		&i.Type,
 		&i.TimeOpen,
 		&i.TimeClose,
+		&i.Parent,
+		&i.IsActive,
+		&i.Manager,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const detailCompany = `-- name: DetailCompany :one
+WITH employee AS (
+    SELECT id, account, company, COUNT(id) AS total_employee FROM account_company
+    WHERE company = $1
+    GROUP BY id
+)
+SELECT c.id, name, c.code, tax_code, phone, description, c.address, oa_id, c.created_at, owner, c.type, time_open, time_close, parent, is_active, manager, user_created, user_updated, updated_at, ct.code, title, am.id, am.username, am.hashed_password, am.full_name, am.email, am.type, am.is_verify, am.password_changed_at, am.created_at, am.role, am.gender, am.licence, am.dob, am.address, ac.id, ac.username, ac.hashed_password, ac.full_name, ac.email, ac.type, ac.is_verify, ac.password_changed_at, ac.created_at, ac.role, ac.gender, ac.licence, ac.dob, ac.address, au.id, au.username, au.hashed_password, au.full_name, au.email, au.type, au.is_verify, au.password_changed_at, au.created_at, au.role, au.gender, au.licence, au.dob, au.address, e.id, account, company, total_employee FROM companies c
+JOIN company_type ct ON ct.code = c.type
+LEFT JOIN accounts am ON am.id = c.manager
+LEFT JOIN accounts ac ON ac.id = c.user_created
+LEFT JOIN accounts au ON au.id = c.user_updated
+LEFT JOIN employee e ON e.company = c.id
+WHERE c.id = $1
+LIMIT 1
+`
+
+type DetailCompanyRow struct {
+	ID                  int32          `json:"id"`
+	Name                string         `json:"name"`
+	Code                string         `json:"code"`
+	TaxCode             sql.NullString `json:"tax_code"`
+	Phone               sql.NullString `json:"phone"`
+	Description         sql.NullString `json:"description"`
+	Address             sql.NullInt32  `json:"address"`
+	OaID                sql.NullString `json:"oa_id"`
+	CreatedAt           time.Time      `json:"created_at"`
+	Owner               int32          `json:"owner"`
+	Type                string         `json:"type"`
+	TimeOpen            sql.NullTime   `json:"time_open"`
+	TimeClose           sql.NullTime   `json:"time_close"`
+	Parent              sql.NullInt32  `json:"parent"`
+	IsActive            bool           `json:"is_active"`
+	Manager             sql.NullInt32  `json:"manager"`
+	UserCreated         sql.NullInt32  `json:"user_created"`
+	UserUpdated         sql.NullInt32  `json:"user_updated"`
+	UpdatedAt           sql.NullTime   `json:"updated_at"`
+	Code_2              string         `json:"code_2"`
+	Title               string         `json:"title"`
+	ID_2                sql.NullInt32  `json:"id_2"`
+	Username            sql.NullString `json:"username"`
+	HashedPassword      sql.NullString `json:"hashed_password"`
+	FullName            sql.NullString `json:"full_name"`
+	Email               sql.NullString `json:"email"`
+	Type_2              sql.NullInt32  `json:"type_2"`
+	IsVerify            sql.NullBool   `json:"is_verify"`
+	PasswordChangedAt   sql.NullTime   `json:"password_changed_at"`
+	CreatedAt_2         sql.NullTime   `json:"created_at_2"`
+	Role                sql.NullInt32  `json:"role"`
+	Gender              NullGender     `json:"gender"`
+	Licence             sql.NullString `json:"licence"`
+	Dob                 sql.NullTime   `json:"dob"`
+	Address_2           sql.NullInt32  `json:"address_2"`
+	ID_3                sql.NullInt32  `json:"id_3"`
+	Username_2          sql.NullString `json:"username_2"`
+	HashedPassword_2    sql.NullString `json:"hashed_password_2"`
+	FullName_2          sql.NullString `json:"full_name_2"`
+	Email_2             sql.NullString `json:"email_2"`
+	Type_3              sql.NullInt32  `json:"type_3"`
+	IsVerify_2          sql.NullBool   `json:"is_verify_2"`
+	PasswordChangedAt_2 sql.NullTime   `json:"password_changed_at_2"`
+	CreatedAt_3         sql.NullTime   `json:"created_at_3"`
+	Role_2              sql.NullInt32  `json:"role_2"`
+	Gender_2            NullGender     `json:"gender_2"`
+	Licence_2           sql.NullString `json:"licence_2"`
+	Dob_2               sql.NullTime   `json:"dob_2"`
+	Address_3           sql.NullInt32  `json:"address_3"`
+	ID_4                sql.NullInt32  `json:"id_4"`
+	Username_3          sql.NullString `json:"username_3"`
+	HashedPassword_3    sql.NullString `json:"hashed_password_3"`
+	FullName_3          sql.NullString `json:"full_name_3"`
+	Email_3             sql.NullString `json:"email_3"`
+	Type_4              sql.NullInt32  `json:"type_4"`
+	IsVerify_3          sql.NullBool   `json:"is_verify_3"`
+	PasswordChangedAt_3 sql.NullTime   `json:"password_changed_at_3"`
+	CreatedAt_4         sql.NullTime   `json:"created_at_4"`
+	Role_3              sql.NullInt32  `json:"role_3"`
+	Gender_3            NullGender     `json:"gender_3"`
+	Licence_3           sql.NullString `json:"licence_3"`
+	Dob_3               sql.NullTime   `json:"dob_3"`
+	Address_4           sql.NullInt32  `json:"address_4"`
+	ID_5                sql.NullInt32  `json:"id_5"`
+	Account             sql.NullInt32  `json:"account"`
+	Company             sql.NullInt32  `json:"company"`
+	TotalEmployee       sql.NullInt64  `json:"total_employee"`
+}
+
+func (q *Queries) DetailCompany(ctx context.Context, id int32) (DetailCompanyRow, error) {
+	row := q.db.QueryRowContext(ctx, detailCompany, id)
+	var i DetailCompanyRow
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Code,
+		&i.TaxCode,
+		&i.Phone,
+		&i.Description,
+		&i.Address,
+		&i.OaID,
+		&i.CreatedAt,
+		&i.Owner,
+		&i.Type,
+		&i.TimeOpen,
+		&i.TimeClose,
+		&i.Parent,
+		&i.IsActive,
+		&i.Manager,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.UpdatedAt,
+		&i.Code_2,
+		&i.Title,
+		&i.ID_2,
+		&i.Username,
+		&i.HashedPassword,
+		&i.FullName,
+		&i.Email,
+		&i.Type_2,
+		&i.IsVerify,
+		&i.PasswordChangedAt,
+		&i.CreatedAt_2,
+		&i.Role,
+		&i.Gender,
+		&i.Licence,
+		&i.Dob,
+		&i.Address_2,
+		&i.ID_3,
+		&i.Username_2,
+		&i.HashedPassword_2,
+		&i.FullName_2,
+		&i.Email_2,
+		&i.Type_3,
+		&i.IsVerify_2,
+		&i.PasswordChangedAt_2,
+		&i.CreatedAt_3,
+		&i.Role_2,
+		&i.Gender_2,
+		&i.Licence_2,
+		&i.Dob_2,
+		&i.Address_3,
+		&i.ID_4,
+		&i.Username_3,
+		&i.HashedPassword_3,
+		&i.FullName_3,
+		&i.Email_3,
+		&i.Type_4,
+		&i.IsVerify_3,
+		&i.PasswordChangedAt_3,
+		&i.CreatedAt_4,
+		&i.Role_3,
+		&i.Gender_3,
+		&i.Licence_3,
+		&i.Dob_3,
+		&i.Address_4,
+		&i.ID_5,
+		&i.Account,
+		&i.Company,
+		&i.TotalEmployee,
 	)
 	return i, err
 }
 
 const getCompanies = `-- name: GetCompanies :many
-SELECT id, name, code, tax_code, phone, description, address, oa_id, created_at, owner, type, time_open, time_close FROM companies
+SELECT id, name, code, tax_code, phone, description, address, oa_id, created_at, owner, type, time_open, time_close, parent, is_active, manager, user_created, user_updated, updated_at FROM companies
 WHERE owner = $1::int AND
     (name ILIKE COALESCE($2::varchar, '%') OR
     phone ILIKE COALESCE($2::varchar, '%'))
+AND ($3::int IS NULL OR parent = $3::int)
 ORDER BY -id
-LIMIT COALESCE($4::int, 10)
-OFFSET (COALESCE($3::int, 1) - 1) * COALESCE($4::int, 10)
+LIMIT COALESCE($5::int, 10)
+OFFSET (COALESCE($4::int, 1) - 1) * COALESCE($5::int, 10)
 `
 
 type GetCompaniesParams struct {
 	Owner  sql.NullInt32  `json:"owner"`
 	Search sql.NullString `json:"search"`
+	Parent sql.NullInt32  `json:"parent"`
 	Page   sql.NullInt32  `json:"page"`
 	Limit  sql.NullInt32  `json:"limit"`
 }
@@ -97,6 +275,7 @@ func (q *Queries) GetCompanies(ctx context.Context, arg GetCompaniesParams) ([]C
 	rows, err := q.db.QueryContext(ctx, getCompanies,
 		arg.Owner,
 		arg.Search,
+		arg.Parent,
 		arg.Page,
 		arg.Limit,
 	)
@@ -121,6 +300,12 @@ func (q *Queries) GetCompanies(ctx context.Context, arg GetCompaniesParams) ([]C
 			&i.Type,
 			&i.TimeOpen,
 			&i.TimeClose,
+			&i.Parent,
+			&i.IsActive,
+			&i.Manager,
+			&i.UserCreated,
+			&i.UserUpdated,
+			&i.UpdatedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -136,7 +321,7 @@ func (q *Queries) GetCompanies(ctx context.Context, arg GetCompaniesParams) ([]C
 }
 
 const getCompanyById = `-- name: GetCompanyById :one
-SELECT id, name, code, tax_code, phone, description, address, oa_id, created_at, owner, type, time_open, time_close FROM companies
+SELECT id, name, code, tax_code, phone, description, address, oa_id, created_at, owner, type, time_open, time_close, parent, is_active, manager, user_created, user_updated, updated_at FROM companies
 WHERE id = $1
 LIMIT 1
 `
@@ -158,12 +343,18 @@ func (q *Queries) GetCompanyById(ctx context.Context, id int32) (Company, error)
 		&i.Type,
 		&i.TimeOpen,
 		&i.TimeClose,
+		&i.Parent,
+		&i.IsActive,
+		&i.Manager,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.UpdatedAt,
 	)
 	return i, err
 }
 
 const getCompanyByPhone = `-- name: GetCompanyByPhone :one
-SELECT id, name, code, tax_code, phone, description, address, oa_id, created_at, owner, type, time_open, time_close FROM companies
+SELECT id, name, code, tax_code, phone, description, address, oa_id, created_at, owner, type, time_open, time_close, parent, is_active, manager, user_created, user_updated, updated_at FROM companies
 WHERE phone = $1
 LIMIT 1
 `
@@ -185,6 +376,73 @@ func (q *Queries) GetCompanyByPhone(ctx context.Context, phone sql.NullString) (
 		&i.Type,
 		&i.TimeOpen,
 		&i.TimeClose,
+		&i.Parent,
+		&i.IsActive,
+		&i.Manager,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const updateCompany = `-- name: UpdateCompany :one
+UPDATE companies
+SET 
+    name = COALESCE($1::varchar, name),
+    type = COALESCE($2::varchar, type),
+    manager = COALESCE($3::int, manager),
+    is_active = COALESCE($4::bool, is_active),
+    time_open = COALESCE($5::time, time_open),
+    time_close = COALESCE($6::time, time_close),
+    user_updated = COALESCE($7::int, user_updated)
+WHERE id = $8::int
+RETURNING id, name, code, tax_code, phone, description, address, oa_id, created_at, owner, type, time_open, time_close, parent, is_active, manager, user_created, user_updated, updated_at
+`
+
+type UpdateCompanyParams struct {
+	Name        sql.NullString `json:"name"`
+	Type        sql.NullString `json:"type"`
+	Manager     sql.NullInt32  `json:"manager"`
+	IsActive    sql.NullBool   `json:"is_active"`
+	TimeOpen    sql.NullTime   `json:"time_open"`
+	TimeClose   sql.NullTime   `json:"time_close"`
+	UserUpdated sql.NullInt32  `json:"user_updated"`
+	ID          int32          `json:"id"`
+}
+
+func (q *Queries) UpdateCompany(ctx context.Context, arg UpdateCompanyParams) (Company, error) {
+	row := q.db.QueryRowContext(ctx, updateCompany,
+		arg.Name,
+		arg.Type,
+		arg.Manager,
+		arg.IsActive,
+		arg.TimeOpen,
+		arg.TimeClose,
+		arg.UserUpdated,
+		arg.ID,
+	)
+	var i Company
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Code,
+		&i.TaxCode,
+		&i.Phone,
+		&i.Description,
+		&i.Address,
+		&i.OaID,
+		&i.CreatedAt,
+		&i.Owner,
+		&i.Type,
+		&i.TimeOpen,
+		&i.TimeClose,
+		&i.Parent,
+		&i.IsActive,
+		&i.Manager,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.UpdatedAt,
 	)
 	return i, err
 }

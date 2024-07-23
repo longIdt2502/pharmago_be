@@ -12,6 +12,7 @@ message GetCompaniesRequest {
   optional int32 page = 1;
   optional int32 limit = 2;
   optional string search = 3;
+  optional int32 parent = 4;
 }
 
 message GetCompaniesResponse {

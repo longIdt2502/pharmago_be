@@ -189,7 +189,7 @@ func (q *Queries) GetAccountByUseName(ctx context.Context, username string) (Acc
 }
 
 const listAccount = `-- name: ListAccount :many
-SELECT a.id, username, hashed_password, full_name, email, a.type, is_verify, password_changed_at, a.created_at, role, gender, licence, dob, a.address, ac.id, account, company, c.id, name, c.code, tax_code, phone, description, c.address, oa_id, c.created_at, owner, c.type, time_open, time_close, at.id, at.code, title FROM accounts a
+SELECT a.id, username, hashed_password, full_name, email, a.type, is_verify, password_changed_at, a.created_at, role, gender, licence, dob, a.address, ac.id, account, company, c.id, name, c.code, tax_code, phone, description, c.address, oa_id, c.created_at, owner, c.type, time_open, time_close, parent, is_active, manager, user_created, user_updated, updated_at, at.id, at.code, title FROM accounts a
 LEFT JOIN account_company ac ON ac.account = a.id
 LEFT JOIN companies c ON c.id = ac.company
 LEFT JOIN account_type at ON at.id = a.type 
@@ -250,6 +250,12 @@ type ListAccountRow struct {
 	Type_2            sql.NullString `json:"type_2"`
 	TimeOpen          sql.NullTime   `json:"time_open"`
 	TimeClose         sql.NullTime   `json:"time_close"`
+	Parent            sql.NullInt32  `json:"parent"`
+	IsActive          sql.NullBool   `json:"is_active"`
+	Manager           sql.NullInt32  `json:"manager"`
+	UserCreated       sql.NullInt32  `json:"user_created"`
+	UserUpdated       sql.NullInt32  `json:"user_updated"`
+	UpdatedAt         sql.NullTime   `json:"updated_at"`
 	ID_4              sql.NullInt32  `json:"id_4"`
 	Code_2            sql.NullString `json:"code_2"`
 	Title             sql.NullString `json:"title"`
@@ -302,6 +308,12 @@ func (q *Queries) ListAccount(ctx context.Context, arg ListAccountParams) ([]Lis
 			&i.Type_2,
 			&i.TimeOpen,
 			&i.TimeClose,
+			&i.Parent,
+			&i.IsActive,
+			&i.Manager,
+			&i.UserCreated,
+			&i.UserUpdated,
+			&i.UpdatedAt,
 			&i.ID_4,
 			&i.Code_2,
 			&i.Title,

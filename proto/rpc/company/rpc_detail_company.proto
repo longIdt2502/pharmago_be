@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package pb;
+
+import "entities/company.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+message DetailCompanyDataRequest {
+  int32 id = 1;
+}
+
+message DetailCompanyResponse {
+  int32 code = 1;
+  string message = 2;
+  string message_trans = 3;
+  string log = 4;
+  Company details = 5;
+}

@@ -46,6 +46,8 @@ const (
 	Pharmago_ReportCustomer_FullMethodName            = "/pb.Pharmago/ReportCustomer"
 	Pharmago_ReportCustomerRevenue_FullMethodName     = "/pb.Pharmago/ReportCustomerRevenue"
 	Pharmago_CreateCompany_FullMethodName             = "/pb.Pharmago/CreateCompany"
+	Pharmago_UpdateCompany_FullMethodName             = "/pb.Pharmago/UpdateCompany"
+	Pharmago_DetailCompany_FullMethodName             = "/pb.Pharmago/DetailCompany"
 	Pharmago_ListCompanies_FullMethodName             = "/pb.Pharmago/ListCompanies"
 	Pharmago_ListProvinces_FullMethodName             = "/pb.Pharmago/ListProvinces"
 	Pharmago_ListDistricts_FullMethodName             = "/pb.Pharmago/ListDistricts"
@@ -190,7 +192,10 @@ type PharmagoClient interface {
 	ReportCustomerRevenue(ctx context.Context, in *ReportCustomerRevenueRequest, opts ...grpc.CallOption) (*ReportCustomerRevenueResponse, error)
 	// TODO: ==================== COMPANY ==========================
 	CreateCompany(ctx context.Context, in *CreateCompanyRequest, opts ...grpc.CallOption) (*CreateCompanyResponse, error)
+	UpdateCompany(ctx context.Context, in *UpdateCompanyDataRequest, opts ...grpc.CallOption) (*UpdateCompanyResponse, error)
+	DetailCompany(ctx context.Context, in *DetailCompanyDataRequest, opts ...grpc.CallOption) (*DetailCompanyResponse, error)
 	ListCompanies(ctx context.Context, in *GetCompaniesRequest, opts ...grpc.CallOption) (*GetCompaniesResponse, error)
+	// TODO: ==================== ADDRESS ==========================
 	ListProvinces(ctx context.Context, in *ProvincesRequest, opts ...grpc.CallOption) (*ProvincesResponse, error)
 	ListDistricts(ctx context.Context, in *DistrictsRequest, opts ...grpc.CallOption) (*DistrictsResponse, error)
 	ListWards(ctx context.Context, in *WardsRequest, opts ...grpc.CallOption) (*WardsResponse, error)
@@ -563,6 +568,24 @@ func (c *pharmagoClient) ReportCustomerRevenue(ctx context.Context, in *ReportCu
 func (c *pharmagoClient) CreateCompany(ctx context.Context, in *CreateCompanyRequest, opts ...grpc.CallOption) (*CreateCompanyResponse, error) {
 	out := new(CreateCompanyResponse)
 	err := c.cc.Invoke(ctx, Pharmago_CreateCompany_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) UpdateCompany(ctx context.Context, in *UpdateCompanyDataRequest, opts ...grpc.CallOption) (*UpdateCompanyResponse, error) {
+	out := new(UpdateCompanyResponse)
+	err := c.cc.Invoke(ctx, Pharmago_UpdateCompany_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) DetailCompany(ctx context.Context, in *DetailCompanyDataRequest, opts ...grpc.CallOption) (*DetailCompanyResponse, error) {
+	out := new(DetailCompanyResponse)
+	err := c.cc.Invoke(ctx, Pharmago_DetailCompany_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1596,7 +1619,10 @@ type PharmagoServer interface {
 	ReportCustomerRevenue(context.Context, *ReportCustomerRevenueRequest) (*ReportCustomerRevenueResponse, error)
 	// TODO: ==================== COMPANY ==========================
 	CreateCompany(context.Context, *CreateCompanyRequest) (*CreateCompanyResponse, error)
+	UpdateCompany(context.Context, *UpdateCompanyDataRequest) (*UpdateCompanyResponse, error)
+	DetailCompany(context.Context, *DetailCompanyDataRequest) (*DetailCompanyResponse, error)
 	ListCompanies(context.Context, *GetCompaniesRequest) (*GetCompaniesResponse, error)
+	// TODO: ==================== ADDRESS ==========================
 	ListProvinces(context.Context, *ProvincesRequest) (*ProvincesResponse, error)
 	ListDistricts(context.Context, *DistrictsRequest) (*DistrictsResponse, error)
 	ListWards(context.Context, *WardsRequest) (*WardsResponse, error)
@@ -1809,6 +1835,12 @@ func (UnimplementedPharmagoServer) ReportCustomerRevenue(context.Context, *Repor
 }
 func (UnimplementedPharmagoServer) CreateCompany(context.Context, *CreateCompanyRequest) (*CreateCompanyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateCompany not implemented")
+}
+func (UnimplementedPharmagoServer) UpdateCompany(context.Context, *UpdateCompanyDataRequest) (*UpdateCompanyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateCompany not implemented")
+}
+func (UnimplementedPharmagoServer) DetailCompany(context.Context, *DetailCompanyDataRequest) (*DetailCompanyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DetailCompany not implemented")
 }
 func (UnimplementedPharmagoServer) ListCompanies(context.Context, *GetCompaniesRequest) (*GetCompaniesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListCompanies not implemented")
@@ -2620,6 +2652,42 @@ func _Pharmago_CreateCompany_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PharmagoServer).CreateCompany(ctx, req.(*CreateCompanyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_UpdateCompany_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateCompanyDataRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).UpdateCompany(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_UpdateCompany_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).UpdateCompany(ctx, req.(*UpdateCompanyDataRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_DetailCompany_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DetailCompanyDataRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).DetailCompany(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_DetailCompany_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).DetailCompany(ctx, req.(*DetailCompanyDataRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -4639,6 +4707,14 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateCompany",
 			Handler:    _Pharmago_CreateCompany_Handler,
+		},
+		{
+			MethodName: "UpdateCompany",
+			Handler:    _Pharmago_UpdateCompany_Handler,
+		},
+		{
+			MethodName: "DetailCompany",
+			Handler:    _Pharmago_DetailCompany_Handler,
 		},
 		{
 			MethodName: "ListCompanies",

@@ -16,6 +16,8 @@ message CreateCompanyDataRequest {
   string type = 5;
   optional google.protobuf.Timestamp time_open = 6;
   optional google.protobuf.Timestamp time_close = 7;
+  optional int32 company_parent = 8;
+  optional int32 manager = 9;
 }
 
 message CreateCompanyAddressRequest {

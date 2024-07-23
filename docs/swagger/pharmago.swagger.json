@@ -2448,6 +2448,76 @@
         ]
       }
     },
+    "/company/v1/detail/{id}": {
+      "get": {
+        "summary": "Detail company",
+        "operationId": "Pharmago_DetailCompany",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbDetailCompanyResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "Company"
+        ]
+      },
+      "put": {
+        "summary": "Update company",
+        "operationId": "Pharmago_UpdateCompany",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbUpdateCompanyResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PharmagoUpdateCompanyBody"
+            }
+          }
+        ],
+        "tags": [
+          "Company"
+        ]
+      }
+    },
     "/company/v1/list": {
       "get": {
         "summary": "Get list company",
@@ -2486,6 +2556,13 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "parent",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
           }
         ],
         "tags": [
@@ -7966,6 +8043,44 @@
         }
       }
     },
+    "PharmagoUpdateCompanyBody": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "taxCode": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "timeOpen": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "timeClose": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "manager": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "address": {
+          "$ref": "#/definitions/pbAddressPayload"
+        },
+        "isActive": {
+          "type": "boolean"
+        }
+      }
+    },
     "PharmagoUpdateEmployeeBody": {
       "type": "object",
       "properties": {
@@ -8903,6 +9018,9 @@
           "type": "integer",
           "format": "int32"
         },
+        "manager": {
+          "$ref": "#/definitions/pbAccount"
+        },
         "oaId": {
           "type": "string"
         },
@@ -8915,6 +9033,12 @@
         "totalEmployee": {
           "type": "integer",
           "format": "int32"
+        },
+        "userCreated": {
+          "$ref": "#/definitions/pbAccount"
+        },
+        "userUpdated": {
+          "$ref": "#/definitions/pbAccount"
         }
       }
     },
@@ -9226,6 +9350,14 @@
         "timeClose": {
           "type": "string",
           "format": "date-time"
+        },
+        "companyParent": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "manager": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -10227,6 +10359,27 @@
         "money": {
           "type": "number",
           "format": "float"
+        }
+      }
+    },
+    "pbDetailCompanyResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "messageTrans": {
+          "type": "string"
+        },
+        "log": {
+          "type": "string"
+        },
+        "details": {
+          "$ref": "#/definitions/pbCompany"
         }
       }
     },
@@ -13501,6 +13654,28 @@
         },
         "default": {
           "type": "boolean"
+        }
+      }
+    },
+    "pbUpdateCompanyResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "messageTrans": {
+          "type": "string"
+        },
+        "log": {
+          "type": "string"
+        },
+        "details": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
