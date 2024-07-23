@@ -5849,6 +5849,12 @@
             "required": false,
             "type": "integer",
             "format": "int32"
+          },
+          {
+            "name": "active",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "tags": [
@@ -10787,6 +10793,13 @@
             "type": "object",
             "$ref": "#/definitions/pbProduct"
           }
+        },
+        "counts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbSimpleData"
+          }
         }
       }
     },
@@ -12025,6 +12038,9 @@
           "items": {
             "type": "string"
           }
+        },
+        "unit": {
+          "$ref": "#/definitions/pbUnit"
         }
       }
     },

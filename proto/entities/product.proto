@@ -29,6 +29,7 @@ message Product {
   int32 congTySx = 18;
   int32 congTyDk = 19;
   repeated string image = 20;
+  Unit unit = 21;
 }
 
 message ProductPreview {

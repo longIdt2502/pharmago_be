@@ -82,22 +82,13 @@ func (server *ServerGRPC) ListProduct(ctx context.Context, req *pb.ListProductRe
 	}
 
 	products, err := server.store.GetProducts(ctx, db.GetProductsParams{
-		Company: sql.NullInt32{
-			Int32: req.GetCompany(),
-			Valid: req.Company != nil,
-		},
-		Search: sql.NullString{
-			String: req.GetSearch(),
-			Valid:  req.Search != nil,
-		},
-		Page: sql.NullInt32{
-			Int32: req.GetPage(),
-			Valid: req.Page != nil,
-		},
-		Limit: sql.NullInt32{
-			Int32: req.GetLimit(),
-			Valid: req.Limit != nil,
-		},
+		Company:         sql.NullInt32{Int32: req.GetCompany(), Valid: req.Company != nil},
+		Search:          sql.NullString{String: req.GetSearch(), Valid: req.Search != nil},
+		Brand:           sql.NullInt32{},
+		ProductCategory: sql.NullInt32{},
+		Active:          sql.NullBool{Bool: req.GetActive(), Valid: req.Active != nil},
+		Page:            sql.NullInt32{Int32: req.GetPage(), Valid: req.Page != nil},
+		Limit:           sql.NullInt32{Int32: req.GetLimit(), Valid: req.Limit != nil},
 	})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to get product: %e", err))
@@ -108,10 +99,33 @@ func (server *ServerGRPC) ListProduct(ctx context.Context, req *pb.ListProductRe
 		productsPb = append(productsPb, mapper.ProductMapper(ctx, server.store, value))
 	}
 
+	counts, _ := server.store.CountProduct(ctx, req.GetCompany())
+
+	var countsPb []*pb.SimpleData
+	for _, item := range counts {
+		value := int32(item.Total)
+		switch item.Active {
+		case true:
+			countsPb = append(countsPb, &pb.SimpleData{
+				Name:  "Đang bán",
+				Code:  "TRUE",
+				Value: &value,
+			})
+		case false:
+			countsPb = append(countsPb, &pb.SimpleData{
+				Name:  "Đang bán",
+				Code:  "FALSE",
+				Value: &value,
+			})
+		}
+
+	}
+
 	return &pb.ListProductResponse{
 		Code:    200,
 		Message: "success",
 		Details: productsPb,
+		Counts:  countsPb,
 	}, nil
 }
 

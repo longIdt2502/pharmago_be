@@ -20,6 +20,8 @@ func ProductMapper(ctx context.Context, store *db.Store, data db.Product) *pb.Pr
 		name = append(name, value.MediaUrl)
 	}
 
+	unit, _ := store.DetailUnit(ctx, data.Unit)
+
 	return &pb.Product{
 		Id:           data.ID,
 		Name:         data.Name,
@@ -40,5 +42,12 @@ func ProductMapper(ctx context.Context, store *db.Store, data db.Product) *pb.Pr
 		CongTySx:     data.CongTySx.Int32,
 		CongTyDk:     data.CongTyDk.Int32,
 		Image:        name,
+		Unit: &pb.Unit{
+			Id:          unit.ID,
+			Name:        unit.Name,
+			SellPrice:   float32(unit.SellPrice),
+			ImportPrice: float32(unit.ImportPrice),
+			Default:     true,
+		},
 	}
 }
