@@ -41,6 +41,7 @@ message MedicalBill {
   repeated AppointmentScheduleService services = 20;
   repeated AppointmentScheduleUrl urls = 21;
   repeated Payment payment = 22;
+  string prescription = 23;
 }
 
 // ===================== REQ/RES ========================

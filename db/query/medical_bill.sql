@@ -27,7 +27,8 @@ WHERE uuid = $1;
 UPDATE medical_bills
 SET
     diagnostic = COALESCE(sqlc.narg(diagnostic)::varchar, diagnostic),
-    symptoms = COALESCE(sqlc.narg(symptoms)::varchar, symptoms)
+    symptoms = COALESCE(sqlc.narg(symptoms)::varchar, symptoms),
+    prescription = COALESCE(sqlc.narg(prescription)::uuid, prescription)
 WHERE uuid = sqlc.arg(uuid)::uuid
 RETURNING *;
 

@@ -72,5 +72,6 @@ func MedicalBillMapper(ctx context.Context, store *db.Store, item db.GetListMedi
 		Services:      servicesPb,
 		Urls:          []*pb.AppointmentScheduleUrl{},
 		Payment:       paymentsPB,
+		Prescription:  item.Prescription.UUID.String(),
 	}
 }

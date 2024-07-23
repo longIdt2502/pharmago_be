@@ -341,19 +341,26 @@ const updateMedicalBill = `-- name: UpdateMedicalBill :one
 UPDATE medical_bills
 SET
     diagnostic = COALESCE($1::varchar, diagnostic),
-    symptoms = COALESCE($2::varchar, symptoms)
-WHERE uuid = $3::uuid
+    symptoms = COALESCE($2::varchar, symptoms),
+    prescription = COALESCE($3::uuid, prescription)
+WHERE uuid = $4::uuid
 RETURNING id, uuid, code, customer, company, doctor, symptoms, diagnostic, qr_code_url, is_done, meeting_at, user_created, user_updated, created_at, updated_at, prescription
 `
 
 type UpdateMedicalBillParams struct {
-	Diagnostic sql.NullString `json:"diagnostic"`
-	Symptoms   sql.NullString `json:"symptoms"`
-	Uuid       uuid.UUID      `json:"uuid"`
+	Diagnostic   sql.NullString `json:"diagnostic"`
+	Symptoms     sql.NullString `json:"symptoms"`
+	Prescription uuid.NullUUID  `json:"prescription"`
+	Uuid         uuid.UUID      `json:"uuid"`
 }
 
 func (q *Queries) UpdateMedicalBill(ctx context.Context, arg UpdateMedicalBillParams) (MedicalBill, error) {
-	row := q.db.QueryRowContext(ctx, updateMedicalBill, arg.Diagnostic, arg.Symptoms, arg.Uuid)
+	row := q.db.QueryRowContext(ctx, updateMedicalBill,
+		arg.Diagnostic,
+		arg.Symptoms,
+		arg.Prescription,
+		arg.Uuid,
+	)
 	var i MedicalBill
 	err := row.Scan(
 		&i.ID,
