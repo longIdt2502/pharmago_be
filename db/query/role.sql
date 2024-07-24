@@ -14,10 +14,10 @@ INSERT INTO role_item (
 
 -- name: ListRole :many
 SELECT *, ac.full_name AS created_name, au.full_name AS updated_name FROM roles r
-JOIN companies c ON c.id = r.company
+LEFT JOIN companies c ON c.id = r.company
 JOIN accounts ac ON ac.id = r.user_created
-JOIN accounts au ON au.id = r.user_updated
-WHERE company = sqlc.arg(company)
+LEFT JOIN accounts au ON au.id = r.user_updated
+WHERE ((sqlc.narg(company)::int IS NULL AND r.company IS NULL) OR r.company = sqlc.narg(company)::int)
 AND (
     r.code ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
     r.title ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%'

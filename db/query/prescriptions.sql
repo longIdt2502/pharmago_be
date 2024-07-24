@@ -31,4 +31,10 @@ JOIN customers c ON c.id = p.customer
 JOIN accounts a ON a.id = p.doctor
 JOIN accounts uc ON uc.id = p.user_created
 LEFT JOIN accounts uu ON uu.id = p.user_updated
-WHERE p.company = $1;
+WHERE p.company = sqlc.narg('company')::int
+AND (
+    p.code ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
+    c.full_name ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%'
+)
+LIMIT COALESCE(sqlc.narg('limit')::int, 10)
+OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 1);

@@ -32,7 +32,7 @@ message RoleCreateResponse {
 message RoleListRequest {
   int32 page = 1;
   int32 limit = 2;
-  int32 company = 3;
+  optional int32 company = 3;
   optional string search = 4;
   optional google.protobuf.Timestamp created_at_start = 5;
   optional google.protobuf.Timestamp created_at_end = 6;
