@@ -59,7 +59,7 @@ func (server *ServerGRPC) RoleList(ctx context.Context, req *pb.RoleListRequest)
 	roles, err := server.store.ListRole(ctx, db.ListRoleParams{
 		Company: sql.NullInt32{
 			Int32: req.GetCompany(),
-			Valid: true,
+			Valid: req.Company != nil,
 		},
 		Search: sql.NullString{
 			String: req.GetSearch(),
@@ -108,7 +108,7 @@ func (server *ServerGRPC) RoleList(ctx context.Context, req *pb.RoleListRequest)
 			Note:            note,
 			Company:         item.Company.Int32,
 			UserCreatedName: item.CreatedName,
-			UserUpdatedName: item.UpdatedName,
+			UserUpdatedName: item.UpdatedName.String,
 			CreatedAt:       timestamppb.New(item.CreatedAt),
 			UpdatedAt:       timestamppb.New(item.UpdatedAt.Time),
 		}

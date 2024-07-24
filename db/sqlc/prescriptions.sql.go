@@ -282,8 +282,21 @@ JOIN customers c ON c.id = p.customer
 JOIN accounts a ON a.id = p.doctor
 JOIN accounts uc ON uc.id = p.user_created
 LEFT JOIN accounts uu ON uu.id = p.user_updated
-WHERE p.company = $1
+WHERE p.company = $1::int
+AND (
+    p.code ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
+    c.full_name ILIKE '%' || COALESCE($2::varchar, '') || '%'
+)
+LIMIT COALESCE($4::int, 10)
+OFFSET (COALESCE($3::int, 1) - 1) * COALESCE($4::int, 1)
 `
+
+type ListPrescriptionParams struct {
+	Company sql.NullInt32  `json:"company"`
+	Search  sql.NullString `json:"search"`
+	Page    sql.NullInt32  `json:"page"`
+	Limit   sql.NullInt32  `json:"limit"`
+}
 
 type ListPrescriptionRow struct {
 	ID                  int32          `json:"id"`
@@ -368,8 +381,13 @@ type ListPrescriptionRow struct {
 	Address_4           sql.NullInt32  `json:"address_4"`
 }
 
-func (q *Queries) ListPrescription(ctx context.Context, company int32) ([]ListPrescriptionRow, error) {
-	rows, err := q.db.QueryContext(ctx, listPrescription, company)
+func (q *Queries) ListPrescription(ctx context.Context, arg ListPrescriptionParams) ([]ListPrescriptionRow, error) {
+	rows, err := q.db.QueryContext(ctx, listPrescription,
+		arg.Company,
+		arg.Search,
+		arg.Page,
+		arg.Limit,
+	)
 	if err != nil {
 		return nil, err
 	}

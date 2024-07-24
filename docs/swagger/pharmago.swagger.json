@@ -6804,6 +6804,58 @@
         ]
       }
     },
+    "/prescription/v1/prescriptions": {
+      "get": {
+        "summary": "List Prescription",
+        "operationId": "Pharmago_PrescriptionList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbPrescriptionListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "company",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Prescription"
+        ]
+      }
+    },
     "/price_list/v1/detail/{id}": {
       "get": {
         "summary": "Get Detail Price list",
@@ -13306,6 +13358,31 @@
         "quantity": {
           "type": "integer",
           "format": "int32"
+        }
+      }
+    },
+    "pbPrescriptionListResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "messageTrans": {
+          "type": "string"
+        },
+        "log": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbPrescription"
+          }
         }
       }
     },

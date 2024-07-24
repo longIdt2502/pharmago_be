@@ -1516,13 +1516,21 @@ service Pharmago {
       tags: "Prescription";
     };
   };
-
   rpc PrescriptionDetail (Prescription) returns (PrescriptionResponse) {
     option (google.api.http) = {
       get: "/prescription/v1/detail/{uuid}"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Detail Prescription";
+      tags: "Prescription";
+    };
+  };
+  rpc PrescriptionList (PrescriptionListRequest) returns (PrescriptionListResponse) {
+    option (google.api.http) = {
+      get: "/prescription/v1/prescriptions"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List Prescription";
       tags: "Prescription";
     };
   };

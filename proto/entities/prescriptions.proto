@@ -58,6 +58,21 @@ message PrescriptionResponse {
   Prescription details = 5;
 }
 
+message PrescriptionListRequest {
+  int32 company = 1;
+  optional int32 page = 2;
+  optional int32 limit = 3;
+  string search = 4;
+}
+
+message PrescriptionListResponse {
+  int32 code = 1;
+  string message = 2;
+  string message_trans = 3;
+  string log = 4;
+  repeated Prescription details = 5;
+}
+
 // message MedicalBillUpdateRequest {
 //   string uuid = 1;
 //   bool is_done = 2;

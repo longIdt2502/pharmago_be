@@ -156,6 +156,7 @@ const (
 	Pharmago_MedicalBillUpdate_FullMethodName         = "/pb.Pharmago/MedicalBillUpdate"
 	Pharmago_PrescriptionCreate_FullMethodName        = "/pb.Pharmago/PrescriptionCreate"
 	Pharmago_PrescriptionDetail_FullMethodName        = "/pb.Pharmago/PrescriptionDetail"
+	Pharmago_PrescriptionList_FullMethodName          = "/pb.Pharmago/PrescriptionList"
 )
 
 // PharmagoClient is the client API for Pharmago service.
@@ -328,6 +329,7 @@ type PharmagoClient interface {
 	// ================== PRESCRIPTION ===================
 	PrescriptionCreate(ctx context.Context, in *Prescription, opts ...grpc.CallOption) (*PrescriptionResponse, error)
 	PrescriptionDetail(ctx context.Context, in *Prescription, opts ...grpc.CallOption) (*PrescriptionResponse, error)
+	PrescriptionList(ctx context.Context, in *PrescriptionListRequest, opts ...grpc.CallOption) (*PrescriptionListResponse, error)
 }
 
 type pharmagoClient struct {
@@ -1616,6 +1618,15 @@ func (c *pharmagoClient) PrescriptionDetail(ctx context.Context, in *Prescriptio
 	return out, nil
 }
 
+func (c *pharmagoClient) PrescriptionList(ctx context.Context, in *PrescriptionListRequest, opts ...grpc.CallOption) (*PrescriptionListResponse, error) {
+	out := new(PrescriptionListResponse)
+	err := c.cc.Invoke(ctx, Pharmago_PrescriptionList_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PharmagoServer is the server API for Pharmago service.
 // All implementations must embed UnimplementedPharmagoServer
 // for forward compatibility
@@ -1786,6 +1797,7 @@ type PharmagoServer interface {
 	// ================== PRESCRIPTION ===================
 	PrescriptionCreate(context.Context, *Prescription) (*PrescriptionResponse, error)
 	PrescriptionDetail(context.Context, *Prescription) (*PrescriptionResponse, error)
+	PrescriptionList(context.Context, *PrescriptionListRequest) (*PrescriptionListResponse, error)
 	mustEmbedUnimplementedPharmagoServer()
 }
 
@@ -2203,6 +2215,9 @@ func (UnimplementedPharmagoServer) PrescriptionCreate(context.Context, *Prescrip
 }
 func (UnimplementedPharmagoServer) PrescriptionDetail(context.Context, *Prescription) (*PrescriptionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PrescriptionDetail not implemented")
+}
+func (UnimplementedPharmagoServer) PrescriptionList(context.Context, *PrescriptionListRequest) (*PrescriptionListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PrescriptionList not implemented")
 }
 func (UnimplementedPharmagoServer) mustEmbedUnimplementedPharmagoServer() {}
 
@@ -4694,6 +4709,24 @@ func _Pharmago_PrescriptionDetail_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Pharmago_PrescriptionList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PrescriptionListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).PrescriptionList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_PrescriptionList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).PrescriptionList(ctx, req.(*PrescriptionListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Pharmago_ServiceDesc is the grpc.ServiceDesc for Pharmago service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -5240,6 +5273,10 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PrescriptionDetail",
 			Handler:    _Pharmago_PrescriptionDetail_Handler,
+		},
+		{
+			MethodName: "PrescriptionList",
+			Handler:    _Pharmago_PrescriptionList_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

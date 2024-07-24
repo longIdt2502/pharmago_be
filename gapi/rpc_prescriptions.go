@@ -120,3 +120,36 @@ func (server *ServerGRPC) PrescriptionDetail(ctx context.Context, req *pb.Prescr
 		Details: mapper.PrescriptionMapper(ctx, server.store, prescription),
 	}, nil
 }
+
+func (server *ServerGRPC) PrescriptionList(ctx context.Context, req *pb.PrescriptionListRequest) (*pb.PrescriptionListResponse, error) {
+	_, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	prescriptions, err := server.store.ListPrescription(ctx, db.ListPrescriptionParams{
+		Company: sql.NullInt32{Int32: req.GetCompany(), Valid: true},
+		Search:  sql.NullString{String: req.GetSearch(), Valid: true},
+		Page:    sql.NullInt32{Int32: req.GetPage(), Valid: req.Page != nil},
+		Limit:   sql.NullInt32{Int32: req.GetLimit(), Valid: req.Limit != nil},
+	})
+	if err != nil {
+		errApp := common.ErrDB(err)
+		return &pb.PrescriptionListResponse{
+			Code:    int32(errApp.StatusCode),
+			Message: errApp.Message,
+			Log:     errApp.Log,
+		}, nil
+	}
+
+	var prescriptionsPb []*pb.Prescription
+	for _, item := range prescriptions {
+		prescriptionsPb = append(prescriptionsPb, mapper.PrescriptionListItemMapper(ctx, server.store, item))
+	}
+
+	return &pb.PrescriptionListResponse{
+		Code:    200,
+		Message: "success",
+		Details: prescriptionsPb,
+	}, nil
+}
