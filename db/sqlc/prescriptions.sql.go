@@ -15,9 +15,9 @@ import (
 
 const createPrescription = `-- name: CreatePrescription :one
 INSERT INTO prescriptions (
-    uuid, code, symptoms, diagnostic, doctor, user_created
+    uuid, code, symptoms, diagnostic, customer, doctor, company, user_created, user_updated
 ) VALUES (
-    $1, $2, $3, $4, $5, $6
+    $1, $2, $3, $4, $5, $6, $7, $8, $9
 ) RETURNING id, uuid, code, symptoms, diagnostic, customer, doctor, company, user_created, user_updated, created_at, updated_at
 `
 
@@ -26,8 +26,11 @@ type CreatePrescriptionParams struct {
 	Code        string         `json:"code"`
 	Symptoms    sql.NullString `json:"symptoms"`
 	Diagnostic  sql.NullString `json:"diagnostic"`
+	Customer    sql.NullInt32  `json:"customer"`
 	Doctor      sql.NullInt32  `json:"doctor"`
+	Company     int32          `json:"company"`
 	UserCreated int32          `json:"user_created"`
+	UserUpdated sql.NullInt32  `json:"user_updated"`
 }
 
 func (q *Queries) CreatePrescription(ctx context.Context, arg CreatePrescriptionParams) (Prescription, error) {
@@ -36,8 +39,11 @@ func (q *Queries) CreatePrescription(ctx context.Context, arg CreatePrescription
 		arg.Code,
 		arg.Symptoms,
 		arg.Diagnostic,
+		arg.Customer,
 		arg.Doctor,
+		arg.Company,
 		arg.UserCreated,
+		arg.UserUpdated,
 	)
 	var i Prescription
 	err := row.Scan(
@@ -268,6 +274,202 @@ func (q *Queries) DetailPrescription(ctx context.Context, argUuid uuid.UUID) (De
 		&i.Address_4,
 	)
 	return i, err
+}
+
+const listPrescription = `-- name: ListPrescription :many
+SELECT p.id, uuid, p.code, symptoms, diagnostic, customer, doctor, p.company, p.user_created, p.user_updated, p.created_at, p.updated_at, c.id, c.full_name, c.code, c.company, c.address, c.email, phone, license, birthday, c.user_created, c.user_updated, c.updated_at, c.created_at, "group", title, license_date, contact_name, contact_title, contact_phone, contact_email, contact_address, account_number, bank_name, bank_branch, issued_by, c.gender, a.id, a.username, a.hashed_password, a.full_name, a.email, a.type, a.is_verify, a.password_changed_at, a.created_at, a.role, a.gender, a.licence, a.dob, a.address, uc.id, uc.username, uc.hashed_password, uc.full_name, uc.email, uc.type, uc.is_verify, uc.password_changed_at, uc.created_at, uc.role, uc.gender, uc.licence, uc.dob, uc.address, uu.id, uu.username, uu.hashed_password, uu.full_name, uu.email, uu.type, uu.is_verify, uu.password_changed_at, uu.created_at, uu.role, uu.gender, uu.licence, uu.dob, uu.address FROM prescriptions p
+JOIN customers c ON c.id = p.customer
+JOIN accounts a ON a.id = p.doctor
+JOIN accounts uc ON uc.id = p.user_created
+LEFT JOIN accounts uu ON uu.id = p.user_updated
+WHERE p.company = $1
+`
+
+type ListPrescriptionRow struct {
+	ID                  int32          `json:"id"`
+	Uuid                uuid.UUID      `json:"uuid"`
+	Code                string         `json:"code"`
+	Symptoms            sql.NullString `json:"symptoms"`
+	Diagnostic          sql.NullString `json:"diagnostic"`
+	Customer            sql.NullInt32  `json:"customer"`
+	Doctor              sql.NullInt32  `json:"doctor"`
+	Company             int32          `json:"company"`
+	UserCreated         int32          `json:"user_created"`
+	UserUpdated         sql.NullInt32  `json:"user_updated"`
+	CreatedAt           time.Time      `json:"created_at"`
+	UpdatedAt           sql.NullTime   `json:"updated_at"`
+	ID_2                int32          `json:"id_2"`
+	FullName            string         `json:"full_name"`
+	Code_2              string         `json:"code_2"`
+	Company_2           int32          `json:"company_2"`
+	Address             sql.NullInt32  `json:"address"`
+	Email               sql.NullString `json:"email"`
+	Phone               sql.NullString `json:"phone"`
+	License             sql.NullString `json:"license"`
+	Birthday            sql.NullTime   `json:"birthday"`
+	UserCreated_2       int32          `json:"user_created_2"`
+	UserUpdated_2       sql.NullInt32  `json:"user_updated_2"`
+	UpdatedAt_2         sql.NullTime   `json:"updated_at_2"`
+	CreatedAt_2         time.Time      `json:"created_at_2"`
+	Group               sql.NullInt32  `json:"group"`
+	Title               sql.NullString `json:"title"`
+	LicenseDate         sql.NullTime   `json:"license_date"`
+	ContactName         sql.NullString `json:"contact_name"`
+	ContactTitle        sql.NullString `json:"contact_title"`
+	ContactPhone        sql.NullString `json:"contact_phone"`
+	ContactEmail        sql.NullString `json:"contact_email"`
+	ContactAddress      sql.NullInt32  `json:"contact_address"`
+	AccountNumber       sql.NullString `json:"account_number"`
+	BankName            sql.NullString `json:"bank_name"`
+	BankBranch          sql.NullString `json:"bank_branch"`
+	IssuedBy            sql.NullString `json:"issued_by"`
+	Gender              NullGender     `json:"gender"`
+	ID_3                int32          `json:"id_3"`
+	Username            string         `json:"username"`
+	HashedPassword      string         `json:"hashed_password"`
+	FullName_2          string         `json:"full_name_2"`
+	Email_2             string         `json:"email_2"`
+	Type                int32          `json:"type"`
+	IsVerify            bool           `json:"is_verify"`
+	PasswordChangedAt   time.Time      `json:"password_changed_at"`
+	CreatedAt_3         time.Time      `json:"created_at_3"`
+	Role                sql.NullInt32  `json:"role"`
+	Gender_2            NullGender     `json:"gender_2"`
+	Licence             sql.NullString `json:"licence"`
+	Dob                 sql.NullTime   `json:"dob"`
+	Address_2           sql.NullInt32  `json:"address_2"`
+	ID_4                int32          `json:"id_4"`
+	Username_2          string         `json:"username_2"`
+	HashedPassword_2    string         `json:"hashed_password_2"`
+	FullName_3          string         `json:"full_name_3"`
+	Email_3             string         `json:"email_3"`
+	Type_2              int32          `json:"type_2"`
+	IsVerify_2          bool           `json:"is_verify_2"`
+	PasswordChangedAt_2 time.Time      `json:"password_changed_at_2"`
+	CreatedAt_4         time.Time      `json:"created_at_4"`
+	Role_2              sql.NullInt32  `json:"role_2"`
+	Gender_3            NullGender     `json:"gender_3"`
+	Licence_2           sql.NullString `json:"licence_2"`
+	Dob_2               sql.NullTime   `json:"dob_2"`
+	Address_3           sql.NullInt32  `json:"address_3"`
+	ID_5                sql.NullInt32  `json:"id_5"`
+	Username_3          sql.NullString `json:"username_3"`
+	HashedPassword_3    sql.NullString `json:"hashed_password_3"`
+	FullName_4          sql.NullString `json:"full_name_4"`
+	Email_4             sql.NullString `json:"email_4"`
+	Type_3              sql.NullInt32  `json:"type_3"`
+	IsVerify_3          sql.NullBool   `json:"is_verify_3"`
+	PasswordChangedAt_3 sql.NullTime   `json:"password_changed_at_3"`
+	CreatedAt_5         sql.NullTime   `json:"created_at_5"`
+	Role_3              sql.NullInt32  `json:"role_3"`
+	Gender_4            NullGender     `json:"gender_4"`
+	Licence_3           sql.NullString `json:"licence_3"`
+	Dob_3               sql.NullTime   `json:"dob_3"`
+	Address_4           sql.NullInt32  `json:"address_4"`
+}
+
+func (q *Queries) ListPrescription(ctx context.Context, company int32) ([]ListPrescriptionRow, error) {
+	rows, err := q.db.QueryContext(ctx, listPrescription, company)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListPrescriptionRow{}
+	for rows.Next() {
+		var i ListPrescriptionRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Uuid,
+			&i.Code,
+			&i.Symptoms,
+			&i.Diagnostic,
+			&i.Customer,
+			&i.Doctor,
+			&i.Company,
+			&i.UserCreated,
+			&i.UserUpdated,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.ID_2,
+			&i.FullName,
+			&i.Code_2,
+			&i.Company_2,
+			&i.Address,
+			&i.Email,
+			&i.Phone,
+			&i.License,
+			&i.Birthday,
+			&i.UserCreated_2,
+			&i.UserUpdated_2,
+			&i.UpdatedAt_2,
+			&i.CreatedAt_2,
+			&i.Group,
+			&i.Title,
+			&i.LicenseDate,
+			&i.ContactName,
+			&i.ContactTitle,
+			&i.ContactPhone,
+			&i.ContactEmail,
+			&i.ContactAddress,
+			&i.AccountNumber,
+			&i.BankName,
+			&i.BankBranch,
+			&i.IssuedBy,
+			&i.Gender,
+			&i.ID_3,
+			&i.Username,
+			&i.HashedPassword,
+			&i.FullName_2,
+			&i.Email_2,
+			&i.Type,
+			&i.IsVerify,
+			&i.PasswordChangedAt,
+			&i.CreatedAt_3,
+			&i.Role,
+			&i.Gender_2,
+			&i.Licence,
+			&i.Dob,
+			&i.Address_2,
+			&i.ID_4,
+			&i.Username_2,
+			&i.HashedPassword_2,
+			&i.FullName_3,
+			&i.Email_3,
+			&i.Type_2,
+			&i.IsVerify_2,
+			&i.PasswordChangedAt_2,
+			&i.CreatedAt_4,
+			&i.Role_2,
+			&i.Gender_3,
+			&i.Licence_2,
+			&i.Dob_2,
+			&i.Address_3,
+			&i.ID_5,
+			&i.Username_3,
+			&i.HashedPassword_3,
+			&i.FullName_4,
+			&i.Email_4,
+			&i.Type_3,
+			&i.IsVerify_3,
+			&i.PasswordChangedAt_3,
+			&i.CreatedAt_5,
+			&i.Role_3,
+			&i.Gender_4,
+			&i.Licence_3,
+			&i.Dob_3,
+			&i.Address_4,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const listPrescriptionItem = `-- name: ListPrescriptionItem :many

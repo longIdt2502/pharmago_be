@@ -31,7 +31,7 @@ func PrescriptionMapper(ctx context.Context, store *db.Store, item db.DetailPres
 		Id:         item.ID,
 		Uuid:       item.Uuid.String(),
 		Code:       item.Code,
-		CustomerId: item.ID_2,
+		CustomerId: &item.ID_2,
 		Customer: &pb.Account{
 			Id:       item.ID_2,
 			FullName: item.FullName,
