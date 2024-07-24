@@ -36,6 +36,7 @@ import "rpc/company/rpc_create_company.proto";
 import "rpc/company/rpc_update_company.proto";
 import "rpc/company/rpc_detail_company.proto";
 import "rpc/company/rpc_companies.proto";
+import "rpc/company/rpc_assign_employee.proto";
 
 import "rpc/product/rpc_create_product.proto";
 import "rpc/product/rpc_list_product.proto";
@@ -463,6 +464,16 @@ service Pharmago {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Get list company";
+      tags: "Company";
+    };
+  };
+  rpc AssignEmployee (AssignCompanyReq) returns (AssignCompanyRes) {
+    option (google.api.http) = {
+      post: "/company/v1/asign_employee"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Asign Employee";
       tags: "Company";
     };
   };

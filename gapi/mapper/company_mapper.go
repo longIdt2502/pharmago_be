@@ -2,6 +2,7 @@ package mapper
 
 import (
 	"context"
+	"database/sql"
 
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/pb"
@@ -81,7 +82,7 @@ func CompanyMapper(ctx context.Context, store *db.Store, data db.Company) *pb.Co
 		timeClose = &x
 	}
 
-	totalEmployee, _ := store.CountEmployee(ctx, data.ID)
+	totalEmployee, _ := store.CountEmployee(ctx, sql.NullInt32{Int32: data.ID, Valid: true})
 
 	return &pb.Company{
 		Id:            int32(data.ID),
@@ -177,7 +178,7 @@ func CompanyDetailMapper(ctx context.Context, store *db.Store, data db.DetailCom
 		timeClose = &x
 	}
 
-	totalEmployee, _ := store.CountEmployee(ctx, data.ID)
+	totalEmployee, _ := store.CountEmployee(ctx, sql.NullInt32{Int32: data.ID, Valid: true})
 
 	return &pb.Company{
 		Id:          int32(data.ID),

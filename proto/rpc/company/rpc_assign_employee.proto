@@ -10,13 +10,13 @@ option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
 message AssignCompanyReq {
   int32 company = 1;
-  optional int32 limit = 2;
-  optional string search = 3;
-  repeated int32 employee = 4;
+  repeated int32 assign = 2;
+  repeated int32 remove = 3;
 }
 
 message AssignCompanyRes {
   int32 code = 1;
   string message = 2;
-  repeated Company details = 3;
+  string message_trans = 3;
+  string log = 4;
 }

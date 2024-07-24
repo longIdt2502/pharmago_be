@@ -232,6 +232,13 @@
             "required": false,
             "type": "integer",
             "format": "int32"
+          },
+          {
+            "name": "companyParent",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
           }
         ],
         "tags": [
@@ -2412,6 +2419,39 @@
         ],
         "tags": [
           "Product Master Data"
+        ]
+      }
+    },
+    "/company/v1/asign_employee": {
+      "post": {
+        "summary": "Asign Employee",
+        "operationId": "Pharmago_AssignEmployee",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbAssignCompanyRes"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbAssignCompanyReq"
+            }
+          }
+        ],
+        "tags": [
+          "Company"
         ]
       }
     },
@@ -9994,6 +10034,47 @@
           "type": "string"
         },
         "nameDoc": {
+          "type": "string"
+        }
+      }
+    },
+    "pbAssignCompanyReq": {
+      "type": "object",
+      "properties": {
+        "company": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "assign": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "remove": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+    },
+    "pbAssignCompanyRes": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "messageTrans": {
+          "type": "string"
+        },
+        "log": {
           "type": "string"
         }
       }

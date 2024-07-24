@@ -19,7 +19,7 @@ INSERT INTO accounts (username, hashed_password, full_name, email, type, role, g
 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *;
 
 -- name: CreateAccountCompany :one
-INSERT INTO account_company (account, company) VALUES ($1, $2) RETURNING *;
+INSERT INTO account_company (account, company, company_parent) VALUES ($1, $2, $3) RETURNING *;
 
 -- name: UpdateAccount :one
 UPDATE accounts
@@ -51,7 +51,7 @@ SELECT * FROM accounts a
 LEFT JOIN account_company ac ON ac.account = a.id
 LEFT JOIN companies c ON c.id = ac.company
 LEFT JOIN account_type at ON at.id = a.type 
-WHERE ac.company = sqlc.arg(company)::int
+WHERE (ac.company = sqlc.arg(company)::int OR c.parent = sqlc.narg(company_parent))
 AND (
     a.full_name ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
     a.username ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%'
@@ -67,3 +67,8 @@ ORDER BY -a.id
 LIMIT COALESCE(sqlc.narg('limit')::int, 10)
 OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10);
 
+-- name: AssignEmployee :one
+UPDATE account_company 
+SET company = sqlc.narg(company)
+WHERE account = sqlc.arg(account)
+RETURNING *;
