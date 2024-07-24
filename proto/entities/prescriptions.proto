@@ -22,7 +22,7 @@ message Prescription {
   int32 id = 1;
   string uuid = 2;
   string code = 3;
-  int32 customer_id = 4;
+  optional int32 customer_id = 4;
   optional Account customer = 5;
   int32 company = 6;
   int32 doctor_id = 7;

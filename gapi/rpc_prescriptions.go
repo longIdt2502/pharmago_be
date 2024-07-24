@@ -27,8 +27,11 @@ func (server *ServerGRPC) PrescriptionCreate(ctx context.Context, req *pb.Prescr
 		Code:        code,
 		Symptoms:    sql.NullString{String: req.GetSymptoms(), Valid: req.Symptoms != nil},
 		Diagnostic:  sql.NullString{String: req.GetDiagnostic(), Valid: req.Diagnostic != nil},
+		Customer:    sql.NullInt32{Int32: req.GetCustomerId(), Valid: req.CustomerId != nil},
 		Doctor:      sql.NullInt32{Int32: req.GetDoctorId(), Valid: true},
+		Company:     req.GetCompany(),
 		UserCreated: account.UserID,
+		UserUpdated: sql.NullInt32{},
 	})
 	if err != nil {
 		errApp := common.ErrDB(err)

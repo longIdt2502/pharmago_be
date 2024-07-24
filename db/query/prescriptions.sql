@@ -7,9 +7,9 @@ INSERT INTO prescription_item (
 
 -- name: CreatePrescription :one
 INSERT INTO prescriptions (
-    uuid, code, symptoms, diagnostic, doctor, user_created
+    uuid, code, symptoms, diagnostic, customer, doctor, company, user_created, user_updated
 ) VALUES (
-    $1, $2, $3, $4, $5, $6
+    $1, $2, $3, $4, $5, $6, $7, $8, $9
 ) RETURNING *;
 
 -- name: ListPrescriptionItem :many
@@ -24,3 +24,11 @@ JOIN accounts a ON a.id = p.doctor
 JOIN accounts uc ON uc.id = p.user_created
 LEFT JOIN accounts uu ON uu.id = p.user_updated
 WHERE p.uuid = $1;
+
+-- name: ListPrescription :many
+SELECT * FROM prescriptions p
+JOIN customers c ON c.id = p.customer
+JOIN accounts a ON a.id = p.doctor
+JOIN accounts uc ON uc.id = p.user_created
+LEFT JOIN accounts uu ON uu.id = p.user_updated
+WHERE p.company = $1;
