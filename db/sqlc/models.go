@@ -117,9 +117,10 @@ type Account struct {
 }
 
 type AccountCompany struct {
-	ID      int32 `json:"id"`
-	Account int32 `json:"account"`
-	Company int32 `json:"company"`
+	ID            int32         `json:"id"`
+	Account       int32         `json:"account"`
+	Company       sql.NullInt32 `json:"company"`
+	CompanyParent sql.NullInt32 `json:"company_parent"`
 }
 
 type AccountMedium struct {

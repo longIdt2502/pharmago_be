@@ -188,6 +188,50 @@ func (server *ServerGRPC) CreateCompany(ctx context.Context, req *pb.CreateCompa
 	return rsp, nil
 }
 
+func (server *ServerGRPC) AssignEmployee(ctx context.Context, req *pb.AssignCompanyReq) (*pb.AssignCompanyRes, error) {
+	_, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, status.Errorf(codes.Unauthenticated, "failed to authenticated")
+	}
+
+	for _, item := range req.GetAssign() {
+		_, err := server.store.AssignEmployee(ctx, db.AssignEmployeeParams{
+			Company: sql.NullInt32{Int32: req.GetCompany(), Valid: true},
+			Account: item,
+		})
+		if err != nil {
+			errApp := common.ErrDB(err)
+			return &pb.AssignCompanyRes{
+				Code:         int32(errApp.StatusCode),
+				Message:      errApp.Message,
+				MessageTrans: errApp.MessageTrans,
+				Log:          errApp.Log,
+			}, nil
+		}
+	}
+
+	for _, item := range req.GetRemove() {
+		_, err := server.store.AssignEmployee(ctx, db.AssignEmployeeParams{
+			Company: sql.NullInt32{},
+			Account: item,
+		})
+		if err != nil {
+			errApp := common.ErrDB(err)
+			return &pb.AssignCompanyRes{
+				Code:         int32(errApp.StatusCode),
+				Message:      errApp.Message,
+				MessageTrans: errApp.MessageTrans,
+				Log:          errApp.Log,
+			}, nil
+		}
+	}
+
+	return &pb.AssignCompanyRes{
+		Code:    200,
+		Message: "success",
+	}, nil
+}
+
 func validateCreateCompany(req *pb.CreateCompanyRequest) (violations []*errdetails.BadRequest_FieldViolation) {
 	if err := validate.ValidateFullName(req.Company.Name); err != nil {
 		violations = append(violations, config.FieldViolation("name", err))

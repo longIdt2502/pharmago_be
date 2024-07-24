@@ -11,6 +11,30 @@ import (
 	"time"
 )
 
+const assignEmployee = `-- name: AssignEmployee :one
+UPDATE account_company 
+SET company = $1
+WHERE account = $2
+RETURNING id, account, company, company_parent
+`
+
+type AssignEmployeeParams struct {
+	Company sql.NullInt32 `json:"company"`
+	Account int32         `json:"account"`
+}
+
+func (q *Queries) AssignEmployee(ctx context.Context, arg AssignEmployeeParams) (AccountCompany, error) {
+	row := q.db.QueryRowContext(ctx, assignEmployee, arg.Company, arg.Account)
+	var i AccountCompany
+	err := row.Scan(
+		&i.ID,
+		&i.Account,
+		&i.Company,
+		&i.CompanyParent,
+	)
+	return i, err
+}
+
 const createAccount = `-- name: CreateAccount :one
 INSERT INTO accounts (username, hashed_password, full_name, email, type, role, gender, licence, dob, address, is_verify)
 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, created_at, role, gender, licence, dob, address
@@ -65,18 +89,24 @@ func (q *Queries) CreateAccount(ctx context.Context, arg CreateAccountParams) (A
 }
 
 const createAccountCompany = `-- name: CreateAccountCompany :one
-INSERT INTO account_company (account, company) VALUES ($1, $2) RETURNING id, account, company
+INSERT INTO account_company (account, company, company_parent) VALUES ($1, $2, $3) RETURNING id, account, company, company_parent
 `
 
 type CreateAccountCompanyParams struct {
-	Account int32 `json:"account"`
-	Company int32 `json:"company"`
+	Account       int32         `json:"account"`
+	Company       sql.NullInt32 `json:"company"`
+	CompanyParent sql.NullInt32 `json:"company_parent"`
 }
 
 func (q *Queries) CreateAccountCompany(ctx context.Context, arg CreateAccountCompanyParams) (AccountCompany, error) {
-	row := q.db.QueryRowContext(ctx, createAccountCompany, arg.Account, arg.Company)
+	row := q.db.QueryRowContext(ctx, createAccountCompany, arg.Account, arg.Company, arg.CompanyParent)
 	var i AccountCompany
-	err := row.Scan(&i.ID, &i.Account, &i.Company)
+	err := row.Scan(
+		&i.ID,
+		&i.Account,
+		&i.Company,
+		&i.CompanyParent,
+	)
 	return i, err
 }
 
@@ -189,34 +219,35 @@ func (q *Queries) GetAccountByUseName(ctx context.Context, username string) (Acc
 }
 
 const listAccount = `-- name: ListAccount :many
-SELECT a.id, username, hashed_password, full_name, email, a.type, is_verify, password_changed_at, a.created_at, role, gender, licence, dob, a.address, ac.id, account, company, c.id, name, c.code, tax_code, phone, description, c.address, oa_id, c.created_at, owner, c.type, time_open, time_close, parent, is_active, manager, user_created, user_updated, updated_at, at.id, at.code, title FROM accounts a
+SELECT a.id, username, hashed_password, full_name, email, a.type, is_verify, password_changed_at, a.created_at, role, gender, licence, dob, a.address, ac.id, account, company, company_parent, c.id, name, c.code, tax_code, phone, description, c.address, oa_id, c.created_at, owner, c.type, time_open, time_close, parent, is_active, manager, user_created, user_updated, updated_at, at.id, at.code, title FROM accounts a
 LEFT JOIN account_company ac ON ac.account = a.id
 LEFT JOIN companies c ON c.id = ac.company
 LEFT JOIN account_type at ON at.id = a.type 
-WHERE ac.company = $1::int
+WHERE (ac.company = $1::int OR c.parent = $2)
 AND (
-    a.full_name ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
-    a.username ILIKE '%' || COALESCE($2::varchar, '') || '%'
+    a.full_name ILIKE '%' || COALESCE($3::varchar, '') || '%' OR
+    a.username ILIKE '%' || COALESCE($3::varchar, '') || '%'
 )
 AND (
-    $3::int IS NULL OR a.type = $3::int
+    $4::int IS NULL OR a.type = $4::int
 )
 AND (
-    $4::int IS NULL OR a.role = $4::int
+    $5::int IS NULL OR a.role = $5::int
     
 )
 ORDER BY -a.id
-LIMIT COALESCE($6::int, 10)
-OFFSET (COALESCE($5::int, 1) - 1) * COALESCE($6::int, 10)
+LIMIT COALESCE($7::int, 10)
+OFFSET (COALESCE($6::int, 1) - 1) * COALESCE($7::int, 10)
 `
 
 type ListAccountParams struct {
-	Company int32          `json:"company"`
-	Search  sql.NullString `json:"search"`
-	Type    sql.NullInt32  `json:"type"`
-	Role    sql.NullInt32  `json:"role"`
-	Page    sql.NullInt32  `json:"page"`
-	Limit   sql.NullInt32  `json:"limit"`
+	Company       int32          `json:"company"`
+	CompanyParent sql.NullInt32  `json:"company_parent"`
+	Search        sql.NullString `json:"search"`
+	Type          sql.NullInt32  `json:"type"`
+	Role          sql.NullInt32  `json:"role"`
+	Page          sql.NullInt32  `json:"page"`
+	Limit         sql.NullInt32  `json:"limit"`
 }
 
 type ListAccountRow struct {
@@ -237,6 +268,7 @@ type ListAccountRow struct {
 	ID_2              sql.NullInt32  `json:"id_2"`
 	Account           sql.NullInt32  `json:"account"`
 	Company           sql.NullInt32  `json:"company"`
+	CompanyParent     sql.NullInt32  `json:"company_parent"`
 	ID_3              sql.NullInt32  `json:"id_3"`
 	Name              sql.NullString `json:"name"`
 	Code              sql.NullString `json:"code"`
@@ -264,6 +296,7 @@ type ListAccountRow struct {
 func (q *Queries) ListAccount(ctx context.Context, arg ListAccountParams) ([]ListAccountRow, error) {
 	rows, err := q.db.QueryContext(ctx, listAccount,
 		arg.Company,
+		arg.CompanyParent,
 		arg.Search,
 		arg.Type,
 		arg.Role,
@@ -295,6 +328,7 @@ func (q *Queries) ListAccount(ctx context.Context, arg ListAccountParams) ([]Lis
 			&i.ID_2,
 			&i.Account,
 			&i.Company,
+			&i.CompanyParent,
 			&i.ID_3,
 			&i.Name,
 			&i.Code,

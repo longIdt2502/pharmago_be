@@ -12,6 +12,7 @@ message AccountListRequest {
     string search = 3;
     optional int32 page = 4;
     optional int32 limit = 5;
+    optional int32 company_parent = 6;
 }
 
 message AccountListResponse {

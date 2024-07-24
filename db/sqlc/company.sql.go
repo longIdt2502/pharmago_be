@@ -17,7 +17,7 @@ WHERE company = $1
 GROUP BY id
 `
 
-func (q *Queries) CountEmployee(ctx context.Context, company int32) (int64, error) {
+func (q *Queries) CountEmployee(ctx context.Context, company sql.NullInt32) (int64, error) {
 	row := q.db.QueryRowContext(ctx, countEmployee, company)
 	var total int64
 	err := row.Scan(&total)
@@ -93,11 +93,11 @@ func (q *Queries) CreateCompany(ctx context.Context, arg CreateCompanyParams) (C
 
 const detailCompany = `-- name: DetailCompany :one
 WITH employee AS (
-    SELECT id, account, company, COUNT(id) AS total_employee FROM account_company
+    SELECT id, account, company, company_parent, COUNT(id) AS total_employee FROM account_company
     WHERE company = $1
     GROUP BY id
 )
-SELECT c.id, name, c.code, tax_code, phone, description, c.address, oa_id, c.created_at, owner, c.type, time_open, time_close, parent, is_active, manager, user_created, user_updated, updated_at, ct.code, title, am.id, am.username, am.hashed_password, am.full_name, am.email, am.type, am.is_verify, am.password_changed_at, am.created_at, am.role, am.gender, am.licence, am.dob, am.address, ac.id, ac.username, ac.hashed_password, ac.full_name, ac.email, ac.type, ac.is_verify, ac.password_changed_at, ac.created_at, ac.role, ac.gender, ac.licence, ac.dob, ac.address, au.id, au.username, au.hashed_password, au.full_name, au.email, au.type, au.is_verify, au.password_changed_at, au.created_at, au.role, au.gender, au.licence, au.dob, au.address, e.id, account, company, total_employee FROM companies c
+SELECT c.id, name, c.code, tax_code, phone, description, c.address, oa_id, c.created_at, owner, c.type, time_open, time_close, parent, is_active, manager, user_created, user_updated, updated_at, ct.code, title, am.id, am.username, am.hashed_password, am.full_name, am.email, am.type, am.is_verify, am.password_changed_at, am.created_at, am.role, am.gender, am.licence, am.dob, am.address, ac.id, ac.username, ac.hashed_password, ac.full_name, ac.email, ac.type, ac.is_verify, ac.password_changed_at, ac.created_at, ac.role, ac.gender, ac.licence, ac.dob, ac.address, au.id, au.username, au.hashed_password, au.full_name, au.email, au.type, au.is_verify, au.password_changed_at, au.created_at, au.role, au.gender, au.licence, au.dob, au.address, e.id, account, company, company_parent, total_employee FROM companies c
 JOIN company_type ct ON ct.code = c.type
 LEFT JOIN accounts am ON am.id = c.manager
 LEFT JOIN accounts ac ON ac.id = c.user_created
@@ -174,6 +174,7 @@ type DetailCompanyRow struct {
 	ID_5                sql.NullInt32  `json:"id_5"`
 	Account             sql.NullInt32  `json:"account"`
 	Company             sql.NullInt32  `json:"company"`
+	CompanyParent       sql.NullInt32  `json:"company_parent"`
 	TotalEmployee       sql.NullInt64  `json:"total_employee"`
 }
 
@@ -247,6 +248,7 @@ func (q *Queries) DetailCompany(ctx context.Context, id int32) (DetailCompanyRow
 		&i.ID_5,
 		&i.Account,
 		&i.Company,
+		&i.CompanyParent,
 		&i.TotalEmployee,
 	)
 	return i, err

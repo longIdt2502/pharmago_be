@@ -108,23 +108,12 @@ func (server *ServerGRPC) AccountList(ctx context.Context, req *pb.AccountListRe
 	}
 
 	accountsDb, err := server.store.ListAccount(ctx, db.ListAccountParams{
-		Company: req.GetCompany(),
-		Search: sql.NullString{
-			String: req.GetSearch(),
-			Valid:  true,
-		},
-		Type: sql.NullInt32{
-			Int32: req.GetType(),
-			Valid: req.Type != nil,
-		},
-		Page: sql.NullInt32{
-			Int32: req.GetPage(),
-			Valid: req.Page != nil,
-		},
-		Limit: sql.NullInt32{
-			Int32: req.GetLimit(),
-			Valid: req.Limit != nil,
-		},
+		Company:       req.GetCompany(),
+		CompanyParent: sql.NullInt32{Int32: req.GetCompanyParent(), Valid: req.CompanyParent != nil},
+		Search:        sql.NullString{String: req.GetSearch(), Valid: true},
+		Type:          sql.NullInt32{Int32: req.GetType(), Valid: req.Type != nil},
+		Page:          sql.NullInt32{Int32: req.GetPage(), Valid: req.Page != nil},
+		Limit:         sql.NullInt32{Int32: req.GetLimit(), Valid: req.Limit != nil},
 	})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get list account: %e", err)
@@ -221,9 +210,11 @@ func (server *ServerGRPC) CreateEmployee(ctx context.Context, req *pb.CreateEmpl
 		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to create employee: %e", err))
 	}
 
+	companyDb, err := server.store.GetCompanyById(ctx, req.GetCompany())
 	_, err = server.store.CreateAccountCompany(ctx, db.CreateAccountCompanyParams{
-		Account: employee.ID,
-		Company: req.GetCompany(),
+		Account:       employee.ID,
+		Company:       sql.NullInt32{Int32: req.GetCompany(), Valid: true},
+		CompanyParent: sql.NullInt32{Int32: companyDb.Parent.Int32, Valid: companyDb.Parent.Valid},
 	})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to create account company: %e", err))
