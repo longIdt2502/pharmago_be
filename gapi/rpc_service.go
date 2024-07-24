@@ -134,12 +134,14 @@ func (server *ServerGRPC) ServiceDetail(ctx context.Context, req *pb.ServiceDeta
 		variantsPb = append(variantsPb, data)
 	}
 
-	accountDb, err := server.store.GetAccount(ctx, service.Staff)
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "faield to get account: %e", err)
+	var accountPb *pb.Account
+	if service.Staff.Valid {
+		accountDb, err := server.store.GetAccount(ctx, service.Staff.Int32)
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "faield to get account: %e", err)
+		}
+		accountPb = mapper.AccountMapper(accountDb)
 	}
-
-	accountPb := mapper.AccountMapper(accountDb)
 
 	servicePb := mapper.ServiceMapper(service)
 	servicePb.Variants = variantsPb

@@ -24,7 +24,7 @@ type CreateServiceParams struct {
 	Image        sql.NullInt32  `json:"image"`
 	Title        string         `json:"title"`
 	Entity       sql.NullString `json:"entity"`
-	Staff        int32          `json:"staff"`
+	Staff        sql.NullInt32  `json:"staff"`
 	Frequency    sql.NullString `json:"frequency"`
 	Unit         string         `json:"unit"`
 	Price        float64        `json:"price"`
@@ -195,7 +195,7 @@ type GetListServiceRow struct {
 	Code         string         `json:"code"`
 	Title        string         `json:"title"`
 	Entity       sql.NullString `json:"entity"`
-	Staff        int32          `json:"staff"`
+	Staff        sql.NullInt32  `json:"staff"`
 	Frequency    sql.NullString `json:"frequency"`
 	ReminderTime sql.NullInt32  `json:"reminder_time"`
 	Unit         string         `json:"unit"`
@@ -279,7 +279,7 @@ type GetServicesByCustomerRow struct {
 	Code         string         `json:"code"`
 	Title        string         `json:"title"`
 	Entity       sql.NullString `json:"entity"`
-	Staff        int32          `json:"staff"`
+	Staff        sql.NullInt32  `json:"staff"`
 	Frequency    sql.NullString `json:"frequency"`
 	ReminderTime sql.NullInt32  `json:"reminder_time"`
 	Unit         string         `json:"unit"`
@@ -425,7 +425,7 @@ type ServicesUsedByCustomerRow struct {
 	Code         string         `json:"code"`
 	Title        string         `json:"title"`
 	Entity       sql.NullString `json:"entity"`
-	Staff        int32          `json:"staff"`
+	Staff        sql.NullInt32  `json:"staff"`
 	Frequency    sql.NullString `json:"frequency"`
 	ReminderTime sql.NullInt32  `json:"reminder_time"`
 	Unit         string         `json:"unit"`
