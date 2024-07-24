@@ -429,7 +429,7 @@ type GetListScheduleServiceRow struct {
 	Code          string          `json:"code"`
 	Title         string          `json:"title"`
 	Entity        sql.NullString  `json:"entity"`
-	Staff         int32           `json:"staff"`
+	Staff         sql.NullInt32   `json:"staff"`
 	Frequency     sql.NullString  `json:"frequency"`
 	ReminderTime  sql.NullInt32   `json:"reminder_time"`
 	Unit          string          `json:"unit"`

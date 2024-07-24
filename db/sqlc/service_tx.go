@@ -41,7 +41,10 @@ func (store *Store) CreateServiceTx(ctx context.Context, req CreateServiceTxPara
 				String: req.GetEntity(),
 				Valid:  req.Entity != nil,
 			},
-			Staff: req.GetStaff(),
+			Staff: sql.NullInt32{
+				Int32: req.GetStaff(),
+				Valid: req.Staff != nil,
+			},
 			Frequency: sql.NullString{
 				String: req.GetFrequency(),
 				Valid:  req.Frequency != nil,

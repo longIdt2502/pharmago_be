@@ -8,7 +8,7 @@ message ServiceCreateRequest {
     optional string code = 1;
     string title = 2;
     optional string entity = 3;
-    int32 staff = 4;
+    optional int32 staff = 4;
     optional string frequency = 5;
     string unit = 6;
     double price = 7;

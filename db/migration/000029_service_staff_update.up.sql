@@ -1,0 +1,1 @@
+ALTER TABLE services ALTER COLUMN staff DROP NOT NULL;
