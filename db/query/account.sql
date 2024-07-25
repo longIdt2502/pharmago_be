@@ -1,6 +1,8 @@
 -- name: GetAccount :one
-SELECT * FROM accounts
-WHERE id = $1 LIMIT 1;
+SELECT * FROM accounts a
+LEFT JOIN account_company ac ON ac.account = a.id
+LEFT JOIN companies c ON ac.company = c.id
+WHERE a.id = $1 LIMIT 1;
 
 -- name: GetAccountByUseName :one
 SELECT * FROM accounts
@@ -52,7 +54,7 @@ SELECT * FROM accounts a
 LEFT JOIN account_company ac ON ac.account = a.id
 LEFT JOIN companies c ON c.id = ac.company
 LEFT JOIN account_type at ON at.id = a.type 
-WHERE (ac.company = sqlc.arg(company)::int OR c.parent = sqlc.narg(company_parent))
+WHERE (ac.company = sqlc.arg(company)::int OR ac.company_parent = sqlc.narg(company_parent))
 AND (
     a.full_name ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
     a.username ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%'
@@ -79,6 +81,5 @@ RETURNING *;
 -- name: CountAccountByStatus :many
 SELECT a.is_verify ,COUNT(a.id) as "count" FROM accounts a
 LEFT JOIN account_company ac ON ac.account = a.id
-LEFT JOIN companies c ON c.id = ac.company
-WHERE (ac.company = sqlc.arg(company)::int OR c.parent = sqlc.narg(company_parent))
+WHERE (ac.company = sqlc.arg(company)::int OR ac.company_parent = sqlc.arg(company)::int)
 GROUP BY a.is_verify;

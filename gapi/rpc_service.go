@@ -140,7 +140,7 @@ func (server *ServerGRPC) ServiceDetail(ctx context.Context, req *pb.ServiceDeta
 		if err != nil {
 			return nil, status.Errorf(codes.Internal, "faield to get account: %e", err)
 		}
-		accountPb = mapper.AccountMapper(accountDb)
+		accountPb = mapper.AccountRowMapper(accountDb)
 	}
 
 	servicePb := mapper.ServiceMapper(service)

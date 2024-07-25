@@ -38,23 +38,17 @@ func (q *Queries) AssignEmployee(ctx context.Context, arg AssignEmployeeParams) 
 const countAccountByStatus = `-- name: CountAccountByStatus :many
 SELECT a.is_verify ,COUNT(a.id) as "count" FROM accounts a
 LEFT JOIN account_company ac ON ac.account = a.id
-LEFT JOIN companies c ON c.id = ac.company
-WHERE (ac.company = $1::int OR c.parent = $2)
+WHERE (ac.company = $1::int OR ac.company_parent = $1::int)
 GROUP BY a.is_verify
 `
-
-type CountAccountByStatusParams struct {
-	Company       int32         `json:"company"`
-	CompanyParent sql.NullInt32 `json:"company_parent"`
-}
 
 type CountAccountByStatusRow struct {
 	IsVerify bool  `json:"is_verify"`
 	Count    int64 `json:"count"`
 }
 
-func (q *Queries) CountAccountByStatus(ctx context.Context, arg CountAccountByStatusParams) ([]CountAccountByStatusRow, error) {
-	rows, err := q.db.QueryContext(ctx, countAccountByStatus, arg.Company, arg.CompanyParent)
+func (q *Queries) CountAccountByStatus(ctx context.Context, company int32) ([]CountAccountByStatusRow, error) {
+	rows, err := q.db.QueryContext(ctx, countAccountByStatus, company)
 	if err != nil {
 		return nil, err
 	}
@@ -152,13 +146,55 @@ func (q *Queries) CreateAccountCompany(ctx context.Context, arg CreateAccountCom
 }
 
 const getAccount = `-- name: GetAccount :one
-SELECT id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, created_at, role, gender, licence, dob, address FROM accounts
-WHERE id = $1 LIMIT 1
+SELECT a.id, username, hashed_password, full_name, email, a.type, is_verify, password_changed_at, a.created_at, role, gender, licence, dob, a.address, ac.id, account, company, company_parent, c.id, name, code, tax_code, phone, description, c.address, oa_id, c.created_at, owner, c.type, time_open, time_close, parent, is_active, manager, user_created, user_updated, updated_at FROM accounts a
+LEFT JOIN account_company ac ON ac.account = a.id
+LEFT JOIN companies c ON ac.company = c.id
+WHERE a.id = $1 LIMIT 1
 `
 
-func (q *Queries) GetAccount(ctx context.Context, id int32) (Account, error) {
+type GetAccountRow struct {
+	ID                int32          `json:"id"`
+	Username          string         `json:"username"`
+	HashedPassword    string         `json:"hashed_password"`
+	FullName          string         `json:"full_name"`
+	Email             string         `json:"email"`
+	Type              int32          `json:"type"`
+	IsVerify          bool           `json:"is_verify"`
+	PasswordChangedAt time.Time      `json:"password_changed_at"`
+	CreatedAt         time.Time      `json:"created_at"`
+	Role              sql.NullInt32  `json:"role"`
+	Gender            NullGender     `json:"gender"`
+	Licence           sql.NullString `json:"licence"`
+	Dob               sql.NullTime   `json:"dob"`
+	Address           sql.NullInt32  `json:"address"`
+	ID_2              sql.NullInt32  `json:"id_2"`
+	Account           sql.NullInt32  `json:"account"`
+	Company           sql.NullInt32  `json:"company"`
+	CompanyParent     sql.NullInt32  `json:"company_parent"`
+	ID_3              sql.NullInt32  `json:"id_3"`
+	Name              sql.NullString `json:"name"`
+	Code              sql.NullString `json:"code"`
+	TaxCode           sql.NullString `json:"tax_code"`
+	Phone             sql.NullString `json:"phone"`
+	Description       sql.NullString `json:"description"`
+	Address_2         sql.NullInt32  `json:"address_2"`
+	OaID              sql.NullString `json:"oa_id"`
+	CreatedAt_2       sql.NullTime   `json:"created_at_2"`
+	Owner             sql.NullInt32  `json:"owner"`
+	Type_2            sql.NullString `json:"type_2"`
+	TimeOpen          sql.NullTime   `json:"time_open"`
+	TimeClose         sql.NullTime   `json:"time_close"`
+	Parent            sql.NullInt32  `json:"parent"`
+	IsActive          sql.NullBool   `json:"is_active"`
+	Manager           sql.NullInt32  `json:"manager"`
+	UserCreated       sql.NullInt32  `json:"user_created"`
+	UserUpdated       sql.NullInt32  `json:"user_updated"`
+	UpdatedAt         sql.NullTime   `json:"updated_at"`
+}
+
+func (q *Queries) GetAccount(ctx context.Context, id int32) (GetAccountRow, error) {
 	row := q.db.QueryRowContext(ctx, getAccount, id)
-	var i Account
+	var i GetAccountRow
 	err := row.Scan(
 		&i.ID,
 		&i.Username,
@@ -174,6 +210,29 @@ func (q *Queries) GetAccount(ctx context.Context, id int32) (Account, error) {
 		&i.Licence,
 		&i.Dob,
 		&i.Address,
+		&i.ID_2,
+		&i.Account,
+		&i.Company,
+		&i.CompanyParent,
+		&i.ID_3,
+		&i.Name,
+		&i.Code,
+		&i.TaxCode,
+		&i.Phone,
+		&i.Description,
+		&i.Address_2,
+		&i.OaID,
+		&i.CreatedAt_2,
+		&i.Owner,
+		&i.Type_2,
+		&i.TimeOpen,
+		&i.TimeClose,
+		&i.Parent,
+		&i.IsActive,
+		&i.Manager,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.UpdatedAt,
 	)
 	return i, err
 }
@@ -264,7 +323,7 @@ SELECT a.id, username, hashed_password, full_name, email, a.type, is_verify, pas
 LEFT JOIN account_company ac ON ac.account = a.id
 LEFT JOIN companies c ON c.id = ac.company
 LEFT JOIN account_type at ON at.id = a.type 
-WHERE (ac.company = $1::int OR c.parent = $2)
+WHERE (ac.company = $1::int OR ac.company_parent = $2)
 AND (
     a.full_name ILIKE '%' || COALESCE($3::varchar, '') || '%' OR
     a.username ILIKE '%' || COALESCE($3::varchar, '') || '%'

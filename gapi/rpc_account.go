@@ -32,7 +32,7 @@ func (server *ServerGRPC) AccountDetail(ctx context.Context, _ *pb.AccountDetail
 		return nil, status.Errorf(codes.Internal, "failed to get account: %e", err)
 	}
 
-	accountPb := mapper.AccountMapper(account)
+	accountPb := mapper.AccountRowMapper(account)
 
 	companies, _ := server.store.GetCompanies(ctx, db.GetCompaniesParams{
 		Owner: sql.NullInt32{
@@ -125,10 +125,7 @@ func (server *ServerGRPC) AccountList(ctx context.Context, req *pb.AccountListRe
 		accountsPb = append(accountsPb, mapper.ListAccountRowMapper(item))
 	}
 
-	counts, err := server.store.CountAccountByStatus(ctx, db.CountAccountByStatusParams{
-		Company:       req.Company,
-		CompanyParent: sql.NullInt32{Int32: req.GetCompanyParent(), Valid: req.CompanyParent != nil},
-	})
+	counts, err := server.store.CountAccountByStatus(ctx, req.Company)
 	if err != nil {
 		errApp := common.ErrDB(err)
 		return &pb.AccountListResponse{
@@ -139,24 +136,14 @@ func (server *ServerGRPC) AccountList(ctx context.Context, req *pb.AccountListRe
 		}, nil
 	}
 
-	var countsPb []*pb.SimpleData
+	var countsPb *pb.AccountListCount
 	for _, item := range counts {
-		var itemPb *pb.SimpleData
 		value := int32(item.Count)
 		if item.IsVerify {
-			itemPb = &pb.SimpleData{
-				Name:  "Đang hoạt động",
-				Code:  "TRUE",
-				Value: &value,
-			}
+			countsPb.Active = value
 		} else {
-			itemPb = &pb.SimpleData{
-				Name:  "Vô hiệu hoá",
-				Code:  "FALSE",
-				Value: &value,
-			}
+			countsPb.UnActive = value
 		}
-		countsPb = append(countsPb, itemPb)
 	}
 
 	return &pb.AccountListResponse{
@@ -285,7 +272,7 @@ func (server *ServerGRPC) UpdateEmployee(ctx context.Context, req *pb.EmployeeUp
 		return nil, status.Errorf(codes.Internal, "failed to hash password")
 	}
 
-	var newAddressId *int32
+	var newAddressId int32
 	if req.Address != nil {
 		address, err := server.store.GetAddress(ctx, employee.Address.Int32)
 		if err != nil {
@@ -308,7 +295,7 @@ func (server *ServerGRPC) UpdateEmployee(ctx context.Context, req *pb.EmployeeUp
 						Log:          errApp.Log,
 					}, nil
 				}
-				newAddressId = &(address.ID)
+				newAddressId = address.ID
 			} else {
 				errApp := common.ErrDB(err)
 				return &pb.EmployeeUpdateResponse{
@@ -344,7 +331,7 @@ func (server *ServerGRPC) UpdateEmployee(ctx context.Context, req *pb.EmployeeUp
 		Gender:   db.NullGender{Gender: db.Gender(req.GetGender()), Valid: req.Gender != nil},
 		Licence:  sql.NullString{String: req.GetLicence(), Valid: req.Licence != nil},
 		Dob:      sql.NullTime{Time: time.Unix(req.GetDob().GetSeconds(), 0), Valid: req.Dob.IsValid()},
-		Address:  sql.NullInt32{Int32: *newAddressId, Valid: newAddressId != nil},
+		Address:  sql.NullInt32{Int32: newAddressId, Valid: newAddressId != 0},
 		ID:       sql.NullInt32{Int32: req.Id, Valid: true},
 	})
 	if err != nil {
@@ -377,7 +364,7 @@ func (server *ServerGRPC) DetailEmployee(ctx context.Context, req *pb.EmployeeDe
 		return nil, status.Errorf(codes.Internal, "failed to get account")
 	}
 
-	accountPb := mapper.AccountMapper(account)
+	accountPb := mapper.AccountRowMapper(account)
 
 	var address *pb.Address
 	if account.Address.Valid {

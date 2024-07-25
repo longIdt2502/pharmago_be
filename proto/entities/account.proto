@@ -25,4 +25,5 @@ message Account {
   google.protobuf.Timestamp password_changed_at = 14;
   google.protobuf.Timestamp created_at = 15;
   string companyName = 16;
+  int32 companyId = 17;
 }
