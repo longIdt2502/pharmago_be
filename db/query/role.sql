@@ -22,7 +22,7 @@ WITH employee AS (
 SELECT *, ac.full_name AS created_name, au.full_name AS updated_name FROM roles r
 LEFT JOIN companies c ON c.id = r.company
 JOIN accounts ac ON ac.id = r.user_created
-LEFT JOIN accounts au ON au.id = r.
+LEFT JOIN accounts au ON au.id = r.user_updated
 LEFT JOIN employee e ON e.role = r.id
 WHERE (r.company IS NULL OR r.company = sqlc.narg(company)::int)
 AND (
