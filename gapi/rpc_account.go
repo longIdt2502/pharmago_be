@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/longIdt2502/pharmago_be/common"
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/gapi/config"
 	"github.com/longIdt2502/pharmago_be/gapi/mapper"
@@ -124,10 +125,45 @@ func (server *ServerGRPC) AccountList(ctx context.Context, req *pb.AccountListRe
 		accountsPb = append(accountsPb, mapper.ListAccountRowMapper(item))
 	}
 
+	counts, err := server.store.CountAccountByStatus(ctx, db.CountAccountByStatusParams{
+		Company:       req.Company,
+		CompanyParent: sql.NullInt32{Int32: req.GetCompanyParent(), Valid: req.CompanyParent != nil},
+	})
+	if err != nil {
+		errApp := common.ErrDB(err)
+		return &pb.AccountListResponse{
+			Code:         int32(errApp.StatusCode),
+			Message:      errApp.Message,
+			MessageTrans: errApp.MessageTrans,
+			Log:          errApp.Log,
+		}, nil
+	}
+
+	var countsPb []*pb.SimpleData
+	for _, item := range counts {
+		var itemPb *pb.SimpleData
+		value := int32(item.Count)
+		if item.IsVerify {
+			itemPb = &pb.SimpleData{
+				Name:  "Đang hoạt động",
+				Code:  "TRUE",
+				Value: &value,
+			}
+		} else {
+			itemPb = &pb.SimpleData{
+				Name:  "Vô hiệu hoá",
+				Code:  "FALSE",
+				Value: &value,
+			}
+		}
+		countsPb = append(countsPb, itemPb)
+	}
+
 	return &pb.AccountListResponse{
 		Code:    200,
 		Message: "success",
 		Details: accountsPb,
+		Counts:  countsPb,
 	}, nil
 }
 
@@ -228,87 +264,96 @@ func (server *ServerGRPC) CreateEmployee(ctx context.Context, req *pb.CreateEmpl
 }
 
 func (server *ServerGRPC) UpdateEmployee(ctx context.Context, req *pb.EmployeeUpdateRequest) (*pb.EmployeeUpdateResponse, error) {
-	_, err := server.authorizeUser(ctx)
+	tokenPayload, err := server.authorizeUser(ctx)
 	if err != nil {
 		return nil, config.UnauthenticatedError(err)
 	}
 
-	hashPass, err := utils.HashedPassword(req.GetPassword())
+	employee, err := server.store.GetAccount(ctx, req.GetId())
+	if err != nil {
+		errApp := common.ErrDB(err)
+		return &pb.EmployeeUpdateResponse{
+			Code:         int32(errApp.StatusCode),
+			Message:      errApp.Message,
+			MessageTrans: errApp.MessageTrans,
+			Log:          errApp.Log,
+		}, nil
+	}
+
+	hashPass, err := utils.HashedPassword(req.GetNewPassword())
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to hash password")
 	}
 
-	_, err = server.store.UpdateAddress(ctx, db.UpdateAddressParams{
-		Lat: sql.NullFloat64{
-			Float64: float64(req.GetAddress().GetLat()),
-			Valid:   true,
-		},
-		Lng: sql.NullFloat64{
-			Float64: float64(req.GetAddress().GetLng()),
-			Valid:   true,
-		},
-		District: sql.NullString{
-			String: req.GetAddress().GetDistrict().GetCode(),
-			Valid:  true,
-		},
-		Province: sql.NullString{
-			String: req.GetAddress().GetProvince().GetCode(),
-			Valid:  true,
-		},
-		Ward: sql.NullString{
-			String: req.GetAddress().GetWard().GetCode(),
-			Valid:  true,
-		},
-		Title: sql.NullString{
-			String: req.GetAddress().GetTitle(),
-			Valid:  true,
-		},
-	})
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to update address")
+	var newAddressId int32
+	if req.Address != nil {
+		address, err := server.store.GetAddress(ctx, employee.Address.Int32)
+		if err != nil {
+			if errors.Is(err, sql.ErrNoRows) {
+				address, err := server.store.CreateAddress(ctx, db.CreateAddressParams{
+					Lat:         float64(req.GetAddress().GetLat()),
+					Lng:         float64(req.GetAddress().GetLng()),
+					Province:    sql.NullString{String: req.GetAddress().GetProvince().GetCode(), Valid: true},
+					District:    sql.NullString{String: req.GetAddress().GetDistrict().GetCode(), Valid: true},
+					Ward:        sql.NullString{String: req.GetAddress().GetWard().GetCode(), Valid: true},
+					Title:       req.GetAddress().GetTitle(),
+					UserCreated: tokenPayload.UserID,
+				})
+				if err != nil {
+					errApp := common.ErrDB(err)
+					return &pb.EmployeeUpdateResponse{
+						Code:         int32(errApp.StatusCode),
+						Message:      errApp.Message,
+						MessageTrans: errApp.MessageTrans,
+						Log:          errApp.Log,
+					}, nil
+				}
+				newAddressId = address.ID
+			}
+			errApp := common.ErrDB(err)
+			return &pb.EmployeeUpdateResponse{
+				Code:         int32(errApp.StatusCode),
+				Message:      errApp.Message,
+				MessageTrans: errApp.MessageTrans,
+				Log:          errApp.Log,
+			}, nil
+		} else {
+			_, err = server.store.UpdateAddress(ctx, db.UpdateAddressParams{
+				Lat:      sql.NullFloat64{Float64: float64(req.GetAddress().GetLat()), Valid: true},
+				Lng:      sql.NullFloat64{Float64: float64(req.GetAddress().GetLng()), Valid: true},
+				Province: sql.NullString{String: req.GetAddress().GetProvince().GetCode(), Valid: true},
+				District: sql.NullString{String: req.GetAddress().GetDistrict().GetCode(), Valid: true},
+				Ward:     sql.NullString{String: req.GetAddress().GetWard().GetCode(), Valid: true},
+				Title:    sql.NullString{String: req.GetAddress().GetTitle(), Valid: true},
+				ID:       address.ID,
+			})
+			if err != nil {
+				return nil, status.Errorf(codes.Internal, "failed to update address")
+			}
+		}
 	}
 
 	_, err = server.store.UpdateAccount(ctx, db.UpdateAccountParams{
-		ID: sql.NullInt32{
-			Int32: req.Id,
-			Valid: true,
-		},
-		IsVerify: sql.NullBool{
-			Bool:  req.GetActive(),
-			Valid: true,
-		},
-		Password: sql.NullString{
-			String: hashPass,
-			Valid:  true,
-		},
-		FullName: sql.NullString{
-			String: req.GetFullName(),
-			Valid:  true,
-		},
-		Email: sql.NullString{
-			String: req.GetEmail(),
-			Valid:  true,
-		},
-		Type: sql.NullInt32{},
-		Licence: sql.NullString{
-			String: req.GetLicence(),
-			Valid:  req.Licence != nil,
-		},
-		Gender: db.NullGender{
-			Gender: db.Gender(req.GetGender()),
-			Valid:  req.Gender != nil,
-		},
-		Role: sql.NullInt32{
-			Int32: req.GetRole(),
-			Valid: req.Role != nil,
-		},
-		Dob: sql.NullTime{
-			Time:  time.Unix(req.GetDob().GetSeconds(), 0),
-			Valid: req.Dob.IsValid(),
-		},
+		IsVerify: sql.NullBool{Bool: req.GetActive(), Valid: req.Active != nil},
+		Password: sql.NullString{String: hashPass, Valid: req.NewPassword != nil},
+		FullName: sql.NullString{String: req.GetFullName(), Valid: req.FullName != nil},
+		Email:    sql.NullString{String: req.GetEmail(), Valid: req.Email != nil},
+		Type:     sql.NullInt32{},
+		Role:     sql.NullInt32{Int32: req.GetRole(), Valid: req.Role != nil},
+		Gender:   db.NullGender{Gender: db.Gender(req.GetGender()), Valid: req.Gender != nil},
+		Licence:  sql.NullString{String: req.GetLicence(), Valid: req.Licence != nil},
+		Dob:      sql.NullTime{Time: time.Unix(req.GetDob().GetSeconds(), 0), Valid: req.Dob.IsValid()},
+		Address:  sql.NullInt32{Int32: newAddressId, Valid: newAddressId != 0},
+		ID:       sql.NullInt32{Int32: req.Id, Valid: true},
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to update account")
+		errApp := common.ErrDBWithMsg(err, "Cập nhật thông tin nhân viên thất bại")
+		return &pb.EmployeeUpdateResponse{
+			Code:         int32(errApp.StatusCode),
+			Message:      errApp.Message,
+			MessageTrans: errApp.MessageTrans,
+			Log:          errApp.Log,
+		}, nil
 	}
 
 	return &pb.EmployeeUpdateResponse{
@@ -341,14 +386,17 @@ func (server *ServerGRPC) DetailEmployee(ctx context.Context, req *pb.EmployeeDe
 
 	var role *pb.Role
 	if account.Role.Valid {
-		roleDb, _ := server.store.RoleDetail(ctx, account.Role.Int32)
+		roleDb, err := server.store.RoleDetail(ctx, account.Role.Int32)
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to get role")
+		}
 		role = &pb.Role{
 			Id:              roleDb.ID,
 			Code:            roleDb.Code,
 			Title:           roleDb.Title,
 			Company:         roleDb.Company.Int32,
 			UserCreatedName: roleDb.CreatedName,
-			UserUpdatedName: roleDb.UpdatedName,
+			UserUpdatedName: roleDb.UpdatedName.String,
 			CreatedAt:       timestamppb.New(roleDb.CreatedAt),
 			UpdatedAt:       timestamppb.New(roleDb.UpdatedAt.Time),
 		}

@@ -239,6 +239,12 @@
             "required": false,
             "type": "integer",
             "format": "int32"
+          },
+          {
+            "name": "active",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "tags": [
@@ -9444,7 +9450,7 @@
     "PharmagoUpdateEmployeeBody": {
       "type": "object",
       "properties": {
-        "password": {
+        "newPassword": {
           "type": "string"
         },
         "fullName": {
@@ -9665,11 +9671,24 @@
         "message": {
           "type": "string"
         },
+        "messageTrans": {
+          "type": "string"
+        },
+        "log": {
+          "type": "string"
+        },
         "details": {
           "type": "array",
           "items": {
             "type": "object",
             "$ref": "#/definitions/pbAccount"
+          }
+        },
+        "counts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbSimpleData"
           }
         }
       }
@@ -12021,6 +12040,12 @@
           "format": "int32"
         },
         "message": {
+          "type": "string"
+        },
+        "messageTrans": {
+          "type": "string"
+        },
+        "log": {
           "type": "string"
         }
       }

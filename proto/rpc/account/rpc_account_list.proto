@@ -5,6 +5,7 @@ package pb;
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
 import "entities/account.proto";
+import "entities/simple_data.proto";
 
 message AccountListRequest {
     int32 company = 1;
@@ -13,10 +14,14 @@ message AccountListRequest {
     optional int32 page = 4;
     optional int32 limit = 5;
     optional int32 company_parent = 6;
+    optional bool active = 7;
 }
 
 message AccountListResponse {
     int32 code = 1;
     string message = 2;
-    repeated Account details = 3;
+    string message_trans = 3;
+    string log = 4;
+    repeated Account details = 5;
+    repeated SimpleData counts = 6;
 }

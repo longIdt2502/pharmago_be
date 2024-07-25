@@ -35,6 +35,47 @@ func (q *Queries) AssignEmployee(ctx context.Context, arg AssignEmployeeParams) 
 	return i, err
 }
 
+const countAccountByStatus = `-- name: CountAccountByStatus :many
+SELECT a.is_verify ,COUNT(a.id) as "count" FROM accounts a
+LEFT JOIN account_company ac ON ac.account = a.id
+LEFT JOIN companies c ON c.id = ac.company
+WHERE (ac.company = $1::int OR c.parent = $2)
+GROUP BY a.id
+`
+
+type CountAccountByStatusParams struct {
+	Company       int32         `json:"company"`
+	CompanyParent sql.NullInt32 `json:"company_parent"`
+}
+
+type CountAccountByStatusRow struct {
+	IsVerify bool  `json:"is_verify"`
+	Count    int64 `json:"count"`
+}
+
+func (q *Queries) CountAccountByStatus(ctx context.Context, arg CountAccountByStatusParams) ([]CountAccountByStatusRow, error) {
+	rows, err := q.db.QueryContext(ctx, countAccountByStatus, arg.Company, arg.CompanyParent)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []CountAccountByStatusRow{}
+	for rows.Next() {
+		var i CountAccountByStatusRow
+		if err := rows.Scan(&i.IsVerify, &i.Count); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const createAccount = `-- name: CreateAccount :one
 INSERT INTO accounts (username, hashed_password, full_name, email, type, role, gender, licence, dob, address, is_verify)
 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, created_at, role, gender, licence, dob, address
@@ -229,21 +270,24 @@ AND (
     a.username ILIKE '%' || COALESCE($3::varchar, '') || '%'
 )
 AND (
-    $4::int IS NULL OR a.type = $4::int
+    $4::bool IS NULL OR a.is_verify = $4::bool
 )
 AND (
-    $5::int IS NULL OR a.role = $5::int
-    
+    $5::int IS NULL OR a.type = $5::int
+)
+AND (
+    $6::int IS NULL OR a.role = $6::int
 )
 ORDER BY -a.id
-LIMIT COALESCE($7::int, 10)
-OFFSET (COALESCE($6::int, 1) - 1) * COALESCE($7::int, 10)
+LIMIT COALESCE($8::int, 10)
+OFFSET (COALESCE($7::int, 1) - 1) * COALESCE($8::int, 10)
 `
 
 type ListAccountParams struct {
 	Company       int32          `json:"company"`
 	CompanyParent sql.NullInt32  `json:"company_parent"`
 	Search        sql.NullString `json:"search"`
+	IsVerify      sql.NullBool   `json:"is_verify"`
 	Type          sql.NullInt32  `json:"type"`
 	Role          sql.NullInt32  `json:"role"`
 	Page          sql.NullInt32  `json:"page"`
@@ -298,6 +342,7 @@ func (q *Queries) ListAccount(ctx context.Context, arg ListAccountParams) ([]Lis
 		arg.Company,
 		arg.CompanyParent,
 		arg.Search,
+		arg.IsVerify,
 		arg.Type,
 		arg.Role,
 		arg.Page,
@@ -412,10 +457,11 @@ SET
     role = COALESCE($6::int, role),
     gender = COALESCE($7::gender, gender),
     licence = COALESCE($8::varchar, licence),
-    dob = COALESCE($9::timestamp, dob)
+    dob = COALESCE($9::timestamp, dob),
+    address = COALESCE($10::int, address)
 WHERE
-    id = $10
-    OR username = $11
+    id = $11
+    OR username = $12
 RETURNING id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, created_at, role, gender, licence, dob, address
 `
 
@@ -429,6 +475,7 @@ type UpdateAccountParams struct {
 	Gender   NullGender     `json:"gender"`
 	Licence  sql.NullString `json:"licence"`
 	Dob      sql.NullTime   `json:"dob"`
+	Address  sql.NullInt32  `json:"address"`
 	ID       sql.NullInt32  `json:"id"`
 	Username sql.NullString `json:"username"`
 }
@@ -444,6 +491,7 @@ func (q *Queries) UpdateAccount(ctx context.Context, arg UpdateAccountParams) (A
 		arg.Gender,
 		arg.Licence,
 		arg.Dob,
+		arg.Address,
 		arg.ID,
 		arg.Username,
 	)

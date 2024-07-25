@@ -382,9 +382,9 @@ func (q *Queries) ListRoleItem(ctx context.Context, roles int32) ([]ListRoleItem
 
 const roleDetail = `-- name: RoleDetail :one
 SELECT r.id, r.code, title, note, company, r.user_created, r.user_updated, r.updated_at, r.created_at, c.id, name, c.code, tax_code, phone, description, c.address, oa_id, c.created_at, owner, c.type, time_open, time_close, parent, is_active, manager, c.user_created, c.user_updated, c.updated_at, ac.id, ac.username, ac.hashed_password, ac.full_name, ac.email, ac.type, ac.is_verify, ac.password_changed_at, ac.created_at, ac.role, ac.gender, ac.licence, ac.dob, ac.address, au.id, au.username, au.hashed_password, au.full_name, au.email, au.type, au.is_verify, au.password_changed_at, au.created_at, au.role, au.gender, au.licence, au.dob, au.address, ac.full_name AS created_name, au.full_name AS updated_name FROM roles r
-JOIN companies c ON c.id = r.company
+LEFT JOIN companies c ON c.id = r.company
 JOIN accounts ac ON ac.id = r.user_created
-JOIN accounts au ON ac.id = r.user_updated
+LEFT JOIN accounts au ON ac.id = r.user_updated
 WHERE r.id = $1
 `
 
@@ -398,21 +398,21 @@ type RoleDetailRow struct {
 	UserUpdated         sql.NullInt32  `json:"user_updated"`
 	UpdatedAt           sql.NullTime   `json:"updated_at"`
 	CreatedAt           time.Time      `json:"created_at"`
-	ID_2                int32          `json:"id_2"`
-	Name                string         `json:"name"`
-	Code_2              string         `json:"code_2"`
+	ID_2                sql.NullInt32  `json:"id_2"`
+	Name                sql.NullString `json:"name"`
+	Code_2              sql.NullString `json:"code_2"`
 	TaxCode             sql.NullString `json:"tax_code"`
 	Phone               sql.NullString `json:"phone"`
 	Description         sql.NullString `json:"description"`
 	Address             sql.NullInt32  `json:"address"`
 	OaID                sql.NullString `json:"oa_id"`
-	CreatedAt_2         time.Time      `json:"created_at_2"`
-	Owner               int32          `json:"owner"`
-	Type                string         `json:"type"`
+	CreatedAt_2         sql.NullTime   `json:"created_at_2"`
+	Owner               sql.NullInt32  `json:"owner"`
+	Type                sql.NullString `json:"type"`
 	TimeOpen            sql.NullTime   `json:"time_open"`
 	TimeClose           sql.NullTime   `json:"time_close"`
 	Parent              sql.NullInt32  `json:"parent"`
-	IsActive            bool           `json:"is_active"`
+	IsActive            sql.NullBool   `json:"is_active"`
 	Manager             sql.NullInt32  `json:"manager"`
 	UserCreated_2       sql.NullInt32  `json:"user_created_2"`
 	UserUpdated_2       sql.NullInt32  `json:"user_updated_2"`
@@ -431,22 +431,22 @@ type RoleDetailRow struct {
 	Licence             sql.NullString `json:"licence"`
 	Dob                 sql.NullTime   `json:"dob"`
 	Address_2           sql.NullInt32  `json:"address_2"`
-	ID_4                int32          `json:"id_4"`
-	Username_2          string         `json:"username_2"`
-	HashedPassword_2    string         `json:"hashed_password_2"`
-	FullName_2          string         `json:"full_name_2"`
-	Email_2             string         `json:"email_2"`
-	Type_3              int32          `json:"type_3"`
-	IsVerify_2          bool           `json:"is_verify_2"`
-	PasswordChangedAt_2 time.Time      `json:"password_changed_at_2"`
-	CreatedAt_4         time.Time      `json:"created_at_4"`
+	ID_4                sql.NullInt32  `json:"id_4"`
+	Username_2          sql.NullString `json:"username_2"`
+	HashedPassword_2    sql.NullString `json:"hashed_password_2"`
+	FullName_2          sql.NullString `json:"full_name_2"`
+	Email_2             sql.NullString `json:"email_2"`
+	Type_3              sql.NullInt32  `json:"type_3"`
+	IsVerify_2          sql.NullBool   `json:"is_verify_2"`
+	PasswordChangedAt_2 sql.NullTime   `json:"password_changed_at_2"`
+	CreatedAt_4         sql.NullTime   `json:"created_at_4"`
 	Role_2              sql.NullInt32  `json:"role_2"`
 	Gender_2            NullGender     `json:"gender_2"`
 	Licence_2           sql.NullString `json:"licence_2"`
 	Dob_2               sql.NullTime   `json:"dob_2"`
 	Address_3           sql.NullInt32  `json:"address_3"`
 	CreatedName         string         `json:"created_name"`
-	UpdatedName         string         `json:"updated_name"`
+	UpdatedName         sql.NullString `json:"updated_name"`
 }
 
 func (q *Queries) RoleDetail(ctx context.Context, id int32) (RoleDetailRow, error) {
