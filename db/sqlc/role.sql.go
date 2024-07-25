@@ -141,11 +141,18 @@ func (q *Queries) ListApp(ctx context.Context, arg ListAppParams) ([]App, error)
 }
 
 const listRole = `-- name: ListRole :many
-SELECT r.id, r.code, title, note, company, r.user_created, r.user_updated, r.updated_at, r.created_at, c.id, name, c.code, tax_code, phone, description, c.address, oa_id, c.created_at, owner, c.type, time_open, time_close, parent, is_active, manager, c.user_created, c.user_updated, c.updated_at, ac.id, ac.username, ac.hashed_password, ac.full_name, ac.email, ac.type, ac.is_verify, ac.password_changed_at, ac.created_at, ac.role, ac.gender, ac.licence, ac.dob, ac.address, au.id, au.username, au.hashed_password, au.full_name, au.email, au.type, au.is_verify, au.password_changed_at, au.created_at, au.role, au.gender, au.licence, au.dob, au.address, ac.full_name AS created_name, au.full_name AS updated_name FROM roles r
+WITH employee AS (
+	SELECT COUNT("role") AS count, a."role" as role FROM accounts a
+	LEFT JOIN account_company ac ON ac.account = a.id
+	WHERE (ac.company = $1::int OR ac.company_parent = $1::int)
+	GROUP BY a."role"
+)
+SELECT r.id, r.code, title, note, company, r.user_created, r.user_updated, r.updated_at, r.created_at, c.id, name, c.code, tax_code, phone, description, c.address, oa_id, c.created_at, owner, c.type, time_open, time_close, parent, is_active, manager, c.user_created, c.user_updated, c.updated_at, ac.id, ac.username, ac.hashed_password, ac.full_name, ac.email, ac.type, ac.is_verify, ac.password_changed_at, ac.created_at, ac.role, ac.gender, ac.licence, ac.dob, ac.address, au.id, au.username, au.hashed_password, au.full_name, au.email, au.type, au.is_verify, au.password_changed_at, au.created_at, au.role, au.gender, au.licence, au.dob, au.address, count, e.role, ac.full_name AS created_name, au.full_name AS updated_name FROM roles r
 LEFT JOIN companies c ON c.id = r.company
 JOIN accounts ac ON ac.id = r.user_created
-LEFT JOIN accounts au ON au.id = r.user_updated
-WHERE (($1::int IS NULL AND r.company IS NULL) OR r.company = $1::int)
+LEFT JOIN accounts au ON au.id = r.
+LEFT JOIN employee e ON e.role = r.id
+WHERE (r.company IS NULL OR r.company = $1::int)
 AND (
     r.code ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
     r.title ILIKE '%' || COALESCE($2::varchar, '') || '%'
@@ -234,6 +241,8 @@ type ListRoleRow struct {
 	Licence_2           sql.NullString `json:"licence_2"`
 	Dob_2               sql.NullTime   `json:"dob_2"`
 	Address_3           sql.NullInt32  `json:"address_3"`
+	Count               int64          `json:"count"`
+	Role_3              sql.NullInt32  `json:"role_3"`
 	CreatedName         string         `json:"created_name"`
 	UpdatedName         sql.NullString `json:"updated_name"`
 }
@@ -313,6 +322,8 @@ func (q *Queries) ListRole(ctx context.Context, arg ListRoleParams) ([]ListRoleR
 			&i.Licence_2,
 			&i.Dob_2,
 			&i.Address_3,
+			&i.Count,
+			&i.Role_3,
 			&i.CreatedName,
 			&i.UpdatedName,
 		); err != nil {

@@ -107,6 +107,7 @@ func (server *ServerGRPC) RoleList(ctx context.Context, req *pb.RoleListRequest)
 			Title:           item.Title,
 			Note:            note,
 			Company:         item.Company.Int32,
+			TotalEmployee:   int32(item.Count),
 			UserCreatedName: item.CreatedName,
 			UserUpdatedName: item.UpdatedName.String,
 			CreatedAt:       timestamppb.New(item.CreatedAt),

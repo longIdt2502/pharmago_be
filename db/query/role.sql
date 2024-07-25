@@ -13,11 +13,18 @@ INSERT INTO role_item (
 ) RETURNING *;
 
 -- name: ListRole :many
+WITH employee AS (
+	SELECT COUNT("role") AS count, a."role" as role FROM accounts a
+	LEFT JOIN account_company ac ON ac.account = a.id
+	WHERE (ac.company = sqlc.narg(company)::int OR ac.company_parent = sqlc.narg(company)::int)
+	GROUP BY a."role"
+)
 SELECT *, ac.full_name AS created_name, au.full_name AS updated_name FROM roles r
 LEFT JOIN companies c ON c.id = r.company
 JOIN accounts ac ON ac.id = r.user_created
-LEFT JOIN accounts au ON au.id = r.user_updated
-WHERE ((sqlc.narg(company)::int IS NULL AND r.company IS NULL) OR r.company = sqlc.narg(company)::int)
+LEFT JOIN accounts au ON au.id = r.
+LEFT JOIN employee e ON e.role = r.id
+WHERE (r.company IS NULL OR r.company = sqlc.narg(company)::int)
 AND (
     r.code ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
     r.title ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%'
