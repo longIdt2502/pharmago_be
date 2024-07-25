@@ -323,34 +323,33 @@ SELECT a.id, username, hashed_password, full_name, email, a.type, is_verify, pas
 LEFT JOIN account_company ac ON ac.account = a.id
 LEFT JOIN companies c ON c.id = ac.company
 LEFT JOIN account_type at ON at.id = a.type 
-WHERE (ac.company = $1::int OR ac.company_parent = $2)
+WHERE (ac.company = $1::int OR ac.company_parent = $1)
 AND (
-    a.full_name ILIKE '%' || COALESCE($3::varchar, '') || '%' OR
-    a.username ILIKE '%' || COALESCE($3::varchar, '') || '%'
+    a.full_name ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
+    a.username ILIKE '%' || COALESCE($2::varchar, '') || '%'
 )
 AND (
-    $4::bool IS NULL OR a.is_verify = $4::bool
+    $3::bool IS NULL OR a.is_verify = $3::bool
 )
 AND (
-    $5::int IS NULL OR a.type = $5::int
+    $4::int IS NULL OR a.type = $4::int
 )
 AND (
-    $6::int IS NULL OR a.role = $6::int
+    $5::int IS NULL OR a.role = $5::int
 )
 ORDER BY -a.id
-LIMIT COALESCE($8::int, 10)
-OFFSET (COALESCE($7::int, 1) - 1) * COALESCE($8::int, 10)
+LIMIT COALESCE($7::int, 10)
+OFFSET (COALESCE($6::int, 1) - 1) * COALESCE($7::int, 10)
 `
 
 type ListAccountParams struct {
-	Company       int32          `json:"company"`
-	CompanyParent sql.NullInt32  `json:"company_parent"`
-	Search        sql.NullString `json:"search"`
-	IsVerify      sql.NullBool   `json:"is_verify"`
-	Type          sql.NullInt32  `json:"type"`
-	Role          sql.NullInt32  `json:"role"`
-	Page          sql.NullInt32  `json:"page"`
-	Limit         sql.NullInt32  `json:"limit"`
+	Company  sql.NullInt32  `json:"company"`
+	Search   sql.NullString `json:"search"`
+	IsVerify sql.NullBool   `json:"is_verify"`
+	Type     sql.NullInt32  `json:"type"`
+	Role     sql.NullInt32  `json:"role"`
+	Page     sql.NullInt32  `json:"page"`
+	Limit    sql.NullInt32  `json:"limit"`
 }
 
 type ListAccountRow struct {
@@ -399,7 +398,6 @@ type ListAccountRow struct {
 func (q *Queries) ListAccount(ctx context.Context, arg ListAccountParams) ([]ListAccountRow, error) {
 	rows, err := q.db.QueryContext(ctx, listAccount,
 		arg.Company,
-		arg.CompanyParent,
 		arg.Search,
 		arg.IsVerify,
 		arg.Type,

@@ -109,12 +109,11 @@ func (server *ServerGRPC) AccountList(ctx context.Context, req *pb.AccountListRe
 	}
 
 	accountsDb, err := server.store.ListAccount(ctx, db.ListAccountParams{
-		Company:       req.GetCompany(),
-		CompanyParent: sql.NullInt32{Int32: req.GetCompanyParent(), Valid: req.CompanyParent != nil},
-		Search:        sql.NullString{String: req.GetSearch(), Valid: true},
-		Type:          sql.NullInt32{Int32: req.GetType(), Valid: req.Type != nil},
-		Page:          sql.NullInt32{Int32: req.GetPage(), Valid: req.Page != nil},
-		Limit:         sql.NullInt32{Int32: req.GetLimit(), Valid: req.Limit != nil},
+		Company: sql.NullInt32{Int32: req.GetCompany(), Valid: true},
+		Search:  sql.NullString{String: req.GetSearch(), Valid: true},
+		Type:    sql.NullInt32{Int32: req.GetType(), Valid: req.Type != nil},
+		Page:    sql.NullInt32{Int32: req.GetPage(), Valid: req.Page != nil},
+		Limit:   sql.NullInt32{Int32: req.GetLimit(), Valid: req.Limit != nil},
 	})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get list account: %e", err)
@@ -136,13 +135,12 @@ func (server *ServerGRPC) AccountList(ctx context.Context, req *pb.AccountListRe
 		}, nil
 	}
 
-	var countsPb *pb.AccountListCount
+	countsPb := pb.AccountListCount{Active: 0, UnActive: 0}
 	for _, item := range counts {
-		value := int32(item.Count)
 		if item.IsVerify {
-			countsPb.Active = value
+			countsPb.Active = int32(item.Count)
 		} else {
-			countsPb.UnActive = value
+			countsPb.UnActive = int32(item.Count)
 		}
 	}
 
@@ -150,7 +148,7 @@ func (server *ServerGRPC) AccountList(ctx context.Context, req *pb.AccountListRe
 		Code:    200,
 		Message: "success",
 		Details: accountsPb,
-		Counts:  countsPb,
+		Counts:  &countsPb,
 	}, nil
 }
 
