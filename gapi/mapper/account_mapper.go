@@ -13,14 +13,33 @@ func AccountMapper(account db.Account) *pb.Account {
 		FullName:          account.FullName,
 		Email:             account.Email,
 		IsActive:          account.IsVerify,
-		AccountType:       "",
-		CompanyName:       "",
 		Role:              &account.Role.Int32,
 		Gender:            (*string)(&account.Gender.Gender),
 		Licence:           &account.Licence.String,
 		Dob:               timestamppb.New(account.Dob.Time),
+		Address:           &pb.Address{},
+		RoleData:          &pb.Role{},
 		PasswordChangedAt: timestamppb.New(account.PasswordChangedAt),
 		CreatedAt:         timestamppb.New(account.CreatedAt),
+	}
+}
+
+func AccountRowMapper(account db.GetAccountRow) *pb.Account {
+	return &pb.Account{
+		Id:                account.ID,
+		Username:          account.Username,
+		FullName:          account.FullName,
+		Email:             account.Email,
+		IsActive:          account.IsVerify,
+		Role:              &account.Role.Int32,
+		Gender:            (*string)(&account.Gender.Gender),
+		Licence:           &account.Licence.String,
+		Dob:               timestamppb.New(account.Dob.Time),
+		Address:           &pb.Address{},
+		RoleData:          &pb.Role{},
+		PasswordChangedAt: timestamppb.New(account.PasswordChangedAt),
+		CreatedAt:         timestamppb.New(account.CreatedAt),
+		CompanyName:       account.Name.String,
 	}
 }
 

@@ -860,6 +860,13 @@
             "type": "string"
           },
           {
+            "name": "customer.companyId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
             "name": "company",
             "in": "query",
             "required": false,
@@ -1144,6 +1151,13 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "doctor.companyId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
           },
           {
             "name": "symptoms",
@@ -1449,6 +1463,13 @@
             "type": "string"
           },
           {
+            "name": "userCreated.companyId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
             "name": "userUpdatedId",
             "in": "query",
             "required": false,
@@ -1726,6 +1747,13 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "userUpdated.companyId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
           },
           {
             "name": "meetingAt",
@@ -3974,6 +4002,13 @@
             "type": "string"
           },
           {
+            "name": "customer.companyId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
             "name": "company",
             "in": "query",
             "required": false,
@@ -4258,6 +4293,13 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "doctor.companyId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
           },
           {
             "name": "symptoms",
@@ -4563,6 +4605,13 @@
             "type": "string"
           },
           {
+            "name": "userCreated.companyId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
             "name": "userUpdatedId",
             "in": "query",
             "required": false,
@@ -4840,6 +4889,13 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "userUpdated.companyId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
           },
           {
             "name": "meetingAt",
@@ -6064,6 +6120,13 @@
             "type": "string"
           },
           {
+            "name": "customer.companyId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
             "name": "company",
             "in": "query",
             "required": false,
@@ -6348,6 +6411,13 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "doctor.companyId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
           },
           {
             "name": "symptoms",
@@ -6641,6 +6711,13 @@
             "type": "string"
           },
           {
+            "name": "userCreated.companyId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
             "name": "userUpdatedId",
             "in": "query",
             "required": false,
@@ -6918,6 +6995,13 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "userUpdated.companyId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
           },
           {
             "name": "createdAt",
@@ -9688,6 +9772,10 @@
         },
         "companyName": {
           "type": "string"
+        },
+        "companyId": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -9745,6 +9833,19 @@
         }
       }
     },
+    "pbAccountListCount": {
+      "type": "object",
+      "properties": {
+        "active": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "unActive": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
     "pbAccountListResponse": {
       "type": "object",
       "properties": {
@@ -9769,11 +9870,7 @@
           }
         },
         "counts": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/pbSimpleData"
-          }
+          "$ref": "#/definitions/pbAccountListCount"
         }
       }
     },
