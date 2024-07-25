@@ -25,4 +25,6 @@ message Company {
   int32 total_employee = 14;
   Account user_created = 15;
   optional Account user_updated = 16;
+  google.protobuf.Timestamp created_at = 17;
+  google.protobuf.Timestamp updated_at = 18;
 }

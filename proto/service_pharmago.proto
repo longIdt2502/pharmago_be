@@ -469,7 +469,7 @@ service Pharmago {
   };
   rpc AssignEmployee (AssignCompanyReq) returns (AssignCompanyRes) {
     option (google.api.http) = {
-      post: "/company/v1/asign_employee"
+      post: "/company/v1/assign_employee"
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {

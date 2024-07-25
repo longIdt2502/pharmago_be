@@ -8,11 +8,17 @@ import "entities/company.proto";
 
 option go_package = "github.com/HoangLong2502/pharmago_be/pb";
 
+enum CompanyType {
+  CLINIC = 0;
+  DRUGSTORE = 1;
+}
+
 message GetCompaniesRequest {
   optional int32 page = 1;
   optional int32 limit = 2;
   optional string search = 3;
   optional int32 parent = 4;
+  optional CompanyType type = 5;
 }
 
 message GetCompaniesResponse {

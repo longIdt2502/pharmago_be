@@ -11,6 +11,7 @@ WHERE owner = sqlc.narg('owner')::int AND
     (name ILIKE COALESCE(sqlc.narg('search')::varchar, '%') OR
     phone ILIKE COALESCE(sqlc.narg('search')::varchar, '%'))
 AND (sqlc.narg(parent)::int IS NULL OR parent = sqlc.narg(parent)::int)
+AND (sqlc.narg('type')::varchar IS NULL OR "type" = sqlc.narg('type')::varchar)
 ORDER BY -id
 LIMIT COALESCE(sqlc.narg('limit')::int, 10)
 OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10);
