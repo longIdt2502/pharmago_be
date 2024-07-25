@@ -44,9 +44,9 @@ OR level = sqlc.narg(level)::int);
 
 -- name: RoleDetail :one
 SELECT *, ac.full_name AS created_name, au.full_name AS updated_name FROM roles r
-JOIN companies c ON c.id = r.company
+LEFT JOIN companies c ON c.id = r.company
 JOIN accounts ac ON ac.id = r.user_created
-JOIN accounts au ON ac.id = r.user_updated
+LEFT JOIN accounts au ON ac.id = r.user_updated
 WHERE r.id = $1;
 
 -- name: ListRoleItem :many

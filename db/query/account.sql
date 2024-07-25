@@ -32,7 +32,8 @@ SET
     role = COALESCE(sqlc.narg(role)::int, role),
     gender = COALESCE(sqlc.narg(gender)::gender, gender),
     licence = COALESCE(sqlc.narg(licence)::varchar, licence),
-    dob = COALESCE(sqlc.narg(dob)::timestamp, dob)
+    dob = COALESCE(sqlc.narg(dob)::timestamp, dob),
+    address = COALESCE(sqlc.narg(address)::int, address)
 WHERE
     id = sqlc.narg(id)
     OR username = sqlc.narg(username)
@@ -57,11 +58,13 @@ AND (
     a.username ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%'
 )
 AND (
+    sqlc.narg(is_verify)::bool IS NULL OR a.is_verify = sqlc.narg(is_verify)::bool
+)
+AND (
     sqlc.narg(type)::int IS NULL OR a.type = sqlc.narg(type)::int
 )
 AND (
     sqlc.narg(role)::int IS NULL OR a.role = sqlc.narg(role)::int
-    
 )
 ORDER BY -a.id
 LIMIT COALESCE(sqlc.narg('limit')::int, 10)
@@ -72,3 +75,10 @@ UPDATE account_company
 SET company = sqlc.narg(company)
 WHERE account = sqlc.arg(account)
 RETURNING *;
+
+-- name: CountAccountByStatus :many
+SELECT a.is_verify ,COUNT(a.id) as "count" FROM accounts a
+LEFT JOIN account_company ac ON ac.account = a.id
+LEFT JOIN companies c ON c.id = ac.company
+WHERE (ac.company = sqlc.arg(company)::int OR c.parent = sqlc.narg(company_parent))
+GROUP BY a.id;

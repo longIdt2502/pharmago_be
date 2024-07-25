@@ -259,7 +259,7 @@ func (server *ServerGRPC) RoleDetail(ctx context.Context, req *pb.RoleDetailRequ
 				Note:            note,
 				Company:         role.Company.Int32,
 				UserCreatedName: role.CreatedName,
-				UserUpdatedName: role.UpdatedName,
+				UserUpdatedName: role.UpdatedName.String,
 				CreatedAt:       timestamppb.New(role.CreatedAt),
 				UpdatedAt:       timestamppb.New(role.UpdatedAt.Time),
 			},
