@@ -40,7 +40,7 @@ SELECT a.is_verify ,COUNT(a.id) as "count" FROM accounts a
 LEFT JOIN account_company ac ON ac.account = a.id
 LEFT JOIN companies c ON c.id = ac.company
 WHERE (ac.company = $1::int OR c.parent = $2)
-GROUP BY a.id
+GROUP BY a.is_verify
 `
 
 type CountAccountByStatusParams struct {
