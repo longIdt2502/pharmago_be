@@ -210,7 +210,7 @@ func (server *ServerGRPC) CreateEmployee(ctx context.Context, req *pb.CreateEmpl
 		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to create employee: %e", err))
 	}
 
-	companyDb, err := server.store.GetCompanyById(ctx, req.GetCompany())
+	companyDb, _ := server.store.GetCompanyById(ctx, req.GetCompany())
 	_, err = server.store.CreateAccountCompany(ctx, db.CreateAccountCompanyParams{
 		Account:       employee.ID,
 		Company:       sql.NullInt32{Int32: req.GetCompany(), Valid: true},

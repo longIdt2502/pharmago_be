@@ -2422,7 +2422,7 @@
         ]
       }
     },
-    "/company/v1/asign_employee": {
+    "/company/v1/assign_employee": {
       "post": {
         "summary": "Asign Employee",
         "operationId": "Pharmago_AssignEmployee",
@@ -2603,6 +2603,17 @@
             "required": false,
             "type": "integer",
             "format": "int32"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "CLINIC",
+              "DRUGSTORE"
+            ],
+            "default": "CLINIC"
           }
         ],
         "tags": [
@@ -10461,6 +10472,14 @@
         },
         "userUpdated": {
           "$ref": "#/definitions/pbAccount"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
         }
       }
     },
@@ -10605,6 +10624,14 @@
           "format": "int32"
         }
       }
+    },
+    "pbCompanyType": {
+      "type": "string",
+      "enum": [
+        "CLINIC",
+        "DRUGSTORE"
+      ],
+      "default": "CLINIC"
     },
     "pbConsignment": {
       "type": "object",

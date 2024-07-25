@@ -36,6 +36,7 @@ func (server *ServerGRPC) ListCompanies(ctx context.Context, req *pb.GetCompanie
 		Owner:  sql.NullInt32{Int32: int32(accountRequest.ID), Valid: true},
 		Search: sql.NullString{String: req.GetSearch(), Valid: req.Search != nil},
 		Parent: sql.NullInt32{Int32: req.GetParent(), Valid: req.Parent != nil},
+		Type:   sql.NullString{String: req.GetType().String(), Valid: req.Type != nil},
 		Page:   sql.NullInt32{Int32: req.GetPage(), Valid: req.Page != nil},
 		Limit:  sql.NullInt32{Int32: req.GetLimit(), Valid: req.Limit != nil},
 	})

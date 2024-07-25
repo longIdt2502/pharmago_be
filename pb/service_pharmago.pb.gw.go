@@ -6275,7 +6275,7 @@ func RegisterPharmagoHandlerServer(ctx context.Context, mux *runtime.ServeMux, s
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/pb.Pharmago/AssignEmployee", runtime.WithHTTPPathPattern("/company/v1/asign_employee"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/pb.Pharmago/AssignEmployee", runtime.WithHTTPPathPattern("/company/v1/assign_employee"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -9649,7 +9649,7 @@ func RegisterPharmagoHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/pb.Pharmago/AssignEmployee", runtime.WithHTTPPathPattern("/company/v1/asign_employee"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/pb.Pharmago/AssignEmployee", runtime.WithHTTPPathPattern("/company/v1/assign_employee"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -12061,7 +12061,7 @@ var (
 
 	pattern_Pharmago_ListCompanies_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"company", "v1", "list"}, ""))
 
-	pattern_Pharmago_AssignEmployee_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"company", "v1", "asign_employee"}, ""))
+	pattern_Pharmago_AssignEmployee_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"company", "v1", "assign_employee"}, ""))
 
 	pattern_Pharmago_ListProvinces_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"address", "v1", "province"}, ""))
 

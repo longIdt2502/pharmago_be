@@ -260,15 +260,17 @@ WHERE owner = $1::int AND
     (name ILIKE COALESCE($2::varchar, '%') OR
     phone ILIKE COALESCE($2::varchar, '%'))
 AND ($3::int IS NULL OR parent = $3::int)
+AND ($4::varchar IS NULL OR "type" = $4::varchar)
 ORDER BY -id
-LIMIT COALESCE($5::int, 10)
-OFFSET (COALESCE($4::int, 1) - 1) * COALESCE($5::int, 10)
+LIMIT COALESCE($6::int, 10)
+OFFSET (COALESCE($5::int, 1) - 1) * COALESCE($6::int, 10)
 `
 
 type GetCompaniesParams struct {
 	Owner  sql.NullInt32  `json:"owner"`
 	Search sql.NullString `json:"search"`
 	Parent sql.NullInt32  `json:"parent"`
+	Type   sql.NullString `json:"type"`
 	Page   sql.NullInt32  `json:"page"`
 	Limit  sql.NullInt32  `json:"limit"`
 }
@@ -278,6 +280,7 @@ func (q *Queries) GetCompanies(ctx context.Context, arg GetCompaniesParams) ([]C
 		arg.Owner,
 		arg.Search,
 		arg.Parent,
+		arg.Type,
 		arg.Page,
 		arg.Limit,
 	)

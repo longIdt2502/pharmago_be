@@ -6,6 +6,7 @@ import (
 
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
 	"github.com/longIdt2502/pharmago_be/pb"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func CompanyMapper(ctx context.Context, store *db.Store, data db.Company) *pb.Company {
@@ -180,34 +181,29 @@ func CompanyDetailMapper(ctx context.Context, store *db.Store, data db.DetailCom
 
 	totalEmployee, _ := store.CountEmployee(ctx, sql.NullInt32{Int32: data.ID, Valid: true})
 
+	var updatedAt *timestamppb.Timestamp
+	if data.UpdatedAt.Valid {
+		updatedAt = timestamppb.New(data.UpdatedAt.Time)
+	}
+
 	return &pb.Company{
-		Id:          int32(data.ID),
-		Name:        data.Name,
-		Code:        data.Code,
-		Type:        data.Title,
-		TaxCode:     taxCode,
-		Phone:       phone,
-		Description: nil,
-		Address:     addressPb,
-		Owner:       int32(data.Owner),
-		Manager: &pb.Account{
-			Id:       data.ID_2.Int32,
-			FullName: data.FullName.String,
-			Username: data.Username.String,
-		},
+		Id:            int32(data.ID),
+		Name:          data.Name,
+		Code:          data.Code,
+		Type:          data.Title,
+		TaxCode:       taxCode,
+		Phone:         phone,
+		Description:   nil,
+		Address:       addressPb,
+		Owner:         int32(data.Owner),
+		Manager:       &pb.Account{Id: data.ID_2.Int32, FullName: data.FullName.String, Username: data.Username.String},
 		OaId:          &data.OaID.String,
 		TimeOpen:      timeOpen,
 		TimeClose:     timeClose,
 		TotalEmployee: int32(totalEmployee),
-		UserCreated: &pb.Account{
-			Id:       data.ID_3.Int32,
-			FullName: data.FullName_2.String,
-			Username: data.Username_2.String,
-		},
-		UserUpdated: &pb.Account{
-			Id:       data.ID_4.Int32,
-			FullName: data.FullName_3.String,
-			Username: data.Username_3.String,
-		},
+		UserCreated:   &pb.Account{Id: data.ID_3.Int32, FullName: data.FullName_2.String, Username: data.Username_2.String},
+		UserUpdated:   &pb.Account{Id: data.ID_4.Int32, FullName: data.FullName_3.String, Username: data.Username_3.String},
+		CreatedAt:     timestamppb.New(data.CreatedAt),
+		UpdatedAt:     updatedAt,
 	}
 }
