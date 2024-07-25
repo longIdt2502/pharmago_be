@@ -109,11 +109,13 @@ func (server *ServerGRPC) AccountList(ctx context.Context, req *pb.AccountListRe
 	}
 
 	accountsDb, err := server.store.ListAccount(ctx, db.ListAccountParams{
-		Company: sql.NullInt32{Int32: req.GetCompany(), Valid: true},
-		Search:  sql.NullString{String: req.GetSearch(), Valid: true},
-		Type:    sql.NullInt32{Int32: req.GetType(), Valid: req.Type != nil},
-		Page:    sql.NullInt32{Int32: req.GetPage(), Valid: req.Page != nil},
-		Limit:   sql.NullInt32{Int32: req.GetLimit(), Valid: req.Limit != nil},
+		Company:  sql.NullInt32{Int32: req.GetCompany(), Valid: true},
+		Search:   sql.NullString{String: req.GetSearch(), Valid: true},
+		IsVerify: sql.NullBool{Bool: req.GetActive(), Valid: req.Active != nil},
+		Type:     sql.NullInt32{Int32: req.GetType(), Valid: req.Type != nil},
+		Role:     sql.NullInt32{},
+		Page:     sql.NullInt32{Int32: req.GetPage(), Valid: req.Page != nil},
+		Limit:    sql.NullInt32{Int32: req.GetLimit(), Valid: req.Limit != nil},
 	})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get list account: %e", err)
