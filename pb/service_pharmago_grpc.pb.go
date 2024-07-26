@@ -34,6 +34,7 @@ const (
 	Pharmago_CreateEmployee_FullMethodName            = "/pb.Pharmago/CreateEmployee"
 	Pharmago_UpdateEmployee_FullMethodName            = "/pb.Pharmago/UpdateEmployee"
 	Pharmago_DetailEmployee_FullMethodName            = "/pb.Pharmago/DetailEmployee"
+	Pharmago_AssignRoleEmployee_FullMethodName        = "/pb.Pharmago/AssignRoleEmployee"
 	Pharmago_AppList_FullMethodName                   = "/pb.Pharmago/AppList"
 	Pharmago_RoleCreate_FullMethodName                = "/pb.Pharmago/RoleCreate"
 	Pharmago_RoleList_FullMethodName                  = "/pb.Pharmago/RoleList"
@@ -181,6 +182,7 @@ type PharmagoClient interface {
 	CreateEmployee(ctx context.Context, in *CreateEmployeeRequest, opts ...grpc.CallOption) (*CreateEmployeeResponse, error)
 	UpdateEmployee(ctx context.Context, in *EmployeeUpdateRequest, opts ...grpc.CallOption) (*EmployeeUpdateResponse, error)
 	DetailEmployee(ctx context.Context, in *EmployeeDetailRequest, opts ...grpc.CallOption) (*EmployeeDetailResponse, error)
+	AssignRoleEmployee(ctx context.Context, in *AssignRoleEmployeeRequest, opts ...grpc.CallOption) (*AssignRoleEmployeeResponse, error)
 	// TODO ================== APP ===================
 	AppList(ctx context.Context, in *AppListRequest, opts ...grpc.CallOption) (*AppListResponse, error)
 	// TODO ================== ROLE ===================
@@ -471,6 +473,15 @@ func (c *pharmagoClient) UpdateEmployee(ctx context.Context, in *EmployeeUpdateR
 func (c *pharmagoClient) DetailEmployee(ctx context.Context, in *EmployeeDetailRequest, opts ...grpc.CallOption) (*EmployeeDetailResponse, error) {
 	out := new(EmployeeDetailResponse)
 	err := c.cc.Invoke(ctx, Pharmago_DetailEmployee_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pharmagoClient) AssignRoleEmployee(ctx context.Context, in *AssignRoleEmployeeRequest, opts ...grpc.CallOption) (*AssignRoleEmployeeResponse, error) {
+	out := new(AssignRoleEmployeeResponse)
+	err := c.cc.Invoke(ctx, Pharmago_AssignRoleEmployee_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1659,6 +1670,7 @@ type PharmagoServer interface {
 	CreateEmployee(context.Context, *CreateEmployeeRequest) (*CreateEmployeeResponse, error)
 	UpdateEmployee(context.Context, *EmployeeUpdateRequest) (*EmployeeUpdateResponse, error)
 	DetailEmployee(context.Context, *EmployeeDetailRequest) (*EmployeeDetailResponse, error)
+	AssignRoleEmployee(context.Context, *AssignRoleEmployeeRequest) (*AssignRoleEmployeeResponse, error)
 	// TODO ================== APP ===================
 	AppList(context.Context, *AppListRequest) (*AppListResponse, error)
 	// TODO ================== ROLE ===================
@@ -1861,6 +1873,9 @@ func (UnimplementedPharmagoServer) UpdateEmployee(context.Context, *EmployeeUpda
 }
 func (UnimplementedPharmagoServer) DetailEmployee(context.Context, *EmployeeDetailRequest) (*EmployeeDetailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DetailEmployee not implemented")
+}
+func (UnimplementedPharmagoServer) AssignRoleEmployee(context.Context, *AssignRoleEmployeeRequest) (*AssignRoleEmployeeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AssignRoleEmployee not implemented")
 }
 func (UnimplementedPharmagoServer) AppList(context.Context, *AppListRequest) (*AppListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AppList not implemented")
@@ -2513,6 +2528,24 @@ func _Pharmago_DetailEmployee_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PharmagoServer).DetailEmployee(ctx, req.(*EmployeeDetailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pharmago_AssignRoleEmployee_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AssignRoleEmployeeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).AssignRoleEmployee(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_AssignRoleEmployee_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).AssignRoleEmployee(ctx, req.(*AssignRoleEmployeeRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -4826,6 +4859,10 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DetailEmployee",
 			Handler:    _Pharmago_DetailEmployee_Handler,
+		},
+		{
+			MethodName: "AssignRoleEmployee",
+			Handler:    _Pharmago_AssignRoleEmployee_Handler,
 		},
 		{
 			MethodName: "AppList",

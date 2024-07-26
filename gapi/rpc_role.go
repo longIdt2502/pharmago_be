@@ -184,7 +184,7 @@ func (server *ServerGRPC) AppList(ctx context.Context, _ *pb.AppListRequest) (*p
 }
 
 func (server *ServerGRPC) RoleDetail(ctx context.Context, req *pb.RoleDetailRequest) (*pb.RoleDetailResponse, error) {
-	_, err := server.authorizeUser(ctx)
+	tokenPayload, err := server.authorizeUser(ctx)
 	if err != nil {
 		return nil, config.UnauthenticatedError(err)
 	}
@@ -249,6 +249,16 @@ func (server *ServerGRPC) RoleDetail(ctx context.Context, req *pb.RoleDetailRequ
 		appsRes = append(appsRes, item)
 	}
 
+	accountReq, _ := server.store.GetAccount(ctx, tokenPayload.UserID)
+
+	count, err := server.store.CountRoleDetail(ctx, db.CountRoleDetailParams{
+		Company: accountReq.Company.Int32,
+		Role:    role.ID,
+	})
+	if !errors.Is(err, sql.ErrNoRows) {
+		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to get count role: %v", err))
+	}
+
 	return &pb.RoleDetailResponse{
 		Code:    200,
 		Message: "success",
@@ -259,6 +269,7 @@ func (server *ServerGRPC) RoleDetail(ctx context.Context, req *pb.RoleDetailRequ
 				Title:           role.Title,
 				Note:            note,
 				Company:         role.Company.Int32,
+				TotalEmployee:   int32(count.Count),
 				UserCreatedName: role.CreatedName,
 				UserUpdatedName: role.UpdatedName.String,
 				CreatedAt:       timestamppb.New(role.CreatedAt),

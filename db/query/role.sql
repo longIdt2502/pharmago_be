@@ -56,6 +56,13 @@ JOIN accounts ac ON ac.id = r.user_created
 LEFT JOIN accounts au ON ac.id = r.user_updated
 WHERE r.id = $1;
 
+-- name: CountRoleDetail :one
+SELECT COUNT("role") AS count, a."role" as role FROM accounts a
+LEFT JOIN account_company ac ON ac.account = a.id
+WHERE (ac.company = sqlc.arg(company)::int OR ac.company_parent = sqlc.arg(company)::int)
+AND a."role" = sqlc.arg(role)::int
+GROUP BY a."role";
+
 -- name: ListRoleItem :many
 SELECT * FROM role_item ri
 JOIN apps a ON ri.app = a.code

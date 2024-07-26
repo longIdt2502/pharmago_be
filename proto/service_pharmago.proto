@@ -20,6 +20,7 @@ import "rpc/account/rpc_check_phone.proto";
 import "rpc/account/rpc_create_employee.proto";
 import "rpc/account/rpc_employee_detail.proto";
 import "rpc/account/rpc_update_employee.proto";
+import "rpc/account/rpc_assign_role_employee.proto";
 import "rpc/role/rpc_role.proto";
 import "rpc/role/rpc_app.proto";
 
@@ -317,6 +318,16 @@ service Pharmago {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Get Detail Employee";
+      tags: "Account";
+    };
+  }
+  rpc AssignRoleEmployee (AssignRoleEmployeeRequest) returns (AssignRoleEmployeeResponse) {
+    option (google.api.http) = {
+      post: "/account/v1/employee/role"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Assign Role Employee";
       tags: "Account";
     };
   }
