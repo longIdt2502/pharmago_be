@@ -20,6 +20,7 @@ message AccountListRequest {
     optional int32 limit = 5;
     optional int32 company_parent = 6;
     optional bool active = 7;
+    optional int32 role = 8;
 }
 
 message AccountListResponse {

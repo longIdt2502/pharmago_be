@@ -11,6 +11,31 @@ import (
 	"time"
 )
 
+const countRoleDetail = `-- name: CountRoleDetail :one
+SELECT COUNT("role") AS count, a."role" as role FROM accounts a
+LEFT JOIN account_company ac ON ac.account = a.id
+WHERE (ac.company = $1::int OR ac.company_parent = $1::int)
+AND a."role" = $2::int
+GROUP BY a."role"
+`
+
+type CountRoleDetailParams struct {
+	Company int32 `json:"company"`
+	Role    int32 `json:"role"`
+}
+
+type CountRoleDetailRow struct {
+	Count int64         `json:"count"`
+	Role  sql.NullInt32 `json:"role"`
+}
+
+func (q *Queries) CountRoleDetail(ctx context.Context, arg CountRoleDetailParams) (CountRoleDetailRow, error) {
+	row := q.db.QueryRowContext(ctx, countRoleDetail, arg.Company, arg.Role)
+	var i CountRoleDetailRow
+	err := row.Scan(&i.Count, &i.Role)
+	return i, err
+}
+
 const createRole = `-- name: CreateRole :one
 INSERT INTO roles (
     code, title, note, company, user_created, user_updated

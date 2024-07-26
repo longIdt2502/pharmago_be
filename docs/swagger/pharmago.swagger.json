@@ -77,6 +77,39 @@
         ]
       }
     },
+    "/account/v1/employee/role": {
+      "post": {
+        "summary": "Assign Role Employee",
+        "operationId": "Pharmago_AssignRoleEmployee",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbAssignRoleEmployeeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbAssignRoleEmployeeRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Account"
+        ]
+      }
+    },
     "/account/v1/employee/{id}": {
       "get": {
         "summary": "Get Detail Employee",
@@ -245,6 +278,13 @@
             "in": "query",
             "required": false,
             "type": "boolean"
+          },
+          {
+            "name": "role",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
           }
         ],
         "tags": [
@@ -10273,6 +10313,40 @@
       }
     },
     "pbAssignCompanyRes": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "messageTrans": {
+          "type": "string"
+        },
+        "log": {
+          "type": "string"
+        }
+      }
+    },
+    "pbAssignRoleEmployeeRequest": {
+      "type": "object",
+      "properties": {
+        "accounts": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "role": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbAssignRoleEmployeeResponse": {
       "type": "object",
       "properties": {
         "code": {

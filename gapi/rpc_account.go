@@ -113,7 +113,7 @@ func (server *ServerGRPC) AccountList(ctx context.Context, req *pb.AccountListRe
 		Search:   sql.NullString{String: req.GetSearch(), Valid: true},
 		IsVerify: sql.NullBool{Bool: req.GetActive(), Valid: req.Active != nil},
 		Type:     sql.NullInt32{Int32: req.GetType(), Valid: req.Type != nil},
-		Role:     sql.NullInt32{},
+		Role:     sql.NullInt32{Int32: req.GetRole(), Valid: req.Role != nil},
 		Page:     sql.NullInt32{Int32: req.GetPage(), Valid: req.Page != nil},
 		Limit:    sql.NullInt32{Int32: req.GetLimit(), Valid: req.Limit != nil},
 	})
@@ -397,5 +397,32 @@ func (server *ServerGRPC) DetailEmployee(ctx context.Context, req *pb.EmployeeDe
 		Code:    200,
 		Message: "success",
 		Details: accountPb,
+	}, nil
+}
+
+func (server *ServerGRPC) AssignRoleEmployee(ctx context.Context, req *pb.AssignRoleEmployeeRequest) (*pb.AssignRoleEmployeeResponse, error) {
+	_, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	for _, item := range req.GetAccounts() {
+		_, err = server.store.UpdateAccount(ctx, db.UpdateAccountParams{
+			Role: sql.NullInt32{Int32: req.GetRole(), Valid: true},
+			ID:   sql.NullInt32{Int32: item, Valid: true},
+		})
+		if err != nil {
+			errApp := common.ErrDB(err)
+			return &pb.AssignRoleEmployeeResponse{
+				Code:    int32(errApp.StatusCode),
+				Message: errApp.Message,
+				Log:     errApp.Log,
+			}, nil
+		}
+	}
+
+	return &pb.AssignRoleEmployeeResponse{
+		Code:    200,
+		Message: "success",
 	}, nil
 }
