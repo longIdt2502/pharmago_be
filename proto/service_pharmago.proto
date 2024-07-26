@@ -331,6 +331,15 @@ service Pharmago {
       tags: "Account";
     };
   }
+  rpc DeleteEmployee (AccountDetailRequest) returns (AccountDetailResponse) {
+    option (google.api.http) = {
+      delete: "/account/v1/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Assign Role Employee";
+      tags: "Account";
+    };
+  }
 
   // TODO ================== APP ===================
   rpc AppList (AppListRequest) returns (AppListResponse) {

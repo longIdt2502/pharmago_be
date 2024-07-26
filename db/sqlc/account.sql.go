@@ -145,6 +145,33 @@ func (q *Queries) CreateAccountCompany(ctx context.Context, arg CreateAccountCom
 	return i, err
 }
 
+const deleteEmployee = `-- name: DeleteEmployee :one
+DELETE FROM accounts
+WHERE id = $1 RETURNING id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, created_at, role, gender, licence, dob, address
+`
+
+func (q *Queries) DeleteEmployee(ctx context.Context, id int32) (Account, error) {
+	row := q.db.QueryRowContext(ctx, deleteEmployee, id)
+	var i Account
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.HashedPassword,
+		&i.FullName,
+		&i.Email,
+		&i.Type,
+		&i.IsVerify,
+		&i.PasswordChangedAt,
+		&i.CreatedAt,
+		&i.Role,
+		&i.Gender,
+		&i.Licence,
+		&i.Dob,
+		&i.Address,
+	)
+	return i, err
+}
+
 const getAccount = `-- name: GetAccount :one
 SELECT a.id, username, hashed_password, full_name, email, a.type, is_verify, password_changed_at, a.created_at, role, gender, licence, dob, a.address, ac.id, account, company, company_parent, c.id, name, code, tax_code, phone, description, c.address, oa_id, c.created_at, owner, c.type, time_open, time_close, parent, is_active, manager, user_created, user_updated, updated_at FROM accounts a
 LEFT JOIN account_company ac ON ac.account = a.id
