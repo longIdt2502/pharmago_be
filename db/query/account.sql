@@ -83,3 +83,7 @@ SELECT a.is_verify ,COUNT(a.id) as "count" FROM accounts a
 LEFT JOIN account_company ac ON ac.account = a.id
 WHERE (ac.company = sqlc.arg(company)::int OR ac.company_parent = sqlc.arg(company)::int)
 GROUP BY a.is_verify;
+
+-- name: DeleteEmployee :one
+DELETE FROM accounts
+WHERE id = $1 RETURNING *;

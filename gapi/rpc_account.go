@@ -426,3 +426,20 @@ func (server *ServerGRPC) AssignRoleEmployee(ctx context.Context, req *pb.Assign
 		Message: "success",
 	}, nil
 }
+
+func (server *ServerGRPC) DeleteEmployee(ctx context.Context, req *pb.AccountDetailRequest) (*pb.AccountDetailResponse, error) {
+	_, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	_, err = server.store.DeleteEmployee(ctx, req.GetId())
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to delete account: %e", err)
+	}
+
+	return &pb.AccountDetailResponse{
+		Code:    200,
+		Message: "success",
+	}, nil
+}
