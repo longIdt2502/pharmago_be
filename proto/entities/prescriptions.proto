@@ -73,19 +73,18 @@ message PrescriptionListResponse {
   repeated Prescription details = 5;
 }
 
-// message MedicalBillUpdateRequest {
-//   string uuid = 1;
-//   bool is_done = 2;
-//   repeated FileItem files = 3;
-//   MedicalRecordType type = 4;
-//   optional string diagnostic = 5;
-//   optional string symptoms = 6;
-// }
+message PrescriptionUpdateResponse {
+  int32 code = 1;
+  string message = 2;
+  string message_trans = 3;
+  string log = 4;
+}
 
-// message MedicalBillUpdateResponse {
-//   int32 code = 1;
-//   string message = 2;
-//   string message_trans = 3;
-//   string log = 4;
-// }
+message PrescriptionUpdateRequest {
+  string uuid = 1;
+  optional string code = 2;
+  optional int32 customer_id = 3;
+  optional string diagnostic = 4;
+  repeated PrescriptionItem items = 5;
+}
 

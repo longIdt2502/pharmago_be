@@ -444,6 +444,7 @@ type MedicalRecordLink struct {
 	AppointmentSchedule uuid.NullUUID         `json:"appointment_schedule"`
 	UserCreated         sql.NullInt32         `json:"user_created"`
 	CreatedAt           time.Time             `json:"created_at"`
+	MedicalBill         uuid.NullUUID         `json:"medical_bill"`
 }
 
 type MedicalRecordVariant struct {

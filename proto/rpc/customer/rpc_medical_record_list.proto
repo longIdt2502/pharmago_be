@@ -13,7 +13,8 @@ message MedicalRecordListRequest {
     optional string appointment_schedule = 3;
     optional MedicalRecordType type = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
         description: "test: Kết quả xét nghiệm, patient: bệnh án, diagnostic: chuẩn đoán."
-    }];;
+    }];
+    optional string medical_bill = 5;
 }
 
 message MedicalRecordListResponse {

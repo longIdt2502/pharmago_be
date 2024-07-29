@@ -160,10 +160,10 @@ func (q *Queries) CreateCustomerGroup(ctx context.Context, arg CreateCustomerGro
 
 const createMedicalRecordLink = `-- name: CreateMedicalRecordLink :one
 INSERT INTO medical_record_link (
-    uuid, "type", title, url, customer, appointment_schedule, user_created
+    uuid, "type", title, url, customer, appointment_schedule, medical_bill, user_created
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7
-) RETURNING id, uuid, type, title, url, customer, appointment_schedule, user_created, created_at
+    $1, $2, $3, $4, $5, $6, $7, $8
+) RETURNING id, uuid, type, title, url, customer, appointment_schedule, user_created, created_at, medical_bill
 `
 
 type CreateMedicalRecordLinkParams struct {
@@ -173,6 +173,7 @@ type CreateMedicalRecordLinkParams struct {
 	Url                 string                `json:"url"`
 	Customer            sql.NullInt32         `json:"customer"`
 	AppointmentSchedule uuid.NullUUID         `json:"appointment_schedule"`
+	MedicalBill         uuid.NullUUID         `json:"medical_bill"`
 	UserCreated         sql.NullInt32         `json:"user_created"`
 }
 
@@ -184,6 +185,7 @@ func (q *Queries) CreateMedicalRecordLink(ctx context.Context, arg CreateMedical
 		arg.Url,
 		arg.Customer,
 		arg.AppointmentSchedule,
+		arg.MedicalBill,
 		arg.UserCreated,
 	)
 	var i MedicalRecordLink
@@ -197,6 +199,7 @@ func (q *Queries) CreateMedicalRecordLink(ctx context.Context, arg CreateMedical
 		&i.AppointmentSchedule,
 		&i.UserCreated,
 		&i.CreatedAt,
+		&i.MedicalBill,
 	)
 	return i, err
 }
@@ -645,20 +648,27 @@ func (q *Queries) ListCustomerGroup(ctx context.Context, arg ListCustomerGroupPa
 }
 
 const listMedicalRecordLink = `-- name: ListMedicalRecordLink :many
-SELECT id, uuid, type, title, url, customer, appointment_schedule, user_created, created_at FROM medical_record_link
+SELECT id, uuid, type, title, url, customer, appointment_schedule, user_created, created_at, medical_bill FROM medical_record_link
 WHERE ($1::int IS NULL OR $1::int = customer)
 AND ($2::medical_record_link_type IS NULL OR $2::medical_record_link_type = "type")
 AND ($3::uuid IS NULL OR $3::uuid = appointment_schedule)
+AND ($4::uuid IS NULL OR $4::uuid = medical_bill)
 `
 
 type ListMedicalRecordLinkParams struct {
-	Customer sql.NullInt32             `json:"customer"`
-	TypeMrl  NullMedicalRecordLinkType `json:"type_mrl"`
-	Schedule uuid.NullUUID             `json:"schedule"`
+	Customer    sql.NullInt32             `json:"customer"`
+	TypeMrl     NullMedicalRecordLinkType `json:"type_mrl"`
+	Schedule    uuid.NullUUID             `json:"schedule"`
+	MedicalBill uuid.NullUUID             `json:"medical_bill"`
 }
 
 func (q *Queries) ListMedicalRecordLink(ctx context.Context, arg ListMedicalRecordLinkParams) ([]MedicalRecordLink, error) {
-	rows, err := q.db.QueryContext(ctx, listMedicalRecordLink, arg.Customer, arg.TypeMrl, arg.Schedule)
+	rows, err := q.db.QueryContext(ctx, listMedicalRecordLink,
+		arg.Customer,
+		arg.TypeMrl,
+		arg.Schedule,
+		arg.MedicalBill,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -676,6 +686,7 @@ func (q *Queries) ListMedicalRecordLink(ctx context.Context, arg ListMedicalReco
 			&i.AppointmentSchedule,
 			&i.UserCreated,
 			&i.CreatedAt,
+			&i.MedicalBill,
 		); err != nil {
 			return nil, err
 		}

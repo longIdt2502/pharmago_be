@@ -15,7 +15,8 @@ message MedicalRecordCreateRequest {
     MedicalRecordType type = 1;
     int32 customer = 2;
     optional string appointment_schedule = 3;
-    repeated FileItem files = 4; 
+    optional string medical_bill = 4;
+    repeated FileItem files = 5; 
 }
 
 message MedicalRecordCreateResponse {

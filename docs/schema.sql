@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml-lang.org)
 -- Database: PostgreSQL
--- Generated at: 2024-07-23T13:23:14.111Z
+-- Generated at: 2024-07-29T03:53:31.099Z
 
 CREATE TYPE "gender" AS ENUM (
   'nam',
@@ -784,6 +784,7 @@ CREATE TABLE "medical_record_link" (
   "url" varchar NOT NULL,
   "customer" serial,
   "appointment_schedule" uuid,
+  "medical_bill" uuid,
   "user_created" serial,
   "created_at" timestamp NOT NULL DEFAULT (now())
 );
@@ -1237,6 +1238,8 @@ ALTER TABLE "medical_bill_order_sell" ADD FOREIGN KEY ("order") REFERENCES "orde
 ALTER TABLE "medical_record_link" ADD FOREIGN KEY ("customer") REFERENCES "customers" ("id") ON DELETE CASCADE;
 
 ALTER TABLE "medical_record_link" ADD FOREIGN KEY ("appointment_schedule") REFERENCES "appointment_schedules" ("uuid") ON DELETE SET NULL;
+
+ALTER TABLE "medical_record_link" ADD FOREIGN KEY ("medical_bill") REFERENCES "medical_bills" ("uuid") ON DELETE SET NULL;
 
 ALTER TABLE "medical_record_link" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id") ON DELETE SET NULL;
 

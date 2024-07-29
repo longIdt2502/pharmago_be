@@ -3404,6 +3404,12 @@
               "diagnostic"
             ],
             "default": "test"
+          },
+          {
+            "name": "medicalBill",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -7108,6 +7114,43 @@
         "tags": [
           "Prescription"
         ]
+      },
+      "put": {
+        "summary": "Update Prescription",
+        "operationId": "Pharmago_PrescriptionUpdate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbPrescriptionUpdateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PharmagoPrescriptionUpdateBody"
+            }
+          }
+        ],
+        "tags": [
+          "Prescription"
+        ]
       }
     },
     "/prescription/v1/prescriptions": {
@@ -9534,6 +9577,28 @@
       "required": [
         "name"
       ]
+    },
+    "PharmagoPrescriptionUpdateBody": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "customerId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "diagnostic": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbPrescriptionItem"
+          }
+        }
+      }
     },
     "PharmagoProductionStandardUpdateBody": {
       "type": "object",
@@ -12896,6 +12961,9 @@
         "appointmentSchedule": {
           "type": "string"
         },
+        "medicalBill": {
+          "type": "string"
+        },
         "files": {
           "type": "array",
           "items": {
@@ -13836,6 +13904,24 @@
         }
       },
       "title": "===================== REQ/RES ========================"
+    },
+    "pbPrescriptionUpdateResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "messageTrans": {
+          "type": "string"
+        },
+        "log": {
+          "type": "string"
+        }
+      }
     },
     "pbPriceList": {
       "type": "object",
