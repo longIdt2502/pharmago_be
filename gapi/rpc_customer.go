@@ -921,7 +921,7 @@ func convertDBTypeToPBType(dbType db.MedicalRecordLinkType) pb.MedicalRecordType
 	}
 }
 
-func (server *ServerGRPC) CreateMannyMediaRecord(ctx context.Context, list []*pb.FileItem, typeMR string, account, customer int32, as_uuid *uuid.UUID) ([]db.MedicalRecordLink, error) {
+func (server *ServerGRPC) CreateMannyMediaRecord(ctx context.Context, list []*pb.FileItem, typeMR string, account, customer int32, as_uuid, mb_uuid *uuid.UUID) ([]db.MedicalRecordLink, error) {
 	var results []db.MedicalRecordLink
 
 	for _, item := range list {
@@ -940,6 +940,7 @@ func (server *ServerGRPC) CreateMannyMediaRecord(ctx context.Context, list []*pb
 			Url:                 url,
 			Customer:            sql.NullInt32{Int32: customer, Valid: true},
 			AppointmentSchedule: uuid.NullUUID{UUID: *as_uuid, Valid: as_uuid != nil},
+			MedicalBill:         uuid.NullUUID{UUID: *mb_uuid, Valid: mb_uuid != nil},
 			UserCreated:         sql.NullInt32{Int32: account, Valid: true},
 		})
 		if err != nil {

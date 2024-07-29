@@ -201,7 +201,7 @@ func (server *ServerGRPC) ScheduleUpdate(ctx context.Context, req *pb.Appointmen
 		}, nil
 	}
 
-	_, err = server.CreateMannyMediaRecord(ctx, req.GetFiles(), req.GetType().String(), tokenPayload.UserID, schedule.Customer.Int32, &uuidParse)
+	_, err = server.CreateMannyMediaRecord(ctx, req.GetFiles(), req.GetType().String(), tokenPayload.UserID, schedule.Customer.Int32, &uuidParse, nil)
 	if err != nil {
 		errApp := common.ErrInternal(err)
 		return &pb.AppointmentScheduleUpdateResponse{

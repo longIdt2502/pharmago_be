@@ -203,7 +203,7 @@ func (server *ServerGRPC) MedicalBillUpdate(ctx context.Context, req *pb.Medical
 	}
 
 	if len(req.Files) != 0 {
-		_, err = server.CreateMannyMediaRecord(ctx, req.GetFiles(), req.GetType().String(), tokenPayload.UserID, medicalBill.Customer.Int32, &uuidParse)
+		_, err = server.CreateMannyMediaRecord(ctx, req.GetFiles(), req.GetType().String(), tokenPayload.UserID, medicalBill.Customer.Int32, nil, &uuidParse)
 		if err != nil {
 			errApp := common.ErrInternal(err)
 			return &pb.MedicalBillUpdateResponse{
