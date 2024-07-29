@@ -1057,12 +1057,14 @@ Table medical_record_link as MRL {
   url varchar [not null]
   customer serial
   appointment_schedule uuid
+  medical_bill uuid
   user_created serial
   created_at timestamp [not null, default: `now()`]
 }
 
 Ref: MRL.customer > customers.id [delete: cascade]
 Ref: MRL.appointment_schedule > appointment_schedules.uuid [delete: set null]
+Ref: MRL.medical_bill > MB.uuid [delete: set null]
 Ref: MRL.user_created > A.id [delete: set null]
 
 Table prescriptions {

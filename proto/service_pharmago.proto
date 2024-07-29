@@ -1547,6 +1547,16 @@ service Pharmago {
       tags: "Prescription";
     };
   };
+  rpc PrescriptionUpdate (PrescriptionUpdateRequest) returns (PrescriptionUpdateResponse) {
+    option (google.api.http) = {
+      put: "/prescription/v1/detail/{uuid}"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Update Prescription";
+      tags: "Prescription";
+    };
+  };
   rpc PrescriptionDetail (Prescription) returns (PrescriptionResponse) {
     option (google.api.http) = {
       get: "/prescription/v1/detail/{uuid}"

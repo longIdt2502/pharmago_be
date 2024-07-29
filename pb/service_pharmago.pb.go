@@ -304,7 +304,7 @@ var file_service_pharmago_proto_rawDesc = []byte{
 	0x6e, 0x74, 0x69, 0x74, 0x69, 0x65, 0x73, 0x2f, 0x6d, 0x65, 0x64, 0x69, 0x63, 0x61, 0x6c, 0x5f,
 	0x62, 0x69, 0x6c, 0x6c, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1c, 0x65, 0x6e, 0x74, 0x69,
 	0x74, 0x69, 0x65, 0x73, 0x2f, 0x70, 0x72, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f,
-	0x6e, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x32, 0xda, 0x9e, 0x01, 0x0a, 0x08, 0x50, 0x68,
+	0x6e, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x32, 0x81, 0xa0, 0x01, 0x0a, 0x08, 0x50, 0x68,
 	0x61, 0x72, 0x6d, 0x61, 0x67, 0x6f, 0x12, 0x64, 0x0a, 0x05, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x12,
 	0x10, 0x2e, 0x70, 0x62, 0x2e, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
 	0x74, 0x1a, 0x11, 0x2e, 0x70, 0x62, 0x2e, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52, 0x65, 0x73, 0x70,
@@ -1555,43 +1555,53 @@ var file_service_pharmago_proto_rawDesc = []byte{
 	0x6f, 0x6e, 0x12, 0x13, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x20, 0x50, 0x72, 0x65, 0x73, 0x63,
 	0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x1c, 0x3a, 0x01, 0x2a,
 	0x22, 0x17, 0x2f, 0x70, 0x72, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x2f,
-	0x76, 0x31, 0x2f, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x12, 0x8e, 0x01, 0x0a, 0x12, 0x50, 0x72,
-	0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x44, 0x65, 0x74, 0x61, 0x69, 0x6c,
-	0x12, 0x10, 0x2e, 0x70, 0x62, 0x2e, 0x50, 0x72, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69,
-	0x6f, 0x6e, 0x1a, 0x18, 0x2e, 0x70, 0x62, 0x2e, 0x50, 0x72, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70,
-	0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x4c, 0x92, 0x41,
-	0x23, 0x0a, 0x0c, 0x50, 0x72, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12,
-	0x13, 0x44, 0x65, 0x74, 0x61, 0x69, 0x6c, 0x20, 0x50, 0x72, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70,
-	0x74, 0x69, 0x6f, 0x6e, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x20, 0x12, 0x1e, 0x2f, 0x70, 0x72, 0x65,
-	0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x2f, 0x76, 0x31, 0x2f, 0x64, 0x65, 0x74,
-	0x61, 0x69, 0x6c, 0x2f, 0x7b, 0x75, 0x75, 0x69, 0x64, 0x7d, 0x12, 0x99, 0x01, 0x0a, 0x10, 0x50,
-	0x72, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x4c, 0x69, 0x73, 0x74, 0x12,
-	0x1b, 0x2e, 0x70, 0x62, 0x2e, 0x50, 0x72, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f,
-	0x6e, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1c, 0x2e, 0x70,
-	0x62, 0x2e, 0x50, 0x72, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x4c, 0x69,
-	0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x4a, 0x92, 0x41, 0x21, 0x0a,
-	0x0c, 0x50, 0x72, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x11, 0x4c,
-	0x69, 0x73, 0x74, 0x20, 0x50, 0x72, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e,
-	0x82, 0xd3, 0xe4, 0x93, 0x02, 0x20, 0x12, 0x1e, 0x2f, 0x70, 0x72, 0x65, 0x73, 0x63, 0x72, 0x69,
-	0x70, 0x74, 0x69, 0x6f, 0x6e, 0x2f, 0x76, 0x31, 0x2f, 0x70, 0x72, 0x65, 0x73, 0x63, 0x72, 0x69,
-	0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x42, 0x85, 0x02, 0x92, 0x41, 0xd8, 0x01, 0x12, 0x6d, 0x0a,
-	0x13, 0x41, 0x20, 0x42, 0x69, 0x74, 0x20, 0x6f, 0x66, 0x20, 0x45, 0x76, 0x65, 0x72, 0x79, 0x74,
-	0x68, 0x69, 0x6e, 0x67, 0x22, 0x51, 0x0a, 0x0b, 0x50, 0x68, 0x61, 0x72, 0x6d, 0x61, 0x67, 0x6f,
-	0x5f, 0x42, 0x65, 0x12, 0x2e, 0x68, 0x74, 0x74, 0x70, 0x73, 0x3a, 0x2f, 0x2f, 0x67, 0x69, 0x74,
-	0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x67, 0x72, 0x70, 0x63, 0x2d, 0x65, 0x63, 0x6f,
-	0x73, 0x79, 0x73, 0x74, 0x65, 0x6d, 0x2f, 0x67, 0x72, 0x70, 0x63, 0x2d, 0x67, 0x61, 0x74, 0x65,
-	0x77, 0x61, 0x79, 0x1a, 0x12, 0x6c, 0x6f, 0x6e, 0x67, 0x2e, 0x6c, 0x62, 0x67, 0x40, 0x69, 0x64,
-	0x74, 0x69, 0x6e, 0x63, 0x2e, 0x63, 0x6f, 0x32, 0x03, 0x31, 0x2e, 0x30, 0x5a, 0x59, 0x0a, 0x57,
-	0x0a, 0x06, 0x62, 0x65, 0x61, 0x72, 0x65, 0x72, 0x12, 0x4d, 0x08, 0x02, 0x12, 0x38, 0x41, 0x75,
-	0x74, 0x68, 0x65, 0x6e, 0x74, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x74, 0x6f, 0x6b,
-	0x65, 0x6e, 0x2c, 0x20, 0x70, 0x72, 0x65, 0x66, 0x69, 0x78, 0x65, 0x64, 0x20, 0x62, 0x79, 0x20,
-	0x42, 0x65, 0x61, 0x72, 0x65, 0x72, 0x3a, 0x20, 0x42, 0x65, 0x61, 0x72, 0x65, 0x72, 0x20, 0x3c,
-	0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x3e, 0x1a, 0x0d, 0x41, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x7a,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x02, 0x62, 0x0c, 0x0a, 0x0a, 0x0a, 0x06, 0x62, 0x65, 0x61,
-	0x72, 0x65, 0x72, 0x12, 0x00, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f,
-	0x6d, 0x2f, 0x48, 0x6f, 0x61, 0x6e, 0x67, 0x4c, 0x6f, 0x6e, 0x67, 0x32, 0x35, 0x30, 0x32, 0x2f,
-	0x70, 0x68, 0x61, 0x72, 0x6d, 0x61, 0x67, 0x6f, 0x5f, 0x62, 0x65, 0x2f, 0x70, 0x62, 0x62, 0x06,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x76, 0x31, 0x2f, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x12, 0xa4, 0x01, 0x0a, 0x12, 0x50, 0x72,
+	0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
+	0x12, 0x1d, 0x2e, 0x70, 0x62, 0x2e, 0x50, 0x72, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69,
+	0x6f, 0x6e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
+	0x1e, 0x2e, 0x70, 0x62, 0x2e, 0x50, 0x72, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f,
+	0x6e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
+	0x4f, 0x92, 0x41, 0x23, 0x0a, 0x0c, 0x50, 0x72, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69,
+	0x6f, 0x6e, 0x12, 0x13, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x20, 0x50, 0x72, 0x65, 0x73, 0x63,
+	0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x23, 0x3a, 0x01, 0x2a,
+	0x1a, 0x1e, 0x2f, 0x70, 0x72, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x2f,
+	0x76, 0x31, 0x2f, 0x64, 0x65, 0x74, 0x61, 0x69, 0x6c, 0x2f, 0x7b, 0x75, 0x75, 0x69, 0x64, 0x7d,
+	0x12, 0x8e, 0x01, 0x0a, 0x12, 0x50, 0x72, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f,
+	0x6e, 0x44, 0x65, 0x74, 0x61, 0x69, 0x6c, 0x12, 0x10, 0x2e, 0x70, 0x62, 0x2e, 0x50, 0x72, 0x65,
+	0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x1a, 0x18, 0x2e, 0x70, 0x62, 0x2e, 0x50,
+	0x72, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x22, 0x4c, 0x92, 0x41, 0x23, 0x0a, 0x0c, 0x50, 0x72, 0x65, 0x73, 0x63, 0x72,
+	0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x13, 0x44, 0x65, 0x74, 0x61, 0x69, 0x6c, 0x20, 0x50,
+	0x72, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x82, 0xd3, 0xe4, 0x93, 0x02,
+	0x20, 0x12, 0x1e, 0x2f, 0x70, 0x72, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e,
+	0x2f, 0x76, 0x31, 0x2f, 0x64, 0x65, 0x74, 0x61, 0x69, 0x6c, 0x2f, 0x7b, 0x75, 0x75, 0x69, 0x64,
+	0x7d, 0x12, 0x99, 0x01, 0x0a, 0x10, 0x50, 0x72, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69,
+	0x6f, 0x6e, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x1b, 0x2e, 0x70, 0x62, 0x2e, 0x50, 0x72, 0x65, 0x73,
+	0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x1a, 0x1c, 0x2e, 0x70, 0x62, 0x2e, 0x50, 0x72, 0x65, 0x73, 0x63, 0x72, 0x69,
+	0x70, 0x74, 0x69, 0x6f, 0x6e, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x22, 0x4a, 0x92, 0x41, 0x21, 0x0a, 0x0c, 0x50, 0x72, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70,
+	0x74, 0x69, 0x6f, 0x6e, 0x12, 0x11, 0x4c, 0x69, 0x73, 0x74, 0x20, 0x50, 0x72, 0x65, 0x73, 0x63,
+	0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x20, 0x12, 0x1e, 0x2f,
+	0x70, 0x72, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x2f, 0x76, 0x31, 0x2f,
+	0x70, 0x72, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x42, 0x85, 0x02,
+	0x92, 0x41, 0xd8, 0x01, 0x12, 0x6d, 0x0a, 0x13, 0x41, 0x20, 0x42, 0x69, 0x74, 0x20, 0x6f, 0x66,
+	0x20, 0x45, 0x76, 0x65, 0x72, 0x79, 0x74, 0x68, 0x69, 0x6e, 0x67, 0x22, 0x51, 0x0a, 0x0b, 0x50,
+	0x68, 0x61, 0x72, 0x6d, 0x61, 0x67, 0x6f, 0x5f, 0x42, 0x65, 0x12, 0x2e, 0x68, 0x74, 0x74, 0x70,
+	0x73, 0x3a, 0x2f, 0x2f, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x67,
+	0x72, 0x70, 0x63, 0x2d, 0x65, 0x63, 0x6f, 0x73, 0x79, 0x73, 0x74, 0x65, 0x6d, 0x2f, 0x67, 0x72,
+	0x70, 0x63, 0x2d, 0x67, 0x61, 0x74, 0x65, 0x77, 0x61, 0x79, 0x1a, 0x12, 0x6c, 0x6f, 0x6e, 0x67,
+	0x2e, 0x6c, 0x62, 0x67, 0x40, 0x69, 0x64, 0x74, 0x69, 0x6e, 0x63, 0x2e, 0x63, 0x6f, 0x32, 0x03,
+	0x31, 0x2e, 0x30, 0x5a, 0x59, 0x0a, 0x57, 0x0a, 0x06, 0x62, 0x65, 0x61, 0x72, 0x65, 0x72, 0x12,
+	0x4d, 0x08, 0x02, 0x12, 0x38, 0x41, 0x75, 0x74, 0x68, 0x65, 0x6e, 0x74, 0x69, 0x63, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x20, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x2c, 0x20, 0x70, 0x72, 0x65, 0x66, 0x69,
+	0x78, 0x65, 0x64, 0x20, 0x62, 0x79, 0x20, 0x42, 0x65, 0x61, 0x72, 0x65, 0x72, 0x3a, 0x20, 0x42,
+	0x65, 0x61, 0x72, 0x65, 0x72, 0x20, 0x3c, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x3e, 0x1a, 0x0d, 0x41,
+	0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x7a, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x02, 0x62, 0x0c,
+	0x0a, 0x0a, 0x0a, 0x06, 0x62, 0x65, 0x61, 0x72, 0x65, 0x72, 0x12, 0x00, 0x5a, 0x27, 0x67, 0x69,
+	0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x48, 0x6f, 0x61, 0x6e, 0x67, 0x4c, 0x6f,
+	0x6e, 0x67, 0x32, 0x35, 0x30, 0x32, 0x2f, 0x70, 0x68, 0x61, 0x72, 0x6d, 0x61, 0x67, 0x6f, 0x5f,
+	0x62, 0x65, 0x2f, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var file_service_pharmago_proto_goTypes = []interface{}{
@@ -1729,142 +1739,144 @@ var file_service_pharmago_proto_goTypes = []interface{}{
 	(*MedicalBillListRequest)(nil),            // 131: pb.MedicalBillListRequest
 	(*MedicalBillUpdateRequest)(nil),          // 132: pb.MedicalBillUpdateRequest
 	(*Prescription)(nil),                      // 133: pb.Prescription
-	(*PrescriptionListRequest)(nil),           // 134: pb.PrescriptionListRequest
-	(*LoginResponse)(nil),                     // 135: pb.LoginResponse
-	(*CheckTokenResponse)(nil),                // 136: pb.CheckTokenResponse
-	(*CreateAccountResponse)(nil),             // 137: pb.CreateAccountResponse
-	(*VerifyAccountResponse)(nil),             // 138: pb.VerifyAccountResponse
-	(*SendCodeResponse)(nil),                  // 139: pb.SendCodeResponse
-	(*VerifyCodeResponse)(nil),                // 140: pb.VerifyCodeResponse
-	(*ResetPasswordResponse)(nil),             // 141: pb.ResetPasswordResponse
-	(*CheckEmailResponse)(nil),                // 142: pb.CheckEmailResponse
-	(*CheckPhoneResponse)(nil),                // 143: pb.CheckPhoneResponse
-	(*AccountDetailResponse)(nil),             // 144: pb.AccountDetailResponse
-	(*AccountInactiveResponse)(nil),           // 145: pb.AccountInactiveResponse
-	(*AccountListResponse)(nil),               // 146: pb.AccountListResponse
-	(*CreateEmployeeResponse)(nil),            // 147: pb.CreateEmployeeResponse
-	(*EmployeeUpdateResponse)(nil),            // 148: pb.EmployeeUpdateResponse
-	(*EmployeeDetailResponse)(nil),            // 149: pb.EmployeeDetailResponse
-	(*AssignRoleEmployeeResponse)(nil),        // 150: pb.AssignRoleEmployeeResponse
-	(*AppListResponse)(nil),                   // 151: pb.AppListResponse
-	(*RoleCreateResponse)(nil),                // 152: pb.RoleCreateResponse
-	(*RoleListResponse)(nil),                  // 153: pb.RoleListResponse
-	(*RoleDetailResponse)(nil),                // 154: pb.RoleDetailResponse
-	(*RoleUpdateResponse)(nil),                // 155: pb.RoleUpdateResponse
-	(*RoleDeleteResponse)(nil),                // 156: pb.RoleDeleteResponse
-	(*HomeDataResponse)(nil),                  // 157: pb.HomeDataResponse
-	(*ReportRevenueResponse)(nil),             // 158: pb.ReportRevenueResponse
-	(*ReportOrderResponse)(nil),               // 159: pb.ReportOrderResponse
-	(*ReportCustomerResponse)(nil),            // 160: pb.ReportCustomerResponse
-	(*ReportCustomerRevenueResponse)(nil),     // 161: pb.ReportCustomerRevenueResponse
-	(*CreateCompanyResponse)(nil),             // 162: pb.CreateCompanyResponse
-	(*UpdateCompanyResponse)(nil),             // 163: pb.UpdateCompanyResponse
-	(*DetailCompanyResponse)(nil),             // 164: pb.DetailCompanyResponse
-	(*GetCompaniesResponse)(nil),              // 165: pb.GetCompaniesResponse
-	(*AssignCompanyRes)(nil),                  // 166: pb.AssignCompanyRes
-	(*ProvincesResponse)(nil),                 // 167: pb.ProvincesResponse
-	(*DistrictsResponse)(nil),                 // 168: pb.DistrictsResponse
-	(*WardsResponse)(nil),                     // 169: pb.WardsResponse
-	(*CreateProductResponse)(nil),             // 170: pb.CreateProductResponse
-	(*ListProductResponse)(nil),               // 171: pb.ListProductResponse
-	(*DetailProductResponse)(nil),             // 172: pb.DetailProductResponse
-	(*PromotionByProductResponse)(nil),        // 173: pb.PromotionByProductResponse
-	(*PromotionCheckResponse)(nil),            // 174: pb.PromotionCheckResponse
-	(*PromotionCreateResponse)(nil),           // 175: pb.PromotionCreateResponse
-	(*ListVariantResponse)(nil),               // 176: pb.ListVariantResponse
-	(*VariantsCustomerBuyResponse)(nil),       // 177: pb.VariantsCustomerBuyResponse
-	(*VariantScanResponse)(nil),               // 178: pb.VariantScanResponse
-	(*PriceListResponse)(nil),                 // 179: pb.PriceListResponse
-	(*DetailPriceListResponse)(nil),           // 180: pb.DetailPriceListResponse
-	(*UpdatePriceListResponse)(nil),           // 181: pb.UpdatePriceListResponse
-	(*ClassifyListResponse)(nil),              // 182: pb.ClassifyListResponse
-	(*ProductionStandardListResponse)(nil),    // 183: pb.ProductionStandardListResponse
-	(*ProductionStandardCreateResponse)(nil),  // 184: pb.ProductionStandardCreateResponse
-	(*ProductionStandardDetailResponse)(nil),  // 185: pb.ProductionStandardDetailResponse
-	(*ProductionStandardUpdateResponse)(nil),  // 186: pb.ProductionStandardUpdateResponse
-	(*ProductionStandardDeleteResponse)(nil),  // 187: pb.ProductionStandardDeleteResponse
-	(*PreparationTypeListResponse)(nil),       // 188: pb.PreparationTypeListResponse
-	(*PreparationTypeCreateResponse)(nil),     // 189: pb.PreparationTypeCreateResponse
-	(*PreparationTypeDetailResponse)(nil),     // 190: pb.PreparationTypeDetailResponse
-	(*PreparationTypeUpdateResponse)(nil),     // 191: pb.PreparationTypeUpdateResponse
-	(*PreparationTypeDeleteResponse)(nil),     // 192: pb.PreparationTypeDeleteResponse
-	(*CompanyPharmaListResponse)(nil),         // 193: pb.CompanyPharmaListResponse
-	(*CompanyPharmaCreateResponse)(nil),       // 194: pb.CompanyPharmaCreateResponse
-	(*CompanyPharmaDetailResponse)(nil),       // 195: pb.CompanyPharmaDetailResponse
-	(*CompanyPharmaUpdateResponse)(nil),       // 196: pb.CompanyPharmaUpdateResponse
-	(*CompanyPharmaDeleteResponse)(nil),       // 197: pb.CompanyPharmaDeleteResponse
-	(*BrandListResponse)(nil),                 // 198: pb.BrandListResponse
-	(*BrandCreateResponse)(nil),               // 199: pb.BrandCreateResponse
-	(*BrandUpdateResponse)(nil),               // 200: pb.BrandUpdateResponse
-	(*BrandDetailResponse)(nil),               // 201: pb.BrandDetailResponse
-	(*BrandDeleteResponse)(nil),               // 202: pb.BrandDeleteResponse
-	(*CategoryListResponse)(nil),              // 203: pb.CategoryListResponse
-	(*CategoryCreateResponse)(nil),            // 204: pb.CategoryCreateResponse
-	(*CategoryUpdateResponse)(nil),            // 205: pb.CategoryUpdateResponse
-	(*CategoryDetailResponse)(nil),            // 206: pb.CategoryDetailResponse
-	(*CategoryDeleteResponse)(nil),            // 207: pb.CategoryDeleteResponse
-	(*ProductTypeListResponse)(nil),           // 208: pb.ProductTypeListResponse
-	(*SupplierCreateResponse)(nil),            // 209: pb.SupplierCreateResponse
-	(*SupplierListResponse)(nil),              // 210: pb.SupplierListResponse
-	(*SupplierDetailResponse)(nil),            // 211: pb.SupplierDetailResponse
-	(*SupplierUpdateResponse)(nil),            // 212: pb.SupplierUpdateResponse
-	(*SupplierDeleteResponse)(nil),            // 213: pb.SupplierDeleteResponse
-	(*WarehouseCreateResponse)(nil),           // 214: pb.WarehouseCreateResponse
-	(*WarehouseListResponse)(nil),             // 215: pb.WarehouseListResponse
-	(*WarehouseDetailResponse)(nil),           // 216: pb.WarehouseDetailResponse
-	(*WarehouseUpdateResponse)(nil),           // 217: pb.WarehouseUpdateResponse
-	(*WarehouseDeleteResponse)(nil),           // 218: pb.WarehouseDeleteResponse
-	(*TicketCreateResponse)(nil),              // 219: pb.TicketCreateResponse
-	(*TicketListResponse)(nil),                // 220: pb.TicketListResponse
-	(*TicketDetailResponse)(nil),              // 221: pb.TicketDetailResponse
-	(*TicketUpdateStatusResponse)(nil),        // 222: pb.TicketUpdateStatusResponse
-	(*ConsignmentListResponse)(nil),           // 223: pb.ConsignmentListResponse
-	(*OrderCreateResponse)(nil),               // 224: pb.OrderCreateResponse
-	(*OrderListResponse)(nil),                 // 225: pb.OrderListResponse
-	(*OrderDetailResponse)(nil),               // 226: pb.OrderDetailResponse
-	(*OrderUpdateStatusResponse)(nil),         // 227: pb.OrderUpdateStatusResponse
-	(*OrderScanResponse)(nil),                 // 228: pb.OrderScanResponse
-	(*CustomerListResponse)(nil),              // 229: pb.CustomerListResponse
-	(*CustomerCreateResponse)(nil),            // 230: pb.CustomerCreateResponse
-	(*CustomerDetailResponse)(nil),            // 231: pb.CustomerDetailResponse
-	(*CustomerUpdateResponse)(nil),            // 232: pb.CustomerUpdateResponse
-	(*CustomerGroupListResponse)(nil),         // 233: pb.CustomerGroupListResponse
-	(*CustomerGroupCreateResponse)(nil),       // 234: pb.CustomerGroupCreateResponse
-	(*CustomerGroupDetailResponse)(nil),       // 235: pb.CustomerGroupDetailResponse
-	(*CustomerGroupUpdateResponse)(nil),       // 236: pb.CustomerGroupUpdateResponse
-	(*CustomerGroupDeleteResponse)(nil),       // 237: pb.CustomerGroupDeleteResponse
-	(*MedicalRecordCreateResponse)(nil),       // 238: pb.MedicalRecordCreateResponse
-	(*MedicalRecordListResponse)(nil),         // 239: pb.MedicalRecordListResponse
-	(*ImportCompanyResponse)(nil),             // 240: pb.ImportCompanyResponse
-	(*ImportProductResponse)(nil),             // 241: pb.ImportProductResponse
-	(*ImportProductMasterDataResponse)(nil),   // 242: pb.ImportProductMasterDataResponse
-	(*ListDebtNoteResponse)(nil),              // 243: pb.ListDebtNoteResponse
-	(*CreateDebtNoteResponse)(nil),            // 244: pb.CreateDebtNoteResponse
-	(*DetailDebtNoteResponse)(nil),            // 245: pb.DetailDebtNoteResponse
-	(*ReportDebtNoteResponse)(nil),            // 246: pb.ReportDebtNoteResponse
-	(*CreateDebtRepaymentResponse)(nil),       // 247: pb.CreateDebtRepaymentResponse
-	(*ServiceListResponse)(nil),               // 248: pb.ServiceListResponse
-	(*ServicesByCustomerResponse)(nil),        // 249: pb.ServicesByCustomerResponse
-	(*ServiceCreateResponse)(nil),             // 250: pb.ServiceCreateResponse
-	(*ServiceDetailResponse)(nil),             // 251: pb.ServiceDetailResponse
-	(*ServiceUpdateResponse)(nil),             // 252: pb.ServiceUpdateResponse
-	(*ServiceDeleteResponse)(nil),             // 253: pb.ServiceDeleteResponse
-	(*ListConversationResponse)(nil),          // 254: pb.ListConversationResponse
-	(*ListMessageResponse)(nil),               // 255: pb.ListMessageResponse
-	(*ListMedicalRecordResponse)(nil),         // 256: pb.ListMedicalRecordResponse
-	(*CreateMedicalRecordResponse)(nil),       // 257: pb.CreateMedicalRecordResponse
-	(*DetailMedicalRecordResponse)(nil),       // 258: pb.DetailMedicalRecordResponse
-	(*ListNotificationResponse)(nil),          // 259: pb.ListNotificationResponse
-	(*DetailNotificationResponse)(nil),        // 260: pb.DetailNotificationResponse
-	(*SeenAllNotiResponse)(nil),               // 261: pb.SeenAllNotiResponse
-	(*AppointmentScheduleResponse)(nil),       // 262: pb.AppointmentScheduleResponse
-	(*AppointmentScheduleListResponse)(nil),   // 263: pb.AppointmentScheduleListResponse
-	(*AppointmentScheduleUpdateResponse)(nil), // 264: pb.AppointmentScheduleUpdateResponse
-	(*MedicalBillResponse)(nil),               // 265: pb.MedicalBillResponse
-	(*MedicalBillListResponse)(nil),           // 266: pb.MedicalBillListResponse
-	(*MedicalBillUpdateResponse)(nil),         // 267: pb.MedicalBillUpdateResponse
-	(*PrescriptionResponse)(nil),              // 268: pb.PrescriptionResponse
-	(*PrescriptionListResponse)(nil),          // 269: pb.PrescriptionListResponse
+	(*PrescriptionUpdateRequest)(nil),         // 134: pb.PrescriptionUpdateRequest
+	(*PrescriptionListRequest)(nil),           // 135: pb.PrescriptionListRequest
+	(*LoginResponse)(nil),                     // 136: pb.LoginResponse
+	(*CheckTokenResponse)(nil),                // 137: pb.CheckTokenResponse
+	(*CreateAccountResponse)(nil),             // 138: pb.CreateAccountResponse
+	(*VerifyAccountResponse)(nil),             // 139: pb.VerifyAccountResponse
+	(*SendCodeResponse)(nil),                  // 140: pb.SendCodeResponse
+	(*VerifyCodeResponse)(nil),                // 141: pb.VerifyCodeResponse
+	(*ResetPasswordResponse)(nil),             // 142: pb.ResetPasswordResponse
+	(*CheckEmailResponse)(nil),                // 143: pb.CheckEmailResponse
+	(*CheckPhoneResponse)(nil),                // 144: pb.CheckPhoneResponse
+	(*AccountDetailResponse)(nil),             // 145: pb.AccountDetailResponse
+	(*AccountInactiveResponse)(nil),           // 146: pb.AccountInactiveResponse
+	(*AccountListResponse)(nil),               // 147: pb.AccountListResponse
+	(*CreateEmployeeResponse)(nil),            // 148: pb.CreateEmployeeResponse
+	(*EmployeeUpdateResponse)(nil),            // 149: pb.EmployeeUpdateResponse
+	(*EmployeeDetailResponse)(nil),            // 150: pb.EmployeeDetailResponse
+	(*AssignRoleEmployeeResponse)(nil),        // 151: pb.AssignRoleEmployeeResponse
+	(*AppListResponse)(nil),                   // 152: pb.AppListResponse
+	(*RoleCreateResponse)(nil),                // 153: pb.RoleCreateResponse
+	(*RoleListResponse)(nil),                  // 154: pb.RoleListResponse
+	(*RoleDetailResponse)(nil),                // 155: pb.RoleDetailResponse
+	(*RoleUpdateResponse)(nil),                // 156: pb.RoleUpdateResponse
+	(*RoleDeleteResponse)(nil),                // 157: pb.RoleDeleteResponse
+	(*HomeDataResponse)(nil),                  // 158: pb.HomeDataResponse
+	(*ReportRevenueResponse)(nil),             // 159: pb.ReportRevenueResponse
+	(*ReportOrderResponse)(nil),               // 160: pb.ReportOrderResponse
+	(*ReportCustomerResponse)(nil),            // 161: pb.ReportCustomerResponse
+	(*ReportCustomerRevenueResponse)(nil),     // 162: pb.ReportCustomerRevenueResponse
+	(*CreateCompanyResponse)(nil),             // 163: pb.CreateCompanyResponse
+	(*UpdateCompanyResponse)(nil),             // 164: pb.UpdateCompanyResponse
+	(*DetailCompanyResponse)(nil),             // 165: pb.DetailCompanyResponse
+	(*GetCompaniesResponse)(nil),              // 166: pb.GetCompaniesResponse
+	(*AssignCompanyRes)(nil),                  // 167: pb.AssignCompanyRes
+	(*ProvincesResponse)(nil),                 // 168: pb.ProvincesResponse
+	(*DistrictsResponse)(nil),                 // 169: pb.DistrictsResponse
+	(*WardsResponse)(nil),                     // 170: pb.WardsResponse
+	(*CreateProductResponse)(nil),             // 171: pb.CreateProductResponse
+	(*ListProductResponse)(nil),               // 172: pb.ListProductResponse
+	(*DetailProductResponse)(nil),             // 173: pb.DetailProductResponse
+	(*PromotionByProductResponse)(nil),        // 174: pb.PromotionByProductResponse
+	(*PromotionCheckResponse)(nil),            // 175: pb.PromotionCheckResponse
+	(*PromotionCreateResponse)(nil),           // 176: pb.PromotionCreateResponse
+	(*ListVariantResponse)(nil),               // 177: pb.ListVariantResponse
+	(*VariantsCustomerBuyResponse)(nil),       // 178: pb.VariantsCustomerBuyResponse
+	(*VariantScanResponse)(nil),               // 179: pb.VariantScanResponse
+	(*PriceListResponse)(nil),                 // 180: pb.PriceListResponse
+	(*DetailPriceListResponse)(nil),           // 181: pb.DetailPriceListResponse
+	(*UpdatePriceListResponse)(nil),           // 182: pb.UpdatePriceListResponse
+	(*ClassifyListResponse)(nil),              // 183: pb.ClassifyListResponse
+	(*ProductionStandardListResponse)(nil),    // 184: pb.ProductionStandardListResponse
+	(*ProductionStandardCreateResponse)(nil),  // 185: pb.ProductionStandardCreateResponse
+	(*ProductionStandardDetailResponse)(nil),  // 186: pb.ProductionStandardDetailResponse
+	(*ProductionStandardUpdateResponse)(nil),  // 187: pb.ProductionStandardUpdateResponse
+	(*ProductionStandardDeleteResponse)(nil),  // 188: pb.ProductionStandardDeleteResponse
+	(*PreparationTypeListResponse)(nil),       // 189: pb.PreparationTypeListResponse
+	(*PreparationTypeCreateResponse)(nil),     // 190: pb.PreparationTypeCreateResponse
+	(*PreparationTypeDetailResponse)(nil),     // 191: pb.PreparationTypeDetailResponse
+	(*PreparationTypeUpdateResponse)(nil),     // 192: pb.PreparationTypeUpdateResponse
+	(*PreparationTypeDeleteResponse)(nil),     // 193: pb.PreparationTypeDeleteResponse
+	(*CompanyPharmaListResponse)(nil),         // 194: pb.CompanyPharmaListResponse
+	(*CompanyPharmaCreateResponse)(nil),       // 195: pb.CompanyPharmaCreateResponse
+	(*CompanyPharmaDetailResponse)(nil),       // 196: pb.CompanyPharmaDetailResponse
+	(*CompanyPharmaUpdateResponse)(nil),       // 197: pb.CompanyPharmaUpdateResponse
+	(*CompanyPharmaDeleteResponse)(nil),       // 198: pb.CompanyPharmaDeleteResponse
+	(*BrandListResponse)(nil),                 // 199: pb.BrandListResponse
+	(*BrandCreateResponse)(nil),               // 200: pb.BrandCreateResponse
+	(*BrandUpdateResponse)(nil),               // 201: pb.BrandUpdateResponse
+	(*BrandDetailResponse)(nil),               // 202: pb.BrandDetailResponse
+	(*BrandDeleteResponse)(nil),               // 203: pb.BrandDeleteResponse
+	(*CategoryListResponse)(nil),              // 204: pb.CategoryListResponse
+	(*CategoryCreateResponse)(nil),            // 205: pb.CategoryCreateResponse
+	(*CategoryUpdateResponse)(nil),            // 206: pb.CategoryUpdateResponse
+	(*CategoryDetailResponse)(nil),            // 207: pb.CategoryDetailResponse
+	(*CategoryDeleteResponse)(nil),            // 208: pb.CategoryDeleteResponse
+	(*ProductTypeListResponse)(nil),           // 209: pb.ProductTypeListResponse
+	(*SupplierCreateResponse)(nil),            // 210: pb.SupplierCreateResponse
+	(*SupplierListResponse)(nil),              // 211: pb.SupplierListResponse
+	(*SupplierDetailResponse)(nil),            // 212: pb.SupplierDetailResponse
+	(*SupplierUpdateResponse)(nil),            // 213: pb.SupplierUpdateResponse
+	(*SupplierDeleteResponse)(nil),            // 214: pb.SupplierDeleteResponse
+	(*WarehouseCreateResponse)(nil),           // 215: pb.WarehouseCreateResponse
+	(*WarehouseListResponse)(nil),             // 216: pb.WarehouseListResponse
+	(*WarehouseDetailResponse)(nil),           // 217: pb.WarehouseDetailResponse
+	(*WarehouseUpdateResponse)(nil),           // 218: pb.WarehouseUpdateResponse
+	(*WarehouseDeleteResponse)(nil),           // 219: pb.WarehouseDeleteResponse
+	(*TicketCreateResponse)(nil),              // 220: pb.TicketCreateResponse
+	(*TicketListResponse)(nil),                // 221: pb.TicketListResponse
+	(*TicketDetailResponse)(nil),              // 222: pb.TicketDetailResponse
+	(*TicketUpdateStatusResponse)(nil),        // 223: pb.TicketUpdateStatusResponse
+	(*ConsignmentListResponse)(nil),           // 224: pb.ConsignmentListResponse
+	(*OrderCreateResponse)(nil),               // 225: pb.OrderCreateResponse
+	(*OrderListResponse)(nil),                 // 226: pb.OrderListResponse
+	(*OrderDetailResponse)(nil),               // 227: pb.OrderDetailResponse
+	(*OrderUpdateStatusResponse)(nil),         // 228: pb.OrderUpdateStatusResponse
+	(*OrderScanResponse)(nil),                 // 229: pb.OrderScanResponse
+	(*CustomerListResponse)(nil),              // 230: pb.CustomerListResponse
+	(*CustomerCreateResponse)(nil),            // 231: pb.CustomerCreateResponse
+	(*CustomerDetailResponse)(nil),            // 232: pb.CustomerDetailResponse
+	(*CustomerUpdateResponse)(nil),            // 233: pb.CustomerUpdateResponse
+	(*CustomerGroupListResponse)(nil),         // 234: pb.CustomerGroupListResponse
+	(*CustomerGroupCreateResponse)(nil),       // 235: pb.CustomerGroupCreateResponse
+	(*CustomerGroupDetailResponse)(nil),       // 236: pb.CustomerGroupDetailResponse
+	(*CustomerGroupUpdateResponse)(nil),       // 237: pb.CustomerGroupUpdateResponse
+	(*CustomerGroupDeleteResponse)(nil),       // 238: pb.CustomerGroupDeleteResponse
+	(*MedicalRecordCreateResponse)(nil),       // 239: pb.MedicalRecordCreateResponse
+	(*MedicalRecordListResponse)(nil),         // 240: pb.MedicalRecordListResponse
+	(*ImportCompanyResponse)(nil),             // 241: pb.ImportCompanyResponse
+	(*ImportProductResponse)(nil),             // 242: pb.ImportProductResponse
+	(*ImportProductMasterDataResponse)(nil),   // 243: pb.ImportProductMasterDataResponse
+	(*ListDebtNoteResponse)(nil),              // 244: pb.ListDebtNoteResponse
+	(*CreateDebtNoteResponse)(nil),            // 245: pb.CreateDebtNoteResponse
+	(*DetailDebtNoteResponse)(nil),            // 246: pb.DetailDebtNoteResponse
+	(*ReportDebtNoteResponse)(nil),            // 247: pb.ReportDebtNoteResponse
+	(*CreateDebtRepaymentResponse)(nil),       // 248: pb.CreateDebtRepaymentResponse
+	(*ServiceListResponse)(nil),               // 249: pb.ServiceListResponse
+	(*ServicesByCustomerResponse)(nil),        // 250: pb.ServicesByCustomerResponse
+	(*ServiceCreateResponse)(nil),             // 251: pb.ServiceCreateResponse
+	(*ServiceDetailResponse)(nil),             // 252: pb.ServiceDetailResponse
+	(*ServiceUpdateResponse)(nil),             // 253: pb.ServiceUpdateResponse
+	(*ServiceDeleteResponse)(nil),             // 254: pb.ServiceDeleteResponse
+	(*ListConversationResponse)(nil),          // 255: pb.ListConversationResponse
+	(*ListMessageResponse)(nil),               // 256: pb.ListMessageResponse
+	(*ListMedicalRecordResponse)(nil),         // 257: pb.ListMedicalRecordResponse
+	(*CreateMedicalRecordResponse)(nil),       // 258: pb.CreateMedicalRecordResponse
+	(*DetailMedicalRecordResponse)(nil),       // 259: pb.DetailMedicalRecordResponse
+	(*ListNotificationResponse)(nil),          // 260: pb.ListNotificationResponse
+	(*DetailNotificationResponse)(nil),        // 261: pb.DetailNotificationResponse
+	(*SeenAllNotiResponse)(nil),               // 262: pb.SeenAllNotiResponse
+	(*AppointmentScheduleResponse)(nil),       // 263: pb.AppointmentScheduleResponse
+	(*AppointmentScheduleListResponse)(nil),   // 264: pb.AppointmentScheduleListResponse
+	(*AppointmentScheduleUpdateResponse)(nil), // 265: pb.AppointmentScheduleUpdateResponse
+	(*MedicalBillResponse)(nil),               // 266: pb.MedicalBillResponse
+	(*MedicalBillListResponse)(nil),           // 267: pb.MedicalBillListResponse
+	(*MedicalBillUpdateResponse)(nil),         // 268: pb.MedicalBillUpdateResponse
+	(*PrescriptionResponse)(nil),              // 269: pb.PrescriptionResponse
+	(*PrescriptionUpdateResponse)(nil),        // 270: pb.PrescriptionUpdateResponse
+	(*PrescriptionListResponse)(nil),          // 271: pb.PrescriptionListResponse
 }
 var file_service_pharmago_proto_depIdxs = []int32{
 	0,   // 0: pb.Pharmago.Login:input_type -> pb.LoginRequest
@@ -2006,151 +2018,153 @@ var file_service_pharmago_proto_depIdxs = []int32{
 	130, // 136: pb.Pharmago.MedicalBillDetail:input_type -> pb.MedicalBill
 	132, // 137: pb.Pharmago.MedicalBillUpdate:input_type -> pb.MedicalBillUpdateRequest
 	133, // 138: pb.Pharmago.PrescriptionCreate:input_type -> pb.Prescription
-	133, // 139: pb.Pharmago.PrescriptionDetail:input_type -> pb.Prescription
-	134, // 140: pb.Pharmago.PrescriptionList:input_type -> pb.PrescriptionListRequest
-	135, // 141: pb.Pharmago.Login:output_type -> pb.LoginResponse
-	136, // 142: pb.Pharmago.CheckToken:output_type -> pb.CheckTokenResponse
-	137, // 143: pb.Pharmago.CreateAccount:output_type -> pb.CreateAccountResponse
-	138, // 144: pb.Pharmago.VerifyAccount:output_type -> pb.VerifyAccountResponse
-	139, // 145: pb.Pharmago.SendCode:output_type -> pb.SendCodeResponse
-	140, // 146: pb.Pharmago.VerifyCode:output_type -> pb.VerifyCodeResponse
-	141, // 147: pb.Pharmago.ResetPassword:output_type -> pb.ResetPasswordResponse
-	142, // 148: pb.Pharmago.CheckEmail:output_type -> pb.CheckEmailResponse
-	143, // 149: pb.Pharmago.CheckPhone:output_type -> pb.CheckPhoneResponse
-	144, // 150: pb.Pharmago.AccountDetail:output_type -> pb.AccountDetailResponse
-	145, // 151: pb.Pharmago.AccountInactive:output_type -> pb.AccountInactiveResponse
-	146, // 152: pb.Pharmago.AccountList:output_type -> pb.AccountListResponse
-	147, // 153: pb.Pharmago.CreateEmployee:output_type -> pb.CreateEmployeeResponse
-	148, // 154: pb.Pharmago.UpdateEmployee:output_type -> pb.EmployeeUpdateResponse
-	149, // 155: pb.Pharmago.DetailEmployee:output_type -> pb.EmployeeDetailResponse
-	150, // 156: pb.Pharmago.AssignRoleEmployee:output_type -> pb.AssignRoleEmployeeResponse
-	144, // 157: pb.Pharmago.DeleteEmployee:output_type -> pb.AccountDetailResponse
-	151, // 158: pb.Pharmago.AppList:output_type -> pb.AppListResponse
-	152, // 159: pb.Pharmago.RoleCreate:output_type -> pb.RoleCreateResponse
-	153, // 160: pb.Pharmago.RoleList:output_type -> pb.RoleListResponse
-	154, // 161: pb.Pharmago.RoleDetail:output_type -> pb.RoleDetailResponse
-	155, // 162: pb.Pharmago.RoleUpdate:output_type -> pb.RoleUpdateResponse
-	156, // 163: pb.Pharmago.RoleDelete:output_type -> pb.RoleDeleteResponse
-	157, // 164: pb.Pharmago.HomeData:output_type -> pb.HomeDataResponse
-	158, // 165: pb.Pharmago.ReportRevenue:output_type -> pb.ReportRevenueResponse
-	159, // 166: pb.Pharmago.ReportOrder:output_type -> pb.ReportOrderResponse
-	160, // 167: pb.Pharmago.ReportCustomer:output_type -> pb.ReportCustomerResponse
-	161, // 168: pb.Pharmago.ReportCustomerRevenue:output_type -> pb.ReportCustomerRevenueResponse
-	162, // 169: pb.Pharmago.CreateCompany:output_type -> pb.CreateCompanyResponse
-	163, // 170: pb.Pharmago.UpdateCompany:output_type -> pb.UpdateCompanyResponse
-	164, // 171: pb.Pharmago.DetailCompany:output_type -> pb.DetailCompanyResponse
-	165, // 172: pb.Pharmago.ListCompanies:output_type -> pb.GetCompaniesResponse
-	166, // 173: pb.Pharmago.AssignEmployee:output_type -> pb.AssignCompanyRes
-	167, // 174: pb.Pharmago.ListProvinces:output_type -> pb.ProvincesResponse
-	168, // 175: pb.Pharmago.ListDistricts:output_type -> pb.DistrictsResponse
-	169, // 176: pb.Pharmago.ListWards:output_type -> pb.WardsResponse
-	170, // 177: pb.Pharmago.CreateProduct:output_type -> pb.CreateProductResponse
-	170, // 178: pb.Pharmago.UpdateProduct:output_type -> pb.CreateProductResponse
-	171, // 179: pb.Pharmago.ListProduct:output_type -> pb.ListProductResponse
-	172, // 180: pb.Pharmago.DetailProduct:output_type -> pb.DetailProductResponse
-	173, // 181: pb.Pharmago.PromotionByProduct:output_type -> pb.PromotionByProductResponse
-	174, // 182: pb.Pharmago.PromotionCheck:output_type -> pb.PromotionCheckResponse
-	175, // 183: pb.Pharmago.PromotionCreate:output_type -> pb.PromotionCreateResponse
-	176, // 184: pb.Pharmago.ListVariant:output_type -> pb.ListVariantResponse
-	177, // 185: pb.Pharmago.VariantsCustomerBuy:output_type -> pb.VariantsCustomerBuyResponse
-	178, // 186: pb.Pharmago.ScanVariant:output_type -> pb.VariantScanResponse
-	179, // 187: pb.Pharmago.GetPriceList:output_type -> pb.PriceListResponse
-	180, // 188: pb.Pharmago.DetailPriceList:output_type -> pb.DetailPriceListResponse
-	181, // 189: pb.Pharmago.UpdatePriceList:output_type -> pb.UpdatePriceListResponse
-	182, // 190: pb.Pharmago.ClassifyList:output_type -> pb.ClassifyListResponse
-	183, // 191: pb.Pharmago.ProductionStandardList:output_type -> pb.ProductionStandardListResponse
-	184, // 192: pb.Pharmago.ProductionStandardCreate:output_type -> pb.ProductionStandardCreateResponse
-	185, // 193: pb.Pharmago.ProductionStandardDetail:output_type -> pb.ProductionStandardDetailResponse
-	186, // 194: pb.Pharmago.ProductionStandardUpdate:output_type -> pb.ProductionStandardUpdateResponse
-	187, // 195: pb.Pharmago.ProductionStandardDelete:output_type -> pb.ProductionStandardDeleteResponse
-	188, // 196: pb.Pharmago.PreparationTypeList:output_type -> pb.PreparationTypeListResponse
-	189, // 197: pb.Pharmago.PreparationTypeCreate:output_type -> pb.PreparationTypeCreateResponse
-	190, // 198: pb.Pharmago.PreparationTypeDetail:output_type -> pb.PreparationTypeDetailResponse
-	191, // 199: pb.Pharmago.PreparationTypeUpdate:output_type -> pb.PreparationTypeUpdateResponse
-	192, // 200: pb.Pharmago.PreparationTypeDelete:output_type -> pb.PreparationTypeDeleteResponse
-	193, // 201: pb.Pharmago.CompanyPharmaList:output_type -> pb.CompanyPharmaListResponse
-	194, // 202: pb.Pharmago.CompanyPharmaCreate:output_type -> pb.CompanyPharmaCreateResponse
-	195, // 203: pb.Pharmago.CompanyPharmaDetail:output_type -> pb.CompanyPharmaDetailResponse
-	196, // 204: pb.Pharmago.CompanyPharmaUpdate:output_type -> pb.CompanyPharmaUpdateResponse
-	197, // 205: pb.Pharmago.CompanyPharmaDelete:output_type -> pb.CompanyPharmaDeleteResponse
-	198, // 206: pb.Pharmago.BrandList:output_type -> pb.BrandListResponse
-	199, // 207: pb.Pharmago.BrandCreate:output_type -> pb.BrandCreateResponse
-	200, // 208: pb.Pharmago.BrandUpdate:output_type -> pb.BrandUpdateResponse
-	201, // 209: pb.Pharmago.BrandDetail:output_type -> pb.BrandDetailResponse
-	202, // 210: pb.Pharmago.BrandDelete:output_type -> pb.BrandDeleteResponse
-	203, // 211: pb.Pharmago.CategoryList:output_type -> pb.CategoryListResponse
-	204, // 212: pb.Pharmago.CategoryCreate:output_type -> pb.CategoryCreateResponse
-	205, // 213: pb.Pharmago.CategoryUpdate:output_type -> pb.CategoryUpdateResponse
-	206, // 214: pb.Pharmago.CategoryDetail:output_type -> pb.CategoryDetailResponse
-	207, // 215: pb.Pharmago.CategoryDelete:output_type -> pb.CategoryDeleteResponse
-	208, // 216: pb.Pharmago.ProductTypeList:output_type -> pb.ProductTypeListResponse
-	209, // 217: pb.Pharmago.SupplierCreate:output_type -> pb.SupplierCreateResponse
-	210, // 218: pb.Pharmago.SupplierList:output_type -> pb.SupplierListResponse
-	211, // 219: pb.Pharmago.SupplierDetail:output_type -> pb.SupplierDetailResponse
-	212, // 220: pb.Pharmago.SupplierUpdate:output_type -> pb.SupplierUpdateResponse
-	213, // 221: pb.Pharmago.SupplierDelete:output_type -> pb.SupplierDeleteResponse
-	214, // 222: pb.Pharmago.WarehouseCreate:output_type -> pb.WarehouseCreateResponse
-	215, // 223: pb.Pharmago.WarehouseList:output_type -> pb.WarehouseListResponse
-	216, // 224: pb.Pharmago.WarehouseDetail:output_type -> pb.WarehouseDetailResponse
-	217, // 225: pb.Pharmago.WarehouseUpdate:output_type -> pb.WarehouseUpdateResponse
-	218, // 226: pb.Pharmago.WarehouseDelete:output_type -> pb.WarehouseDeleteResponse
-	219, // 227: pb.Pharmago.TicketCreate:output_type -> pb.TicketCreateResponse
-	220, // 228: pb.Pharmago.TicketList:output_type -> pb.TicketListResponse
-	221, // 229: pb.Pharmago.TicketDetail:output_type -> pb.TicketDetailResponse
-	222, // 230: pb.Pharmago.TicketUpdateStatus:output_type -> pb.TicketUpdateStatusResponse
-	223, // 231: pb.Pharmago.ConsignmentList:output_type -> pb.ConsignmentListResponse
-	224, // 232: pb.Pharmago.OrderCreate:output_type -> pb.OrderCreateResponse
-	225, // 233: pb.Pharmago.OrderList:output_type -> pb.OrderListResponse
-	226, // 234: pb.Pharmago.OrderDetail:output_type -> pb.OrderDetailResponse
-	227, // 235: pb.Pharmago.OrderUpdateStatus:output_type -> pb.OrderUpdateStatusResponse
-	228, // 236: pb.Pharmago.OrderScan:output_type -> pb.OrderScanResponse
-	229, // 237: pb.Pharmago.CustomerList:output_type -> pb.CustomerListResponse
-	230, // 238: pb.Pharmago.CustomerCreate:output_type -> pb.CustomerCreateResponse
-	231, // 239: pb.Pharmago.CustomerDetail:output_type -> pb.CustomerDetailResponse
-	232, // 240: pb.Pharmago.CustomerUpdate:output_type -> pb.CustomerUpdateResponse
-	233, // 241: pb.Pharmago.CustomerGroupList:output_type -> pb.CustomerGroupListResponse
-	234, // 242: pb.Pharmago.CustomerGroupCreate:output_type -> pb.CustomerGroupCreateResponse
-	235, // 243: pb.Pharmago.CustomerGroupDetail:output_type -> pb.CustomerGroupDetailResponse
-	236, // 244: pb.Pharmago.CustomerGroupUpdate:output_type -> pb.CustomerGroupUpdateResponse
-	237, // 245: pb.Pharmago.CustomerGroupDelete:output_type -> pb.CustomerGroupDeleteResponse
-	238, // 246: pb.Pharmago.MedicalRecordCreate:output_type -> pb.MedicalRecordCreateResponse
-	238, // 247: pb.Pharmago.MedicalRecordCreateStream:output_type -> pb.MedicalRecordCreateResponse
-	239, // 248: pb.Pharmago.MedicalRecordList:output_type -> pb.MedicalRecordListResponse
-	240, // 249: pb.Pharmago.ImportCompany:output_type -> pb.ImportCompanyResponse
-	241, // 250: pb.Pharmago.ImportProduct:output_type -> pb.ImportProductResponse
-	242, // 251: pb.Pharmago.ImportProductMasterData:output_type -> pb.ImportProductMasterDataResponse
-	243, // 252: pb.Pharmago.ListDebtNote:output_type -> pb.ListDebtNoteResponse
-	244, // 253: pb.Pharmago.CreateDebtNote:output_type -> pb.CreateDebtNoteResponse
-	245, // 254: pb.Pharmago.DetailDebtNote:output_type -> pb.DetailDebtNoteResponse
-	246, // 255: pb.Pharmago.ReportDebtNote:output_type -> pb.ReportDebtNoteResponse
-	247, // 256: pb.Pharmago.CreateDebtRepayment:output_type -> pb.CreateDebtRepaymentResponse
-	248, // 257: pb.Pharmago.ServiceList:output_type -> pb.ServiceListResponse
-	249, // 258: pb.Pharmago.ServicesByCustomer:output_type -> pb.ServicesByCustomerResponse
-	250, // 259: pb.Pharmago.ServiceCreate:output_type -> pb.ServiceCreateResponse
-	251, // 260: pb.Pharmago.ServiceDetail:output_type -> pb.ServiceDetailResponse
-	252, // 261: pb.Pharmago.ServiceUpdate:output_type -> pb.ServiceUpdateResponse
-	253, // 262: pb.Pharmago.ServiceDelete:output_type -> pb.ServiceDeleteResponse
-	254, // 263: pb.Pharmago.ConversationList:output_type -> pb.ListConversationResponse
-	255, // 264: pb.Pharmago.MessageList:output_type -> pb.ListMessageResponse
-	256, // 265: pb.Pharmago.ListMedicalRecord:output_type -> pb.ListMedicalRecordResponse
-	257, // 266: pb.Pharmago.CreateMedicalRecord:output_type -> pb.CreateMedicalRecordResponse
-	258, // 267: pb.Pharmago.DetailMedicalRecord:output_type -> pb.DetailMedicalRecordResponse
-	259, // 268: pb.Pharmago.ListNotification:output_type -> pb.ListNotificationResponse
-	260, // 269: pb.Pharmago.DetailNotification:output_type -> pb.DetailNotificationResponse
-	261, // 270: pb.Pharmago.SeenAllNoti:output_type -> pb.SeenAllNotiResponse
-	262, // 271: pb.Pharmago.ScheduleCreate:output_type -> pb.AppointmentScheduleResponse
-	263, // 272: pb.Pharmago.ScheduleList:output_type -> pb.AppointmentScheduleListResponse
-	262, // 273: pb.Pharmago.ScheduleDetail:output_type -> pb.AppointmentScheduleResponse
-	264, // 274: pb.Pharmago.ScheduleUpdate:output_type -> pb.AppointmentScheduleUpdateResponse
-	265, // 275: pb.Pharmago.MedicalBillCreate:output_type -> pb.MedicalBillResponse
-	266, // 276: pb.Pharmago.MedicalBillList:output_type -> pb.MedicalBillListResponse
-	265, // 277: pb.Pharmago.MedicalBillDetail:output_type -> pb.MedicalBillResponse
-	267, // 278: pb.Pharmago.MedicalBillUpdate:output_type -> pb.MedicalBillUpdateResponse
-	268, // 279: pb.Pharmago.PrescriptionCreate:output_type -> pb.PrescriptionResponse
-	268, // 280: pb.Pharmago.PrescriptionDetail:output_type -> pb.PrescriptionResponse
-	269, // 281: pb.Pharmago.PrescriptionList:output_type -> pb.PrescriptionListResponse
-	141, // [141:282] is the sub-list for method output_type
-	0,   // [0:141] is the sub-list for method input_type
+	134, // 139: pb.Pharmago.PrescriptionUpdate:input_type -> pb.PrescriptionUpdateRequest
+	133, // 140: pb.Pharmago.PrescriptionDetail:input_type -> pb.Prescription
+	135, // 141: pb.Pharmago.PrescriptionList:input_type -> pb.PrescriptionListRequest
+	136, // 142: pb.Pharmago.Login:output_type -> pb.LoginResponse
+	137, // 143: pb.Pharmago.CheckToken:output_type -> pb.CheckTokenResponse
+	138, // 144: pb.Pharmago.CreateAccount:output_type -> pb.CreateAccountResponse
+	139, // 145: pb.Pharmago.VerifyAccount:output_type -> pb.VerifyAccountResponse
+	140, // 146: pb.Pharmago.SendCode:output_type -> pb.SendCodeResponse
+	141, // 147: pb.Pharmago.VerifyCode:output_type -> pb.VerifyCodeResponse
+	142, // 148: pb.Pharmago.ResetPassword:output_type -> pb.ResetPasswordResponse
+	143, // 149: pb.Pharmago.CheckEmail:output_type -> pb.CheckEmailResponse
+	144, // 150: pb.Pharmago.CheckPhone:output_type -> pb.CheckPhoneResponse
+	145, // 151: pb.Pharmago.AccountDetail:output_type -> pb.AccountDetailResponse
+	146, // 152: pb.Pharmago.AccountInactive:output_type -> pb.AccountInactiveResponse
+	147, // 153: pb.Pharmago.AccountList:output_type -> pb.AccountListResponse
+	148, // 154: pb.Pharmago.CreateEmployee:output_type -> pb.CreateEmployeeResponse
+	149, // 155: pb.Pharmago.UpdateEmployee:output_type -> pb.EmployeeUpdateResponse
+	150, // 156: pb.Pharmago.DetailEmployee:output_type -> pb.EmployeeDetailResponse
+	151, // 157: pb.Pharmago.AssignRoleEmployee:output_type -> pb.AssignRoleEmployeeResponse
+	145, // 158: pb.Pharmago.DeleteEmployee:output_type -> pb.AccountDetailResponse
+	152, // 159: pb.Pharmago.AppList:output_type -> pb.AppListResponse
+	153, // 160: pb.Pharmago.RoleCreate:output_type -> pb.RoleCreateResponse
+	154, // 161: pb.Pharmago.RoleList:output_type -> pb.RoleListResponse
+	155, // 162: pb.Pharmago.RoleDetail:output_type -> pb.RoleDetailResponse
+	156, // 163: pb.Pharmago.RoleUpdate:output_type -> pb.RoleUpdateResponse
+	157, // 164: pb.Pharmago.RoleDelete:output_type -> pb.RoleDeleteResponse
+	158, // 165: pb.Pharmago.HomeData:output_type -> pb.HomeDataResponse
+	159, // 166: pb.Pharmago.ReportRevenue:output_type -> pb.ReportRevenueResponse
+	160, // 167: pb.Pharmago.ReportOrder:output_type -> pb.ReportOrderResponse
+	161, // 168: pb.Pharmago.ReportCustomer:output_type -> pb.ReportCustomerResponse
+	162, // 169: pb.Pharmago.ReportCustomerRevenue:output_type -> pb.ReportCustomerRevenueResponse
+	163, // 170: pb.Pharmago.CreateCompany:output_type -> pb.CreateCompanyResponse
+	164, // 171: pb.Pharmago.UpdateCompany:output_type -> pb.UpdateCompanyResponse
+	165, // 172: pb.Pharmago.DetailCompany:output_type -> pb.DetailCompanyResponse
+	166, // 173: pb.Pharmago.ListCompanies:output_type -> pb.GetCompaniesResponse
+	167, // 174: pb.Pharmago.AssignEmployee:output_type -> pb.AssignCompanyRes
+	168, // 175: pb.Pharmago.ListProvinces:output_type -> pb.ProvincesResponse
+	169, // 176: pb.Pharmago.ListDistricts:output_type -> pb.DistrictsResponse
+	170, // 177: pb.Pharmago.ListWards:output_type -> pb.WardsResponse
+	171, // 178: pb.Pharmago.CreateProduct:output_type -> pb.CreateProductResponse
+	171, // 179: pb.Pharmago.UpdateProduct:output_type -> pb.CreateProductResponse
+	172, // 180: pb.Pharmago.ListProduct:output_type -> pb.ListProductResponse
+	173, // 181: pb.Pharmago.DetailProduct:output_type -> pb.DetailProductResponse
+	174, // 182: pb.Pharmago.PromotionByProduct:output_type -> pb.PromotionByProductResponse
+	175, // 183: pb.Pharmago.PromotionCheck:output_type -> pb.PromotionCheckResponse
+	176, // 184: pb.Pharmago.PromotionCreate:output_type -> pb.PromotionCreateResponse
+	177, // 185: pb.Pharmago.ListVariant:output_type -> pb.ListVariantResponse
+	178, // 186: pb.Pharmago.VariantsCustomerBuy:output_type -> pb.VariantsCustomerBuyResponse
+	179, // 187: pb.Pharmago.ScanVariant:output_type -> pb.VariantScanResponse
+	180, // 188: pb.Pharmago.GetPriceList:output_type -> pb.PriceListResponse
+	181, // 189: pb.Pharmago.DetailPriceList:output_type -> pb.DetailPriceListResponse
+	182, // 190: pb.Pharmago.UpdatePriceList:output_type -> pb.UpdatePriceListResponse
+	183, // 191: pb.Pharmago.ClassifyList:output_type -> pb.ClassifyListResponse
+	184, // 192: pb.Pharmago.ProductionStandardList:output_type -> pb.ProductionStandardListResponse
+	185, // 193: pb.Pharmago.ProductionStandardCreate:output_type -> pb.ProductionStandardCreateResponse
+	186, // 194: pb.Pharmago.ProductionStandardDetail:output_type -> pb.ProductionStandardDetailResponse
+	187, // 195: pb.Pharmago.ProductionStandardUpdate:output_type -> pb.ProductionStandardUpdateResponse
+	188, // 196: pb.Pharmago.ProductionStandardDelete:output_type -> pb.ProductionStandardDeleteResponse
+	189, // 197: pb.Pharmago.PreparationTypeList:output_type -> pb.PreparationTypeListResponse
+	190, // 198: pb.Pharmago.PreparationTypeCreate:output_type -> pb.PreparationTypeCreateResponse
+	191, // 199: pb.Pharmago.PreparationTypeDetail:output_type -> pb.PreparationTypeDetailResponse
+	192, // 200: pb.Pharmago.PreparationTypeUpdate:output_type -> pb.PreparationTypeUpdateResponse
+	193, // 201: pb.Pharmago.PreparationTypeDelete:output_type -> pb.PreparationTypeDeleteResponse
+	194, // 202: pb.Pharmago.CompanyPharmaList:output_type -> pb.CompanyPharmaListResponse
+	195, // 203: pb.Pharmago.CompanyPharmaCreate:output_type -> pb.CompanyPharmaCreateResponse
+	196, // 204: pb.Pharmago.CompanyPharmaDetail:output_type -> pb.CompanyPharmaDetailResponse
+	197, // 205: pb.Pharmago.CompanyPharmaUpdate:output_type -> pb.CompanyPharmaUpdateResponse
+	198, // 206: pb.Pharmago.CompanyPharmaDelete:output_type -> pb.CompanyPharmaDeleteResponse
+	199, // 207: pb.Pharmago.BrandList:output_type -> pb.BrandListResponse
+	200, // 208: pb.Pharmago.BrandCreate:output_type -> pb.BrandCreateResponse
+	201, // 209: pb.Pharmago.BrandUpdate:output_type -> pb.BrandUpdateResponse
+	202, // 210: pb.Pharmago.BrandDetail:output_type -> pb.BrandDetailResponse
+	203, // 211: pb.Pharmago.BrandDelete:output_type -> pb.BrandDeleteResponse
+	204, // 212: pb.Pharmago.CategoryList:output_type -> pb.CategoryListResponse
+	205, // 213: pb.Pharmago.CategoryCreate:output_type -> pb.CategoryCreateResponse
+	206, // 214: pb.Pharmago.CategoryUpdate:output_type -> pb.CategoryUpdateResponse
+	207, // 215: pb.Pharmago.CategoryDetail:output_type -> pb.CategoryDetailResponse
+	208, // 216: pb.Pharmago.CategoryDelete:output_type -> pb.CategoryDeleteResponse
+	209, // 217: pb.Pharmago.ProductTypeList:output_type -> pb.ProductTypeListResponse
+	210, // 218: pb.Pharmago.SupplierCreate:output_type -> pb.SupplierCreateResponse
+	211, // 219: pb.Pharmago.SupplierList:output_type -> pb.SupplierListResponse
+	212, // 220: pb.Pharmago.SupplierDetail:output_type -> pb.SupplierDetailResponse
+	213, // 221: pb.Pharmago.SupplierUpdate:output_type -> pb.SupplierUpdateResponse
+	214, // 222: pb.Pharmago.SupplierDelete:output_type -> pb.SupplierDeleteResponse
+	215, // 223: pb.Pharmago.WarehouseCreate:output_type -> pb.WarehouseCreateResponse
+	216, // 224: pb.Pharmago.WarehouseList:output_type -> pb.WarehouseListResponse
+	217, // 225: pb.Pharmago.WarehouseDetail:output_type -> pb.WarehouseDetailResponse
+	218, // 226: pb.Pharmago.WarehouseUpdate:output_type -> pb.WarehouseUpdateResponse
+	219, // 227: pb.Pharmago.WarehouseDelete:output_type -> pb.WarehouseDeleteResponse
+	220, // 228: pb.Pharmago.TicketCreate:output_type -> pb.TicketCreateResponse
+	221, // 229: pb.Pharmago.TicketList:output_type -> pb.TicketListResponse
+	222, // 230: pb.Pharmago.TicketDetail:output_type -> pb.TicketDetailResponse
+	223, // 231: pb.Pharmago.TicketUpdateStatus:output_type -> pb.TicketUpdateStatusResponse
+	224, // 232: pb.Pharmago.ConsignmentList:output_type -> pb.ConsignmentListResponse
+	225, // 233: pb.Pharmago.OrderCreate:output_type -> pb.OrderCreateResponse
+	226, // 234: pb.Pharmago.OrderList:output_type -> pb.OrderListResponse
+	227, // 235: pb.Pharmago.OrderDetail:output_type -> pb.OrderDetailResponse
+	228, // 236: pb.Pharmago.OrderUpdateStatus:output_type -> pb.OrderUpdateStatusResponse
+	229, // 237: pb.Pharmago.OrderScan:output_type -> pb.OrderScanResponse
+	230, // 238: pb.Pharmago.CustomerList:output_type -> pb.CustomerListResponse
+	231, // 239: pb.Pharmago.CustomerCreate:output_type -> pb.CustomerCreateResponse
+	232, // 240: pb.Pharmago.CustomerDetail:output_type -> pb.CustomerDetailResponse
+	233, // 241: pb.Pharmago.CustomerUpdate:output_type -> pb.CustomerUpdateResponse
+	234, // 242: pb.Pharmago.CustomerGroupList:output_type -> pb.CustomerGroupListResponse
+	235, // 243: pb.Pharmago.CustomerGroupCreate:output_type -> pb.CustomerGroupCreateResponse
+	236, // 244: pb.Pharmago.CustomerGroupDetail:output_type -> pb.CustomerGroupDetailResponse
+	237, // 245: pb.Pharmago.CustomerGroupUpdate:output_type -> pb.CustomerGroupUpdateResponse
+	238, // 246: pb.Pharmago.CustomerGroupDelete:output_type -> pb.CustomerGroupDeleteResponse
+	239, // 247: pb.Pharmago.MedicalRecordCreate:output_type -> pb.MedicalRecordCreateResponse
+	239, // 248: pb.Pharmago.MedicalRecordCreateStream:output_type -> pb.MedicalRecordCreateResponse
+	240, // 249: pb.Pharmago.MedicalRecordList:output_type -> pb.MedicalRecordListResponse
+	241, // 250: pb.Pharmago.ImportCompany:output_type -> pb.ImportCompanyResponse
+	242, // 251: pb.Pharmago.ImportProduct:output_type -> pb.ImportProductResponse
+	243, // 252: pb.Pharmago.ImportProductMasterData:output_type -> pb.ImportProductMasterDataResponse
+	244, // 253: pb.Pharmago.ListDebtNote:output_type -> pb.ListDebtNoteResponse
+	245, // 254: pb.Pharmago.CreateDebtNote:output_type -> pb.CreateDebtNoteResponse
+	246, // 255: pb.Pharmago.DetailDebtNote:output_type -> pb.DetailDebtNoteResponse
+	247, // 256: pb.Pharmago.ReportDebtNote:output_type -> pb.ReportDebtNoteResponse
+	248, // 257: pb.Pharmago.CreateDebtRepayment:output_type -> pb.CreateDebtRepaymentResponse
+	249, // 258: pb.Pharmago.ServiceList:output_type -> pb.ServiceListResponse
+	250, // 259: pb.Pharmago.ServicesByCustomer:output_type -> pb.ServicesByCustomerResponse
+	251, // 260: pb.Pharmago.ServiceCreate:output_type -> pb.ServiceCreateResponse
+	252, // 261: pb.Pharmago.ServiceDetail:output_type -> pb.ServiceDetailResponse
+	253, // 262: pb.Pharmago.ServiceUpdate:output_type -> pb.ServiceUpdateResponse
+	254, // 263: pb.Pharmago.ServiceDelete:output_type -> pb.ServiceDeleteResponse
+	255, // 264: pb.Pharmago.ConversationList:output_type -> pb.ListConversationResponse
+	256, // 265: pb.Pharmago.MessageList:output_type -> pb.ListMessageResponse
+	257, // 266: pb.Pharmago.ListMedicalRecord:output_type -> pb.ListMedicalRecordResponse
+	258, // 267: pb.Pharmago.CreateMedicalRecord:output_type -> pb.CreateMedicalRecordResponse
+	259, // 268: pb.Pharmago.DetailMedicalRecord:output_type -> pb.DetailMedicalRecordResponse
+	260, // 269: pb.Pharmago.ListNotification:output_type -> pb.ListNotificationResponse
+	261, // 270: pb.Pharmago.DetailNotification:output_type -> pb.DetailNotificationResponse
+	262, // 271: pb.Pharmago.SeenAllNoti:output_type -> pb.SeenAllNotiResponse
+	263, // 272: pb.Pharmago.ScheduleCreate:output_type -> pb.AppointmentScheduleResponse
+	264, // 273: pb.Pharmago.ScheduleList:output_type -> pb.AppointmentScheduleListResponse
+	263, // 274: pb.Pharmago.ScheduleDetail:output_type -> pb.AppointmentScheduleResponse
+	265, // 275: pb.Pharmago.ScheduleUpdate:output_type -> pb.AppointmentScheduleUpdateResponse
+	266, // 276: pb.Pharmago.MedicalBillCreate:output_type -> pb.MedicalBillResponse
+	267, // 277: pb.Pharmago.MedicalBillList:output_type -> pb.MedicalBillListResponse
+	266, // 278: pb.Pharmago.MedicalBillDetail:output_type -> pb.MedicalBillResponse
+	268, // 279: pb.Pharmago.MedicalBillUpdate:output_type -> pb.MedicalBillUpdateResponse
+	269, // 280: pb.Pharmago.PrescriptionCreate:output_type -> pb.PrescriptionResponse
+	270, // 281: pb.Pharmago.PrescriptionUpdate:output_type -> pb.PrescriptionUpdateResponse
+	269, // 282: pb.Pharmago.PrescriptionDetail:output_type -> pb.PrescriptionResponse
+	271, // 283: pb.Pharmago.PrescriptionList:output_type -> pb.PrescriptionListResponse
+	142, // [142:284] is the sub-list for method output_type
+	0,   // [0:142] is the sub-list for method input_type
 	0,   // [0:0] is the sub-list for extension type_name
 	0,   // [0:0] is the sub-list for extension extendee
 	0,   // [0:0] is the sub-list for field type_name

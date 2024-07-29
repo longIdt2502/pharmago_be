@@ -709,6 +709,18 @@ func (server *ServerGRPC) MedicalRecordCreate(ctx context.Context, req *pb.Medic
 			}, nil
 		}
 	}
+	if req.MedicalBill != nil {
+		asUuid, err = uuid.Parse(req.GetMedicalBill())
+		if err != nil {
+			errApp := common.ErrInternalWithMsg(err, "Phiếu khám không tồn tại")
+			return &pb.MedicalRecordCreateResponse{
+				Code:         int32(errApp.StatusCode),
+				Message:      errApp.Message,
+				MessageTrans: errApp.MessageTrans,
+				Log:          errApp.Log,
+			}, nil
+		}
+	}
 
 	var res *pb.MedicalRecordCreateResponse
 
@@ -734,6 +746,7 @@ func (server *ServerGRPC) MedicalRecordCreate(ctx context.Context, req *pb.Medic
 			Url:                 url,
 			Customer:            sql.NullInt32{Int32: req.GetCustomer(), Valid: true},
 			AppointmentSchedule: uuid.NullUUID{UUID: asUuid, Valid: req.AppointmentSchedule != nil},
+			MedicalBill:         uuid.NullUUID{UUID: asUuid, Valid: req.MedicalBill != nil},
 			UserCreated:         sql.NullInt32{Int32: tokenPayload.UserID, Valid: true},
 		})
 		if err != nil {
@@ -838,13 +851,25 @@ func (server *ServerGRPC) MedicalRecordList(ctx context.Context, req *pb.Medical
 		}
 	}
 
+	var mbUuid uuid.UUID
+	if req.MedicalBill != nil {
+		mbUuid, err = uuid.Parse(req.GetMedicalBill())
+		if err != nil {
+			errApp := common.ErrInternalWithMsg(err, "phiếu khám không tồn tại")
+			return &pb.MedicalRecordListResponse{
+				Code:         int32(errApp.StatusCode),
+				Message:      errApp.Message,
+				MessageTrans: errApp.MessageTrans,
+				Log:          errApp.Log,
+			}, nil
+		}
+	}
+
 	medicalRecords, err := server.store.ListMedicalRecordLink(ctx, db.ListMedicalRecordLinkParams{
-		Customer: sql.NullInt32{Int32: req.GetCustomer(), Valid: req.Customer != nil},
-		TypeMrl: db.NullMedicalRecordLinkType{
-			MedicalRecordLinkType: db.MedicalRecordLinkType(req.GetType().String()),
-			Valid:                 req.Type != nil,
-		},
-		Schedule: uuid.NullUUID{UUID: asUuid, Valid: req.AppointmentSchedule != nil},
+		Customer:    sql.NullInt32{Int32: req.GetCustomer(), Valid: req.Customer != nil},
+		TypeMrl:     db.NullMedicalRecordLinkType{MedicalRecordLinkType: db.MedicalRecordLinkType(req.GetType().String()), Valid: req.Type != nil},
+		Schedule:    uuid.NullUUID{UUID: asUuid, Valid: req.AppointmentSchedule != nil},
+		MedicalBill: uuid.NullUUID{UUID: mbUuid, Valid: req.MedicalBill != nil},
 	})
 	if err != nil {
 		errApp := common.ErrDBWithMsg(err, "Dữ liệu tài liệu lỗi")

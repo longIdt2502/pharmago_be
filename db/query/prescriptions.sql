@@ -38,3 +38,25 @@ AND (
 )
 LIMIT COALESCE(sqlc.narg('limit')::int, 10)
 OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 1);
+
+-- name: UpdatePrescription :one
+UPDATE prescriptions
+SET 
+    code = COALESCE(sqlc.narg(code)::varchar, code),
+    diagnostic = COALESCE(sqlc.narg(diagnostic)::varchar, diagnostic),
+    customer = COALESCE(sqlc.narg(customer)::int, customer)
+WHERE uuid = sqlc.arg(uuid)::uuid
+RETURNING *;
+
+-- name: UpdatePrescriptionItem :one
+UPDATE prescription_item
+SET 
+    lieu_dung = COALESCE(sqlc.narg(lieu_dung)::varchar, lieu_dung),
+    quantity = COALESCE(sqlc.narg(quantity)::int, quantity)
+WHERE id = sqlc.arg(id)::int
+RETURNING *;
+
+-- name: DeletePrescriptionItem :one
+DELETE FROM prescription_item
+WHERE id = $1 RETURNING *;
+

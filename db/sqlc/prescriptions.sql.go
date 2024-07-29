@@ -96,6 +96,24 @@ func (q *Queries) CreatePrescriptionItem(ctx context.Context, arg CreatePrescrip
 	return i, err
 }
 
+const deletePrescriptionItem = `-- name: DeletePrescriptionItem :one
+DELETE FROM prescription_item
+WHERE id = $1 RETURNING id, prescription_uuid, variant, lieu_dung, quantity
+`
+
+func (q *Queries) DeletePrescriptionItem(ctx context.Context, id int32) (PrescriptionItem, error) {
+	row := q.db.QueryRowContext(ctx, deletePrescriptionItem, id)
+	var i PrescriptionItem
+	err := row.Scan(
+		&i.ID,
+		&i.PrescriptionUuid,
+		&i.Variant,
+		&i.LieuDung,
+		&i.Quantity,
+	)
+	return i, err
+}
+
 const detailPrescription = `-- name: DetailPrescription :one
 SELECT p.id, uuid, p.code, symptoms, diagnostic, customer, doctor, p.company, p.user_created, p.user_updated, p.created_at, p.updated_at, c.id, c.full_name, c.code, c.company, c.address, c.email, phone, license, birthday, c.user_created, c.user_updated, c.updated_at, c.created_at, "group", title, license_date, contact_name, contact_title, contact_phone, contact_email, contact_address, account_number, bank_name, bank_branch, issued_by, c.gender, a.id, a.username, a.hashed_password, a.full_name, a.email, a.type, a.is_verify, a.password_changed_at, a.created_at, a.role, a.gender, a.licence, a.dob, a.address, uc.id, uc.username, uc.hashed_password, uc.full_name, uc.email, uc.type, uc.is_verify, uc.password_changed_at, uc.created_at, uc.role, uc.gender, uc.licence, uc.dob, uc.address, uu.id, uu.username, uu.hashed_password, uu.full_name, uu.email, uu.type, uu.is_verify, uu.password_changed_at, uu.created_at, uu.role, uu.gender, uu.licence, uu.dob, uu.address FROM prescriptions p
 JOIN customers c ON c.id = p.customer
@@ -561,4 +579,74 @@ func (q *Queries) ListPrescriptionItem(ctx context.Context, prescriptionUuid uui
 		return nil, err
 	}
 	return items, nil
+}
+
+const updatePrescription = `-- name: UpdatePrescription :one
+UPDATE prescriptions
+SET 
+    code = COALESCE($1::varchar, code),
+    diagnostic = COALESCE($2::varchar, diagnostic),
+    customer = COALESCE($3::int, customer)
+WHERE uuid = $4::uuid
+RETURNING id, uuid, code, symptoms, diagnostic, customer, doctor, company, user_created, user_updated, created_at, updated_at
+`
+
+type UpdatePrescriptionParams struct {
+	Code       sql.NullString `json:"code"`
+	Diagnostic sql.NullString `json:"diagnostic"`
+	Customer   sql.NullInt32  `json:"customer"`
+	Uuid       uuid.UUID      `json:"uuid"`
+}
+
+func (q *Queries) UpdatePrescription(ctx context.Context, arg UpdatePrescriptionParams) (Prescription, error) {
+	row := q.db.QueryRowContext(ctx, updatePrescription,
+		arg.Code,
+		arg.Diagnostic,
+		arg.Customer,
+		arg.Uuid,
+	)
+	var i Prescription
+	err := row.Scan(
+		&i.ID,
+		&i.Uuid,
+		&i.Code,
+		&i.Symptoms,
+		&i.Diagnostic,
+		&i.Customer,
+		&i.Doctor,
+		&i.Company,
+		&i.UserCreated,
+		&i.UserUpdated,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const updatePrescriptionItem = `-- name: UpdatePrescriptionItem :one
+UPDATE prescription_item
+SET 
+    lieu_dung = COALESCE($1::varchar, lieu_dung),
+    quantity = COALESCE($2::int, quantity)
+WHERE id = $3::int
+RETURNING id, prescription_uuid, variant, lieu_dung, quantity
+`
+
+type UpdatePrescriptionItemParams struct {
+	LieuDung sql.NullString `json:"lieu_dung"`
+	Quantity sql.NullInt32  `json:"quantity"`
+	ID       int32          `json:"id"`
+}
+
+func (q *Queries) UpdatePrescriptionItem(ctx context.Context, arg UpdatePrescriptionItemParams) (PrescriptionItem, error) {
+	row := q.db.QueryRowContext(ctx, updatePrescriptionItem, arg.LieuDung, arg.Quantity, arg.ID)
+	var i PrescriptionItem
+	err := row.Scan(
+		&i.ID,
+		&i.PrescriptionUuid,
+		&i.Variant,
+		&i.LieuDung,
+		&i.Quantity,
+	)
+	return i, err
 }
