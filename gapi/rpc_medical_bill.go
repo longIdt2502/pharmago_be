@@ -176,6 +176,43 @@ func (server *ServerGRPC) MedicalBillDetail(ctx context.Context, req *pb.Medical
 
 	itemPb := mapper.MedicalBillMapper(ctx, server.store, medicalBill[0])
 
+	var paymentsPB []*pb.Payment
+	paymentSell, err := server.store.PaymentOrderByMedicalBill(ctx, medicalBill[0].Uuid)
+	if err != nil {
+		errApp := common.ErrDB(err)
+		return &pb.MedicalBillResponse{
+			Code:         int32(errApp.StatusCode),
+			Message:      errApp.Message,
+			MessageTrans: "Lỗi lấy dữ liệu thông tin thanh toán đơn bán",
+			Log:          errApp.Log,
+		}, nil
+	}
+	paymentsPB = append(paymentsPB, &pb.Payment{
+		Code:     "SELL",
+		MustPaid: float32(paymentSell.TotalMustPaid),
+		HadPaid:  float32(paymentSell.TotalHadPaid),
+		NeedPay:  float32(paymentSell.TotalNeedPay),
+	})
+
+	paymentService, err := server.store.PaymentOrderServiceByMedicalBill(ctx, medicalBill[0].Uuid)
+	if err != nil {
+		errApp := common.ErrDB(err)
+		return &pb.MedicalBillResponse{
+			Code:         int32(errApp.StatusCode),
+			Message:      errApp.Message,
+			MessageTrans: "Lỗi lấy dữ liệu thông tin thanh toán đơn dịch vụ",
+			Log:          errApp.Log,
+		}, nil
+	}
+	paymentsPB = append(paymentsPB, &pb.Payment{
+		Code:     "SERVICE",
+		MustPaid: float32(paymentService.TotalMustPaid),
+		HadPaid:  float32(paymentService.TotalHadPaid),
+		NeedPay:  float32(paymentService.TotalNeedPay),
+	})
+
+	itemPb.Payment = paymentsPB
+
 	return &pb.MedicalBillResponse{
 		Code:    200,
 		Message: "success",
