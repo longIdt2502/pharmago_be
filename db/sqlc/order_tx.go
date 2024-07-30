@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/longIdt2502/pharmago_be/b2"
 	"github.com/longIdt2502/pharmago_be/common"
 	"github.com/longIdt2502/pharmago_be/pb"
@@ -219,6 +220,20 @@ func (store *Store) CreateOrderTx(ctx context.Context, req CreateOrderTxParams) 
 		})
 		if err != nil {
 			return common.ErrDBWithMsg(err, "lỗi tạo đơn hàng")
+		}
+
+		if req.MbUuid != nil {
+			mbUuid, err := uuid.Parse(req.GetMbUuid())
+			if err != nil {
+				return common.ErrInternalWithMsg(err, "Mã phiếu khám không tồn tại")
+			}
+			_, err = q.CreateMedicalBillOrder(ctx, CreateMedicalBillOrderParams{
+				Uuid:  uuid.NullUUID{UUID: mbUuid, Valid: true},
+				Order: sql.NullInt32{Int32: order.ID, Valid: true},
+			})
+			if err != nil {
+				return common.ErrDBWithMsg(err, "Tạo phiếu khám - đơn hàng thất bại")
+			}
 		}
 
 		for _, value := range req.GetOrderItems() {

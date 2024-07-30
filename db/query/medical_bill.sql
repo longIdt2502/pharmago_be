@@ -38,3 +38,8 @@ INSERT INTO medical_bills (
 ) VALUES (
     $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
 ) RETURNING *;
+
+-- name: CreateMedicalBillOrder :one
+INSERT INTO medical_bill_order_sell (
+    "uuid", "order"
+) VALUES ($1, $2) RETURNING *;

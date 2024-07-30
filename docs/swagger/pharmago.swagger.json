@@ -13426,6 +13426,9 @@
             "type": "object",
             "$ref": "#/definitions/pbOrderServiceItemCreate"
           }
+        },
+        "mbUuid": {
+          "type": "string"
         }
       }
     },

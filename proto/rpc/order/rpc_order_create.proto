@@ -55,6 +55,7 @@ message OrderCreateRequest {
   repeated PaymentItemCreate payment_items = 4;
   int32 warehouse = 5;
   repeated OrderServiceItemCreate service_items = 6;
+  optional string mb_uuid = 7;
 }
 
 message OrderCreateResponse {
