@@ -176,9 +176,9 @@ func (q *Queries) PaymentOrderByMedicalBill(ctx context.Context, argUuid uuid.UU
 }
 
 const paymentOrderServiceByMedicalBill = `-- name: PaymentOrderServiceByMedicalBill :one
-SELECT SUM(p.must_paid) AS total_must_paid, 
-        SUM(p.had_paid) AS total_had_paid, 
-        SUM(p.need_pay) AS total_need_pay
+SELECT COALESCE(SUM(p.must_paid), 0) AS total_must_paid, 
+        COALESCE(SUM(p.had_paid), 0) AS total_had_paid, 
+        COALESCE(SUM(p.need_pay), 0) AS total_need_pay
     FROM appointment_schedule_service ass
 JOIN orders o ON o.id = ass.order_service
 JOIN payments p ON p.id = o.payment
@@ -187,9 +187,9 @@ GROUP BY ass.mb_uuid
 `
 
 type PaymentOrderServiceByMedicalBillRow struct {
-	TotalMustPaid int64 `json:"total_must_paid"`
-	TotalHadPaid  int64 `json:"total_had_paid"`
-	TotalNeedPay  int64 `json:"total_need_pay"`
+	TotalMustPaid interface{} `json:"total_must_paid"`
+	TotalHadPaid  interface{} `json:"total_had_paid"`
+	TotalNeedPay  interface{} `json:"total_need_pay"`
 }
 
 func (q *Queries) PaymentOrderServiceByMedicalBill(ctx context.Context, argUuid uuid.UUID) (PaymentOrderServiceByMedicalBillRow, error) {
