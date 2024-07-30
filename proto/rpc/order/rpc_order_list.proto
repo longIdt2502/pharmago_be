@@ -27,6 +27,22 @@ message OrderListRequest {
   optional OrderType type = 13;
 }
 
+message OrdersByMedicalBillRequest {
+  string mb_uuid = 1;
+  optional int32 warehouse = 2;
+  optional string search = 3;
+  optional int32 page = 4;
+  optional int32 limit = 5;
+  optional string status = 6;
+  optional string order_by = 7;
+  optional google.protobuf.Timestamp created_start = 8;
+  optional google.protobuf.Timestamp created_end = 9;
+  optional google.protobuf.Timestamp updated_start = 10;
+  optional google.protobuf.Timestamp updated_end = 11;
+  optional int32 customer = 12;
+  optional OrderType type = 13;
+}
+
 message OrderListResponse {
   int32 code = 1;
   string message = 2;

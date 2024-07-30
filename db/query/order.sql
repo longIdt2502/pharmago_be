@@ -112,3 +112,25 @@ GROUP BY ot.code;
 -- name: CountOrder :one
 SELECT COALESCE(COUNT(id), 0)::int FROM orders
 WHERE company = $1;
+
+-- name: ListByMedicalBill :many
+SELECT *, c.full_name AS c_full_name, os.title AS os_title, os.id AS os_id, a.full_name AS a_full_name FROM medical_bill_order_sell mbos
+JOIN orders o ON o.id = mbos.order
+JOIN customers c ON o.customer = c.id
+JOIN tickets t ON o.ticket = t.id
+JOIN order_status os ON os.code = o.status
+JOIN accounts a ON a.id = o.user_created
+JOIN payments p ON p.id = o.payment
+JOIN order_type ot ON ot.code = o.type
+WHERE mbos.uuid = sqlc.arg('uuid')::uuid
+AND (
+    sqlc.narg('status')::varchar IS NULL OR o.status = sqlc.narg('status')::varchar
+)
+AND (
+    sqlc.narg('type')::varchar IS NULL OR o.type = sqlc.narg('type')::varchar
+)
+AND (
+    o.code ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%'
+)
+LIMIT COALESCE(sqlc.narg('limit')::int, 10)
+OFFSET (COALESCE(sqlc.narg('page')::int, 1) - 1) * COALESCE(sqlc.narg('limit')::int, 10); 

@@ -9,6 +9,8 @@ import (
 	"context"
 	"database/sql"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 const countOrder = `-- name: CountOrder :one
@@ -401,6 +403,254 @@ func (q *Queries) DetailOrder(ctx context.Context, arg DetailOrderParams) (Detai
 		&i.AFullName,
 	)
 	return i, err
+}
+
+const listByMedicalBill = `-- name: ListByMedicalBill :many
+SELECT uuid, "order", o.id, o.code, o.total_price, description, vat, discount, service_price, o.must_paid, customer, o.address, o.status, o.type, ticket, o.qr, o.company, payment, o.user_created, o.user_updated, o.created_at, o.updated_at, c.id, c.full_name, c.code, c.company, c.address, c.email, phone, license, birthday, c.user_created, c.user_updated, c.updated_at, c.created_at, "group", c.title, license_date, contact_name, contact_title, contact_phone, contact_email, contact_address, account_number, bank_name, bank_branch, issued_by, c.gender, t.id, t.code, t.type, t.status, note, t.qr, export_to, import_from, t.total_price, warehouse, t.user_created, t.user_updated, t.updated_at, t.created_at, os.id, os.code, os.title, a.id, username, hashed_password, a.full_name, a.email, a.type, is_verify, password_changed_at, a.created_at, role, a.gender, licence, dob, a.address, p.id, p.code, p.must_paid, had_paid, need_pay, ot.id, ot.code, ot.title, c.full_name AS c_full_name, os.title AS os_title, os.id AS os_id, a.full_name AS a_full_name FROM medical_bill_order_sell mbos
+JOIN orders o ON o.id = mbos.order
+JOIN customers c ON o.customer = c.id
+JOIN tickets t ON o.ticket = t.id
+JOIN order_status os ON os.code = o.status
+JOIN accounts a ON a.id = o.user_created
+JOIN payments p ON p.id = o.payment
+JOIN order_type ot ON ot.code = o.type
+WHERE mbos.uuid = $1::uuid
+AND (
+    $2::varchar IS NULL OR o.status = $2::varchar
+)
+AND (
+    $3::varchar IS NULL OR o.type = $3::varchar
+)
+AND (
+    o.code ILIKE '%' || COALESCE($4::varchar, '') || '%'
+)
+LIMIT COALESCE($6::int, 10)
+OFFSET (COALESCE($5::int, 1) - 1) * COALESCE($6::int, 10)
+`
+
+type ListByMedicalBillParams struct {
+	Uuid   uuid.UUID      `json:"uuid"`
+	Status sql.NullString `json:"status"`
+	Type   sql.NullString `json:"type"`
+	Search sql.NullString `json:"search"`
+	Page   sql.NullInt32  `json:"page"`
+	Limit  sql.NullInt32  `json:"limit"`
+}
+
+type ListByMedicalBillRow struct {
+	Uuid              uuid.NullUUID  `json:"uuid"`
+	Order             sql.NullInt32  `json:"order"`
+	ID                int32          `json:"id"`
+	Code              string         `json:"code"`
+	TotalPrice        float64        `json:"total_price"`
+	Description       sql.NullString `json:"description"`
+	Vat               float64        `json:"vat"`
+	Discount          string         `json:"discount"`
+	ServicePrice      float64        `json:"service_price"`
+	MustPaid          float64        `json:"must_paid"`
+	Customer          sql.NullInt32  `json:"customer"`
+	Address           sql.NullInt32  `json:"address"`
+	Status            sql.NullString `json:"status"`
+	Type              sql.NullString `json:"type"`
+	Ticket            sql.NullInt32  `json:"ticket"`
+	Qr                sql.NullInt32  `json:"qr"`
+	Company           int32          `json:"company"`
+	Payment           int32          `json:"payment"`
+	UserCreated       sql.NullInt32  `json:"user_created"`
+	UserUpdated       sql.NullInt32  `json:"user_updated"`
+	CreatedAt         time.Time      `json:"created_at"`
+	UpdatedAt         sql.NullTime   `json:"updated_at"`
+	ID_2              int32          `json:"id_2"`
+	FullName          string         `json:"full_name"`
+	Code_2            string         `json:"code_2"`
+	Company_2         int32          `json:"company_2"`
+	Address_2         sql.NullInt32  `json:"address_2"`
+	Email             sql.NullString `json:"email"`
+	Phone             sql.NullString `json:"phone"`
+	License           sql.NullString `json:"license"`
+	Birthday          sql.NullTime   `json:"birthday"`
+	UserCreated_2     int32          `json:"user_created_2"`
+	UserUpdated_2     sql.NullInt32  `json:"user_updated_2"`
+	UpdatedAt_2       sql.NullTime   `json:"updated_at_2"`
+	CreatedAt_2       time.Time      `json:"created_at_2"`
+	Group             sql.NullInt32  `json:"group"`
+	Title             sql.NullString `json:"title"`
+	LicenseDate       sql.NullTime   `json:"license_date"`
+	ContactName       sql.NullString `json:"contact_name"`
+	ContactTitle      sql.NullString `json:"contact_title"`
+	ContactPhone      sql.NullString `json:"contact_phone"`
+	ContactEmail      sql.NullString `json:"contact_email"`
+	ContactAddress    sql.NullInt32  `json:"contact_address"`
+	AccountNumber     sql.NullString `json:"account_number"`
+	BankName          sql.NullString `json:"bank_name"`
+	BankBranch        sql.NullString `json:"bank_branch"`
+	IssuedBy          sql.NullString `json:"issued_by"`
+	Gender            NullGender     `json:"gender"`
+	ID_3              int32          `json:"id_3"`
+	Code_3            string         `json:"code_3"`
+	Type_2            sql.NullInt32  `json:"type_2"`
+	Status_2          sql.NullInt32  `json:"status_2"`
+	Note              sql.NullString `json:"note"`
+	Qr_2              sql.NullInt32  `json:"qr_2"`
+	ExportTo          sql.NullInt32  `json:"export_to"`
+	ImportFrom        sql.NullInt32  `json:"import_from"`
+	TotalPrice_2      float64        `json:"total_price_2"`
+	Warehouse         int32          `json:"warehouse"`
+	UserCreated_3     int32          `json:"user_created_3"`
+	UserUpdated_3     sql.NullInt32  `json:"user_updated_3"`
+	UpdatedAt_3       sql.NullTime   `json:"updated_at_3"`
+	CreatedAt_3       time.Time      `json:"created_at_3"`
+	ID_4              int32          `json:"id_4"`
+	Code_4            string         `json:"code_4"`
+	Title_2           string         `json:"title_2"`
+	ID_5              int32          `json:"id_5"`
+	Username          string         `json:"username"`
+	HashedPassword    string         `json:"hashed_password"`
+	FullName_2        string         `json:"full_name_2"`
+	Email_2           string         `json:"email_2"`
+	Type_3            int32          `json:"type_3"`
+	IsVerify          bool           `json:"is_verify"`
+	PasswordChangedAt time.Time      `json:"password_changed_at"`
+	CreatedAt_4       time.Time      `json:"created_at_4"`
+	Role              sql.NullInt32  `json:"role"`
+	Gender_2          NullGender     `json:"gender_2"`
+	Licence           sql.NullString `json:"licence"`
+	Dob               sql.NullTime   `json:"dob"`
+	Address_3         sql.NullInt32  `json:"address_3"`
+	ID_6              int32          `json:"id_6"`
+	Code_5            string         `json:"code_5"`
+	MustPaid_2        float64        `json:"must_paid_2"`
+	HadPaid           float64        `json:"had_paid"`
+	NeedPay           float64        `json:"need_pay"`
+	ID_7              int32          `json:"id_7"`
+	Code_6            string         `json:"code_6"`
+	Title_3           string         `json:"title_3"`
+	CFullName         string         `json:"c_full_name"`
+	OsTitle           string         `json:"os_title"`
+	OsID              int32          `json:"os_id"`
+	AFullName         string         `json:"a_full_name"`
+}
+
+func (q *Queries) ListByMedicalBill(ctx context.Context, arg ListByMedicalBillParams) ([]ListByMedicalBillRow, error) {
+	rows, err := q.db.QueryContext(ctx, listByMedicalBill,
+		arg.Uuid,
+		arg.Status,
+		arg.Type,
+		arg.Search,
+		arg.Page,
+		arg.Limit,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListByMedicalBillRow{}
+	for rows.Next() {
+		var i ListByMedicalBillRow
+		if err := rows.Scan(
+			&i.Uuid,
+			&i.Order,
+			&i.ID,
+			&i.Code,
+			&i.TotalPrice,
+			&i.Description,
+			&i.Vat,
+			&i.Discount,
+			&i.ServicePrice,
+			&i.MustPaid,
+			&i.Customer,
+			&i.Address,
+			&i.Status,
+			&i.Type,
+			&i.Ticket,
+			&i.Qr,
+			&i.Company,
+			&i.Payment,
+			&i.UserCreated,
+			&i.UserUpdated,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.ID_2,
+			&i.FullName,
+			&i.Code_2,
+			&i.Company_2,
+			&i.Address_2,
+			&i.Email,
+			&i.Phone,
+			&i.License,
+			&i.Birthday,
+			&i.UserCreated_2,
+			&i.UserUpdated_2,
+			&i.UpdatedAt_2,
+			&i.CreatedAt_2,
+			&i.Group,
+			&i.Title,
+			&i.LicenseDate,
+			&i.ContactName,
+			&i.ContactTitle,
+			&i.ContactPhone,
+			&i.ContactEmail,
+			&i.ContactAddress,
+			&i.AccountNumber,
+			&i.BankName,
+			&i.BankBranch,
+			&i.IssuedBy,
+			&i.Gender,
+			&i.ID_3,
+			&i.Code_3,
+			&i.Type_2,
+			&i.Status_2,
+			&i.Note,
+			&i.Qr_2,
+			&i.ExportTo,
+			&i.ImportFrom,
+			&i.TotalPrice_2,
+			&i.Warehouse,
+			&i.UserCreated_3,
+			&i.UserUpdated_3,
+			&i.UpdatedAt_3,
+			&i.CreatedAt_3,
+			&i.ID_4,
+			&i.Code_4,
+			&i.Title_2,
+			&i.ID_5,
+			&i.Username,
+			&i.HashedPassword,
+			&i.FullName_2,
+			&i.Email_2,
+			&i.Type_3,
+			&i.IsVerify,
+			&i.PasswordChangedAt,
+			&i.CreatedAt_4,
+			&i.Role,
+			&i.Gender_2,
+			&i.Licence,
+			&i.Dob,
+			&i.Address_3,
+			&i.ID_6,
+			&i.Code_5,
+			&i.MustPaid_2,
+			&i.HadPaid,
+			&i.NeedPay,
+			&i.ID_7,
+			&i.Code_6,
+			&i.Title_3,
+			&i.CFullName,
+			&i.OsTitle,
+			&i.OsID,
+			&i.AFullName,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const listOrder = `-- name: ListOrder :many

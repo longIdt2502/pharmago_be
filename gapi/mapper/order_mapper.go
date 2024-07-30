@@ -38,6 +38,35 @@ func OrderPreviewMapper(order db.ListOrderRow) *pb.OrderPreview {
 	}
 }
 
+func OrderMedicalBillMapper(order db.ListByMedicalBillRow) *pb.OrderPreview {
+
+	return &pb.OrderPreview{
+		Id:         order.ID,
+		Code:       order.Code,
+		TotalPrice: float32(order.TotalPrice),
+		Status: &pb.SimpleData{
+			Id:   order.OsID,
+			Name: order.OsTitle,
+			Code: order.Status.String,
+		},
+		Description:  order.Description.String,
+		CustomerName: order.CFullName,
+		UserCreated:  order.AFullName,
+		CreatedAt:    timestamppb.New(order.CreatedAt),
+		Payment: &pb.Payment{
+			Id:       order.ID_6,
+			Code:     order.Code_5,
+			MustPaid: float32(order.MustPaid_2),
+			HadPaid:  float32(order.HadPaid),
+			NeedPay:  float32(order.NeedPay),
+		},
+		Type: &pb.SimpleData{
+			Name: order.Title_3,
+			Code: order.Code_6,
+		},
+	}
+}
+
 func OrderDetailMapper(ctx context.Context, store *db.Store, data db.DetailOrderRow) *pb.Order {
 
 	customerDb, _ := store.GetCustomer(ctx, data.Customer.Int32)

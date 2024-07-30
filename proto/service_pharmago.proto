@@ -1097,6 +1097,15 @@ service Pharmago {
       tags: "Order";
     };
   };
+  rpc OrderListByMedicalBill (OrdersByMedicalBillRequest) returns (OrderListResponse) {
+    option (google.api.http) = {
+      get: "/order/v1/medical_bill/{mb_uuid}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List Order";
+      tags: "Order";
+    };
+  };
   rpc OrderDetail (OrderDetailRequest) returns (OrderDetailResponse) {
     option (google.api.http) = {
       get: "/order/v1/order/{id}"

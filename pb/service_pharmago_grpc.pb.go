@@ -112,6 +112,7 @@ const (
 	Pharmago_ConsignmentList_FullMethodName           = "/pb.Pharmago/ConsignmentList"
 	Pharmago_OrderCreate_FullMethodName               = "/pb.Pharmago/OrderCreate"
 	Pharmago_OrderList_FullMethodName                 = "/pb.Pharmago/OrderList"
+	Pharmago_OrderListByMedicalBill_FullMethodName    = "/pb.Pharmago/OrderListByMedicalBill"
 	Pharmago_OrderDetail_FullMethodName               = "/pb.Pharmago/OrderDetail"
 	Pharmago_OrderUpdateStatus_FullMethodName         = "/pb.Pharmago/OrderUpdateStatus"
 	Pharmago_OrderScan_FullMethodName                 = "/pb.Pharmago/OrderScan"
@@ -279,6 +280,7 @@ type PharmagoClient interface {
 	// ================== ORDER ===================
 	OrderCreate(ctx context.Context, in *OrderCreateRequest, opts ...grpc.CallOption) (*OrderCreateResponse, error)
 	OrderList(ctx context.Context, in *OrderListRequest, opts ...grpc.CallOption) (*OrderListResponse, error)
+	OrderListByMedicalBill(ctx context.Context, in *OrdersByMedicalBillRequest, opts ...grpc.CallOption) (*OrderListResponse, error)
 	OrderDetail(ctx context.Context, in *OrderDetailRequest, opts ...grpc.CallOption) (*OrderDetailResponse, error)
 	OrderUpdateStatus(ctx context.Context, in *OrderUpdateStatusRequest, opts ...grpc.CallOption) (*OrderUpdateStatusResponse, error)
 	OrderScan(ctx context.Context, in *OrderScanRequest, opts ...grpc.CallOption) (*OrderScanResponse, error)
@@ -1207,6 +1209,15 @@ func (c *pharmagoClient) OrderList(ctx context.Context, in *OrderListRequest, op
 	return out, nil
 }
 
+func (c *pharmagoClient) OrderListByMedicalBill(ctx context.Context, in *OrdersByMedicalBillRequest, opts ...grpc.CallOption) (*OrderListResponse, error) {
+	out := new(OrderListResponse)
+	err := c.cc.Invoke(ctx, Pharmago_OrderListByMedicalBill_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *pharmagoClient) OrderDetail(ctx context.Context, in *OrderDetailRequest, opts ...grpc.CallOption) (*OrderDetailResponse, error) {
 	out := new(OrderDetailResponse)
 	err := c.cc.Invoke(ctx, Pharmago_OrderDetail_FullMethodName, in, out, opts...)
@@ -1787,6 +1798,7 @@ type PharmagoServer interface {
 	// ================== ORDER ===================
 	OrderCreate(context.Context, *OrderCreateRequest) (*OrderCreateResponse, error)
 	OrderList(context.Context, *OrderListRequest) (*OrderListResponse, error)
+	OrderListByMedicalBill(context.Context, *OrdersByMedicalBillRequest) (*OrderListResponse, error)
 	OrderDetail(context.Context, *OrderDetailRequest) (*OrderDetailResponse, error)
 	OrderUpdateStatus(context.Context, *OrderUpdateStatusRequest) (*OrderUpdateStatusResponse, error)
 	OrderScan(context.Context, *OrderScanRequest) (*OrderScanResponse, error)
@@ -2131,6 +2143,9 @@ func (UnimplementedPharmagoServer) OrderCreate(context.Context, *OrderCreateRequ
 }
 func (UnimplementedPharmagoServer) OrderList(context.Context, *OrderListRequest) (*OrderListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OrderList not implemented")
+}
+func (UnimplementedPharmagoServer) OrderListByMedicalBill(context.Context, *OrdersByMedicalBillRequest) (*OrderListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OrderListByMedicalBill not implemented")
 }
 func (UnimplementedPharmagoServer) OrderDetail(context.Context, *OrderDetailRequest) (*OrderDetailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OrderDetail not implemented")
@@ -3974,6 +3989,24 @@ func _Pharmago_OrderList_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Pharmago_OrderListByMedicalBill_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OrdersByMedicalBillRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).OrderListByMedicalBill(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_OrderListByMedicalBill_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).OrderListByMedicalBill(ctx, req.(*OrdersByMedicalBillRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Pharmago_OrderDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(OrderDetailRequest)
 	if err := dec(in); err != nil {
@@ -5233,6 +5266,10 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "OrderList",
 			Handler:    _Pharmago_OrderList_Handler,
+		},
+		{
+			MethodName: "OrderListByMedicalBill",
+			Handler:    _Pharmago_OrderListByMedicalBill_Handler,
 		},
 		{
 			MethodName: "OrderDetail",

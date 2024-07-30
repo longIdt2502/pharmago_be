@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/hibiken/asynq"
 	"github.com/longIdt2502/pharmago_be/common"
 	db "github.com/longIdt2502/pharmago_be/db/sqlc"
@@ -203,6 +204,56 @@ func (server *ServerGRPC) OrderList(ctx context.Context, req *pb.OrderListReques
 			Sell:    int32(sellCount),
 			Service: int32(serviceCount),
 		},
+	}, nil
+}
+
+func (server *ServerGRPC) OrderListByMedicalBill(ctx context.Context, req *pb.OrdersByMedicalBillRequest) (*pb.OrderListResponse, error) {
+	_, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	uuidParse, _ := uuid.Parse(req.GetMbUuid())
+	orders, err := server.store.ListByMedicalBill(ctx, db.ListByMedicalBillParams{
+		Uuid:   uuidParse,
+		Status: sql.NullString{String: req.GetStatus(), Valid: req.Status != nil},
+		Type:   sql.NullString{String: req.GetType().String(), Valid: req.Type != nil},
+		Search: sql.NullString{String: req.GetSearch(), Valid: req.Search != nil},
+		Page:   sql.NullInt32{Int32: req.GetPage(), Valid: req.Page != nil},
+		Limit:  sql.NullInt32{Int32: req.GetLimit(), Valid: req.Limit != nil},
+	})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get orders: %e", err)
+	}
+
+	var ordersPb []*pb.OrderPreview
+
+	for _, value := range orders {
+		dataPb := mapper.OrderMedicalBillMapper(value)
+		ordersPb = append(ordersPb, dataPb)
+	}
+
+	// countData, _ := server.store.CountOrderByType(ctx, req.Company)
+
+	// sellCount := 0
+	// serviceCount := 0
+	// for _, item := range countData {
+	// 	switch item.Code.String {
+	// 	case "SELL":
+	// 		sellCount = int(item.Count)
+	// 	case "SERVICE":
+	// 		serviceCount = int(item.Count)
+	// 	}
+	// }
+
+	return &pb.OrderListResponse{
+		Code:    200,
+		Message: "success",
+		Details: ordersPb,
+		// Count: &pb.OrderListResponseCount{
+		// 	Sell:    int32(sellCount),
+		// 	Service: int32(serviceCount),
+		// },
 	}, nil
 }
 
