@@ -23,9 +23,9 @@ WHERE id = $1
 LIMIT 1;
 
 -- name: PaymentOrderByMedicalBill :one
-SELECT SUM(p.must_paid) AS total_must_paid, 
-        SUM(p.had_paid) AS total_had_paid, 
-        SUM(p.need_pay) AS total_need_pay
+SELECT COALESCE(SUM(p.must_paid), 0)::float AS total_must_paid, 
+        COALESCE(SUM(p.had_paid), 0)::float AS total_had_paid, 
+        COALESCE(SUM(p.need_pay), 0)::float AS total_need_pay
     FROM medical_bill_order_sell mbos
 JOIN orders o ON o.id = mbos.order
 JOIN payments p ON p.id = o.payment
