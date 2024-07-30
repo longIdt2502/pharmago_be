@@ -33,9 +33,9 @@ WHERE mbos.uuid = sqlc.arg(uuid)::uuid
 GROUP BY mbos.uuid;
 
 -- name: PaymentOrderServiceByMedicalBill :one
-SELECT SUM(p.must_paid) AS total_must_paid, 
-        SUM(p.had_paid) AS total_had_paid, 
-        SUM(p.need_pay) AS total_need_pay
+SELECT COALESCE(SUM(p.must_paid), 0) AS total_must_paid, 
+        COALESCE(SUM(p.had_paid), 0) AS total_had_paid, 
+        COALESCE(SUM(p.need_pay), 0) AS total_need_pay
     FROM appointment_schedule_service ass
 JOIN orders o ON o.id = ass.order_service
 JOIN payments p ON p.id = o.payment
