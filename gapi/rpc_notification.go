@@ -121,7 +121,7 @@ func (server *ServerGRPC) DetailNotification(ctx context.Context, req *pb.Detail
 			if err != nil {
 				return nil, status.Errorf(codes.Internal, "failed to get service")
 			}
-			servicePb = mapper.ServiceMapper(service)
+			servicePb = mapper.ServiceDetailRowMapper(service)
 		}
 	}
 

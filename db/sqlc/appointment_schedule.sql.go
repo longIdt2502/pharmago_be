@@ -407,7 +407,7 @@ func (q *Queries) GetListSchedule(ctx context.Context, arg GetListScheduleParams
 }
 
 const getListScheduleService = `-- name: GetListScheduleService :many
-SELECT ass.id, as_uuid, service, order_service, mb_uuid, s.id, image, s.code, title, entity, staff, frequency, reminder_time, unit, price, s.description, s.company, s.user_created, s.user_updated, s.created_at, s.updated_at, os.id, os.code, total_price, os.description, vat, discount, service_price, must_paid, customer, address, status, type, ticket, qr, os.company, payment, os.user_created, os.user_updated, os.created_at, os.updated_at FROM appointment_schedule_service ass
+SELECT ass.id, as_uuid, service, order_service, mb_uuid, s.id, image, s.code, title, entity, staff, frequency, reminder_time, unit, price, s.description, s.company, s.user_created, s.user_updated, s.created_at, s.updated_at, brand, action_time, chi_dinh, chong_chi_dinh, cong_dung, caution, hinh_thuc, tac_dung_phu, number_register, number_decision, cong_ty_dk, message, os.id, os.code, total_price, os.description, vat, discount, service_price, must_paid, customer, address, status, type, ticket, qr, os.company, payment, os.user_created, os.user_updated, os.created_at, os.updated_at FROM appointment_schedule_service ass
 JOIN services s ON s.id = ass.service
 LEFT JOIN orders os ON os.id = ass.order_service
 WHERE ass.as_uuid = $1 OR ass.mb_uuid = $2
@@ -419,47 +419,59 @@ type GetListScheduleServiceParams struct {
 }
 
 type GetListScheduleServiceRow struct {
-	ID            int32           `json:"id"`
-	AsUuid        uuid.NullUUID   `json:"as_uuid"`
-	Service       sql.NullInt32   `json:"service"`
-	OrderService  sql.NullInt32   `json:"order_service"`
-	MbUuid        uuid.NullUUID   `json:"mb_uuid"`
-	ID_2          int32           `json:"id_2"`
-	Image         sql.NullInt32   `json:"image"`
-	Code          string          `json:"code"`
-	Title         string          `json:"title"`
-	Entity        sql.NullString  `json:"entity"`
-	Staff         sql.NullInt32   `json:"staff"`
-	Frequency     sql.NullString  `json:"frequency"`
-	ReminderTime  sql.NullInt32   `json:"reminder_time"`
-	Unit          string          `json:"unit"`
-	Price         float64         `json:"price"`
-	Description   sql.NullString  `json:"description"`
-	Company       int32           `json:"company"`
-	UserCreated   int32           `json:"user_created"`
-	UserUpdated   sql.NullInt32   `json:"user_updated"`
-	CreatedAt     time.Time       `json:"created_at"`
-	UpdatedAt     sql.NullTime    `json:"updated_at"`
-	ID_3          sql.NullInt32   `json:"id_3"`
-	Code_2        sql.NullString  `json:"code_2"`
-	TotalPrice    sql.NullFloat64 `json:"total_price"`
-	Description_2 sql.NullString  `json:"description_2"`
-	Vat           sql.NullFloat64 `json:"vat"`
-	Discount      sql.NullString  `json:"discount"`
-	ServicePrice  sql.NullFloat64 `json:"service_price"`
-	MustPaid      sql.NullFloat64 `json:"must_paid"`
-	Customer      sql.NullInt32   `json:"customer"`
-	Address       sql.NullInt32   `json:"address"`
-	Status        sql.NullString  `json:"status"`
-	Type          sql.NullString  `json:"type"`
-	Ticket        sql.NullInt32   `json:"ticket"`
-	Qr            sql.NullInt32   `json:"qr"`
-	Company_2     sql.NullInt32   `json:"company_2"`
-	Payment       sql.NullInt32   `json:"payment"`
-	UserCreated_2 sql.NullInt32   `json:"user_created_2"`
-	UserUpdated_2 sql.NullInt32   `json:"user_updated_2"`
-	CreatedAt_2   sql.NullTime    `json:"created_at_2"`
-	UpdatedAt_2   sql.NullTime    `json:"updated_at_2"`
+	ID             int32           `json:"id"`
+	AsUuid         uuid.NullUUID   `json:"as_uuid"`
+	Service        sql.NullInt32   `json:"service"`
+	OrderService   sql.NullInt32   `json:"order_service"`
+	MbUuid         uuid.NullUUID   `json:"mb_uuid"`
+	ID_2           int32           `json:"id_2"`
+	Image          sql.NullInt32   `json:"image"`
+	Code           string          `json:"code"`
+	Title          string          `json:"title"`
+	Entity         sql.NullString  `json:"entity"`
+	Staff          sql.NullInt32   `json:"staff"`
+	Frequency      sql.NullString  `json:"frequency"`
+	ReminderTime   sql.NullInt32   `json:"reminder_time"`
+	Unit           string          `json:"unit"`
+	Price          float64         `json:"price"`
+	Description    sql.NullString  `json:"description"`
+	Company        int32           `json:"company"`
+	UserCreated    int32           `json:"user_created"`
+	UserUpdated    sql.NullInt32   `json:"user_updated"`
+	CreatedAt      time.Time       `json:"created_at"`
+	UpdatedAt      sql.NullTime    `json:"updated_at"`
+	Brand          sql.NullInt32   `json:"brand"`
+	ActionTime     sql.NullString  `json:"action_time"`
+	ChiDinh        sql.NullString  `json:"chi_dinh"`
+	ChongChiDinh   sql.NullString  `json:"chong_chi_dinh"`
+	CongDung       sql.NullString  `json:"cong_dung"`
+	Caution        sql.NullString  `json:"caution"`
+	HinhThuc       sql.NullString  `json:"hinh_thuc"`
+	TacDungPhu     sql.NullString  `json:"tac_dung_phu"`
+	NumberRegister sql.NullString  `json:"number_register"`
+	NumberDecision sql.NullString  `json:"number_decision"`
+	CongTyDk       sql.NullString  `json:"cong_ty_dk"`
+	Message        sql.NullString  `json:"message"`
+	ID_3           sql.NullInt32   `json:"id_3"`
+	Code_2         sql.NullString  `json:"code_2"`
+	TotalPrice     sql.NullFloat64 `json:"total_price"`
+	Description_2  sql.NullString  `json:"description_2"`
+	Vat            sql.NullFloat64 `json:"vat"`
+	Discount       sql.NullString  `json:"discount"`
+	ServicePrice   sql.NullFloat64 `json:"service_price"`
+	MustPaid       sql.NullFloat64 `json:"must_paid"`
+	Customer       sql.NullInt32   `json:"customer"`
+	Address        sql.NullInt32   `json:"address"`
+	Status         sql.NullString  `json:"status"`
+	Type           sql.NullString  `json:"type"`
+	Ticket         sql.NullInt32   `json:"ticket"`
+	Qr             sql.NullInt32   `json:"qr"`
+	Company_2      sql.NullInt32   `json:"company_2"`
+	Payment        sql.NullInt32   `json:"payment"`
+	UserCreated_2  sql.NullInt32   `json:"user_created_2"`
+	UserUpdated_2  sql.NullInt32   `json:"user_updated_2"`
+	CreatedAt_2    sql.NullTime    `json:"created_at_2"`
+	UpdatedAt_2    sql.NullTime    `json:"updated_at_2"`
 }
 
 func (q *Queries) GetListScheduleService(ctx context.Context, arg GetListScheduleServiceParams) ([]GetListScheduleServiceRow, error) {
@@ -493,6 +505,18 @@ func (q *Queries) GetListScheduleService(ctx context.Context, arg GetListSchedul
 			&i.UserUpdated,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.Brand,
+			&i.ActionTime,
+			&i.ChiDinh,
+			&i.ChongChiDinh,
+			&i.CongDung,
+			&i.Caution,
+			&i.HinhThuc,
+			&i.TacDungPhu,
+			&i.NumberRegister,
+			&i.NumberDecision,
+			&i.CongTyDk,
+			&i.Message,
 			&i.ID_3,
 			&i.Code_2,
 			&i.TotalPrice,

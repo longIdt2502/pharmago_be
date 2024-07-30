@@ -778,22 +778,34 @@ type RoleItem struct {
 }
 
 type Service struct {
-	ID           int32          `json:"id"`
-	Image        sql.NullInt32  `json:"image"`
-	Code         string         `json:"code"`
-	Title        string         `json:"title"`
-	Entity       sql.NullString `json:"entity"`
-	Staff        sql.NullInt32  `json:"staff"`
-	Frequency    sql.NullString `json:"frequency"`
-	ReminderTime sql.NullInt32  `json:"reminder_time"`
-	Unit         string         `json:"unit"`
-	Price        float64        `json:"price"`
-	Description  sql.NullString `json:"description"`
-	Company      int32          `json:"company"`
-	UserCreated  int32          `json:"user_created"`
-	UserUpdated  sql.NullInt32  `json:"user_updated"`
-	CreatedAt    time.Time      `json:"created_at"`
-	UpdatedAt    sql.NullTime   `json:"updated_at"`
+	ID             int32          `json:"id"`
+	Image          sql.NullInt32  `json:"image"`
+	Code           string         `json:"code"`
+	Title          string         `json:"title"`
+	Entity         sql.NullString `json:"entity"`
+	Staff          sql.NullInt32  `json:"staff"`
+	Frequency      sql.NullString `json:"frequency"`
+	ReminderTime   sql.NullInt32  `json:"reminder_time"`
+	Unit           string         `json:"unit"`
+	Price          float64        `json:"price"`
+	Description    sql.NullString `json:"description"`
+	Company        int32          `json:"company"`
+	UserCreated    int32          `json:"user_created"`
+	UserUpdated    sql.NullInt32  `json:"user_updated"`
+	CreatedAt      time.Time      `json:"created_at"`
+	UpdatedAt      sql.NullTime   `json:"updated_at"`
+	Brand          sql.NullInt32  `json:"brand"`
+	ActionTime     sql.NullString `json:"action_time"`
+	ChiDinh        sql.NullString `json:"chi_dinh"`
+	ChongChiDinh   sql.NullString `json:"chong_chi_dinh"`
+	CongDung       sql.NullString `json:"cong_dung"`
+	Caution        sql.NullString `json:"caution"`
+	HinhThuc       sql.NullString `json:"hinh_thuc"`
+	TacDungPhu     sql.NullString `json:"tac_dung_phu"`
+	NumberRegister sql.NullString `json:"number_register"`
+	NumberDecision sql.NullString `json:"number_decision"`
+	CongTyDk       sql.NullString `json:"cong_ty_dk"`
+	Message        sql.NullString `json:"message"`
 }
 
 type ServiceOrderItem struct {

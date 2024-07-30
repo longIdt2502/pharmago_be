@@ -143,7 +143,7 @@ func (server *ServerGRPC) ServiceDetail(ctx context.Context, req *pb.ServiceDeta
 		accountPb = mapper.AccountRowMapper(accountDb)
 	}
 
-	servicePb := mapper.ServiceMapper(service)
+	servicePb := mapper.ServiceDetailRowMapper(service)
 	servicePb.Variants = variantsPb
 	servicePb.Staff = accountPb
 
@@ -161,39 +161,28 @@ func (server *ServerGRPC) ServiceUpdate(ctx context.Context, req *pb.ServiceUpda
 	}
 
 	serviceDb, err := server.store.UpdateService(ctx, db.UpdateServiceParams{
-		ID: req.GetId(),
-		Title: sql.NullString{
-			String: req.GetTitle(),
-			Valid:  req.Title != nil,
-		},
-		Entity: sql.NullString{
-			String: req.GetEntity(),
-			Valid:  req.Entity != nil,
-		},
-		Staff: sql.NullInt32{
-			Int32: req.GetStaff(),
-			Valid: req.Staff != nil,
-		},
-		Frequency: sql.NullString{
-			String: req.GetFrequency(),
-			Valid:  req.Frequency != nil,
-		},
-		Unit: sql.NullString{
-			String: req.GetUnit(),
-			Valid:  req.Unit != nil,
-		},
-		Price: sql.NullFloat64{
-			Float64: req.GetPrice(),
-			Valid:   req.Price != nil,
-		},
-		Description: sql.NullString{
-			String: req.GetDescription(),
-			Valid:  req.Description != nil,
-		},
-		UserUpdated: sql.NullInt32{
-			Int32: tokenPayload.UserID,
-			Valid: true,
-		},
+		Image:          sql.NullInt32{},
+		Title:          sql.NullString{String: req.GetTitle(), Valid: req.Title != nil},
+		Entity:         sql.NullString{String: req.GetEntity(), Valid: req.Entity != nil},
+		Staff:          sql.NullInt32{Int32: req.GetStaff(), Valid: req.Staff != nil},
+		Frequency:      sql.NullString{String: req.GetFrequency(), Valid: req.Frequency != nil},
+		Unit:           sql.NullString{String: req.GetUnit(), Valid: req.Unit != nil},
+		Price:          sql.NullFloat64{Float64: req.GetPrice(), Valid: req.Price != nil},
+		Description:    sql.NullString{String: req.GetDescription(), Valid: req.Description != nil},
+		Brand:          sql.NullString{},
+		ActionTime:     sql.NullString{String: req.GetActionTime(), Valid: req.ActionTime != nil},
+		ChiDinh:        sql.NullString{String: req.GetChiDinh(), Valid: req.ChiDinh != nil},
+		ChongChiDinh:   sql.NullString{String: req.GetChongChiDinh(), Valid: req.ChongChiDinh != nil},
+		CongDung:       sql.NullString{String: req.GetCongDung(), Valid: req.CongDung != nil},
+		Caution:        sql.NullString{String: req.GetCaution(), Valid: req.Caution != nil},
+		HinhThuc:       sql.NullString{String: req.GetHinhThuc(), Valid: req.HinhThuc != nil},
+		TacDungPhu:     sql.NullString{String: req.GetTacDungPhu(), Valid: req.TacDungPhu != nil},
+		NumberRegister: sql.NullString{String: req.GetNumberRegister(), Valid: req.NumberRegister != nil},
+		NumberDecision: sql.NullString{String: req.GetNumberDecision(), Valid: req.NumberDecision != nil},
+		CongTyDk:       sql.NullString{String: req.GetCongTyDk(), Valid: req.CongTyDk != nil},
+		Message:        sql.NullString{String: req.GetMessage(), Valid: req.Message != nil},
+		UserUpdated:    sql.NullInt32{Int32: tokenPayload.UserID, Valid: true},
+		ID:             req.GetId(),
 	})
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {

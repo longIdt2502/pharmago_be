@@ -13,26 +13,42 @@ import (
 
 const createService = `-- name: CreateService :one
 INSERT INTO services (
-    code, image, title, entity, staff, frequency, unit, price, description, company, user_created, user_updated, reminder_time
+    code, image, title, entity, staff, frequency, unit, price, description, 
+    company, user_created, user_updated, reminder_time,
+    brand, action_time, chi_dinh, chong_chi_dinh, cong_dung, caution, hinh_thuc,
+    tac_dung_phu, number_register, number_decision, cong_ty_dk, message
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
-) RETURNING id, image, code, title, entity, staff, frequency, reminder_time, unit, price, description, company, user_created, user_updated, created_at, updated_at
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, 
+    $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25
+) RETURNING id, image, code, title, entity, staff, frequency, reminder_time, unit, price, description, company, user_created, user_updated, created_at, updated_at, brand, action_time, chi_dinh, chong_chi_dinh, cong_dung, caution, hinh_thuc, tac_dung_phu, number_register, number_decision, cong_ty_dk, message
 `
 
 type CreateServiceParams struct {
-	Code         string         `json:"code"`
-	Image        sql.NullInt32  `json:"image"`
-	Title        string         `json:"title"`
-	Entity       sql.NullString `json:"entity"`
-	Staff        sql.NullInt32  `json:"staff"`
-	Frequency    sql.NullString `json:"frequency"`
-	Unit         string         `json:"unit"`
-	Price        float64        `json:"price"`
-	Description  sql.NullString `json:"description"`
-	Company      int32          `json:"company"`
-	UserCreated  int32          `json:"user_created"`
-	UserUpdated  sql.NullInt32  `json:"user_updated"`
-	ReminderTime sql.NullInt32  `json:"reminder_time"`
+	Code           string         `json:"code"`
+	Image          sql.NullInt32  `json:"image"`
+	Title          string         `json:"title"`
+	Entity         sql.NullString `json:"entity"`
+	Staff          sql.NullInt32  `json:"staff"`
+	Frequency      sql.NullString `json:"frequency"`
+	Unit           string         `json:"unit"`
+	Price          float64        `json:"price"`
+	Description    sql.NullString `json:"description"`
+	Company        int32          `json:"company"`
+	UserCreated    int32          `json:"user_created"`
+	UserUpdated    sql.NullInt32  `json:"user_updated"`
+	ReminderTime   sql.NullInt32  `json:"reminder_time"`
+	Brand          sql.NullInt32  `json:"brand"`
+	ActionTime     sql.NullString `json:"action_time"`
+	ChiDinh        sql.NullString `json:"chi_dinh"`
+	ChongChiDinh   sql.NullString `json:"chong_chi_dinh"`
+	CongDung       sql.NullString `json:"cong_dung"`
+	Caution        sql.NullString `json:"caution"`
+	HinhThuc       sql.NullString `json:"hinh_thuc"`
+	TacDungPhu     sql.NullString `json:"tac_dung_phu"`
+	NumberRegister sql.NullString `json:"number_register"`
+	NumberDecision sql.NullString `json:"number_decision"`
+	CongTyDk       sql.NullString `json:"cong_ty_dk"`
+	Message        sql.NullString `json:"message"`
 }
 
 func (q *Queries) CreateService(ctx context.Context, arg CreateServiceParams) (Service, error) {
@@ -50,6 +66,18 @@ func (q *Queries) CreateService(ctx context.Context, arg CreateServiceParams) (S
 		arg.UserCreated,
 		arg.UserUpdated,
 		arg.ReminderTime,
+		arg.Brand,
+		arg.ActionTime,
+		arg.ChiDinh,
+		arg.ChongChiDinh,
+		arg.CongDung,
+		arg.Caution,
+		arg.HinhThuc,
+		arg.TacDungPhu,
+		arg.NumberRegister,
+		arg.NumberDecision,
+		arg.CongTyDk,
+		arg.Message,
 	)
 	var i Service
 	err := row.Scan(
@@ -69,6 +97,18 @@ func (q *Queries) CreateService(ctx context.Context, arg CreateServiceParams) (S
 		&i.UserUpdated,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.Brand,
+		&i.ActionTime,
+		&i.ChiDinh,
+		&i.ChongChiDinh,
+		&i.CongDung,
+		&i.Caution,
+		&i.HinhThuc,
+		&i.TacDungPhu,
+		&i.NumberRegister,
+		&i.NumberDecision,
+		&i.CongTyDk,
+		&i.Message,
 	)
 	return i, err
 }
@@ -96,7 +136,7 @@ func (q *Queries) CreateServiceVariant(ctx context.Context, arg CreateServiceVar
 const deleteService = `-- name: DeleteService :one
 DELETE FROM services
 WHERE id = $1
-RETURNING id, image, code, title, entity, staff, frequency, reminder_time, unit, price, description, company, user_created, user_updated, created_at, updated_at
+RETURNING id, image, code, title, entity, staff, frequency, reminder_time, unit, price, description, company, user_created, user_updated, created_at, updated_at, brand, action_time, chi_dinh, chong_chi_dinh, cong_dung, caution, hinh_thuc, tac_dung_phu, number_register, number_decision, cong_ty_dk, message
 `
 
 func (q *Queries) DeleteService(ctx context.Context, id int32) (Service, error) {
@@ -119,6 +159,18 @@ func (q *Queries) DeleteService(ctx context.Context, id int32) (Service, error) 
 		&i.UserUpdated,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.Brand,
+		&i.ActionTime,
+		&i.ChiDinh,
+		&i.ChongChiDinh,
+		&i.CongDung,
+		&i.Caution,
+		&i.HinhThuc,
+		&i.TacDungPhu,
+		&i.NumberRegister,
+		&i.NumberDecision,
+		&i.CongTyDk,
+		&i.Message,
 	)
 	return i, err
 }
@@ -137,13 +189,69 @@ func (q *Queries) DeleteServiceVariant(ctx context.Context, id int32) (ServiceVa
 }
 
 const detailService = `-- name: DetailService :one
-SELECT id, image, code, title, entity, staff, frequency, reminder_time, unit, price, description, company, user_created, user_updated, created_at, updated_at FROM services
-WHERE id = $1
+SELECT s.id, image, s.code, title, entity, staff, frequency, reminder_time, unit, price, s.description, s.company, s.user_created, s.user_updated, s.created_at, s.updated_at, brand, action_time, chi_dinh, chong_chi_dinh, cong_dung, caution, hinh_thuc, tac_dung_phu, number_register, number_decision, cong_ty_dk, message, a.id, username, hashed_password, full_name, email, type, is_verify, password_changed_at, a.created_at, role, gender, licence, dob, address, pb.id, pb.code, name, pb.user_created, pb.created_at, pb.company, pb.user_updated, pb.updated_at, pb.description FROM services s
+LEFT JOIN accounts a ON a.id = s.staff
+LEFT JOIN product_brand pb ON pb.id = s.brand
+WHERE s.id = $1
 `
 
-func (q *Queries) DetailService(ctx context.Context, id int32) (Service, error) {
+type DetailServiceRow struct {
+	ID                int32          `json:"id"`
+	Image             sql.NullInt32  `json:"image"`
+	Code              string         `json:"code"`
+	Title             string         `json:"title"`
+	Entity            sql.NullString `json:"entity"`
+	Staff             sql.NullInt32  `json:"staff"`
+	Frequency         sql.NullString `json:"frequency"`
+	ReminderTime      sql.NullInt32  `json:"reminder_time"`
+	Unit              string         `json:"unit"`
+	Price             float64        `json:"price"`
+	Description       sql.NullString `json:"description"`
+	Company           int32          `json:"company"`
+	UserCreated       int32          `json:"user_created"`
+	UserUpdated       sql.NullInt32  `json:"user_updated"`
+	CreatedAt         time.Time      `json:"created_at"`
+	UpdatedAt         sql.NullTime   `json:"updated_at"`
+	Brand             sql.NullInt32  `json:"brand"`
+	ActionTime        sql.NullString `json:"action_time"`
+	ChiDinh           sql.NullString `json:"chi_dinh"`
+	ChongChiDinh      sql.NullString `json:"chong_chi_dinh"`
+	CongDung          sql.NullString `json:"cong_dung"`
+	Caution           sql.NullString `json:"caution"`
+	HinhThuc          sql.NullString `json:"hinh_thuc"`
+	TacDungPhu        sql.NullString `json:"tac_dung_phu"`
+	NumberRegister    sql.NullString `json:"number_register"`
+	NumberDecision    sql.NullString `json:"number_decision"`
+	CongTyDk          sql.NullString `json:"cong_ty_dk"`
+	Message           sql.NullString `json:"message"`
+	ID_2              sql.NullInt32  `json:"id_2"`
+	Username          sql.NullString `json:"username"`
+	HashedPassword    sql.NullString `json:"hashed_password"`
+	FullName          sql.NullString `json:"full_name"`
+	Email             sql.NullString `json:"email"`
+	Type              sql.NullInt32  `json:"type"`
+	IsVerify          sql.NullBool   `json:"is_verify"`
+	PasswordChangedAt sql.NullTime   `json:"password_changed_at"`
+	CreatedAt_2       sql.NullTime   `json:"created_at_2"`
+	Role              sql.NullInt32  `json:"role"`
+	Gender            NullGender     `json:"gender"`
+	Licence           sql.NullString `json:"licence"`
+	Dob               sql.NullTime   `json:"dob"`
+	Address           sql.NullInt32  `json:"address"`
+	ID_3              sql.NullInt32  `json:"id_3"`
+	Code_2            sql.NullString `json:"code_2"`
+	Name              sql.NullString `json:"name"`
+	UserCreated_2     sql.NullInt32  `json:"user_created_2"`
+	CreatedAt_3       sql.NullTime   `json:"created_at_3"`
+	Company_2         sql.NullInt32  `json:"company_2"`
+	UserUpdated_2     sql.NullInt32  `json:"user_updated_2"`
+	UpdatedAt_2       sql.NullTime   `json:"updated_at_2"`
+	Description_2     sql.NullString `json:"description_2"`
+}
+
+func (q *Queries) DetailService(ctx context.Context, id int32) (DetailServiceRow, error) {
 	row := q.db.QueryRowContext(ctx, detailService, id)
-	var i Service
+	var i DetailServiceRow
 	err := row.Scan(
 		&i.ID,
 		&i.Image,
@@ -161,6 +269,41 @@ func (q *Queries) DetailService(ctx context.Context, id int32) (Service, error) 
 		&i.UserUpdated,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.Brand,
+		&i.ActionTime,
+		&i.ChiDinh,
+		&i.ChongChiDinh,
+		&i.CongDung,
+		&i.Caution,
+		&i.HinhThuc,
+		&i.TacDungPhu,
+		&i.NumberRegister,
+		&i.NumberDecision,
+		&i.CongTyDk,
+		&i.Message,
+		&i.ID_2,
+		&i.Username,
+		&i.HashedPassword,
+		&i.FullName,
+		&i.Email,
+		&i.Type,
+		&i.IsVerify,
+		&i.PasswordChangedAt,
+		&i.CreatedAt_2,
+		&i.Role,
+		&i.Gender,
+		&i.Licence,
+		&i.Dob,
+		&i.Address,
+		&i.ID_3,
+		&i.Code_2,
+		&i.Name,
+		&i.UserCreated_2,
+		&i.CreatedAt_3,
+		&i.Company_2,
+		&i.UserUpdated_2,
+		&i.UpdatedAt_2,
+		&i.Description_2,
 	)
 	return i, err
 }
@@ -170,7 +313,7 @@ WITH quantity_use AS (
     SELECT "service", COUNT("service") as quantity_use FROM service_order_item
     GROUP BY "service"
 )
-SELECT id, image, code, title, entity, staff, frequency, reminder_time, unit, price, description, company, user_created, user_updated, created_at, updated_at, service, quantity_use FROM services s
+SELECT id, image, code, title, entity, staff, frequency, reminder_time, unit, price, description, company, user_created, user_updated, created_at, updated_at, brand, action_time, chi_dinh, chong_chi_dinh, cong_dung, caution, hinh_thuc, tac_dung_phu, number_register, number_decision, cong_ty_dk, message, service, quantity_use FROM services s
 LEFT JOIN quantity_use qu ON s.id = qu.service
 WHERE s.company = $1::int
 AND (
@@ -190,24 +333,36 @@ type GetListServiceParams struct {
 }
 
 type GetListServiceRow struct {
-	ID           int32          `json:"id"`
-	Image        sql.NullInt32  `json:"image"`
-	Code         string         `json:"code"`
-	Title        string         `json:"title"`
-	Entity       sql.NullString `json:"entity"`
-	Staff        sql.NullInt32  `json:"staff"`
-	Frequency    sql.NullString `json:"frequency"`
-	ReminderTime sql.NullInt32  `json:"reminder_time"`
-	Unit         string         `json:"unit"`
-	Price        float64        `json:"price"`
-	Description  sql.NullString `json:"description"`
-	Company      int32          `json:"company"`
-	UserCreated  int32          `json:"user_created"`
-	UserUpdated  sql.NullInt32  `json:"user_updated"`
-	CreatedAt    time.Time      `json:"created_at"`
-	UpdatedAt    sql.NullTime   `json:"updated_at"`
-	Service      sql.NullInt32  `json:"service"`
-	QuantityUse  sql.NullInt64  `json:"quantity_use"`
+	ID             int32          `json:"id"`
+	Image          sql.NullInt32  `json:"image"`
+	Code           string         `json:"code"`
+	Title          string         `json:"title"`
+	Entity         sql.NullString `json:"entity"`
+	Staff          sql.NullInt32  `json:"staff"`
+	Frequency      sql.NullString `json:"frequency"`
+	ReminderTime   sql.NullInt32  `json:"reminder_time"`
+	Unit           string         `json:"unit"`
+	Price          float64        `json:"price"`
+	Description    sql.NullString `json:"description"`
+	Company        int32          `json:"company"`
+	UserCreated    int32          `json:"user_created"`
+	UserUpdated    sql.NullInt32  `json:"user_updated"`
+	CreatedAt      time.Time      `json:"created_at"`
+	UpdatedAt      sql.NullTime   `json:"updated_at"`
+	Brand          sql.NullInt32  `json:"brand"`
+	ActionTime     sql.NullString `json:"action_time"`
+	ChiDinh        sql.NullString `json:"chi_dinh"`
+	ChongChiDinh   sql.NullString `json:"chong_chi_dinh"`
+	CongDung       sql.NullString `json:"cong_dung"`
+	Caution        sql.NullString `json:"caution"`
+	HinhThuc       sql.NullString `json:"hinh_thuc"`
+	TacDungPhu     sql.NullString `json:"tac_dung_phu"`
+	NumberRegister sql.NullString `json:"number_register"`
+	NumberDecision sql.NullString `json:"number_decision"`
+	CongTyDk       sql.NullString `json:"cong_ty_dk"`
+	Message        sql.NullString `json:"message"`
+	Service        sql.NullInt32  `json:"service"`
+	QuantityUse    sql.NullInt64  `json:"quantity_use"`
 }
 
 func (q *Queries) GetListService(ctx context.Context, arg GetListServiceParams) ([]GetListServiceRow, error) {
@@ -241,6 +396,18 @@ func (q *Queries) GetListService(ctx context.Context, arg GetListServiceParams) 
 			&i.UserUpdated,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.Brand,
+			&i.ActionTime,
+			&i.ChiDinh,
+			&i.ChongChiDinh,
+			&i.CongDung,
+			&i.Caution,
+			&i.HinhThuc,
+			&i.TacDungPhu,
+			&i.NumberRegister,
+			&i.NumberDecision,
+			&i.CongTyDk,
+			&i.Message,
 			&i.Service,
 			&i.QuantityUse,
 		); err != nil {
@@ -258,7 +425,7 @@ func (q *Queries) GetListService(ctx context.Context, arg GetListServiceParams) 
 }
 
 const getServicesByCustomer = `-- name: GetServicesByCustomer :many
-SELECT s.id, s.image, s.code, s.title, s.entity, s.staff, s.frequency, s.reminder_time, s.unit, s.price, s.description, s.company, s.user_created, s.user_updated, s.created_at, s.updated_at, SUM(quantity) as quantity_use FROM service_order_item soi
+SELECT s.id, s.image, s.code, s.title, s.entity, s.staff, s.frequency, s.reminder_time, s.unit, s.price, s.description, s.company, s.user_created, s.user_updated, s.created_at, s.updated_at, s.brand, s.action_time, s.chi_dinh, s.chong_chi_dinh, s.cong_dung, s.caution, s.hinh_thuc, s.tac_dung_phu, s.number_register, s.number_decision, s.cong_ty_dk, s.message, SUM(quantity) as quantity_use FROM service_order_item soi
 JOIN orders o ON o.id = soi.order
 JOIN services s ON s.id = soi.service
 WHERE o.customer = $1::int
@@ -274,23 +441,35 @@ type GetServicesByCustomerParams struct {
 }
 
 type GetServicesByCustomerRow struct {
-	ID           int32          `json:"id"`
-	Image        sql.NullInt32  `json:"image"`
-	Code         string         `json:"code"`
-	Title        string         `json:"title"`
-	Entity       sql.NullString `json:"entity"`
-	Staff        sql.NullInt32  `json:"staff"`
-	Frequency    sql.NullString `json:"frequency"`
-	ReminderTime sql.NullInt32  `json:"reminder_time"`
-	Unit         string         `json:"unit"`
-	Price        float64        `json:"price"`
-	Description  sql.NullString `json:"description"`
-	Company      int32          `json:"company"`
-	UserCreated  int32          `json:"user_created"`
-	UserUpdated  sql.NullInt32  `json:"user_updated"`
-	CreatedAt    time.Time      `json:"created_at"`
-	UpdatedAt    sql.NullTime   `json:"updated_at"`
-	QuantityUse  int64          `json:"quantity_use"`
+	ID             int32          `json:"id"`
+	Image          sql.NullInt32  `json:"image"`
+	Code           string         `json:"code"`
+	Title          string         `json:"title"`
+	Entity         sql.NullString `json:"entity"`
+	Staff          sql.NullInt32  `json:"staff"`
+	Frequency      sql.NullString `json:"frequency"`
+	ReminderTime   sql.NullInt32  `json:"reminder_time"`
+	Unit           string         `json:"unit"`
+	Price          float64        `json:"price"`
+	Description    sql.NullString `json:"description"`
+	Company        int32          `json:"company"`
+	UserCreated    int32          `json:"user_created"`
+	UserUpdated    sql.NullInt32  `json:"user_updated"`
+	CreatedAt      time.Time      `json:"created_at"`
+	UpdatedAt      sql.NullTime   `json:"updated_at"`
+	Brand          sql.NullInt32  `json:"brand"`
+	ActionTime     sql.NullString `json:"action_time"`
+	ChiDinh        sql.NullString `json:"chi_dinh"`
+	ChongChiDinh   sql.NullString `json:"chong_chi_dinh"`
+	CongDung       sql.NullString `json:"cong_dung"`
+	Caution        sql.NullString `json:"caution"`
+	HinhThuc       sql.NullString `json:"hinh_thuc"`
+	TacDungPhu     sql.NullString `json:"tac_dung_phu"`
+	NumberRegister sql.NullString `json:"number_register"`
+	NumberDecision sql.NullString `json:"number_decision"`
+	CongTyDk       sql.NullString `json:"cong_ty_dk"`
+	Message        sql.NullString `json:"message"`
+	QuantityUse    int64          `json:"quantity_use"`
 }
 
 func (q *Queries) GetServicesByCustomer(ctx context.Context, arg GetServicesByCustomerParams) ([]GetServicesByCustomerRow, error) {
@@ -319,6 +498,18 @@ func (q *Queries) GetServicesByCustomer(ctx context.Context, arg GetServicesByCu
 			&i.UserUpdated,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.Brand,
+			&i.ActionTime,
+			&i.ChiDinh,
+			&i.ChongChiDinh,
+			&i.CongDung,
+			&i.Caution,
+			&i.HinhThuc,
+			&i.TacDungPhu,
+			&i.NumberRegister,
+			&i.NumberDecision,
+			&i.CongTyDk,
+			&i.Message,
 			&i.QuantityUse,
 		); err != nil {
 			return nil, err
@@ -404,7 +595,7 @@ func (q *Queries) ListServiceVariant(ctx context.Context, id int32) ([]ListServi
 }
 
 const servicesUsedByCustomer = `-- name: ServicesUsedByCustomer :many
-SELECT s.id, s.image, s.code, s.title, s.entity, s.staff, s.frequency, s.reminder_time, s.unit, s.price, s.description, s.company, s.user_created, s.user_updated, s.created_at, s.updated_at, COUNT(s.id) AS number_of_uses FROM service_order_item soi
+SELECT s.id, s.image, s.code, s.title, s.entity, s.staff, s.frequency, s.reminder_time, s.unit, s.price, s.description, s.company, s.user_created, s.user_updated, s.created_at, s.updated_at, s.brand, s.action_time, s.chi_dinh, s.chong_chi_dinh, s.cong_dung, s.caution, s.hinh_thuc, s.tac_dung_phu, s.number_register, s.number_decision, s.cong_ty_dk, s.message, COUNT(s.id) AS number_of_uses FROM service_order_item soi
 JOIN orders o ON o.id = soi.order
 JOIN services s ON s.id = soi.service
 WHERE o.customer = $1::int
@@ -420,23 +611,35 @@ type ServicesUsedByCustomerParams struct {
 }
 
 type ServicesUsedByCustomerRow struct {
-	ID           int32          `json:"id"`
-	Image        sql.NullInt32  `json:"image"`
-	Code         string         `json:"code"`
-	Title        string         `json:"title"`
-	Entity       sql.NullString `json:"entity"`
-	Staff        sql.NullInt32  `json:"staff"`
-	Frequency    sql.NullString `json:"frequency"`
-	ReminderTime sql.NullInt32  `json:"reminder_time"`
-	Unit         string         `json:"unit"`
-	Price        float64        `json:"price"`
-	Description  sql.NullString `json:"description"`
-	Company      int32          `json:"company"`
-	UserCreated  int32          `json:"user_created"`
-	UserUpdated  sql.NullInt32  `json:"user_updated"`
-	CreatedAt    time.Time      `json:"created_at"`
-	UpdatedAt    sql.NullTime   `json:"updated_at"`
-	NumberOfUses int64          `json:"number_of_uses"`
+	ID             int32          `json:"id"`
+	Image          sql.NullInt32  `json:"image"`
+	Code           string         `json:"code"`
+	Title          string         `json:"title"`
+	Entity         sql.NullString `json:"entity"`
+	Staff          sql.NullInt32  `json:"staff"`
+	Frequency      sql.NullString `json:"frequency"`
+	ReminderTime   sql.NullInt32  `json:"reminder_time"`
+	Unit           string         `json:"unit"`
+	Price          float64        `json:"price"`
+	Description    sql.NullString `json:"description"`
+	Company        int32          `json:"company"`
+	UserCreated    int32          `json:"user_created"`
+	UserUpdated    sql.NullInt32  `json:"user_updated"`
+	CreatedAt      time.Time      `json:"created_at"`
+	UpdatedAt      sql.NullTime   `json:"updated_at"`
+	Brand          sql.NullInt32  `json:"brand"`
+	ActionTime     sql.NullString `json:"action_time"`
+	ChiDinh        sql.NullString `json:"chi_dinh"`
+	ChongChiDinh   sql.NullString `json:"chong_chi_dinh"`
+	CongDung       sql.NullString `json:"cong_dung"`
+	Caution        sql.NullString `json:"caution"`
+	HinhThuc       sql.NullString `json:"hinh_thuc"`
+	TacDungPhu     sql.NullString `json:"tac_dung_phu"`
+	NumberRegister sql.NullString `json:"number_register"`
+	NumberDecision sql.NullString `json:"number_decision"`
+	CongTyDk       sql.NullString `json:"cong_ty_dk"`
+	Message        sql.NullString `json:"message"`
+	NumberOfUses   int64          `json:"number_of_uses"`
 }
 
 func (q *Queries) ServicesUsedByCustomer(ctx context.Context, arg ServicesUsedByCustomerParams) ([]ServicesUsedByCustomerRow, error) {
@@ -465,6 +668,18 @@ func (q *Queries) ServicesUsedByCustomer(ctx context.Context, arg ServicesUsedBy
 			&i.UserUpdated,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.Brand,
+			&i.ActionTime,
+			&i.ChiDinh,
+			&i.ChongChiDinh,
+			&i.CongDung,
+			&i.Caution,
+			&i.HinhThuc,
+			&i.TacDungPhu,
+			&i.NumberRegister,
+			&i.NumberDecision,
+			&i.CongTyDk,
+			&i.Message,
 			&i.NumberOfUses,
 		); err != nil {
 			return nil, err
@@ -491,23 +706,47 @@ SET
     unit = COALESCE($6::varchar, unit),
     price = COALESCE($7::float, price),
     description = COALESCE($8::varchar, description),
-    user_updated = $9::int,
+    brand = COALESCE($9::varchar, brand),
+    action_time = COALESCE($10::varchar, action_time),
+    chi_dinh = COALESCE($11::varchar, chi_dinh),
+    chong_chi_dinh = COALESCE($12::varchar, chong_chi_dinh),
+    cong_dung = COALESCE($13::varchar, cong_dung),
+    caution = COALESCE($14::varchar, caution),
+    hinh_thuc = COALESCE($15::varchar, hinh_thuc),
+    tac_dung_phu = COALESCE($16::varchar, tac_dung_phu),
+    number_register = COALESCE($17::varchar, number_register),
+    number_decision = COALESCE($18::varchar, number_decision),
+    cong_ty_dk = COALESCE($19::varchar, cong_ty_dk),
+    message = COALESCE($20::varchar, message),
+    user_updated = $21::int,
     updated_at = now()
-WHERE id = $10
-RETURNING id, image, code, title, entity, staff, frequency, reminder_time, unit, price, description, company, user_created, user_updated, created_at, updated_at
+WHERE id = $22
+RETURNING id, image, code, title, entity, staff, frequency, reminder_time, unit, price, description, company, user_created, user_updated, created_at, updated_at, brand, action_time, chi_dinh, chong_chi_dinh, cong_dung, caution, hinh_thuc, tac_dung_phu, number_register, number_decision, cong_ty_dk, message
 `
 
 type UpdateServiceParams struct {
-	Image       sql.NullInt32   `json:"image"`
-	Title       sql.NullString  `json:"title"`
-	Entity      sql.NullString  `json:"entity"`
-	Staff       sql.NullInt32   `json:"staff"`
-	Frequency   sql.NullString  `json:"frequency"`
-	Unit        sql.NullString  `json:"unit"`
-	Price       sql.NullFloat64 `json:"price"`
-	Description sql.NullString  `json:"description"`
-	UserUpdated sql.NullInt32   `json:"user_updated"`
-	ID          int32           `json:"id"`
+	Image          sql.NullInt32   `json:"image"`
+	Title          sql.NullString  `json:"title"`
+	Entity         sql.NullString  `json:"entity"`
+	Staff          sql.NullInt32   `json:"staff"`
+	Frequency      sql.NullString  `json:"frequency"`
+	Unit           sql.NullString  `json:"unit"`
+	Price          sql.NullFloat64 `json:"price"`
+	Description    sql.NullString  `json:"description"`
+	Brand          sql.NullString  `json:"brand"`
+	ActionTime     sql.NullString  `json:"action_time"`
+	ChiDinh        sql.NullString  `json:"chi_dinh"`
+	ChongChiDinh   sql.NullString  `json:"chong_chi_dinh"`
+	CongDung       sql.NullString  `json:"cong_dung"`
+	Caution        sql.NullString  `json:"caution"`
+	HinhThuc       sql.NullString  `json:"hinh_thuc"`
+	TacDungPhu     sql.NullString  `json:"tac_dung_phu"`
+	NumberRegister sql.NullString  `json:"number_register"`
+	NumberDecision sql.NullString  `json:"number_decision"`
+	CongTyDk       sql.NullString  `json:"cong_ty_dk"`
+	Message        sql.NullString  `json:"message"`
+	UserUpdated    sql.NullInt32   `json:"user_updated"`
+	ID             int32           `json:"id"`
 }
 
 func (q *Queries) UpdateService(ctx context.Context, arg UpdateServiceParams) (Service, error) {
@@ -520,6 +759,18 @@ func (q *Queries) UpdateService(ctx context.Context, arg UpdateServiceParams) (S
 		arg.Unit,
 		arg.Price,
 		arg.Description,
+		arg.Brand,
+		arg.ActionTime,
+		arg.ChiDinh,
+		arg.ChongChiDinh,
+		arg.CongDung,
+		arg.Caution,
+		arg.HinhThuc,
+		arg.TacDungPhu,
+		arg.NumberRegister,
+		arg.NumberDecision,
+		arg.CongTyDk,
+		arg.Message,
 		arg.UserUpdated,
 		arg.ID,
 	)
@@ -541,6 +792,18 @@ func (q *Queries) UpdateService(ctx context.Context, arg UpdateServiceParams) (S
 		&i.UserUpdated,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.Brand,
+		&i.ActionTime,
+		&i.ChiDinh,
+		&i.ChongChiDinh,
+		&i.CongDung,
+		&i.Caution,
+		&i.HinhThuc,
+		&i.TacDungPhu,
+		&i.NumberRegister,
+		&i.NumberDecision,
+		&i.CongTyDk,
+		&i.Message,
 	)
 	return i, err
 }

@@ -15,6 +15,18 @@ message ServiceUpdateRequest {
     optional string description = 8;
     repeated int32 variants = 10;
     optional bool active = 11;
+    optional int32 brand = 12;
+    optional string action_time = 13;
+    optional string chi_dinh = 14;
+    optional string chong_chi_dinh = 15;
+    optional string cong_dung = 16;
+    optional string caution = 17;
+    optional string hinh_thuc = 18;
+    optional string tac_dung_phu = 19;
+    optional string number_register = 20;
+    optional string number_decision = 21;
+    optional string cong_ty_dk = 22;
+    optional string message = 23;
 }
 
 message ServiceUpdateResponse {
