@@ -71,6 +71,24 @@ func (q *Queries) CreateMedicalBill(ctx context.Context, arg CreateMedicalBillPa
 	return i, err
 }
 
+const createMedicalBillOrder = `-- name: CreateMedicalBillOrder :one
+INSERT INTO medical_bill_order_sell (
+    "uuid", "order"
+) VALUES ($1, $2) RETURNING uuid, "order"
+`
+
+type CreateMedicalBillOrderParams struct {
+	Uuid  uuid.NullUUID `json:"uuid"`
+	Order sql.NullInt32 `json:"order"`
+}
+
+func (q *Queries) CreateMedicalBillOrder(ctx context.Context, arg CreateMedicalBillOrderParams) (MedicalBillOrderSell, error) {
+	row := q.db.QueryRowContext(ctx, createMedicalBillOrder, arg.Uuid, arg.Order)
+	var i MedicalBillOrderSell
+	err := row.Scan(&i.Uuid, &i.Order)
+	return i, err
+}
+
 const detailMedicalBill = `-- name: DetailMedicalBill :one
 SELECT id, uuid, code, customer, company, doctor, symptoms, diagnostic, qr_code_url, is_done, meeting_at, user_created, user_updated, created_at, updated_at, prescription FROM medical_bills
 WHERE uuid = $1
