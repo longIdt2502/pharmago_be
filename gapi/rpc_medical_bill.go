@@ -3,6 +3,7 @@ package gapi
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"time"
 
@@ -178,7 +179,7 @@ func (server *ServerGRPC) MedicalBillDetail(ctx context.Context, req *pb.Medical
 
 	var paymentsPB []*pb.Payment
 	paymentSell, err := server.store.PaymentOrderByMedicalBill(ctx, medicalBill[0].Uuid)
-	if err != nil {
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		errApp := common.ErrDB(err)
 		return &pb.MedicalBillResponse{
 			Code:         int32(errApp.StatusCode),
@@ -195,7 +196,7 @@ func (server *ServerGRPC) MedicalBillDetail(ctx context.Context, req *pb.Medical
 	})
 
 	paymentService, err := server.store.PaymentOrderServiceByMedicalBill(ctx, medicalBill[0].Uuid)
-	if err != nil {
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		errApp := common.ErrDB(err)
 		return &pb.MedicalBillResponse{
 			Code:         int32(errApp.StatusCode),
