@@ -9812,6 +9812,43 @@
         },
         "active": {
           "type": "boolean"
+        },
+        "brand": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "actionTime": {
+          "type": "string"
+        },
+        "chiDinh": {
+          "type": "string"
+        },
+        "chongChiDinh": {
+          "type": "string"
+        },
+        "congDung": {
+          "type": "string"
+        },
+        "caution": {
+          "type": "string"
+        },
+        "hinhThuc": {
+          "type": "string"
+        },
+        "tacDungPhu": {
+          "type": "string"
+        },
+        "numberRegister": {
+          "type": "string"
+        },
+        "numberDecision": {
+          "type": "string"
+        },
+        "congTyDk": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
         }
       }
     },
@@ -15162,6 +15199,42 @@
         "used": {
           "type": "integer",
           "format": "int32"
+        },
+        "chiDinh": {
+          "type": "string"
+        },
+        "chongChiDinh": {
+          "type": "string"
+        },
+        "congDung": {
+          "type": "string"
+        },
+        "caution": {
+          "type": "string"
+        },
+        "hinhThuc": {
+          "type": "string"
+        },
+        "tacDungPhu": {
+          "type": "string"
+        },
+        "numberRegister": {
+          "type": "string"
+        },
+        "numberDecision": {
+          "type": "string"
+        },
+        "congTyDk": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "brand": {
+          "$ref": "#/definitions/pbSimpleData"
+        },
+        "actionTime": {
+          "type": "string"
         }
       }
     },
@@ -15208,6 +15281,43 @@
         "reminderTime": {
           "type": "integer",
           "format": "int32"
+        },
+        "brand": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "actionTime": {
+          "type": "string"
+        },
+        "chiDinh": {
+          "type": "string"
+        },
+        "chongChiDinh": {
+          "type": "string"
+        },
+        "congDung": {
+          "type": "string"
+        },
+        "caution": {
+          "type": "string"
+        },
+        "hinhThuc": {
+          "type": "string"
+        },
+        "tacDungPhu": {
+          "type": "string"
+        },
+        "numberRegister": {
+          "type": "string"
+        },
+        "numberDecision": {
+          "type": "string"
+        },
+        "congTyDk": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
         }
       }
     },

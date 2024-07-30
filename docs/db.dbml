@@ -910,12 +910,24 @@ Table services {
   code varchar [not null, unique]
   title varchar [not null]
   entity varchar
+  brand serial
   staff serial [not null]
   frequency varchar
   reminder_time int [note: 'Thời gian nhắc hẹn (seconds)']
+  action_time varchar(255)
   unit varchar [not null]
   price float [not null, default: 0]
   description varchar
+  chi_dinh varchar(255)
+  chong_chi_dinh varchar(255)
+  cong_dung varchar(255)
+  caution varchar(255)
+  hinh_thuc varchar(255)
+  tac_dung_phu varchar(255)
+  number_register varchar(255)
+  number_decision varchar(255)
+  cong_ty_dk varchar(255)
+  message varchar(255)
   company serial [not null]
   user_created serial [not null]
   user_updated serial
@@ -926,6 +938,7 @@ Table services {
 Ref: services.staff > A.id
 Ref: services.company > C.id
 Ref: M.id - services.image
+Ref: services.brand > product_brand.id [delete: set null]
 Ref: services.user_created > A.id
 Ref: services.user_updated > A.id
 

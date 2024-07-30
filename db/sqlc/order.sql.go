@@ -1052,35 +1052,47 @@ func (q *Queries) ListOrderItem(ctx context.Context, order int32) ([]ListOrderIt
 }
 
 const listOrderServiceItem = `-- name: ListOrderServiceItem :many
-SELECT soi.id, "order", service, unit_price, discount, total_price, quantity, s.id, image, code, title, entity, staff, frequency, reminder_time, unit, price, description, company, user_created, user_updated, created_at, updated_at FROM service_order_item soi
+SELECT soi.id, "order", service, unit_price, discount, total_price, quantity, s.id, image, code, title, entity, staff, frequency, reminder_time, unit, price, description, company, user_created, user_updated, created_at, updated_at, brand, action_time, chi_dinh, chong_chi_dinh, cong_dung, caution, hinh_thuc, tac_dung_phu, number_register, number_decision, cong_ty_dk, message FROM service_order_item soi
 JOIN services s ON s.id = soi.service
 WHERE soi.order = $1
 `
 
 type ListOrderServiceItemRow struct {
-	ID           int32          `json:"id"`
-	Order        int32          `json:"order"`
-	Service      sql.NullInt32  `json:"service"`
-	UnitPrice    float64        `json:"unit_price"`
-	Discount     float64        `json:"discount"`
-	TotalPrice   float64        `json:"total_price"`
-	Quantity     sql.NullInt32  `json:"quantity"`
-	ID_2         int32          `json:"id_2"`
-	Image        sql.NullInt32  `json:"image"`
-	Code         string         `json:"code"`
-	Title        string         `json:"title"`
-	Entity       sql.NullString `json:"entity"`
-	Staff        sql.NullInt32  `json:"staff"`
-	Frequency    sql.NullString `json:"frequency"`
-	ReminderTime sql.NullInt32  `json:"reminder_time"`
-	Unit         string         `json:"unit"`
-	Price        float64        `json:"price"`
-	Description  sql.NullString `json:"description"`
-	Company      int32          `json:"company"`
-	UserCreated  int32          `json:"user_created"`
-	UserUpdated  sql.NullInt32  `json:"user_updated"`
-	CreatedAt    time.Time      `json:"created_at"`
-	UpdatedAt    sql.NullTime   `json:"updated_at"`
+	ID             int32          `json:"id"`
+	Order          int32          `json:"order"`
+	Service        sql.NullInt32  `json:"service"`
+	UnitPrice      float64        `json:"unit_price"`
+	Discount       float64        `json:"discount"`
+	TotalPrice     float64        `json:"total_price"`
+	Quantity       sql.NullInt32  `json:"quantity"`
+	ID_2           int32          `json:"id_2"`
+	Image          sql.NullInt32  `json:"image"`
+	Code           string         `json:"code"`
+	Title          string         `json:"title"`
+	Entity         sql.NullString `json:"entity"`
+	Staff          sql.NullInt32  `json:"staff"`
+	Frequency      sql.NullString `json:"frequency"`
+	ReminderTime   sql.NullInt32  `json:"reminder_time"`
+	Unit           string         `json:"unit"`
+	Price          float64        `json:"price"`
+	Description    sql.NullString `json:"description"`
+	Company        int32          `json:"company"`
+	UserCreated    int32          `json:"user_created"`
+	UserUpdated    sql.NullInt32  `json:"user_updated"`
+	CreatedAt      time.Time      `json:"created_at"`
+	UpdatedAt      sql.NullTime   `json:"updated_at"`
+	Brand          sql.NullInt32  `json:"brand"`
+	ActionTime     sql.NullString `json:"action_time"`
+	ChiDinh        sql.NullString `json:"chi_dinh"`
+	ChongChiDinh   sql.NullString `json:"chong_chi_dinh"`
+	CongDung       sql.NullString `json:"cong_dung"`
+	Caution        sql.NullString `json:"caution"`
+	HinhThuc       sql.NullString `json:"hinh_thuc"`
+	TacDungPhu     sql.NullString `json:"tac_dung_phu"`
+	NumberRegister sql.NullString `json:"number_register"`
+	NumberDecision sql.NullString `json:"number_decision"`
+	CongTyDk       sql.NullString `json:"cong_ty_dk"`
+	Message        sql.NullString `json:"message"`
 }
 
 func (q *Queries) ListOrderServiceItem(ctx context.Context, order int32) ([]ListOrderServiceItemRow, error) {
@@ -1116,6 +1128,18 @@ func (q *Queries) ListOrderServiceItem(ctx context.Context, order int32) ([]List
 			&i.UserUpdated,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.Brand,
+			&i.ActionTime,
+			&i.ChiDinh,
+			&i.ChongChiDinh,
+			&i.CongDung,
+			&i.Caution,
+			&i.HinhThuc,
+			&i.TacDungPhu,
+			&i.NumberRegister,
+			&i.NumberDecision,
+			&i.CongTyDk,
+			&i.Message,
 		); err != nil {
 			return nil, err
 		}

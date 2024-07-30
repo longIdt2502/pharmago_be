@@ -35,32 +35,31 @@ func (store *Store) CreateServiceTx(ctx context.Context, req CreateServiceTxPara
 			code = req.GetCode()
 		}
 		serviceDb, err := q.CreateService(ctx, CreateServiceParams{
-			Code:  code,
-			Title: req.GetTitle(),
-			Entity: sql.NullString{
-				String: req.GetEntity(),
-				Valid:  req.Entity != nil,
-			},
-			Staff: sql.NullInt32{
-				Int32: req.GetStaff(),
-				Valid: req.Staff != nil,
-			},
-			Frequency: sql.NullString{
-				String: req.GetFrequency(),
-				Valid:  req.Frequency != nil,
-			},
-			Unit:  req.GetUnit(),
-			Price: req.GetPrice(),
-			Description: sql.NullString{
-				String: req.GetDescription(),
-				Valid:  req.Description != nil,
-			},
-			Company:     req.GetCompany(),
-			UserCreated: req.TokenPayload.UserID,
-			ReminderTime: sql.NullInt32{
-				Int32: req.GetReminderTime(),
-				Valid: req.ReminderTime != nil,
-			},
+			Code:           code,
+			Image:          sql.NullInt32{},
+			Title:          req.GetTitle(),
+			Entity:         sql.NullString{String: req.GetEntity(), Valid: req.Entity != nil},
+			Staff:          sql.NullInt32{Int32: req.GetStaff(), Valid: req.Staff != nil},
+			Frequency:      sql.NullString{String: req.GetFrequency(), Valid: req.Frequency != nil},
+			Unit:           req.GetUnit(),
+			Price:          req.GetPrice(),
+			Description:    sql.NullString{String: req.GetDescription(), Valid: req.Description != nil},
+			Company:        req.GetCompany(),
+			UserCreated:    req.TokenPayload.UserID,
+			UserUpdated:    sql.NullInt32{},
+			ReminderTime:   sql.NullInt32{Int32: req.GetReminderTime(), Valid: req.ReminderTime != nil},
+			Brand:          sql.NullInt32{Int32: req.GetBrand(), Valid: req.Brand != nil},
+			ActionTime:     sql.NullString{String: req.GetActionTime(), Valid: req.ActionTime != nil},
+			ChiDinh:        sql.NullString{String: req.GetChiDinh(), Valid: req.ChiDinh != nil},
+			ChongChiDinh:   sql.NullString{String: req.GetChongChiDinh(), Valid: req.ChongChiDinh != nil},
+			CongDung:       sql.NullString{String: req.GetCongDung(), Valid: req.CongDung != nil},
+			Caution:        sql.NullString{String: req.GetCaution(), Valid: req.Caution != nil},
+			HinhThuc:       sql.NullString{String: req.GetHinhThuc(), Valid: req.HinhThuc != nil},
+			TacDungPhu:     sql.NullString{String: req.GetTacDungPhu(), Valid: req.TacDungPhu != nil},
+			NumberRegister: sql.NullString{String: req.GetNumberRegister(), Valid: req.NumberRegister != nil},
+			NumberDecision: sql.NullString{String: req.GetNumberDecision(), Valid: req.NumberDecision != nil},
+			CongTyDk:       sql.NullString{String: req.GetCongTyDk(), Valid: req.CongTyDk != nil},
+			Message:        sql.NullString{String: req.GetMessage(), Valid: req.Message != nil},
 		})
 		if err != nil {
 			return err

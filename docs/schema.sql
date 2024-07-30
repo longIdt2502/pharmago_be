@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml-lang.org)
 -- Database: PostgreSQL
--- Generated at: 2024-07-29T03:53:31.099Z
+-- Generated at: 2024-07-30T03:37:47.938Z
 
 CREATE TYPE "gender" AS ENUM (
   'nam',
@@ -683,12 +683,24 @@ CREATE TABLE "services" (
   "code" varchar UNIQUE NOT NULL,
   "title" varchar NOT NULL,
   "entity" varchar,
+  "brand" serial,
   "staff" serial NOT NULL,
   "frequency" varchar,
   "reminder_time" int,
+  "action_time" varchar(255),
   "unit" varchar NOT NULL,
   "price" float NOT NULL DEFAULT 0,
   "description" varchar,
+  "chi_dinh" varchar(255),
+  "chong_chi_dinh" varchar(255),
+  "cong_dung" varchar(255),
+  "caution" varchar(255),
+  "hinh_thuc" varchar(255),
+  "tac_dung_phu" varchar(255),
+  "number_register" varchar(255),
+  "number_decision" varchar(255),
+  "cong_ty_dk" varchar(255),
+  "message" varchar(255),
   "company" serial NOT NULL,
   "user_created" serial NOT NULL,
   "user_updated" serial,
@@ -1184,6 +1196,8 @@ ALTER TABLE "services" ADD FOREIGN KEY ("staff") REFERENCES "accounts" ("id");
 ALTER TABLE "services" ADD FOREIGN KEY ("company") REFERENCES "companies" ("id");
 
 ALTER TABLE "services" ADD FOREIGN KEY ("image") REFERENCES "medias" ("id");
+
+ALTER TABLE "services" ADD FOREIGN KEY ("brand") REFERENCES "product_brand" ("id") ON DELETE SET NULL;
 
 ALTER TABLE "services" ADD FOREIGN KEY ("user_created") REFERENCES "accounts" ("id");
 

@@ -145,7 +145,7 @@ func (q *Queries) CreatePromotionItem(ctx context.Context, arg CreatePromotionIt
 }
 
 const getByVariantOrService = `-- name: GetByVariantOrService :many
-SELECT pi.id, min_buy, amount_gift, promotions, applicable_variant, applicable_service, variant, service, p.id, p.code, type, p.title, conditions_text, conditions_point_customer, min_value, is_discount_percent, value_discount, max_discount, time_apply, date_start, date_end, apply_multiple_times, apply_simultaneously, status, p.company, p.user_created, p.user_updated, p.created_at, p.updated_at, v.id, name, v.code, barcode, decision_number, register_number, longevity, vat, product, v.user_created, v.user_updated, v.updated_at, v.created_at, initial_inventory, real_inventory, s.id, image, s.code, s.title, entity, staff, frequency, reminder_time, unit, price, description, s.company, s.user_created, s.user_updated, s.created_at, s.updated_at, pt.code, pt.title, v.name AS v_name, v.code AS v_code, s.title AS s_name, s.code AS s_code FROM promotion_item pi
+SELECT pi.id, min_buy, amount_gift, promotions, applicable_variant, applicable_service, variant, service, p.id, p.code, type, p.title, conditions_text, conditions_point_customer, min_value, is_discount_percent, value_discount, max_discount, time_apply, date_start, date_end, apply_multiple_times, apply_simultaneously, status, p.company, p.user_created, p.user_updated, p.created_at, p.updated_at, v.id, name, v.code, barcode, decision_number, register_number, longevity, vat, product, v.user_created, v.user_updated, v.updated_at, v.created_at, initial_inventory, real_inventory, s.id, image, s.code, s.title, entity, staff, frequency, reminder_time, unit, price, description, s.company, s.user_created, s.user_updated, s.created_at, s.updated_at, brand, action_time, chi_dinh, chong_chi_dinh, cong_dung, caution, hinh_thuc, tac_dung_phu, number_register, number_decision, cong_ty_dk, message, pt.code, pt.title, v.name AS v_name, v.code AS v_code, s.title AS s_name, s.code AS s_code FROM promotion_item pi
 LEFT JOIN promotions p ON p.id = pi.promotions
 LEFT JOIN variants v ON pi.variant = v.id
 LEFT JOIN services s ON pi.service = s.id
@@ -220,6 +220,18 @@ type GetByVariantOrServiceRow struct {
 	UserUpdated_3           sql.NullInt32   `json:"user_updated_3"`
 	CreatedAt_3             sql.NullTime    `json:"created_at_3"`
 	UpdatedAt_3             sql.NullTime    `json:"updated_at_3"`
+	Brand                   sql.NullInt32   `json:"brand"`
+	ActionTime              sql.NullString  `json:"action_time"`
+	ChiDinh                 sql.NullString  `json:"chi_dinh"`
+	ChongChiDinh            sql.NullString  `json:"chong_chi_dinh"`
+	CongDung                sql.NullString  `json:"cong_dung"`
+	Caution                 sql.NullString  `json:"caution"`
+	HinhThuc                sql.NullString  `json:"hinh_thuc"`
+	TacDungPhu              sql.NullString  `json:"tac_dung_phu"`
+	NumberRegister          sql.NullString  `json:"number_register"`
+	NumberDecision          sql.NullString  `json:"number_decision"`
+	CongTyDk                sql.NullString  `json:"cong_ty_dk"`
+	Message                 sql.NullString  `json:"message"`
 	Code_4                  sql.NullString  `json:"code_4"`
 	Title_3                 sql.NullString  `json:"title_3"`
 	VName                   sql.NullString  `json:"v_name"`
@@ -298,6 +310,18 @@ func (q *Queries) GetByVariantOrService(ctx context.Context, arg GetByVariantOrS
 			&i.UserUpdated_3,
 			&i.CreatedAt_3,
 			&i.UpdatedAt_3,
+			&i.Brand,
+			&i.ActionTime,
+			&i.ChiDinh,
+			&i.ChongChiDinh,
+			&i.CongDung,
+			&i.Caution,
+			&i.HinhThuc,
+			&i.TacDungPhu,
+			&i.NumberRegister,
+			&i.NumberDecision,
+			&i.CongTyDk,
+			&i.Message,
 			&i.Code_4,
 			&i.Title_3,
 			&i.VName,
