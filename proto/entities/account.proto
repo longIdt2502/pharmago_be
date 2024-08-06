@@ -21,9 +21,9 @@ message Account {
   optional string licence = 10;
   optional google.protobuf.Timestamp dob = 11;
   optional Address address = 12;
-  optional Role roleData = 13;
+  optional Role role_data = 13;
   google.protobuf.Timestamp password_changed_at = 14;
   google.protobuf.Timestamp created_at = 15;
-  string companyName = 16;
-  int32 companyId = 17;
+  string company_name = 16;
+  int32 company_id = 17;
 }

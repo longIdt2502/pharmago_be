@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml-lang.org)
 -- Database: PostgreSQL
--- Generated at: 2024-07-30T03:37:47.938Z
+-- Generated at: 2024-08-01T03:19:03.546Z
 
 CREATE TYPE "gender" AS ENUM (
   'nam',

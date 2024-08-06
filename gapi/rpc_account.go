@@ -234,10 +234,14 @@ func (server *ServerGRPC) CreateEmployee(ctx context.Context, req *pb.CreateEmpl
 	}
 
 	companyDb, _ := server.store.GetCompanyById(ctx, req.GetCompany())
+	companyParent := req.GetCompany()
+	if companyDb.Parent.Valid {
+		companyParent = companyDb.Parent.Int32
+	}
 	_, err = server.store.CreateAccountCompany(ctx, db.CreateAccountCompanyParams{
 		Account:       employee.ID,
 		Company:       sql.NullInt32{Int32: req.GetCompany(), Valid: true},
-		CompanyParent: sql.NullInt32{Int32: companyDb.Parent.Int32, Valid: companyDb.Parent.Valid},
+		CompanyParent: sql.NullInt32{Int32: companyParent, Valid: true},
 	})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, fmt.Sprintf("failed to create account company: %e", err))

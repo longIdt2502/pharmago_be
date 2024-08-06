@@ -212,8 +212,8 @@ func (server *ServerGRPC) DetailProduct(ctx context.Context, req *pb.DetailProdu
 
 	var unitsPb []*pb.Unit
 	unitsPb = append(unitsPb, &pb.Unit{
-		Id:          productDb.ID_4.Int32,
-		Name:        productDb.Name_4.String,
+		Id:          productDb.ID_5.Int32,
+		Name:        productDb.Name_5.String,
 		Value:       1,
 		SellPrice:   float32(productDb.SellPrice.Float64),
 		ImportPrice: float32(productDb.ImportPrice.Float64),
