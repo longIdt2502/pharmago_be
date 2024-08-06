@@ -346,10 +346,11 @@ func (q *Queries) GetAccountByUseName(ctx context.Context, username string) (Acc
 }
 
 const listAccount = `-- name: ListAccount :many
-SELECT a.id, username, hashed_password, full_name, email, a.type, is_verify, password_changed_at, a.created_at, role, gender, licence, dob, a.address, ac.id, account, company, company_parent, c.id, name, c.code, tax_code, phone, description, c.address, oa_id, c.created_at, owner, c.type, time_open, time_close, parent, is_active, manager, user_created, user_updated, updated_at, at.id, at.code, title FROM accounts a
+SELECT a.id, username, hashed_password, full_name, email, a.type, is_verify, password_changed_at, a.created_at, role, gender, licence, dob, a.address, ac.id, account, ac.company, company_parent, c.id, name, c.code, tax_code, phone, description, c.address, oa_id, c.created_at, owner, c.type, time_open, time_close, parent, is_active, manager, c.user_created, c.user_updated, c.updated_at, at.id, at.code, at.title, r.id, r.code, r.title, note, r.company, r.user_created, r.user_updated, r.updated_at, r.created_at FROM accounts a
 LEFT JOIN account_company ac ON ac.account = a.id
 LEFT JOIN companies c ON c.id = ac.company
 LEFT JOIN account_type at ON at.id = a.type 
+LEFT JOIN roles r ON r.id = a.role 
 WHERE (ac.company = $1::int OR ac.company_parent = $1)
 AND (
     a.full_name ILIKE '%' || COALESCE($2::varchar, '') || '%' OR
@@ -420,6 +421,15 @@ type ListAccountRow struct {
 	ID_4              sql.NullInt32  `json:"id_4"`
 	Code_2            sql.NullString `json:"code_2"`
 	Title             sql.NullString `json:"title"`
+	ID_5              sql.NullInt32  `json:"id_5"`
+	Code_3            sql.NullString `json:"code_3"`
+	Title_2           sql.NullString `json:"title_2"`
+	Note              sql.NullString `json:"note"`
+	Company_2         sql.NullInt32  `json:"company_2"`
+	UserCreated_2     sql.NullInt32  `json:"user_created_2"`
+	UserUpdated_2     sql.NullInt32  `json:"user_updated_2"`
+	UpdatedAt_2       sql.NullTime   `json:"updated_at_2"`
+	CreatedAt_3       sql.NullTime   `json:"created_at_3"`
 }
 
 func (q *Queries) ListAccount(ctx context.Context, arg ListAccountParams) ([]ListAccountRow, error) {
@@ -480,6 +490,15 @@ func (q *Queries) ListAccount(ctx context.Context, arg ListAccountParams) ([]Lis
 			&i.ID_4,
 			&i.Code_2,
 			&i.Title,
+			&i.ID_5,
+			&i.Code_3,
+			&i.Title_2,
+			&i.Note,
+			&i.Company_2,
+			&i.UserCreated_2,
+			&i.UserUpdated_2,
+			&i.UpdatedAt_2,
+			&i.CreatedAt_3,
 		); err != nil {
 			return nil, err
 		}

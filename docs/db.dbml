@@ -69,6 +69,8 @@ Table roles as R {
 }
 
 Ref: R.company > C.id [delete: cascade]
+Ref: R.user_created > A.id [delete: set null]
+Ref: R.user_updated > A.id [delete: set null]
 
 Table role_item {
   id serial [pk]
@@ -131,10 +133,12 @@ Table companies as C {
   created_at timestamptz [not null, default: `now()`]
   owner serial [ref: > A.id, not null]
   type varchar [not null]
+  parent serial
 }
 
 Ref: C.address > address.id [delete: set null]
 Ref: C.type > company_type.code [delete: set null]
+Ref: C.parent > C.id [delete: set null]
 
 Table company_type {
   code varchar [pk, unique, not null,
@@ -354,7 +358,7 @@ Table company_pharma {
   }
 }
 
-Ref: company_pharma_type.code - company_pharma.company_pharma_type [delete: set null]
+Ref: company_pharma_type.code > company_pharma.company_pharma_type [delete: set null]
 
 Table company_pharma_type {
   id serial [pk]
@@ -757,7 +761,7 @@ Table warehouses as W {
   name varchar(255) [not null]
   code varchar(255) [not null, unique]
   address serial
-  companies serial
+  companies serial [not null]
 }
 
 Ref: W.address > address.id [delete: set null]

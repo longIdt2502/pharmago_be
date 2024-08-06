@@ -54,6 +54,7 @@ SELECT * FROM accounts a
 LEFT JOIN account_company ac ON ac.account = a.id
 LEFT JOIN companies c ON c.id = ac.company
 LEFT JOIN account_type at ON at.id = a.type 
+LEFT JOIN roles r ON r.id = a.role 
 WHERE (ac.company = sqlc.arg(company)::int OR ac.company_parent = sqlc.narg(company))
 AND (
     a.full_name ILIKE '%' || COALESCE(sqlc.narg('search')::varchar, '') || '%' OR
