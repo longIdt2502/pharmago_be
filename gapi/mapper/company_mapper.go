@@ -85,6 +85,16 @@ func CompanyMapper(ctx context.Context, store *db.Store, data db.Company) *pb.Co
 
 	totalEmployee, _ := store.CountEmployee(ctx, sql.NullInt32{Int32: data.ID, Valid: true})
 
+	var manager *pb.Account
+	if data.Manager.Valid {
+		item, _ := store.GetAccount(ctx, data.Manager.Int32)
+		manager = &pb.Account{
+			Id:       item.ID,
+			FullName: item.FullName,
+		}
+
+	}
+
 	return &pb.Company{
 		Id:            int32(data.ID),
 		Name:          data.Name,
@@ -95,7 +105,7 @@ func CompanyMapper(ctx context.Context, store *db.Store, data db.Company) *pb.Co
 		Description:   nil,
 		Address:       addressPb,
 		Owner:         int32(data.Owner),
-		Manager:       &pb.Account{},
+		Manager:       manager,
 		OaId:          &data.OaID.String,
 		TimeOpen:      timeOpen,
 		TimeClose:     timeClose,
