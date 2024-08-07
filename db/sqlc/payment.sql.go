@@ -198,3 +198,30 @@ func (q *Queries) PaymentOrderServiceByMedicalBill(ctx context.Context, argUuid 
 	err := row.Scan(&i.TotalMustPaid, &i.TotalHadPaid, &i.TotalNeedPay)
 	return i, err
 }
+
+const updatePayment = `-- name: UpdatePayment :one
+UPDATE payments
+SET had_paid = COALESCE($1::float, had_paid),
+    need_pay = COALESCE($2::float, need_pay)
+WHERE id = $3::int
+RETURNING id, code, must_paid, had_paid, need_pay
+`
+
+type UpdatePaymentParams struct {
+	HadPaid sql.NullFloat64 `json:"had_paid"`
+	NeedPay sql.NullFloat64 `json:"need_pay"`
+	ID      int32           `json:"id"`
+}
+
+func (q *Queries) UpdatePayment(ctx context.Context, arg UpdatePaymentParams) (Payment, error) {
+	row := q.db.QueryRowContext(ctx, updatePayment, arg.HadPaid, arg.NeedPay, arg.ID)
+	var i Payment
+	err := row.Scan(
+		&i.ID,
+		&i.Code,
+		&i.MustPaid,
+		&i.HadPaid,
+		&i.NeedPay,
+	)
+	return i, err
+}

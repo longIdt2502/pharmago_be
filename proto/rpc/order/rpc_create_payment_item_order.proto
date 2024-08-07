@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package pb;
+
+import "entities/order.proto";
+
+option go_package = "github.com/HoangLong2502/pharmago_be/pb";
+
+enum PaymentItemType {
+    CASH = 0;
+    BANKING = 1;
+    DEBIT = 2;
+}
+
+message PaymentItemOrderRequest {
+    PaymentItemType type = 1;
+    float value = 2;
+    int32 order_id = 3;
+}
+
+message PaymentItemOrderResponse {
+    int32 code = 1;
+    string message = 2;
+    string message_trans = 3;
+    string log = 4;
+}
