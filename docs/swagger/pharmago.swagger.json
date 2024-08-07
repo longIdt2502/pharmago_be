@@ -15924,6 +15924,9 @@
         },
         "default": {
           "type": "boolean"
+        },
+        "isDefault": {
+          "type": "boolean"
         }
       }
     },
