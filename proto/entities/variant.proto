@@ -37,4 +37,5 @@ message Unit {
   float weight = 6;
   string weight_unit = 7;
   bool default = 8;
+  bool is_default = 9;
 }

@@ -30,6 +30,7 @@ func VariantMapper(ctx context.Context, store *db.Store, data db.GetVariantsRow)
 		Weight:      float32(data.UnitWeight.Float64),
 		WeightUnit:  data.UnitWeightUnit.String,
 		Default:     true,
+		IsDefault:   true,
 	})
 	unitChangeDb, _ := store.GetListUnitChange(ctx, data.UnitID)
 	for _, value := range unitChangeDb {
@@ -42,6 +43,7 @@ func VariantMapper(ctx context.Context, store *db.Store, data db.GetVariantsRow)
 			Weight:      0,
 			WeightUnit:  "",
 			Default:     false,
+			IsDefault:   false,
 		})
 	}
 
