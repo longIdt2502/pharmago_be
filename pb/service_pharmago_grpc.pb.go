@@ -116,6 +116,7 @@ const (
 	Pharmago_OrderDetail_FullMethodName               = "/pb.Pharmago/OrderDetail"
 	Pharmago_OrderUpdateStatus_FullMethodName         = "/pb.Pharmago/OrderUpdateStatus"
 	Pharmago_OrderScan_FullMethodName                 = "/pb.Pharmago/OrderScan"
+	Pharmago_CreatePaymentItemOrder_FullMethodName    = "/pb.Pharmago/CreatePaymentItemOrder"
 	Pharmago_CustomerList_FullMethodName              = "/pb.Pharmago/CustomerList"
 	Pharmago_CustomerCreate_FullMethodName            = "/pb.Pharmago/CustomerCreate"
 	Pharmago_CustomerDetail_FullMethodName            = "/pb.Pharmago/CustomerDetail"
@@ -284,6 +285,7 @@ type PharmagoClient interface {
 	OrderDetail(ctx context.Context, in *OrderDetailRequest, opts ...grpc.CallOption) (*OrderDetailResponse, error)
 	OrderUpdateStatus(ctx context.Context, in *OrderUpdateStatusRequest, opts ...grpc.CallOption) (*OrderUpdateStatusResponse, error)
 	OrderScan(ctx context.Context, in *OrderScanRequest, opts ...grpc.CallOption) (*OrderScanResponse, error)
+	CreatePaymentItemOrder(ctx context.Context, in *PaymentItemOrderRequest, opts ...grpc.CallOption) (*PaymentItemOrderResponse, error)
 	// ================== CUSTOMER ===================
 	CustomerList(ctx context.Context, in *CustomerListRequest, opts ...grpc.CallOption) (*CustomerListResponse, error)
 	CustomerCreate(ctx context.Context, in *CustomerCreateRequest, opts ...grpc.CallOption) (*CustomerCreateResponse, error)
@@ -1245,6 +1247,15 @@ func (c *pharmagoClient) OrderScan(ctx context.Context, in *OrderScanRequest, op
 	return out, nil
 }
 
+func (c *pharmagoClient) CreatePaymentItemOrder(ctx context.Context, in *PaymentItemOrderRequest, opts ...grpc.CallOption) (*PaymentItemOrderResponse, error) {
+	out := new(PaymentItemOrderResponse)
+	err := c.cc.Invoke(ctx, Pharmago_CreatePaymentItemOrder_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *pharmagoClient) CustomerList(ctx context.Context, in *CustomerListRequest, opts ...grpc.CallOption) (*CustomerListResponse, error) {
 	out := new(CustomerListResponse)
 	err := c.cc.Invoke(ctx, Pharmago_CustomerList_FullMethodName, in, out, opts...)
@@ -1802,6 +1813,7 @@ type PharmagoServer interface {
 	OrderDetail(context.Context, *OrderDetailRequest) (*OrderDetailResponse, error)
 	OrderUpdateStatus(context.Context, *OrderUpdateStatusRequest) (*OrderUpdateStatusResponse, error)
 	OrderScan(context.Context, *OrderScanRequest) (*OrderScanResponse, error)
+	CreatePaymentItemOrder(context.Context, *PaymentItemOrderRequest) (*PaymentItemOrderResponse, error)
 	// ================== CUSTOMER ===================
 	CustomerList(context.Context, *CustomerListRequest) (*CustomerListResponse, error)
 	CustomerCreate(context.Context, *CustomerCreateRequest) (*CustomerCreateResponse, error)
@@ -2155,6 +2167,9 @@ func (UnimplementedPharmagoServer) OrderUpdateStatus(context.Context, *OrderUpda
 }
 func (UnimplementedPharmagoServer) OrderScan(context.Context, *OrderScanRequest) (*OrderScanResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OrderScan not implemented")
+}
+func (UnimplementedPharmagoServer) CreatePaymentItemOrder(context.Context, *PaymentItemOrderRequest) (*PaymentItemOrderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreatePaymentItemOrder not implemented")
 }
 func (UnimplementedPharmagoServer) CustomerList(context.Context, *CustomerListRequest) (*CustomerListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CustomerList not implemented")
@@ -4061,6 +4076,24 @@ func _Pharmago_OrderScan_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Pharmago_CreatePaymentItemOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PaymentItemOrderRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).CreatePaymentItemOrder(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_CreatePaymentItemOrder_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).CreatePaymentItemOrder(ctx, req.(*PaymentItemOrderRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Pharmago_CustomerList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CustomerListRequest)
 	if err := dec(in); err != nil {
@@ -5282,6 +5315,10 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "OrderScan",
 			Handler:    _Pharmago_OrderScan_Handler,
+		},
+		{
+			MethodName: "CreatePaymentItemOrder",
+			Handler:    _Pharmago_CreatePaymentItemOrder_Handler,
 		},
 		{
 			MethodName: "CustomerList",

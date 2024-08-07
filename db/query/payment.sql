@@ -41,3 +41,10 @@ JOIN orders o ON o.id = ass.order_service
 JOIN payments p ON p.id = o.payment
 WHERE ass.mb_uuid = sqlc.arg(uuid)::uuid
 GROUP BY ass.mb_uuid;
+
+-- name: UpdatePayment :one
+UPDATE payments
+SET had_paid = COALESCE(sqlc.narg(had_paid)::float, had_paid),
+    need_pay = COALESCE(sqlc.narg(need_pay)::float, need_pay)
+WHERE id = sqlc.arg(id)::int
+RETURNING *;

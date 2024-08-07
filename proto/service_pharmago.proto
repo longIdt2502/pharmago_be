@@ -84,6 +84,7 @@ import "rpc/order/rpc_order_list.proto";
 import "rpc/order/rpc_order_detail.proto";
 import "rpc/order/rpc_order_update_status.proto";
 import "rpc/order/rpc_order_scan.proto";
+import "rpc/order/rpc_create_payment_item_order.proto";
 
 import "rpc/customer/rpc_customer_list.proto";
 import "rpc/customer/rpc_customer_detail.proto";
@@ -1132,6 +1133,16 @@ service Pharmago {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Scan Order";
+      tags: "Order";
+    };
+  };
+  rpc CreatePaymentItemOrder (PaymentItemOrderRequest) returns (PaymentItemOrderResponse) {
+    option (google.api.http) = {
+      post: "/order/v1/payment",
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create Payment Order";
       tags: "Order";
     };
   };

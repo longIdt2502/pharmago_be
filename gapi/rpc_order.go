@@ -119,58 +119,19 @@ func (server *ServerGRPC) OrderList(ctx context.Context, req *pb.OrderListReques
 	a := time.Unix(req.CreatedStart.GetSeconds(), 0)
 	print(a.String())
 	orders, err := server.store.ListOrder(ctx, db.ListOrderParams{
-		Company: sql.NullInt32{
-			Int32: req.Company,
-			Valid: true,
-		},
-		Customer: sql.NullInt32{
-			Int32: req.GetCustomer(),
-			Valid: req.Customer != nil,
-		},
-		Status: sql.NullString{
-			String: req.GetStatus(),
-			Valid:  req.Status != nil,
-		},
-		Warehouse: sql.NullInt32{
-			Int32: req.GetWarehouse(),
-			Valid: req.Warehouse != nil,
-		},
-		Search: sql.NullString{
-			String: req.GetSearch(),
-			Valid:  req.Search != nil,
-		},
-		CreatedStart: sql.NullTime{
-			Time:  time.Unix(req.CreatedStart.GetSeconds(), 0),
-			Valid: req.CreatedStart != nil,
-		},
-		CreatedEnd: sql.NullTime{
-			Time:  time.Unix(req.CreatedEnd.GetSeconds(), 0),
-			Valid: req.CreatedEnd != nil,
-		},
-		UpdatedStart: sql.NullTime{
-			Time:  time.Unix(req.UpdatedStart.GetSeconds(), 0),
-			Valid: req.UpdatedStart != nil,
-		},
-		UpdatedEnd: sql.NullTime{
-			Time:  time.Unix(req.UpdatedEnd.GetSeconds(), 0),
-			Valid: req.UpdatedEnd != nil,
-		},
-		OrderBy: sql.NullString{
-			String: req.GetOrderBy(),
-			Valid:  req.OrderBy != nil,
-		},
-		Page: sql.NullInt32{
-			Int32: req.GetPage(),
-			Valid: req.Page != nil,
-		},
-		Limit: sql.NullInt32{
-			Int32: req.GetLimit(),
-			Valid: req.Limit != nil,
-		},
-		Type: sql.NullString{
-			String: req.GetType().String(),
-			Valid:  req.Type != nil,
-		},
+		Company:      sql.NullInt32{Int32: req.Company, Valid: true},
+		Status:       sql.NullString{String: req.GetStatus(), Valid: req.Status != nil},
+		Warehouse:    sql.NullInt32{Int32: req.GetWarehouse(), Valid: req.Warehouse != nil},
+		Type:         sql.NullString{String: req.GetType().String(), Valid: req.Type != nil},
+		Customer:     sql.NullInt32{Int32: req.GetCustomer(), Valid: req.Customer != nil},
+		Search:       sql.NullString{String: req.GetSearch(), Valid: req.Search != nil},
+		CreatedStart: sql.NullTime{Time: time.Unix(req.CreatedStart.GetSeconds(), 0), Valid: req.CreatedStart != nil},
+		CreatedEnd:   sql.NullTime{Time: time.Unix(req.CreatedEnd.GetSeconds(), 0), Valid: req.CreatedEnd != nil},
+		UpdatedStart: sql.NullTime{Time: time.Unix(req.UpdatedStart.GetSeconds(), 0), Valid: req.UpdatedStart != nil},
+		UpdatedEnd:   sql.NullTime{Time: time.Unix(req.UpdatedEnd.GetSeconds(), 0), Valid: req.UpdatedEnd != nil},
+		OrderBy:      sql.NullString{String: req.GetOrderBy(), Valid: req.OrderBy != nil},
+		Page:         sql.NullInt32{Int32: req.GetPage(), Valid: req.Page != nil},
+		Limit:        sql.NullInt32{Int32: req.GetLimit(), Valid: req.Limit != nil},
 	})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get orders: %e", err)
@@ -179,7 +140,7 @@ func (server *ServerGRPC) OrderList(ctx context.Context, req *pb.OrderListReques
 	var ordersPb []*pb.OrderPreview
 
 	for _, value := range orders {
-		dataPb := mapper.OrderPreviewMapper(value)
+		dataPb := mapper.OrderPreviewMapper(ctx, server.store, value)
 		ordersPb = append(ordersPb, dataPb)
 	}
 
@@ -340,5 +301,78 @@ func (server *ServerGRPC) OrderScan(ctx context.Context, req *pb.OrderScanReques
 		Code:    200,
 		Message: "success",
 		Details: orderPb,
+	}, nil
+}
+
+func (server *ServerGRPC) CreatePaymentItemOrder(ctx context.Context, req *pb.PaymentItemOrderRequest) (*pb.PaymentItemOrderResponse, error) {
+	orderDb, err := server.store.DetailOrder(ctx, db.DetailOrderParams{
+		ID: sql.NullInt32{Int32: req.GetOrderId(), Valid: true},
+	})
+	if err != nil {
+		appErr := common.ErrDBWithMsg(err, "lỗi lấy dữ liệu đơn hàng")
+		return &pb.PaymentItemOrderResponse{
+			Code:         int32(appErr.StatusCode),
+			Message:      appErr.Message,
+			MessageTrans: appErr.MessageTrans,
+			Log:          appErr.Log,
+		}, nil
+	}
+
+	payment, err := server.store.DetailPayment(ctx, orderDb.Payment)
+	if err != nil {
+		appErr := common.ErrDBWithMsg(err, "lỗi lấy dữ liệu thanh toán")
+		return &pb.PaymentItemOrderResponse{
+			Code:         int32(appErr.StatusCode),
+			Message:      appErr.Message,
+			MessageTrans: appErr.MessageTrans,
+			Log:          appErr.Log,
+		}, nil
+	}
+
+	if req.GetValue() > float32(payment.NeedPay) {
+		appErr := common.ErrInvalidRequest(errors.New("giá trị không hợp lệ"))
+		return &pb.PaymentItemOrderResponse{
+			Code:         int32(appErr.StatusCode),
+			Message:      appErr.Message,
+			MessageTrans: appErr.MessageTrans,
+			Log:          appErr.Log,
+		}, nil
+	}
+
+	_, err = server.store.CreatePaymentItem(ctx, db.CreatePaymentItemParams{
+		Type:      req.GetType().String(),
+		Value:     float64(req.GetValue()),
+		IsPaid:    true,
+		Payment:   orderDb.Payment,
+		ExtraNote: sql.NullString{},
+	})
+	if err != nil {
+		appErr := common.ErrDBWithMsg(err, "lỗi tạo thanh toán")
+		return &pb.PaymentItemOrderResponse{
+			Code:         int32(appErr.StatusCode),
+			Message:      appErr.Message,
+			MessageTrans: appErr.MessageTrans,
+			Log:          appErr.Log,
+		}, nil
+	}
+
+	_, err = server.store.UpdatePayment(ctx, db.UpdatePaymentParams{
+		HadPaid: sql.NullFloat64{Float64: payment.HadPaid + float64(req.GetValue()), Valid: true},
+		NeedPay: sql.NullFloat64{Float64: payment.NeedPay - float64(req.GetValue()), Valid: true},
+		ID:      payment.ID,
+	})
+	if err != nil {
+		appErr := common.ErrDBWithMsg(err, "lỗi cập nhật thông tin thanh toán")
+		return &pb.PaymentItemOrderResponse{
+			Code:         int32(appErr.StatusCode),
+			Message:      appErr.Message,
+			MessageTrans: appErr.MessageTrans,
+			Log:          appErr.Log,
+		}, nil
+	}
+
+	return &pb.PaymentItemOrderResponse{
+		Code:    200,
+		Message: "success",
 	}, nil
 }

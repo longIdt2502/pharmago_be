@@ -67,4 +67,7 @@ message OrderPreview {
   string customer_name = 8;
   string user_created = 9;
   google.protobuf.Timestamp created_at = 10;
+  optional Variant first_variant = 11;
+  optional Service first_service = 12;
+  int32 count_items = 13;
 }

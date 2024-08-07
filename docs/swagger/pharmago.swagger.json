@@ -5758,6 +5758,39 @@
         ]
       }
     },
+    "/order/v1/payment": {
+      "post": {
+        "summary": "Create Payment Order",
+        "operationId": "Pharmago_CreatePaymentItemOrder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbPaymentItemOrderResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbPaymentItemOrderRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Order"
+        ]
+      }
+    },
     "/order/v1/scan": {
       "post": {
         "summary": "Scan Order",
@@ -13620,6 +13653,16 @@
         "createdAt": {
           "type": "string",
           "format": "date-time"
+        },
+        "firstVariant": {
+          "$ref": "#/definitions/pbVariant"
+        },
+        "firstService": {
+          "$ref": "#/definitions/pbService"
+        },
+        "countItems": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -13806,6 +13849,49 @@
           "type": "string"
         }
       }
+    },
+    "pbPaymentItemOrderRequest": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/pbPaymentItemType"
+        },
+        "value": {
+          "type": "number",
+          "format": "float"
+        },
+        "orderId": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbPaymentItemOrderResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "messageTrans": {
+          "type": "string"
+        },
+        "log": {
+          "type": "string"
+        }
+      }
+    },
+    "pbPaymentItemType": {
+      "type": "string",
+      "enum": [
+        "CASH",
+        "BANKING",
+        "DEBIT"
+      ],
+      "default": "CASH"
     },
     "pbPreparationTypeCreateRequest": {
       "type": "object",
