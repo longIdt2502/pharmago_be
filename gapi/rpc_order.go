@@ -361,6 +361,23 @@ func (server *ServerGRPC) CreatePaymentItemOrder(ctx context.Context, req *pb.Pa
 		NeedPay: sql.NullFloat64{Float64: payment.NeedPay - float64(req.GetValue()), Valid: true},
 		ID:      payment.ID,
 	})
+
+	if payment.NeedPay-float64(req.GetValue()) <= 0 {
+		_, err = server.store.UpdateStatusOrder(ctx, db.UpdateStatusOrderParams{
+			ID:     req.GetOrderId(),
+			Status: "COMPLETE",
+		})
+		if err != nil {
+			appErr := common.ErrDBWithMsg(err, "lỗi cập nhật thông tin đơn hàng")
+			return &pb.PaymentItemOrderResponse{
+				Code:         int32(appErr.StatusCode),
+				Message:      appErr.Message,
+				MessageTrans: appErr.MessageTrans,
+				Log:          appErr.Log,
+			}, nil
+		}
+	}
+
 	if err != nil {
 		appErr := common.ErrDBWithMsg(err, "lỗi cập nhật thông tin thanh toán")
 		return &pb.PaymentItemOrderResponse{
