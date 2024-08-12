@@ -49,6 +49,12 @@ func MedicalBillMapper(ctx context.Context, store *db.Store, item db.GetListMedi
 		NeedPay:  float32(paymentService.TotalNeedPay),
 	})
 
+	var prescription *string
+	if item.Prescription.Valid {
+		x := item.Prescription.UUID.String()
+		prescription = &x
+	}
+
 	return &pb.MedicalBill{
 		Id:            item.ID,
 		Uuid:          item.Uuid.String(),
@@ -72,6 +78,6 @@ func MedicalBillMapper(ctx context.Context, store *db.Store, item db.GetListMedi
 		Services:      servicesPb,
 		Urls:          []*pb.AppointmentScheduleUrl{},
 		Payment:       paymentsPB,
-		Prescription:  item.Prescription.UUID.String(),
+		Prescription:  prescription,
 	}
 }
