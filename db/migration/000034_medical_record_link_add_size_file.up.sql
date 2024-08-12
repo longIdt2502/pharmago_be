@@ -1,0 +1,1 @@
+ALTER TABLE medical_record_link ADD COLUMN IF NOT EXISTS "size" int DEFAULT 0;

@@ -129,6 +129,7 @@ const (
 	Pharmago_MedicalRecordCreate_FullMethodName       = "/pb.Pharmago/MedicalRecordCreate"
 	Pharmago_MedicalRecordCreateStream_FullMethodName = "/pb.Pharmago/MedicalRecordCreateStream"
 	Pharmago_MedicalRecordList_FullMethodName         = "/pb.Pharmago/MedicalRecordList"
+	Pharmago_MedicalRecordDelete_FullMethodName       = "/pb.Pharmago/MedicalRecordDelete"
 	Pharmago_ImportCompany_FullMethodName             = "/pb.Pharmago/ImportCompany"
 	Pharmago_ImportProduct_FullMethodName             = "/pb.Pharmago/ImportProduct"
 	Pharmago_ImportProductMasterData_FullMethodName   = "/pb.Pharmago/ImportProductMasterData"
@@ -299,6 +300,7 @@ type PharmagoClient interface {
 	MedicalRecordCreate(ctx context.Context, in *MedicalRecordCreateRequest, opts ...grpc.CallOption) (*MedicalRecordCreateResponse, error)
 	MedicalRecordCreateStream(ctx context.Context, in *MedicalRecordCreateRequest, opts ...grpc.CallOption) (Pharmago_MedicalRecordCreateStreamClient, error)
 	MedicalRecordList(ctx context.Context, in *MedicalRecordListRequest, opts ...grpc.CallOption) (*MedicalRecordListResponse, error)
+	MedicalRecordDelete(ctx context.Context, in *MedicalRecordDeleteRequest, opts ...grpc.CallOption) (*MedicalRecordDeleteResponse, error)
 	// ================== IMPORT ===================
 	ImportCompany(ctx context.Context, in *ImportCompanyRequest, opts ...grpc.CallOption) (*ImportCompanyResponse, error)
 	ImportProduct(ctx context.Context, in *ImportProductRequest, opts ...grpc.CallOption) (*ImportProductResponse, error)
@@ -1387,6 +1389,15 @@ func (c *pharmagoClient) MedicalRecordList(ctx context.Context, in *MedicalRecor
 	return out, nil
 }
 
+func (c *pharmagoClient) MedicalRecordDelete(ctx context.Context, in *MedicalRecordDeleteRequest, opts ...grpc.CallOption) (*MedicalRecordDeleteResponse, error) {
+	out := new(MedicalRecordDeleteResponse)
+	err := c.cc.Invoke(ctx, Pharmago_MedicalRecordDelete_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *pharmagoClient) ImportCompany(ctx context.Context, in *ImportCompanyRequest, opts ...grpc.CallOption) (*ImportCompanyResponse, error) {
 	out := new(ImportCompanyResponse)
 	err := c.cc.Invoke(ctx, Pharmago_ImportCompany_FullMethodName, in, out, opts...)
@@ -1827,6 +1838,7 @@ type PharmagoServer interface {
 	MedicalRecordCreate(context.Context, *MedicalRecordCreateRequest) (*MedicalRecordCreateResponse, error)
 	MedicalRecordCreateStream(*MedicalRecordCreateRequest, Pharmago_MedicalRecordCreateStreamServer) error
 	MedicalRecordList(context.Context, *MedicalRecordListRequest) (*MedicalRecordListResponse, error)
+	MedicalRecordDelete(context.Context, *MedicalRecordDeleteRequest) (*MedicalRecordDeleteResponse, error)
 	// ================== IMPORT ===================
 	ImportCompany(context.Context, *ImportCompanyRequest) (*ImportCompanyResponse, error)
 	ImportProduct(context.Context, *ImportProductRequest) (*ImportProductResponse, error)
@@ -2206,6 +2218,9 @@ func (UnimplementedPharmagoServer) MedicalRecordCreateStream(*MedicalRecordCreat
 }
 func (UnimplementedPharmagoServer) MedicalRecordList(context.Context, *MedicalRecordListRequest) (*MedicalRecordListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MedicalRecordList not implemented")
+}
+func (UnimplementedPharmagoServer) MedicalRecordDelete(context.Context, *MedicalRecordDeleteRequest) (*MedicalRecordDeleteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MedicalRecordDelete not implemented")
 }
 func (UnimplementedPharmagoServer) ImportCompany(context.Context, *ImportCompanyRequest) (*ImportCompanyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ImportCompany not implemented")
@@ -4313,6 +4328,24 @@ func _Pharmago_MedicalRecordList_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Pharmago_MedicalRecordDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MedicalRecordDeleteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PharmagoServer).MedicalRecordDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Pharmago_MedicalRecordDelete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PharmagoServer).MedicalRecordDelete(ctx, req.(*MedicalRecordDeleteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Pharmago_ImportCompany_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ImportCompanyRequest)
 	if err := dec(in); err != nil {
@@ -5363,6 +5396,10 @@ var Pharmago_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "MedicalRecordList",
 			Handler:    _Pharmago_MedicalRecordList_Handler,
+		},
+		{
+			MethodName: "MedicalRecordDelete",
+			Handler:    _Pharmago_MedicalRecordDelete_Handler,
 		},
 		{
 			MethodName: "ImportCompany",

@@ -9,6 +9,7 @@ import "entities/customer.proto";
 message FileItem {
     string name = 1;
     bytes file = 2;
+    int32 size = 3;
 }
 
 message MedicalRecordCreateRequest {

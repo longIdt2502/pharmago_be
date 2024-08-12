@@ -3448,6 +3448,37 @@
         ]
       }
     },
+    "/customer/v1/medical_record/{uuid}": {
+      "delete": {
+        "summary": "Delete medical record customer",
+        "operationId": "Pharmago_MedicalRecordDelete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbMedicalRecordDeleteResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Customer"
+        ]
+      }
+    },
     "/debt-note/v1/create": {
       "post": {
         "summary": "Create Debt Note",
@@ -12606,6 +12637,10 @@
         "file": {
           "type": "string",
           "format": "byte"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -13181,6 +13216,24 @@
         }
       }
     },
+    "pbMedicalRecordDeleteResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "messageTrans": {
+          "type": "string"
+        },
+        "log": {
+          "type": "string"
+        }
+      }
+    },
     "pbMedicalRecordLink": {
       "type": "object",
       "properties": {
@@ -13194,7 +13247,10 @@
           "title": "uuid"
         },
         "type": {
-          "$ref": "#/definitions/pbMedicalRecordType",
+          "$ref": "#/definitions/pbMedicalRecordType"
+        },
+        "typeName": {
+          "type": "string",
           "title": "medical_record_type"
         },
         "title": {
@@ -13204,6 +13260,10 @@
         "url": {
           "type": "string",
           "title": "varchar"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int32"
         },
         "customer": {
           "type": "integer",

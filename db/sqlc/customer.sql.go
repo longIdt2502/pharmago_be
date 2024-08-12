@@ -160,10 +160,10 @@ func (q *Queries) CreateCustomerGroup(ctx context.Context, arg CreateCustomerGro
 
 const createMedicalRecordLink = `-- name: CreateMedicalRecordLink :one
 INSERT INTO medical_record_link (
-    uuid, "type", title, url, customer, appointment_schedule, medical_bill, user_created
+    uuid, "type", title, url, customer, appointment_schedule, medical_bill, user_created, size
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8
-) RETURNING id, uuid, type, title, url, customer, appointment_schedule, user_created, created_at, medical_bill
+    $1, $2, $3, $4, $5, $6, $7, $8, $9
+) RETURNING id, uuid, type, title, url, customer, appointment_schedule, user_created, created_at, medical_bill, size
 `
 
 type CreateMedicalRecordLinkParams struct {
@@ -175,6 +175,7 @@ type CreateMedicalRecordLinkParams struct {
 	AppointmentSchedule uuid.NullUUID         `json:"appointment_schedule"`
 	MedicalBill         uuid.NullUUID         `json:"medical_bill"`
 	UserCreated         sql.NullInt32         `json:"user_created"`
+	Size                sql.NullInt32         `json:"size"`
 }
 
 func (q *Queries) CreateMedicalRecordLink(ctx context.Context, arg CreateMedicalRecordLinkParams) (MedicalRecordLink, error) {
@@ -187,6 +188,7 @@ func (q *Queries) CreateMedicalRecordLink(ctx context.Context, arg CreateMedical
 		arg.AppointmentSchedule,
 		arg.MedicalBill,
 		arg.UserCreated,
+		arg.Size,
 	)
 	var i MedicalRecordLink
 	err := row.Scan(
@@ -200,6 +202,7 @@ func (q *Queries) CreateMedicalRecordLink(ctx context.Context, arg CreateMedical
 		&i.UserCreated,
 		&i.CreatedAt,
 		&i.MedicalBill,
+		&i.Size,
 	)
 	return i, err
 }
@@ -222,6 +225,30 @@ func (q *Queries) DeleteCustomerGroup(ctx context.Context, id int32) (CustomerGr
 		&i.UserUpdated,
 		&i.UpdatedAt,
 		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const deleteMedicalRecordLink = `-- name: DeleteMedicalRecordLink :one
+DELETE FROM medical_record_link 
+WHERE uuid = $1 RETURNING id, uuid, type, title, url, customer, appointment_schedule, user_created, created_at, medical_bill, size
+`
+
+func (q *Queries) DeleteMedicalRecordLink(ctx context.Context, argUuid uuid.UUID) (MedicalRecordLink, error) {
+	row := q.db.QueryRowContext(ctx, deleteMedicalRecordLink, argUuid)
+	var i MedicalRecordLink
+	err := row.Scan(
+		&i.ID,
+		&i.Uuid,
+		&i.Type,
+		&i.Title,
+		&i.Url,
+		&i.Customer,
+		&i.AppointmentSchedule,
+		&i.UserCreated,
+		&i.CreatedAt,
+		&i.MedicalBill,
+		&i.Size,
 	)
 	return i, err
 }
@@ -648,7 +675,7 @@ func (q *Queries) ListCustomerGroup(ctx context.Context, arg ListCustomerGroupPa
 }
 
 const listMedicalRecordLink = `-- name: ListMedicalRecordLink :many
-SELECT id, uuid, type, title, url, customer, appointment_schedule, user_created, created_at, medical_bill FROM medical_record_link
+SELECT id, uuid, type, title, url, customer, appointment_schedule, user_created, created_at, medical_bill, size FROM medical_record_link
 WHERE ($1::int IS NULL OR $1::int = customer)
 AND ($2::medical_record_link_type IS NULL OR $2::medical_record_link_type = "type")
 AND ($3::uuid IS NULL OR $3::uuid = appointment_schedule)
@@ -687,6 +714,7 @@ func (q *Queries) ListMedicalRecordLink(ctx context.Context, arg ListMedicalReco
 			&i.UserCreated,
 			&i.CreatedAt,
 			&i.MedicalBill,
+			&i.Size,
 		); err != nil {
 			return nil, err
 		}

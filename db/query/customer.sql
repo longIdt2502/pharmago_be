@@ -109,10 +109,14 @@ WHERE id = $1 RETURNING *;
 
 -- name: CreateMedicalRecordLink :one
 INSERT INTO medical_record_link (
-    uuid, "type", title, url, customer, appointment_schedule, medical_bill, user_created
+    uuid, "type", title, url, customer, appointment_schedule, medical_bill, user_created, size
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8
+    $1, $2, $3, $4, $5, $6, $7, $8, $9
 ) RETURNING *;
+
+-- name: DeleteMedicalRecordLink :one
+DELETE FROM medical_record_link 
+WHERE uuid = $1 RETURNING *;
 
 -- name: ListMedicalRecordLink :many
 SELECT * FROM medical_record_link
