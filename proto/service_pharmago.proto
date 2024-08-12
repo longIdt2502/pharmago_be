@@ -96,6 +96,7 @@ import "rpc/customer/rpc_customer_group_create.proto";
 import "rpc/customer/rpc_customer_group_update.proto";
 import "rpc/customer/rpc_customer_group_delete.proto";
 import "rpc/customer/rpc_medical_record_list.proto";
+import "rpc/customer/rpc_medical_record_delete.proto";
 import "rpc/customer/rpc_medical_record_create.proto";
 
 import "rpc/supplier/rpc_supplier_create.proto";
@@ -1250,6 +1251,15 @@ service Pharmago {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "List medical record customer";
+      tags: "Customer";
+    };
+  };
+  rpc MedicalRecordDelete (MedicalRecordDeleteRequest) returns (MedicalRecordDeleteResponse) {
+    option (google.api.http) = {
+      delete: "/customer/v1/medical_record/{uuid}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Delete medical record customer";
       tags: "Customer";
     };
   };

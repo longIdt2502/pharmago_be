@@ -748,6 +748,7 @@ func (server *ServerGRPC) MedicalRecordCreate(ctx context.Context, req *pb.Medic
 			AppointmentSchedule: uuid.NullUUID{UUID: asUuid, Valid: req.AppointmentSchedule != nil},
 			MedicalBill:         uuid.NullUUID{UUID: asUuid, Valid: req.MedicalBill != nil},
 			UserCreated:         sql.NullInt32{Int32: tokenPayload.UserID, Valid: true},
+			Size:                sql.NullInt32{Int32: item.GetSize(), Valid: true},
 		})
 		if err != nil {
 			errApp := common.ErrDBWithMsg(err, "Tải lên file thất bại")
@@ -803,7 +804,9 @@ func (server *ServerGRPC) MedicalRecordCreateStream(req *pb.MedicalRecordCreateR
 			Url:                 url,
 			Customer:            sql.NullInt32{Int32: req.GetCustomer(), Valid: true},
 			AppointmentSchedule: uuid.NullUUID{UUID: asUuid, Valid: req.AppointmentSchedule != nil},
+			MedicalBill:         uuid.NullUUID{},
 			UserCreated:         sql.NullInt32{Int32: tokenPayload.UserID, Valid: true},
+			Size:                sql.NullInt32{Int32: item.GetSize(), Valid: true},
 		})
 		if err != nil {
 			errApp := common.ErrDBWithMsg(err, "Tải lên file thất bại")
@@ -892,8 +895,10 @@ func (server *ServerGRPC) MedicalRecordList(ctx context.Context, req *pb.Medical
 			Id:                  item.ID,
 			Uuid:                item.Uuid.String(),
 			Type:                convertDBTypeToPBType(item.Type),
+			TypeName:            convertDBTypeToPBType(item.Type).String(),
 			Title:               item.Title.String,
 			Url:                 item.Url,
+			Size:                item.Size.Int32,
 			Customer:            item.Customer.Int32,
 			AppointmentSchedule: as_uuid,
 			UserCreated:         item.UserCreated.Int32,
@@ -905,6 +910,40 @@ func (server *ServerGRPC) MedicalRecordList(ctx context.Context, req *pb.Medical
 		Code:    200,
 		Message: "success",
 		Details: medicalRecordsPb,
+	}, nil
+}
+
+func (server *ServerGRPC) MedicalRecordDelete(ctx context.Context, req *pb.MedicalRecordDeleteRequest) (*pb.MedicalRecordDeleteResponse, error) {
+	_, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, config.UnauthenticatedError(err)
+	}
+
+	uuidParse, err := uuid.Parse(req.GetUuid())
+	if err != nil {
+		errApp := common.ErrDBWithMsg(err, "Mã không tồn tại")
+		return &pb.MedicalRecordDeleteResponse{
+			Code:         int32(errApp.StatusCode),
+			Message:      errApp.Message,
+			MessageTrans: errApp.MessageTrans,
+			Log:          errApp.Log,
+		}, nil
+	}
+
+	_, err = server.store.DeleteMedicalRecordLink(ctx, uuidParse)
+	if err != nil {
+		errApp := common.ErrDBWithMsg(err, "Lỗi xoá dữ liệu")
+		return &pb.MedicalRecordDeleteResponse{
+			Code:         int32(errApp.StatusCode),
+			Message:      errApp.Message,
+			MessageTrans: errApp.MessageTrans,
+			Log:          errApp.Log,
+		}, nil
+	}
+
+	return &pb.MedicalRecordDeleteResponse{
+		Code:    200,
+		Message: "success",
 	}, nil
 }
 

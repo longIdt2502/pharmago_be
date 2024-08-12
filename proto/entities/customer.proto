@@ -57,11 +57,13 @@ enum MedicalRecordType {
 message MedicalRecordLink {
   int32 id = 1; // serial
   string uuid = 2; // uuid
-  MedicalRecordType type = 3; // medical_record_type
-  string title = 4; // varchar
-  string url = 5; // varchar
-  int32 customer = 6; // serial
-  optional string appointment_schedule = 7; // uuid
-  int32 user_created = 8; // serial
-  google.protobuf.Timestamp created_at = 9; // timestamp
+  MedicalRecordType type = 3;
+  string type_name = 4; // medical_record_type
+  string title = 5; // varchar
+  string url = 6; // varchar
+  int32 size = 7;
+  int32 customer = 8; // serial
+  optional string appointment_schedule = 9; // uuid
+  int32 user_created = 10; // serial
+  google.protobuf.Timestamp created_at = 11; // timestamp
 }
