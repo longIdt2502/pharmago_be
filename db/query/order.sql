@@ -81,9 +81,9 @@ WHERE (o.id = sqlc.narg(id) OR o.code = sqlc.narg(code));
 -- name: ListOrderItem :many
 SELECT * FROM order_items oi
 JOIN variants v ON v.id = oi.variant
-JOIN consignment c ON c.id = oi.consignment
-JOIN variant_media vm ON vm.variant = v.id
-JOIN medias m ON vm.media = m.id
+LEFT JOIN consignment c ON c.id = oi.consignment
+LEFT JOIN variant_media vm ON vm.variant = v.id
+LEFT JOIN medias m ON vm.media = m.id
 WHERE oi.order = $1;
 
 -- name: ListOrderServiceItem :many
