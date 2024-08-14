@@ -938,9 +938,9 @@ func (q *Queries) ListOrder(ctx context.Context, arg ListOrderParams) ([]ListOrd
 const listOrderItem = `-- name: ListOrderItem :many
 SELECT oi.id, "order", oi.variant, value, total_price, consignment, consignment_log, v.id, name, v.code, barcode, decision_number, register_number, longevity, vat, product, v.user_created, v.user_updated, v.updated_at, v.created_at, initial_inventory, real_inventory, c.id, c.code, quantity, inventory, ticket, expired_at, producted_at, is_available, c.user_created, c.user_updated, c.updated_at, c.created_at, c.variant, vm.id, vm.variant, media, m.id, media_url FROM order_items oi
 JOIN variants v ON v.id = oi.variant
-JOIN consignment c ON c.id = oi.consignment
-JOIN variant_media vm ON vm.variant = v.id
-JOIN medias m ON vm.media = m.id
+LEFT JOIN consignment c ON c.id = oi.consignment
+LEFT JOIN variant_media vm ON vm.variant = v.id
+LEFT JOIN medias m ON vm.media = m.id
 WHERE oi.order = $1
 `
 
@@ -967,24 +967,24 @@ type ListOrderItemRow struct {
 	CreatedAt        time.Time       `json:"created_at"`
 	InitialInventory int32           `json:"initial_inventory"`
 	RealInventory    int32           `json:"real_inventory"`
-	ID_3             int32           `json:"id_3"`
-	Code_2           string          `json:"code_2"`
-	Quantity         int32           `json:"quantity"`
-	Inventory        int32           `json:"inventory"`
+	ID_3             sql.NullInt32   `json:"id_3"`
+	Code_2           sql.NullString  `json:"code_2"`
+	Quantity         sql.NullInt32   `json:"quantity"`
+	Inventory        sql.NullInt32   `json:"inventory"`
 	Ticket           sql.NullInt32   `json:"ticket"`
-	ExpiredAt        time.Time       `json:"expired_at"`
-	ProductedAt      time.Time       `json:"producted_at"`
-	IsAvailable      bool            `json:"is_available"`
+	ExpiredAt        sql.NullTime    `json:"expired_at"`
+	ProductedAt      sql.NullTime    `json:"producted_at"`
+	IsAvailable      sql.NullBool    `json:"is_available"`
 	UserCreated_2    sql.NullInt32   `json:"user_created_2"`
 	UserUpdated_2    sql.NullInt32   `json:"user_updated_2"`
 	UpdatedAt_2      sql.NullTime    `json:"updated_at_2"`
-	CreatedAt_2      time.Time       `json:"created_at_2"`
+	CreatedAt_2      sql.NullTime    `json:"created_at_2"`
 	Variant_2        sql.NullInt32   `json:"variant_2"`
-	ID_4             int32           `json:"id_4"`
-	Variant_3        int32           `json:"variant_3"`
-	Media            int32           `json:"media"`
-	ID_5             int32           `json:"id_5"`
-	MediaUrl         string          `json:"media_url"`
+	ID_4             sql.NullInt32   `json:"id_4"`
+	Variant_3        sql.NullInt32   `json:"variant_3"`
+	Media            sql.NullInt32   `json:"media"`
+	ID_5             sql.NullInt32   `json:"id_5"`
+	MediaUrl         sql.NullString  `json:"media_url"`
 }
 
 func (q *Queries) ListOrderItem(ctx context.Context, order int32) ([]ListOrderItemRow, error) {

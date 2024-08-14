@@ -22,8 +22,8 @@ func OrderPreviewMapper(ctx context.Context, store *db.Store, order db.ListOrder
 				Id:          orderItemsDb[0].ID,
 				Code:        orderItemsDb[0].Code,
 				Name:        orderItemsDb[0].Name,
-				Media:       orderItemsDb[0].MediaUrl,
-				QuantityBuy: orderItemsDb[0].Quantity,
+				Media:       orderItemsDb[0].MediaUrl.String,
+				QuantityBuy: orderItemsDb[0].Quantity.Int32,
 				PriceSell:   float32(orderItemsDb[0].TotalPrice),
 			}
 		}
@@ -116,16 +116,16 @@ func OrderDetailMapper(ctx context.Context, store *db.Store, data db.DetailOrder
 			Variant:    variantDb,
 			Value:      value.Value,
 			TotalPrice: float32(value.TotalPrice),
-			Consignment: &pb.Consignment{
-				Id:          value.ID_3,
-				Code:        value.Code_2,
-				Quantity:    value.Quantity,
-				Inventory:   value.Inventory,
-				Variant:     nil,
-				ExpiredAt:   timestamppb.New(value.ExpiredAt),
-				ProducedAt:  timestamppb.New(value.ProductedAt),
-				IsAvailable: value.IsAvailable,
-			},
+			// Consignment: &pb.Consignment{
+			// 	Id:          value.ID_3,
+			// 	Code:        value.Code_2,
+			// 	Quantity:    value.Quantity,
+			// 	Inventory:   value.Inventory,
+			// 	Variant:     nil,
+			// 	ExpiredAt:   timestamppb.New(value.ExpiredAt),
+			// 	ProducedAt:  timestamppb.New(value.ProductedAt),
+			// 	IsAvailable: value.IsAvailable,
+			// },
 		})
 	}
 
