@@ -376,6 +376,20 @@ func (server *ServerGRPC) CreatePaymentItemOrder(ctx context.Context, req *pb.Pa
 				Log:          appErr.Log,
 			}, nil
 		}
+	} else if 0 < payment.NeedPay-float64(req.GetValue()) && payment.NeedPay-float64(req.GetValue()) < payment.MustPaid {
+		_, err = server.store.UpdateStatusOrder(ctx, db.UpdateStatusOrderParams{
+			ID:     req.GetOrderId(),
+			Status: "IN_PROCESS",
+		})
+		if err != nil {
+			appErr := common.ErrDBWithMsg(err, "lỗi cập nhật thông tin đơn hàng")
+			return &pb.PaymentItemOrderResponse{
+				Code:         int32(appErr.StatusCode),
+				Message:      appErr.Message,
+				MessageTrans: appErr.MessageTrans,
+				Log:          appErr.Log,
+			}, nil
+		}
 	}
 
 	if err != nil {
